@@ -1,0 +1,83 @@
+/* Custom Button Class */
+.custom-button {
+  background-color: #1565c0; /* Darker blue */
+  color: #fff;
+  border: 1px solid transparent; /* Transparent border by default */
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease; /* Smooth transition for all properties */
+
+  /* Hover effect */
+  &:hover {
+    background-color: #fff; /* Even darker blue on hover */
+    color: #0d47a1; /* Match text color to background on hover */
+    border-color: #0d47a1; /* Match border color to text color on hover */
+  }
+}
+
+/* Custom Close Button Class */
+.close-button {
+  background-color: #ff9999; /* New background color for close button */
+  color: #fff; /* New text color for close button */
+  border: none;
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease; /* Smooth transition effect */
+
+  /* Hover effect */
+  &:hover {
+    background-color: #ff6666; /* Adjust the hover background color for close button */
+  }
+}
+
+/* Custom Cancel Button Class */
+.cancel-button {
+  background-color: #666666; /* Gray background color for cancel button */
+  color: #fff; /* Text color for cancel button */
+  border: 1px solid transparent; /* Transparent border by default */
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  font-size: 14px;
+  text-decoration: none; /* Remove the default underline */
+  display: inline-block; /* Ensures the padding and border are respected */
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease; /* Smooth transition for all properties */
+
+  /* Hover effect */
+  &:hover {
+    background-color: #fff; /* Darker gray on hover */
+    color: #333333; /* Match text color to background on hover */
+    border-color: #333333; /* Match border color to text color on hover */
+  }
+}
+
+/* Custom Submit Button Class */
+.submit-button {
+  background-color: #4caf50;
+  color: #fff;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: #fff;
+  color: #4caf50;
+  border-color: #4caf50;
+}
+
+.submit-button:disabled {
+  background-color: #a9a9a9;
+  color: #fff;
+  cursor: not-allowed;
+}

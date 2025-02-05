@@ -1,0 +1,12 @@
+{
+  "files.autoSave": "afterDelay",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "notebook.defaultFormatter": "esbenp.prettier-vscode",
+  "prettier.requireConfig": false,
+  "prettier.enableDebugLogs": false,
+  "prettier.trailingComma": "none",
+  "[php]": {
+    "editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
+  }
+}

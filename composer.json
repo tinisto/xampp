@@ -1,0 +1,18 @@
+{
+    "name": "anatolys/11klassniki",
+    "autoload": {
+        "psr-4": {
+            "Anatolys\\11klassniki\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "tinisto",
+            "email": "tinisto@gmail.com"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^5.6",
+        "phpmailer/phpmailer": "^6.9"
+    }
+}

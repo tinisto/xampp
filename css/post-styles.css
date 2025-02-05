@@ -1,0 +1,43 @@
+.index-card .card-img-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.index-card .card-img-container img {
+  transition: transform 0.3s;
+  width: 100%; /* Ensure the image takes the full width of the container */
+}
+
+/* Apply the hover effect only on screens larger than 576px (sm size) */
+@media (min-width: 576px) {
+  .index-card .card-img-container:hover img {
+    transform: scale(1.1);
+  }
+}
+
+.index-card .card-title-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 5px;
+  color: white;
+  max-height: 60%; /* Adjust the maximum height of the overlay */
+}
+
+.bio-post {
+  font-size: 12px;
+  background: #d3d3d3;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-bottom: 15px;
+  white-space: pre-line; /* Preserve line breaks */
+}
+
+/* Adjust the overlay on smaller screens */
+@media (max-width: 576px) {
+  .card-title-overlay {
+    max-height: 100%; /* Allow the overlay to take the full height on smaller screens */
+  }
+}

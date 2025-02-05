@@ -1,0 +1,18 @@
+body {
+  background: black;
+}
+
+/* Hide the dropdown indicator icon (caret) */
+.dropdown-toggle::after {
+  display: none !important;
+}
+
+.full-height-flex {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.full-height-flex main {
+  flex: 1 0 auto;
+}

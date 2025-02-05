@@ -1,0 +1,140 @@
+/* custom-styles.css */
+.custom-comment-author {
+  display: inline-block;
+  background-color: #e6f7ff;
+  padding: 10px;
+  margin-bottom: 5px; /* Adjust the margin-bottom value */
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.custom-comment-reply {
+  display: inline-block;
+  background-color: #f0f0f0;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  margin-left: 8px;
+}
+
+.reply-link {
+  color: #808080; /* Grey color */
+  cursor: pointer;
+  margin-left: 10px; /* Adjust the value based on your preference */
+}
+
+.reply-link:hover {
+  text-decoration: underline;
+}
+
+.comment-reply-block {
+  font-size: 12px;
+  color: #808080;
+}
+
+.time-tooltip {
+  color: #808080;
+  text-decoration: none;
+  transition: text-decoration 0.3s;
+  cursor: pointer;
+}
+
+.time-tooltip:hover {
+  text-decoration: underline;
+}
+
+textarea::placeholder {
+  padding: 10px;
+}
+
+.hidden {
+  display: none;
+}
+
+.load-more-container {
+  display: block;
+}
+
+/* Add spacing between icons */
+.table .icon {
+  margin: 10px;
+}
+
+/* Hover effect for icons */
+.table .icon:hover {
+  color: #dc3545;
+}
+
+/* -------------------------------------------------------------------- custom -------------------------------------------------------------------- */
+
+.custom-background {
+  background-color: #e3f2fd; /* blue background color */
+}
+
+.custom-info-message {
+  background-color: #e3f2fd;
+  color: #000;
+  border: none;
+  border-radius: 0.25rem;
+  padding: 1rem;
+  font-size: 14px;
+}
+
+.custom-alert {
+  background-color: #fff3cd;
+  color: #856404;
+  border: none;
+  border-radius: 0.25rem;
+  padding: 1rem;
+  font-size: 14px;
+}
+
+/* link-custom */
+.link-custom {
+  transition: opacity 0.75s ease;
+  text-decoration: none;
+  text-underline-offset: 4px;
+}
+
+.link-custom:hover {
+  text-decoration: underline;
+}
+
+/* link-black */
+.link-black {
+  transition: opacity 0.75s ease;
+  text-decoration: none;
+  text-underline-offset: 4px;
+  color: #000;
+}
+
+.link-black:hover {
+  text-decoration: underline;
+}
+
+/* link-white */
+.link-white {
+  transition: opacity 0.75s ease;
+  text-decoration: none;
+  text-underline-offset: 4px;
+  color: #fff;
+}
+
+.link-white:hover {
+  text-decoration: underline;
+}
+
+/* Hide the dropdown indicator icon (caret) */
+.dropdown-toggle::after {
+  display: none !important;
+}
+
+.full-height-flex {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.full-height-flex main {
+  flex: 1 0 auto;
+}

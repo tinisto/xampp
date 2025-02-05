@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /dashboard/
+Disallow: /category/blog-redaktora
+Disallow: /error
+Disallow: /404
+Disallow: /login
+Disallow: /registration 
+Disallow: /account
