@@ -3,7 +3,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/check_under_constru
 include $_SERVER['DOCUMENT_ROOT'] . '/includes/functions/email_functions.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/getEntityIdFromURL.php';
 require_once 'comment-filter-functions.php';
-include $_SERVER["DOCUMENT_ROOT"] . "/includes/functions/redirectToErrorPage.php";
+include_once $_SERVER["DOCUMENT_ROOT"] . "/includes/functions/redirectToErrorPage.php";
 
 // Process form data
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["comment"]) && isset($_POST["parent_id"]) && isset($_POST["entity_type"]) && isset($_POST["id_entity"])) {

@@ -1,7 +1,7 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/check_under_construction.php';
 include $_SERVER['DOCUMENT_ROOT'] . '/includes/functions/email_functions.php';
-include $_SERVER["DOCUMENT_ROOT"] . "/includes/functions/redirectToErrorPage.php";
+include_once $_SERVER["DOCUMENT_ROOT"] . "/includes/functions/redirectToErrorPage.php";
 
 // Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

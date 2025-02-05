@@ -1,7 +1,7 @@
 <?php
 include $_SERVER["DOCUMENT_ROOT"] . "/includes/functions/session_util.php";
 include_once $_SERVER["DOCUMENT_ROOT"] . "/includes/functions/auth.php";
-include $_SERVER["DOCUMENT_ROOT"] . "/includes/functions/redirectToErrorPage.php";
+include_once $_SERVER["DOCUMENT_ROOT"] . "/includes/functions/redirectToErrorPage.php";
 
 $baseUrl = '/';
 
@@ -91,4 +91,3 @@ HTML;
     </html>
 HTML;
 }
-?>
