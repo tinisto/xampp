@@ -15,15 +15,48 @@ $sendEmailsUrl = '/pages/common/vpo-spo/send_emails.php';
 include $_SERVER['DOCUMENT_ROOT'] . '/pages/common/vpo-spo/single-data-fetch.php';
 
 if (isset($pageTitle)) {
-    $additionalData = ['row' => $row]; // Ensure $additionalData is defined
-    ob_start();
-    include $_SERVER['DOCUMENT_ROOT'] . '/pages/common/vpo-spo/single-content.php';
-    $mainContent = ob_get_clean();
+    // Map VPO/SPO database fields to template expected fields
+    if (isset($row)) {
+        if ($type === 'vpo') {
+            // Map VPO fields to expected template fields
+            $row['text'] = $row['director_info'] ?? '';
+            $row['phone'] = $row['tel'] ?? '';
+            $row['website'] = $row['site'] ?? '';
+            $row['director'] = $row['director_name'] ?? '';
+            $row['branches'] = $row['filials_vpo'] ?? '';
+            $row['parent_institution'] = ''; // Could be populated later if needed
+            // Build address from components
+            $addressParts = array_filter([
+                $row['zip_code'] ?? '',
+                $row['city'] ?? '',
+                $row['street'] ?? ''
+            ]);
+            $row['address'] = implode(', ', $addressParts);
+        } else {
+            // Map SPO fields to expected template fields
+            $row['text'] = $row['director_info'] ?? '';
+            $row['phone'] = $row['tel'] ?? '';
+            $row['website'] = $row['site'] ?? '';
+            $row['director'] = $row['director_name'] ?? '';
+            $row['branches'] = $row['filials_spo'] ?? '';
+            $row['parent_institution'] = ''; // Could be populated later if needed
+            // Build address from components
+            $addressParts = array_filter([
+                $row['zip_code'] ?? '',
+                $row['city'] ?? '',
+                $row['street'] ?? ''
+            ]);
+            $row['address'] = implode(', ', $addressParts);
+        }
+    }
+    
+    $additionalData = ['row' => $row]; // Ensure $additionalData is defined  
+    $mainContent = 'pages/common/vpo-spo/single-content-modern.php';
 
     $metaD = $pageTitle . ' – образовательное учреждение, предоставляющее высококачественное образование. Узнайте больше о наших программах и возможностях обучения.';
     $metaK = $pageTitle . ', ' . strtoupper($type) . ', образование, профессиональное обучение, студенты, адрес, руководство, директор, приемная комиссия, новости, сайт, электронная почта';
-    include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine-vpo-spo.php';
-    renderTemplate($pageTitle, $mainContent, $additionalData, $metaD, $metaK);
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine.php';
+    renderTemplate($pageTitle, $mainContent, ['metaD' => $metaD, 'metaK' => $metaK, 'additionalData' => $additionalData]);
 } else {
     header("Location: /404");
     exit();

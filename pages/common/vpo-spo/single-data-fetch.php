@@ -35,8 +35,8 @@ if (!isset($_SESSION['visited'])) {
 }
 
 if ($url) {
-    // Select data using prepared statements
-    $query = "SELECT * FROM $table WHERE $urlField=? AND approved='1'";
+    // Select data using prepared statements with JOIN to get city name
+    $query = "SELECT $table.*, towns.name as city FROM $table LEFT JOIN towns ON $table.id_town = towns.id_town WHERE $urlField=? AND approved='1'";
     $stmtSelect = mysqli_prepare($connection, $query);
     mysqli_stmt_bind_param($stmtSelect, "s", $url);
     mysqli_stmt_execute($stmtSelect);
