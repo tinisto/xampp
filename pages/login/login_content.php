@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../includes/init.php';
+require_once __DIR__ . '/../../includes/init.php';
 ?>
 <section class="d-flex justify-content-center align-items-center" style="height: 60vh;">
     <div class="col-lg-4 col-md-6 col-sm-10 mx-auto">

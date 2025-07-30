@@ -1,6 +1,25 @@
 <?php
-require_once __DIR__ . '/../../../../../../includes/init.php';
- include_once $_SERVER["DOCUMENT_ROOT"] . "/includes/buttons/form-buttons.php"; ?>
+require_once __DIR__ . '/../../../includes/init.php';
+include_once $_SERVER["DOCUMENT_ROOT"] . "/includes/buttons/form-buttons.php";
+
+// Check user authentication
+include $_SERVER["DOCUMENT_ROOT"] . "/includes/functions/check_user.php";
+
+// Initialize variables
+$userId = $_SESSION['user_id'] ?? null;
+
+// Fetch user data if needed
+if ($userId) {
+    $sql = "SELECT * FROM users WHERE id = ?";
+    $stmt = $connection->prepare($sql);
+    if ($stmt) {
+        $stmt->bind_param('i', $userId);
+        if ($stmt->execute()) {
+            $userData = $stmt->get_result()->fetch_assoc();
+        }
+    }
+}
+?>
 
 <div>
 

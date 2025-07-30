@@ -1,6 +1,17 @@
 <?php
-require_once __DIR__ . '/../../../../../../includes/init.php';
- include_once $_SERVER["DOCUMENT_ROOT"] . "/includes/buttons/form-buttons.php";?>
+require_once __DIR__ . '/../../../includes/init.php';
+include_once $_SERVER["DOCUMENT_ROOT"] . "/includes/buttons/form-buttons.php";
+
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header('Location: /login');
+    exit();
+}
+
+// Get user data
+$userId = $_SESSION['user_id'];
+$userData = $db->queryOne("SELECT firstname, lastname, occupation FROM users WHERE id = ?", [$userId]);
+?>
 <div>
 
 <form action="/pages/account/personal-data-change/personal-data-change-process.php" method="post">

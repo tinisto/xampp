@@ -1,6 +1,11 @@
 <?php
-// Assuming $connection is your MySQLi connection
-$userId = $_SESSION['user_id'];  // Get user ID from session
+require_once __DIR__ . '/../../../includes/init.php';
+
+// Check user authentication
+include $_SERVER["DOCUMENT_ROOT"] . "/includes/functions/check_user.php";
+
+// Initialize variables
+$userId = $_SESSION['user_id'] ?? null;  // Get user ID from session
 include $_SERVER['DOCUMENT_ROOT'] . '/includes/functions/getRussianDate.php';
 
 // Fetch user data
@@ -30,6 +35,8 @@ if (!$stmtNews->execute()) {
     exit();
 }
 $news = $stmtNews->get_result()->fetch_all(MYSQLI_ASSOC);
+// Initialize occupation variable if not set
+$occupation = $userData['occupation'] ?? '';
 ?>
 
 <?php

@@ -19,6 +19,20 @@ unset($_SESSION['oldData']);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registration</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .input-group > .form-control {
+            border-right: none;
+        }
+        .input-group-text {
+            background: #ffffff;
+            border: 1px solid #ced4da;
+            border-left: none;
+            cursor: pointer;
+        }
+        .input-group-text:hover {
+            background: #f8f9fa;
+        }
+    </style>
 
 </head>
 
@@ -32,6 +46,18 @@ unset($_SESSION['oldData']);
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
+
+        <div class="mb-3">
+            <input type="text" id="firstname" name="firstname" class="form-control"
+                value="<?= isset($oldData['firstname']) ? htmlspecialchars($oldData['firstname']) : '' ?>"
+                placeholder="Введите ваше имя" required>
+        </div>
+
+        <div class="mb-3">
+            <input type="text" id="lastname" name="lastname" class="form-control"
+                value="<?= isset($oldData['lastname']) ? htmlspecialchars($oldData['lastname']) : '' ?>"
+                placeholder="Введите вашу фамилию" required>
+        </div>
 
         <div class="mb-3">
             <select name="occupation" id="occupation" class="form-select" required>
@@ -51,15 +77,28 @@ unset($_SESSION['oldData']);
                 placeholder="Введите ваш email" required>
         </div>
 
-        <div class="input-group">
-            <input type="password" id="password" name="password" class="form-control" placeholder="Введите ваш пароль"
+        <div class="input-group mb-3">
+            <input type="password" id="newPassword" name="newPassword" class="form-control" placeholder="Введите ваш пароль"
                 required>
             <span class="input-group-text" id="showPassword">
                 <i class="fas fa-eye"></i>
             </span>
         </div>
-        <span id="passwordCriteria" class="form-text text-muted my-3 d-block">Пароль должен содержать минимум 8 символов и
+        
+        <div class="input-group mb-3">
+            <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="Подтвердите пароль"
+                required>
+            <span class="input-group-text" id="showConfirmPassword">
+                <i class="fas fa-eye"></i>
+            </span>
+        </div>
+        <span id="passwordCriteria" class="form-text text-muted mb-3 d-block">Пароль должен содержать минимум 8 символов и
             включать буквы и цифры.</span>
+
+        <div class="mb-3">
+            <label for="avatar" class="form-label">Загрузить аватар (необязательно)</label>
+            <input type="file" id="avatar" name="avatar" class="form-control" accept="image/*">
+        </div>
 
 
         <input type="hidden" name="timezone" id="timezone" value="">
@@ -83,14 +122,24 @@ unset($_SESSION['oldData']);
 
         // Function to validate the form before submitting
         function validateForm(event) {
+            const firstname = document.getElementById('firstname').value;
+            const lastname = document.getElementById('lastname').value;
             const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
             const registrationButton = document.getElementById('registrationButton');
             const occupation = document.getElementById('occupation').value;
 
-            // Check if email and password are empty
-            if (email === "" || password === "" || occupation === "") {
+            // Check if all required fields are filled
+            if (firstname === "" || lastname === "" || email === "" || newPassword === "" || confirmPassword === "" || occupation === "") {
                 alert("Пожалуйста, заполните все обязательные поля.");
+                event.preventDefault(); // Prevent form submission
+                return false;
+            }
+            
+            // Check if passwords match
+            if (newPassword !== confirmPassword) {
+                alert("Пароли не совпадают.");
                 event.preventDefault(); // Prevent form submission
                 return false;
             }
@@ -113,9 +162,9 @@ unset($_SESSION['oldData']);
 
         document.addEventListener('DOMContentLoaded', function() {
             // Toggle password visibility
-            function togglePasswordVisibility(passwordId) {
+            function togglePasswordVisibility(passwordId, iconId) {
                 var passwordInput = document.getElementById(passwordId);
-                var icon = document.getElementById('showPassword');
+                var icon = document.getElementById(iconId);
 
                 if (passwordInput.type === 'password') {
                     passwordInput.type = 'text';
@@ -128,7 +177,11 @@ unset($_SESSION['oldData']);
 
             // Add event listener to toggle password visibility
             document.getElementById('showPassword').addEventListener('click', function() {
-                togglePasswordVisibility('password');
+                togglePasswordVisibility('newPassword', 'showPassword');
+            });
+            
+            document.getElementById('showConfirmPassword').addEventListener('click', function() {
+                togglePasswordVisibility('confirmPassword', 'showConfirmPassword');
             });
         });
 

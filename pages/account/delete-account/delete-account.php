@@ -1,13 +1,15 @@
 <?php
-require_once __DIR__ . '/../../../../../../includes/init.php';
+require_once __DIR__ . '/../../../includes/init.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/includes/functions/check_user.php';
 
-include $_SERVER['DOCUMENT_ROOT'] . '/includes/functions/session_util.php';
-include_once $_SERVER["DOCUMENT_ROOT"] . "/includes/buttons/form-buttons.php";
+// Check if user is admin
+$isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
 
-
-// Generate CSRF token if not already set
-if (!isset($_SESSION['csrf_token'])) {
-  $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+// Prevent admin self-deletion
+if ($isAdmin) {
+    $_SESSION['error'] = 'Администраторы не могут удалить свой собственный аккаунт. Обратитесь к другому администратору.';
+    header('Location: /account');
+    exit();
 }
 ?>
 

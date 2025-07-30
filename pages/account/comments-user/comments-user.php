@@ -1,5 +1,8 @@
 <?php
+require_once __DIR__ . '/../../../includes/init.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/check_under_construction.php';
+
+// Check user authentication
 include $_SERVER["DOCUMENT_ROOT"] . "/includes/functions/check_user.php";
 
 $userId = $_SESSION['user_id'];
