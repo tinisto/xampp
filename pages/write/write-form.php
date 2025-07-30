@@ -12,6 +12,7 @@ include 'write-functions.php';
         <h5 class="text-center fw-bold mb-3">Если у вас возникли какие-либо вопросы<br>или вы хотели бы обсудить что-то с нами, свяжитесь с нами.</h5>
 
         <form id="messageForm" action="write-process-form" method="post">
+    <?php echo csrf_field(); ?>
 
             <div class="form-floating mb-3">
                 <textarea class="form-control" placeholder="Ваше сообщение" id="message" name="message" style="height: 100px"

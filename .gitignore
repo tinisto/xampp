@@ -1,1 +1,29 @@
+# Environment files
 .env
+.env.local
+
+# Logs
+logs/
+*.log
+
+# Cache
+cache/
+
+# Temporary files
+temp_deploy_config.php
+filezilla-deploy.txt
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Vendor (if using Composer)
+vendor/
+
+# Sensitive deploy configs
+deploy-config.php
+deploy-credentials.json

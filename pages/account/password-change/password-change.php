@@ -3,6 +3,7 @@
 <div>
 
   <form action="/pages/account/password-change/password-change-process.php" method="post">
+    <?php echo csrf_field(); ?>
     <div class="mb-3">
       <div class="input-group">
         <input type="password" id="oldPassword" name="oldPassword" class="form-control"

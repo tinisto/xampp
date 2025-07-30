@@ -22,6 +22,7 @@ unset($_SESSION['oldData']);
 
 <body>
     <form id="demo-form" action="/pages/registration/registration_process.php" method="post" enctype="multipart/form-data">
+    <?php echo csrf_field(); ?>
         <?php if (!empty($errors)): ?>
             <div class="alert alert-danger">
                 <?php foreach ($errors as $error): ?>

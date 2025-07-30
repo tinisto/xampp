@@ -3,6 +3,8 @@
     <div class="card-body" style="font-size: 14px;">
 
       <?php
+require_once __DIR__ . '/../../../includes/helpers.php';
+
       if (isset($_GET['activation_success']) && $_GET['activation_success'] === 'true') {
         // Проверяем, было ли уже показано сообщение
         if (!isset($_SESSION['activation_success_message_shown'])) {
@@ -49,6 +51,7 @@
           здесь</a>.</p>
 
       <form action="/pages/login/login_process.php" method="post">
+    <?php echo csrf_field(); ?>
         <div class="mb-3">
           <input type="email" id="email" name="email" class="form-control" placeholder="Введите ваш email" required>
         </div>

@@ -2,6 +2,7 @@
 <div>
 
 <form action="/pages/account/personal-data-change/personal-data-change-process.php" method="post">
+    <?php echo csrf_field(); ?>
     <input type="hidden" name="updatePersonalData" value="1">
     
     <div class="mb-3">

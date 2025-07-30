@@ -156,6 +156,7 @@ function generateInputRowThree($id1, $name1, $value1, $label1, $id2, $name2, $va
 <div class="container">
   <div class="row justify-content-center">
     <form action="/pages/common/create-process.php" method="POST" enctype="multipart/form-data">
+    <?php echo csrf_field(); ?>
       <div class="card px-3 pt-2">
         <label class="mb-2">Выберите адрес<?php echo requiredAsterisk(); ?></label>
 

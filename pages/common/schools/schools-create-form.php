@@ -113,6 +113,7 @@ unset($_SESSION['address_data']); // Clear the session data after using it
 <div class="container">
   <div class="row justify-content-center">
     <form action="/pages/common/schools/schools-create-process.php" method="post" enctype="multipart/form-data">
+    <?php echo csrf_field(); ?>
 
       <div class="card px-3 pt-2">
         <label class="mb-2">Выберите адрес<?php echo requiredAsterisk(); ?></label>
