@@ -1,6 +1,4 @@
 <?php
-require_once __DIR__ . '/../../../../../includes/init.php';
-
 require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/check_under_construction.php';
 include $_SERVER['DOCUMENT_ROOT'] . '/includes/functions/email_functions.php';
 

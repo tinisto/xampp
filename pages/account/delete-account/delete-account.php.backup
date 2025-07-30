@@ -1,6 +1,4 @@
 <?php
-require_once __DIR__ . '/../../../../../../includes/init.php';
-
 include $_SERVER['DOCUMENT_ROOT'] . '/includes/functions/session_util.php';
 include_once $_SERVER["DOCUMENT_ROOT"] . "/includes/buttons/form-buttons.php";
 
@@ -39,7 +37,6 @@ if (!isset($_SESSION['csrf_token'])) {
   ?>
 
   <form action="/pages/account/delete-account/delete-account-process.php" method="post">
-    <?php echo csrf_field(); ?>
     <!-- Include a hidden field for CSRF protection -->
     <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
 

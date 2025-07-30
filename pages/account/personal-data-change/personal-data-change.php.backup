@@ -1,6 +1,4 @@
-<?php
-require_once __DIR__ . '/../../../../../../includes/init.php';
- include_once $_SERVER["DOCUMENT_ROOT"] . "/includes/buttons/form-buttons.php";?>
+<?php include_once $_SERVER["DOCUMENT_ROOT"] . "/includes/buttons/form-buttons.php";?>
 <div>
 
 <form action="/pages/account/personal-data-change/personal-data-change-process.php" method="post">

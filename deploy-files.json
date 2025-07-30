@@ -1,0 +1,18 @@
+[
+    "\/pages\/login\/login_content.php",
+    "\/pages\/login\/login_process.php",
+    "\/pages\/search\/search-process.php",
+    "\/pages\/registration\/registration_form.php",
+    "\/pages\/registration\/registration_process.php",
+    "\/pages\/account\/password-change\/password-change.php",
+    "\/pages\/account\/personal-data-change\/personal-data-change.php",
+    "\/pages\/account\/delete-account\/delete-account.php",
+    "\/includes\/Database.php",
+    "\/includes\/Security.php",
+    "\/includes\/helpers.php",
+    "\/includes\/Cache.php",
+    "\/includes\/ErrorHandler.php",
+    "\/includes\/init.php",
+    "\/includes\/csrf-middleware.php",
+    "\/includes\/universal-security-patch.php"
+]
