@@ -67,6 +67,35 @@ if (isset($_GET['debug'])) {
         print_r(array_keys($newsData));
         echo "</pre>";
     }
+    
+    // Add database debug info here
+    echo "<h3>Database Debug:</h3>";
+    if (isset($connection)) {
+        echo "✅ Database connection exists<br>";
+        echo "Connection status: " . ($connection->ping() ? "Active" : "Failed") . "<br>";
+        
+        // Test news count
+        $testCountQuery = "SELECT COUNT(*) as total FROM news";
+        $testCountResult = mysqli_query($connection, $testCountQuery);
+        if ($testCountResult) {
+            $totalAllNews = mysqli_fetch_assoc($testCountResult)['total'];
+            echo "Total news in database: <strong>$totalAllNews</strong><br>";
+        }
+        
+        $approvedCountQuery = "SELECT COUNT(*) as total FROM news WHERE approved = 1";
+        $approvedCountResult = mysqli_query($connection, $approvedCountQuery);
+        if ($approvedCountResult) {
+            $approvedNews = mysqli_fetch_assoc($approvedCountResult)['total'];
+            echo "Approved news: <strong>$approvedNews</strong><br>";
+        }
+        
+        // Show environment
+        echo "APP_ENV: " . ($_ENV['APP_ENV'] ?? 'Not set') . "<br>";
+        echo "DB_HOST: " . (defined('DB_HOST') ? DB_HOST : 'Not defined') . "<br>";
+        echo "DB_NAME: " . (defined('DB_NAME') ? DB_NAME : 'Not defined') . "<br>";
+    } else {
+        echo "❌ Database connection not found<br>";
+    }
     exit();
 }
 
