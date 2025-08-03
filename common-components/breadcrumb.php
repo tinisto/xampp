@@ -13,19 +13,44 @@
 
 function renderBreadcrumb($items = []) {
     if (empty($items)) return;
+    
+    // Include SEO helper if available
+    if (file_exists($_SERVER['DOCUMENT_ROOT'] . '/includes/functions/seo.php')) {
+        require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/functions/seo.php';
+        
+        // Convert items to SEO format
+        $seoItems = [];
+        foreach ($items as $item) {
+            $seoItems[] = [
+                'name' => $item['text'],
+                'url' => $item['url'] ?? null
+            ];
+        }
+        
+        echo SEOHelper::generateBreadcrumbs($seoItems);
+        return;
+    }
+    
+    // Fallback to original breadcrumb with basic structured data
     ?>
-    <nav class="breadcrumb-nav">
-        <ol class="breadcrumb">
+    <nav aria-label="breadcrumb" class="breadcrumb-nav">
+        <ol class="breadcrumb" itemscope itemtype="https://schema.org/BreadcrumbList">
             <?php foreach ($items as $index => $item): ?>
-                <?php if ($index < count($items) - 1): ?>
-                    <li class="breadcrumb-item">
-                        <a href="<?= htmlspecialchars($item['url']) ?>"><?= htmlspecialchars($item['text']) ?></a>
-                    </li>
-                <?php else: ?>
-                    <li class="breadcrumb-item active" aria-current="page">
-                        <?= htmlspecialchars($item['text']) ?>
-                    </li>
-                <?php endif; ?>
+                <?php $position = $index + 1; ?>
+                <li class="breadcrumb-item<?= $index === count($items) - 1 ? ' active' : '' ?>" 
+                    itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"
+                    <?= $index === count($items) - 1 ? 'aria-current="page"' : '' ?>>
+                    
+                    <?php if ($index < count($items) - 1 && isset($item['url'])): ?>
+                        <a href="<?= htmlspecialchars($item['url']) ?>" itemprop="item">
+                            <span itemprop="name"><?= htmlspecialchars($item['text']) ?></span>
+                        </a>
+                    <?php else: ?>
+                        <span itemprop="name"><?= htmlspecialchars($item['text']) ?></span>
+                    <?php endif; ?>
+                    
+                    <meta itemprop="position" content="<?= $position ?>">
+                </li>
             <?php endforeach; ?>
         </ol>
     </nav>

@@ -58,7 +58,7 @@ try {
     // Get news data
     $newsResult = mysqli_query($connection, $newsQuery);
     if (!$newsResult) {
-        echo json_encode(['error' => 'Database query failed: ' . mysqli_error($connection)]);
+        echo json_encode(['error' => 'Database query failed: ' . mysqli_error($connection), 'query' => $newsQuery]);
         exit;
     }
     

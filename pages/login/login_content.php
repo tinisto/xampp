@@ -50,7 +50,32 @@ require_once __DIR__ . '/../../includes/init.php';
                 <?php if (isset($_SESSION['error'])): ?>
                     <div class="alert alert-danger mt-3">
                         <?= h($_SESSION['error']) ?>
+                        
+                        <?php if (strpos($_SESSION['error'], 'не активирован') !== false): ?>
+                            <hr>
+                            <p class="mb-2"><strong>Проблемы с активацией?</strong></p>
+                            <div class="d-grid gap-2">
+                                <a href="/pages/registration/resend_activation/resend_activation.php" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-envelope me-1"></i> Отправить код активации повторно
+                                </a>
+                                <a href="/activate-user-manual.php" class="btn btn-outline-success btn-sm">
+                                    <i class="fas fa-tools me-1"></i> Активировать аккаунт вручную
+                                </a>
+                            </div>
+                            <small class="text-muted mt-2 d-block">
+                                Если проблема не решается, свяжитесь с поддержкой: 
+                                <a href="mailto:support@11klassniki.ru">support@11klassniki.ru</a>
+                            </small>
+                        <?php endif; ?>
+                        
                         <?php unset($_SESSION['error']); ?>
+                    </div>
+                <?php endif; ?>
+                
+                <?php if (isset($_GET['registration_success']) && isset($_GET['message'])): ?>
+                    <div class="alert alert-success mt-3">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <?= htmlspecialchars($_GET['message']) ?>
                     </div>
                 <?php endif; ?>
             </div>

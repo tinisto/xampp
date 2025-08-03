@@ -171,23 +171,21 @@ if (isset($_GET['category_en'])) {
                     $date = new DateTime($row['date_news']);
                     
                     // Get category info for badge
-                    $categoryQuery = "SELECT title_category FROM categories WHERE id_category = ?";
+                    $categoryQuery = "SELECT title_category_news FROM news_categories WHERE id_category_news = ?";
                     $categoryStmt = mysqli_prepare($connection, $categoryQuery);
                     mysqli_stmt_bind_param($categoryStmt, 'i', $row['category_news']);
                     mysqli_stmt_execute($categoryStmt);
                     $categoryResult = mysqli_stmt_get_result($categoryStmt);
                     $categoryData = mysqli_fetch_assoc($categoryResult);
-                    $categoryName = $categoryData['title_category'] ?? 'Новости';
+                    $categoryName = $categoryData['title_category_news'] ?? 'Новости';
                     mysqli_stmt_close($categoryStmt);
                     
                     // Generate category color
                     $categoryColors = [
-                        'Мир увлечений' => '#e74c3c',
-                        'Разговор' => '#3498db', 
-                        'Школы' => '#2ecc71',
-                        'ВПО' => '#9b59b6',
-                        'СПО' => '#f39c12',
-                        'ЕГЭ' => '#1abc9c',
+                        'Новости ВПО' => '#9b59b6',
+                        'Новости СПО' => '#f39c12',
+                        'Новости школ' => '#2ecc71',
+                        'Новости образования' => '#3498db',
                         'default' => '#95a5a6'
                     ];
                     $badgeColor = $categoryColors[$categoryName] ?? $categoryColors['default'];

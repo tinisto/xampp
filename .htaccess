@@ -24,6 +24,10 @@
     
     # Redirect index.php to clean URL
     RewriteRule ^index\.php$ / [L,R=301]
+    
+    # SEO - Handle sitemap and robots.txt
+    RewriteRule ^sitemap\.xml$ sitemap.xml.php [L]
+    RewriteRule ^robots\.txt$ robots.txt.php [L]
 
     # ============================================================================
     # LEGACY REDIRECTS - Old URLs to new structure
