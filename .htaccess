@@ -97,6 +97,8 @@
     # User System
     RewriteRule ^login/?$ login-modern.php [QSA,NC,L]
     RewriteRule ^registration/?$ registration-modern.php [QSA,NC,L]
+    RewriteRule ^forgot-password/?$ forgot-password.php [QSA,NC,L]
+    RewriteRule ^reset-password/?$ pages/account/reset-password/reset-password-confirm.php [QSA,NC,L]
     RewriteRule ^account/?$ pages/account/account.php [QSA,NC,L]
     RewriteRule ^dashboard/?$ pages/dashboard/admin-index/dashboard.php [QSA,NC,L]
     RewriteRule ^logout/?$ logout.php [QSA,NC,L]

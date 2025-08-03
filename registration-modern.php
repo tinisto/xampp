@@ -346,6 +346,39 @@ unset($_SESSION['oldData']);
             background-color: var(--primary-color);
         }
         
+        .form-check {
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .form-check-input {
+            width: 16px;
+            height: 16px;
+            margin: 0;
+            margin-right: 8px;
+            margin-top: 2px;
+            cursor: pointer;
+            accent-color: var(--primary-color);
+            flex-shrink: 0;
+        }
+        
+        .form-check-label {
+            font-size: 14px;
+            color: var(--text-primary);
+            cursor: pointer;
+            user-select: none;
+            line-height: 1.4;
+        }
+        
+        .form-check-label a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .form-check-label a:hover {
+            text-decoration: underline;
+        }
+        
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -513,6 +546,15 @@ unset($_SESSION['oldData']);
                     </div>
                 </div>
                 
+                <div class="form-group full-width">
+                    <div class="form-check">
+                        <input type="checkbox" id="terms" name="terms" class="form-check-input" required>
+                        <label for="terms" class="form-check-label">
+                            Я согласен с <a href="/terms" target="_blank">условиями использования</a> и <a href="/privacy" target="_blank">политикой конфиденциальности</a>
+                        </label>
+                    </div>
+                    <div class="error-message" id="terms-error">Необходимо принять условия использования</div>
+                </div>
                 
                 <input type="hidden" name="timezone" id="timezone" value="">
                 
@@ -536,7 +578,7 @@ unset($_SESSION['oldData']);
     
     // Form validation
     const form = document.getElementById('registrationForm');
-    const inputs = form.querySelectorAll('.form-input, .form-select');
+    const inputs = form.querySelectorAll('.form-input, .form-select, .form-check-input');
     const submitBtn = document.getElementById('submitBtn');
     
     // Real-time validation
@@ -553,8 +595,12 @@ unset($_SESSION['oldData']);
         const errorElement = document.getElementById(field.id + '-error');
         let isValid = true;
         
+        // Checkbox validation
+        if (field.type === 'checkbox' && field.hasAttribute('required')) {
+            isValid = field.checked;
+        }
         // Check if required field is empty
-        if (field.hasAttribute('required') && !field.value.trim()) {
+        else if (field.hasAttribute('required') && !field.value.trim()) {
             isValid = false;
         }
         
@@ -578,10 +624,10 @@ unset($_SESSION['oldData']);
         // Update UI
         if (isValid) {
             field.classList.remove('error');
-            errorElement.classList.remove('show');
+            if (errorElement) errorElement.classList.remove('show');
         } else {
             field.classList.add('error');
-            errorElement.classList.add('show');
+            if (errorElement) errorElement.classList.add('show');
         }
         
         return isValid;

@@ -310,6 +310,45 @@ if (!isset($_SESSION['csrf_token'])) {
             color: white;
         }
         
+        .form-group-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .form-check {
+            display: flex;
+            align-items: center;
+        }
+        
+        .form-check-input {
+            width: 16px;
+            height: 16px;
+            margin: 0;
+            margin-right: 8px;
+            cursor: pointer;
+            accent-color: var(--primary-color);
+        }
+        
+        .form-check-label {
+            font-size: 14px;
+            color: var(--text-primary);
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .forgot-link {
+            font-size: 14px;
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
+        
         @media (max-width: 480px) {
             .login-container {
                 margin: 0;
@@ -373,7 +412,7 @@ if (!isset($_SESSION['csrf_token'])) {
                 </div>
             <?php endif; ?>
             
-            <form id="loginForm" method="post" action="/pages/login/login_process_simple.php">
+            <form id="loginForm" method="post" action="/pages/login/login_process_enhanced.php">
                 <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                 
                 <div class="form-group">
@@ -408,6 +447,14 @@ if (!isset($_SESSION['csrf_token'])) {
                         </button>
                     </div>
                     <div class="error-message" id="password-error">Пожалуйста, введите пароль</div>
+                </div>
+                
+                <div class="form-group-row">
+                    <div class="form-check">
+                        <input type="checkbox" id="remember" name="remember" class="form-check-input">
+                        <label for="remember" class="form-check-label">Запомнить меня</label>
+                    </div>
+                    <a href="/forgot-password" class="forgot-link">Забыли пароль?</a>
                 </div>
                 
                 <button type="submit" class="submit-btn" id="submitBtn">
