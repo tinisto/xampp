@@ -190,7 +190,7 @@ if (isset($postData)) {
 <div class="container">
     <?php if (!empty($rowPost['description_post'])): ?>
       <div class="post-description">
-        <?= html_entity_decode($rowPost['description_post'], ENT_QUOTES, 'UTF-8') ?>
+        <?= $rowPost['description_post'] ?>
       </div>
     <?php endif; ?>
     
@@ -217,8 +217,8 @@ if (isset($postData)) {
     
     <article class="post-content">
       <?php 
-      // The text already contains HTML, so we use html_entity_decode to properly display it
-      echo html_entity_decode($rowPost['text_post'], ENT_QUOTES, 'UTF-8');
+      // The text already contains HTML and entities have been cleaned from database
+      echo $rowPost['text_post'];
       ?>
     </article>
 </div>
