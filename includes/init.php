@@ -4,6 +4,7 @@ require_once __DIR__ . '/ErrorHandler.php';
 require_once __DIR__ . '/Security.php';
 require_once __DIR__ . '/Database.php';
 require_once __DIR__ . '/Cache.php';
+require_once __DIR__ . '/SessionManager.php';
 require_once __DIR__ . '/helpers.php';
 
 // Load environment variables
@@ -17,10 +18,8 @@ if (file_exists($envFile)) {
 // Initialize error handler
 ErrorHandler::init($debugMode);
 
-// Start session if not already started
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+// Start session using centralized session manager
+SessionManager::start();
 
 // Initialize page caching for public pages
 if (!isset($_SESSION['user_id']) && $_SERVER['REQUEST_METHOD'] === 'GET') {

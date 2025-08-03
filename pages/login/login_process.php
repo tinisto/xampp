@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . '/../includes/init.php';
-require_once __DIR__ . '/../database/db_connections.php';
+require_once __DIR__ . '/../../includes/init.php';
+require_once __DIR__ . '/../../database/db_connections.php';
 
 // Validate CSRF token
 if (!Security::isValidCSRFToken()) {

@@ -1,0 +1,104 @@
+/**
+ * Login Form Dark Mode Fix
+ * Applies CSS variables to login/registration forms
+ */
+
+/* Override hardcoded colors with CSS variables */
+body {
+    background-color: var(--color-surface-primary) !important;
+    color: var(--color-text-primary) !important;
+}
+
+.form-card {
+    background-color: var(--color-card-bg) !important;
+    border-color: var(--color-border-primary) !important;
+    box-shadow: 0 0.125rem 0.25rem var(--color-shadow-sm) !important;
+}
+
+.form-title {
+    color: var(--color-primary) !important;
+}
+
+/* Form controls */
+.form-control,
+.form-select {
+    background-color: var(--color-surface-secondary) !important;
+    color: var(--color-text-primary) !important;
+    border-color: var(--color-border-primary) !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: var(--color-surface-primary) !important;
+    color: var(--color-text-primary) !important;
+    border-color: var(--color-primary) !important;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25) !important;
+}
+
+.form-control::placeholder {
+    color: var(--color-text-tertiary) !important;
+    opacity: 1;
+}
+
+/* Input group */
+.input-group-text {
+    background-color: var(--color-surface-secondary) !important;
+    color: var(--color-text-secondary) !important;
+    border-color: var(--color-border-primary) !important;
+}
+
+.input-group-text:hover {
+    background-color: var(--color-bg-hover) !important;
+}
+
+.input-group > .form-control {
+    border-right-color: var(--color-border-primary) !important;
+}
+
+/* Buttons */
+.btn-submit {
+    background-color: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+}
+
+.btn-submit:hover {
+    background-color: var(--color-primary-hover) !important;
+    border-color: var(--color-primary-hover) !important;
+}
+
+/* Links */
+.form-link {
+    color: var(--color-link) !important;
+}
+
+.form-link:hover {
+    color: var(--color-link-hover) !important;
+}
+
+/* Alerts */
+.alert-danger {
+    background-color: rgba(220, 53, 69, 0.1);
+    border-color: var(--color-danger);
+    color: var(--color-danger);
+}
+
+.alert-success {
+    background-color: rgba(40, 167, 69, 0.1);
+    border-color: var(--color-success);
+    color: var(--color-success);
+}
+
+/* Dark mode specific adjustments */
+[data-theme="dark"] .alert-danger {
+    background-color: rgba(248, 113, 113, 0.1);
+}
+
+[data-theme="dark"] .alert-success {
+    background-color: rgba(74, 222, 128, 0.1);
+}
+
+/* Make sure icons are visible */
+.fa-eye,
+.fa-eye-slash {
+    color: var(--color-text-secondary);
+}

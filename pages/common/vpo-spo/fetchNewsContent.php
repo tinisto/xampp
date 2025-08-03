@@ -1,7 +1,7 @@
 <?php
 function fetchNewsContent($connection, $entityType, $entityId) {
     // Determine the column name based on the entity type
-    $columnName = $entityType === 'vpo' ? 'id_vpo' : 'id_spo';
+    $columnName = $entityType === 'vpo' ? 'university_id' : 'college_id';
 
     // Prepare the query
     $queryNews = "SELECT * FROM news WHERE $columnName = ?";
@@ -14,7 +14,7 @@ function fetchNewsContent($connection, $entityType, $entityId) {
 
     // Display news content with a hyperlink
     while ($rowNews = mysqli_fetch_assoc($resultNews)) {
-        echo '<p><a href="/news/' . htmlspecialchars($rowNews['url_news']) . '" target="_blank" class="link-custom">' . htmlspecialchars($rowNews['title_news']) . '</a></p>';
+        echo '<p><a href="/news/' . htmlspecialchars($rowNews['url_slug']) . '" target="_blank" class="link-custom">' . htmlspecialchars($rowNews['title']) . '</a></p>';
     }
 
     // Close the statement

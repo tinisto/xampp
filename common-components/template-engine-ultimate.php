@@ -172,13 +172,6 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
             <?php endif; ?>
         }
         
-        .main-content {
-            flex: 1;
-            background: var(--background, #ffffff);
-            <?php if ($layoutType !== 'auth'): ?>
-            padding-bottom: 20px;
-            <?php endif; ?>
-        }
         
         footer, .modern-footer {
             margin-top: auto;
@@ -353,9 +346,15 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
     <!-- Immediate theme application to prevent FOUC (Flash of Unstyled Content) -->
     <script>
         (function() {
-            const savedTheme = localStorage.getItem('preferred-theme') || 'light';
-            document.documentElement.setAttribute('data-bs-theme', savedTheme);
-            document.documentElement.setAttribute('data-theme', savedTheme);
+            try {
+                const savedTheme = localStorage.getItem('preferred-theme') || 'light';
+                document.documentElement.setAttribute('data-bs-theme', savedTheme);
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            } catch(e) {
+                // Fallback if localStorage is not available
+                document.documentElement.setAttribute('data-bs-theme', 'light');
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
         })();
     </script>
     
@@ -403,9 +402,7 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
     <?php endif; ?>
     
     <!-- Main Content -->
-    <main class="main-content">
-        <?php echo $content; ?>
-    </main>
+    <?php echo $content; ?>
     
     <!-- Footer -->
     <?php if (!$noFooter): ?>

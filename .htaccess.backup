@@ -1,0 +1,297 @@
+# Deny access to the .env file
+<Files .env>
+    Order allow,deny
+    Deny from all
+</Files>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Redirect requests for index.php to the root with a 301 redirect
+    RewriteRule ^index\.php$ / [L,R=301]
+
+#__________________________________________________________________# Redirect __________________________________________________________________
+RewriteRule ^catalog\.php$ /index.php [L,R=301]
+RewriteRule ^ege_section\.php$ /index.php [L,R=301]
+RewriteRule ^school_regions\.php$ /index.php [L,R=301]
+RewriteRule ^write-to-editorial\.php$ /write [L,R=301]
+
+RewriteRule ^/post_regions_ccuz\.php$ /index.php [L,R=301]
+RewriteRule ^/post_regions_vuz\.php$ /index.php [L,R=301]
+
+RewriteRule ^post_ccuz\.php$ /index.php [L,R=301]
+
+# Redirect any requests to mo.php to index.php
+RewriteCond %{REQUEST_URI} ^/mo\.php [NC]
+RewriteRule ^mo\.php$ /index.php [R=301,L]
+
+RewriteRule ^rono/(\d+)$ index.php [L]
+RewriteRule ^pu/(\d+)$ index.php [L]
+RewriteRule ^mo/(\d+)$ index.php [L]
+RewriteRule ^profil_vpo/(\d+)$ index.php [L]
+RewriteRule ^profil_spo/(\d+)$ index.php [L]
+RewriteRule ^ege/(\d+)$ index.php [L]
+RewriteRule ^town_school/(\d+)$ index.php [L]
+RewriteRule ^region_spo/(\d+)$ index.php [L]
+RewriteRule ^region_vpo/(\d+)$ index.php [L]
+RewriteRule ^region_school/(\d+)$ index.php [L]
+RewriteRule ^ccuzprofilename/(\d+)$ index.php [L]
+RewriteRule ^vuzprofilename/(\d+)$ index.php [L]
+
+# Redirect any requests to rono.php to index.php
+RewriteCond %{REQUEST_URI} ^/rono\.php [NC]
+RewriteRule ^rono\.php$ /index.php [R=301,L]
+
+# Redirect any requests to ege.php to index.php
+RewriteCond %{REQUEST_URI} ^/ege\.php [NC]
+RewriteRule ^ege\.php$ /index.php [R=301,L]
+
+# Redirect any requests to post_pu.php to index.php
+RewriteCond %{REQUEST_URI} ^/post_pu\.php [NC]
+RewriteRule ^post_pu\.php$ /index.php [R=301,L]
+
+# Redirect any requests to mo_list.php to index.php
+RewriteCond %{REQUEST_URI} ^/mo_list\.php [NC]
+RewriteRule ^mo_list\.php$ /index.php [R=301,L]
+
+RewriteCond %{QUERY_STRING} (^|&)id_town=\d+(&|$) [NC]
+RewriteRule ^post_towns_ccuz\.php$ /index.php [L,R=301]
+
+RewriteCond %{QUERY_STRING} (^|&)id_town=\d+(&|$) [NC]
+RewriteRule ^post_towns\.php$ /index.php [L,R=301]
+
+RewriteCond %{QUERY_STRING} (^|&)id_town=\d+(&|$) [NC]
+RewriteRule ^post_towns_vuz\.php$ /index.php [L,R=301]
+
+RewriteCond %{QUERY_STRING} (^|&)id=\d+(&|$) [NC]
+RewriteRule ^view_post_ege\.php$ /index.php [L,R=301]
+
+RewriteRule ^(schools|spo|vpo)-all-regions$ pages/common/educational-institutions-all-regions/educational-institutions-all-regions-proper.php?type=$1 [QSA,NC,L]
+
+#-----------------------------------SCHOOL-----------------------------------
+# Test rule for debugging
+RewriteRule ^school-test/(\d+)/?$ school-test-direct.php?id_school=$1 [QSA,NC,L]
+
+# Handle requests for /school/{numeric_id} - direct to school single page
+RewriteRule ^school/(\d+)/?$ pages/school/school-single.php?id_school=$1 [QSA,NC,L]
+
+# Minimal school page for testing
+RewriteRule ^school-minimal/(\d+)/?$ pages/school/school-single-minimal.php?id_school=$1 [QSA,NC,L]
+
+# Simple school page for testing
+RewriteRule ^school-simple/(\d+)/?$ pages/school/school-single-simple.php?id_school=$1 [QSA,NC,L]
+
+# Bare school page for testing
+RewriteRule ^school-bare/(\d+)/?$ pages/school/school-single-bare.php?id_school=$1 [QSA,NC,L]
+
+# Trace school page for debugging
+RewriteRule ^school-trace/(\d+)/?$ pages/school/school-single-trace.php?id_school=$1 [QSA,NC,L]
+
+# Handle other school-related forms
+RewriteRule ^school-edit-form\.php$ pages/school/edit/school-edit-form.php [QSA,NC,L]
+RewriteRule ^school-edit-form-process\.php$ pages/school/edit/school-edit-form-process.php [QSA,NC,L]
+RewriteRule ^school-create-form\.php$ pages/school/create/school-create-form.php [QSA,NC,L]
+RewriteRule ^school-create-form-process\.php$ pages/school/create/school-create-form-process.php [QSA,NC,L]
+
+# Regional school pages
+RewriteRule ^(schools|spo|vpo)-in-region/([a-zA-Z0-9-]+)$ pages/common/educational-institutions-in-region/educational-institutions-in-region.php?region_name_en=$2&type=$1 [QSA,NC,L]
+RewriteRule ^region_(schools|spo|vpo)/(\d+)$ /pages/educational-institutions-in-region/redirect-educational-institutions-in-region.php?id_region=$2&type=$1 [QSA,NC,L]
+
+# Legacy redirects for old school.php URLs with query strings
+RewriteCond %{QUERY_STRING} (^|&)id_school=(\d+)(&|$)
+RewriteRule ^school\.php$ /school/%2? [R=301,L]
+
+# Legacy redirects for old school_post.php URLs with query strings
+RewriteCond %{QUERY_STRING} (^|&)id_school=(\d+)(&|$)
+RewriteRule ^school_post\.php$ /school/%2? [R=301,L]
+
+#-----------------------------------SCHOOL-----------------------------------
+
+
+#-----------------------------------VPO-----------------------------------
+RewriteRule ^vpo/([^/]+)$ /pages/common/vpo-spo/single.php?vpo_url=$1 [QSA,NC,L]
+
+RewriteRule ^post_university\.php$ /pages/common/vpo-spo/redirect.php?id_university=%2 [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^vpo/(\d+)/?$ /pages/common/vpo-spo/redirect.php?id_university=$1 [L,QSA]
+RewriteCond %{QUERY_STRING} (^|&)id=(\d+)(&|$)
+RewriteRule ^vuzproname\.php$ /pages/common/vpo-spo/redirect.php?id=%2 [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^vuzproname/(\d+)/?$ /pages/common/vpo-spo/redirect.php?id=$1 [L,QSA]
+RewriteRule ^high-edu/(.*)$ /vpo/$1 [R=301,L]
+
+#-----------------------------------SPO-----------------------------------
+RewriteRule ^spo/([^/]+)$ /pages/common/vpo-spo/single.php?spo_url=$1 [QSA,NC,L]
+
+RewriteCond %{QUERY_STRING} (^|&)id_college=(\d+)(&|$)
+RewriteRule ^post_college\.php$ /pages/common/vpo-spo/redirect.php?id_college=%2 [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^spo/(\d+)/?$ /pages/common/vpo-spo/redirect.php?id_college=$1 [L,QSA]
+RewriteCond %{QUERY_STRING} (^|&)id=(\d+)(&|$)
+RewriteRule ^ccuzproname\.php$ /pages/common/vpo-spo/redirect.php?id=%2 [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ccuzproname/(\d+)/?$ /pages/common/vpo-spo/redirect.php?id=$1 [L,QSA]
+RewriteRule ^middle-edu/(.*)$ /spo/$1 [R=301,L]
+
+
+
+#-----------------------------------POST-----------------------------------
+# Check if the query string contains id
+RewriteCond %{QUERY_STRING} (^|&)id=(\d+)(&|$)
+# Capture the id value and redirect to a PHP script
+RewriteRule ^view_post\.php$ /pages/post/redirect-post.php?id=%2 [L]
+
+# Check if the query string contains id
+RewriteCond %{QUERY_STRING} (^|&)id=(\d+)(&|$)
+# Capture the id value and redirect to a PHP script
+RewriteRule ^post\.php$ /pages/post/redirect-post.php?id=%2 [L,QSA]
+
+# Check if the query string contains id and norec
+RewriteCond %{QUERY_STRING} (^|&)id=(\d+)(&|$)
+RewriteCond %{QUERY_STRING} (^|&)norec(&|$)
+# Capture the id value and redirect to a PHP script with norec parameter
+RewriteRule ^post\.php$ /pages/post/redirect-post.php?id=%2&norec=1 [L,QSA]
+
+# Internally rewrite the URL to the original PHP file for /post/598
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^post/(\d+)/?$ /pages/post/redirect-post.php?id=$1 [L,QSA]
+#-----------------------------------POST-----------------------------------
+
+
+
+
+
+#__________________________________________________________________# Redirect __________________________________________________________________
+
+    # Redirect old link /search.php to /search
+    RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/search\.php [NC]
+    RewriteRule ^search\.php$ /search [R=301,L]
+    # Handle requests for /search-process
+    RewriteRule ^search-process$ pages/search/search-process-modern.php [QSA,NC,L]
+    # Handle requests for /search
+    RewriteRule ^search$ pages/search/search.php [QSA,NC,L]
+
+    # Handle requests for /category
+    RewriteRule ^category/([^/]+)$ pages/category/category.php?url_category=$1 [QSA,NC,L]
+
+    # Handle requests for /post
+    RewriteRule ^post/([^/]+)$ pages/post/post.php?url_post=$1 [QSA,NC,L]
+
+    # Handle requests for main /news page (must come before the catch-all pattern)
+    RewriteRule ^news$ pages/news/news-main.php [QSA,NC,L]
+    
+    # Redirect old category-news URLs to new structure
+    RewriteRule ^category-news/([^/]+)$ /news/$1 [R=301,L]
+    
+    # Handle requests for news categories (all categories that start with 'novosti-')
+    RewriteRule ^news/(novosti-.+)$ pages/category-news/category-news.php?url_category_news=$1 [QSA,NC,L]
+    
+    # Handle requests for individual news articles (fallback for other URLs)
+    RewriteRule ^news/([^/]+)$ pages/common/news/news.php?url_news=$1 [QSA,NC,L]
+
+
+    # Redirect old link /about.php to /about
+    RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/about\.php [NC]
+    RewriteRule ^about\.php$ /about [R=301,L]
+    # Handle requests for /about
+    RewriteRule ^about$ pages/about/about.php [QSA,NC,L]
+
+
+    # Handle requests for tests main page
+    RewriteRule ^tests$ /pages/tests/tests-main.php [QSA,NC,L]
+    
+    # Handle requests for individual tests
+    RewriteRule ^test/([^/]+)$ /pages/tests/test-improved.php?test=$1 [QSA,NC,L]
+    RewriteRule ^test-result/([^/]+)$ /pages/tests/test-result.php?test=$1 [QSA,NC,L]
+    
+    # Legacy support for old iq-test URL
+    RewriteRule ^iq-test$ /test/iq-test [R=301,L]
+
+
+    # --------------------------------- write_to_editorial ---------------------------------
+    RewriteRule ^write$ pages/write/write.php [QSA,NC,L]
+    RewriteRule ^write-process-form$ pages/write/write-process-form.php [QSA,NC,L]
+
+    # --------------------------------- thank-you ---------------------------------
+    RewriteRule ^thank-you$ pages/thank-you/thank-you.php [QSA,NC,L]
+
+    # --------------------------------- unauthorized ---------------------------------
+    RewriteRule ^unauthorized$ pages/unauthorized/unauthorized.php [QSA,NC,L]
+
+    # Handle requests for /login
+    RewriteRule ^login$ pages/login/login.php [QSA,NC,L]
+
+    # Handle requests for /logout
+    RewriteRule ^logout$ logout.php [QSA,NC,L]
+
+    # Handle requests for /registration
+    RewriteRule ^registration$ pages/registration/registration.php [QSA,NC,L]
+
+    # Handle requests for /resend_activation
+    RewriteRule ^resend_activation\.php$ pages/registration/resend_activation/resend_activation.php [QSA,NC,L]
+
+    # Handle requests for user
+    RewriteRule ^account$ pages/account/account.php [QSA,NC,L]
+    
+    # Account sub-pages
+    RewriteRule ^account/personal-data-change$ pages/account/personal-data-change/personal-data-change.php [QSA,NC,L]
+    RewriteRule ^account/password-change$ pages/account/password-change/password-change.php [QSA,NC,L]
+    RewriteRule ^account/avatar$ pages/account/avatar/avatar.php [QSA,NC,L]
+    RewriteRule ^account/comments-user$ pages/account/comments-user/comments-user.php [QSA,NC,L]
+    RewriteRule ^account/news-user$ pages/account/news-user/news-user.php [QSA,NC,L]
+    RewriteRule ^account/delete-account$ pages/account/delete-account/delete-account.php [QSA,NC,L]
+    
+    RewriteRule ^reset-password-confirm\.php$ pages/account/reset-password/reset-password-confirm.php [QSA,NC,L]
+    RewriteRule ^reset-password$ pages/account/reset-password/reset-password.php [QSA,NC,L]
+    RewriteRule ^reset-password-confirm-process$ pages/account/reset-password/reset-password-confirm-process.php [QSA,NC,L]
+
+
+
+    # Handle requests for /profile
+    RewriteRule ^success-delete\.php$ pages/account/delete-account/success-delete.php [QSA,NC,L]
+
+    RewriteRule ^news-create\.php$ pages/news/news-create.php [QSA,NC,L]
+
+    # --------------------------------- dashboard ---------------------------------
+    RewriteRule ^dashboard$ pages/dashboard/admin-index/dashboard.php [QSA,NC,L]
+
+   # --------------------------------- spo ---------------------------------
+    RewriteRule ^spo-edit-form\.php$ pages/spo/edit/spo-edit-form.php [QSA,NC,L]
+    RewriteRule ^spo-edit-form-process\.php$ pages/spo/edit/spo-edit-form-process.php [QSA,NC,L]
+    RewriteRule ^spo-create-form\.php$ pages/spo/create/spo-create-form.php [QSA,NC,L]
+    RewriteRule ^spo-create-form-process\.php$ pages/spo/create/spo-create-form-process.php [QSA,NC,L]
+
+
+    
+
+
+
+RewriteRule ^(schools|spo|vpo)/([^/]+)/([^/]+)/?$ pages/common/educational-institutions-in-town/educational-institutions-in-town.php?type=$1&region_name_en=$2&url_slug_town=$3 [L,QSA]
+RewriteRule ^town_(schools|spo|vpo)/(\d+)$ /pages/common/educational-institutions-in-town/redirect-educational-institutions-in-town.php?id=$2&type=$1 [QSA,NC,L]
+
+    
+
+   # --------------------------------- vpo ---------------------------------
+    RewriteRule ^vpo-edit-form\.php$ pages/vpo/edit/vpo-edit-form.php [QSA,NC,L]
+    RewriteRule ^vpo-edit-form-process\.php$ pages/vpo/edit/vpo-edit-form-process.php [QSA,NC,L]
+    RewriteRule ^vpo-create-form\.php$ pages/vpo/create/vpo-create-form.php [QSA,NC,L]
+    RewriteRule ^vpo-create-form-process\.php$ pages/vpo/create/vpo-create-form-process.php [QSA,NC,L]
+
+
+
+
+
+
+    # Set custom 404 error page
+    ErrorDocument 404 /pages/404/404.php
+    
+   # Redirect both /error and /error.php to pages/error/error.php
+    RewriteRule ^error(\.php)?$ pages/error/error.php [QSA,NC,L]
+
+</IfModule>

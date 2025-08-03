@@ -7,13 +7,13 @@ include $_SERVER['DOCUMENT_ROOT'] . '/includes/functions/email_functions.php';
 // Determine the type (vpo or spo) based on the URL
 $requestUri = $_SERVER['REQUEST_URI'];
 $type = strpos($requestUri, '/vpo/') !== false ? 'vpo' : 'spo';
-$urlField = $type === 'vpo' ? 'vpo_url' : 'spo_url';
+$urlField = 'url_slug'; // Using 'url_slug' for both
 $subject = $type === 'vpo' ? 'Приглашение к сотрудничеству на 11klassniki.ru' : 'Информация для администрации учебного заведения';
 
 // Retrieve values from hidden input fields
 $url = $_POST[$urlField];
 $email = $_POST['email'];
-$emailPk = $_POST['email_pk'];
+$emailPk = $_POST['admission_email'];
 $directorEmail = $_POST['director_email'];
 
 // Echo input data for debugging (optional)

@@ -54,7 +54,7 @@ function getEntityIdFromPostURL($connection)
 function getEntityIdFromHighEduURL($connection)
 {
     $entity_type = 'vpo';
-    $id_table = 'vpo';
+    $id_table = 'universities';
 
     // Get the requested URL path
     $requestPath = $_SERVER['REQUEST_URI'];
@@ -68,10 +68,10 @@ function getEntityIdFromHighEduURL($connection)
     // Check if the URL matches the expected structure for 'vpo' pages
     if (count($pathSegments) >= 2 && $pathSegments[0] === 'vpo') {
         // Dynamically select the column name and table based on the entity type
-        $column_name = 'vpo_url';
+        $column_name = 'url_slug';
 
         // Query the database to find the ID based on the selected column name and table
-        $query = "SELECT id_$id_table FROM vpo WHERE LOWER(TRIM($column_name)) = LOWER(?)";
+        $query = "SELECT id FROM universities WHERE LOWER(TRIM($column_name)) = LOWER(?)";
         $stmt = mysqli_prepare($connection, $query);
 
         if (!$stmt) {
@@ -106,7 +106,7 @@ function getEntityIdFromHighEduURL($connection)
 function getEntityIdFromMiddleEduURL($connection)
 {
     $entity_type = 'spo';
-    $id_table = 'spo';
+    $id_table = 'colleges';
 
     // Get the requested URL path
     $requestPath = $_SERVER['REQUEST_URI'];
@@ -120,10 +120,10 @@ function getEntityIdFromMiddleEduURL($connection)
     // Check if the URL matches the expected structure for 'spo' pages
     if (count($pathSegments) >= 2 && $pathSegments[0] === 'spo') {
         // Dynamically select the column name and table based on the entity type
-        $column_name = 'spo_url';
+        $column_name = 'url_slug';
 
         // Query the database to find the ID based on the selected column name and table
-        $query = "SELECT id_$id_table FROM spo WHERE LOWER(TRIM($column_name)) = LOWER(?)";
+        $query = "SELECT id FROM colleges WHERE LOWER(TRIM($column_name)) = LOWER(?)";
         $stmt = mysqli_prepare($connection, $query);
 
         if (!$stmt) {
@@ -195,19 +195,22 @@ function getEntityNameById($connection, $entityType, $id_entity)
             $column_name = 'url_post';
             $urlPrefix = '/post/';
             $table = 'posts';
-            $id_table = 'post';
+            $id_field = 'id_post';
+            $status_check = '';
             break;
         case 'spo':
-            $column_name = 'spo_url';
+            $column_name = 'url_slug';
             $urlPrefix = '/spo/';
-            $table = 'spo';
-            $id_table = 'spo';
+            $table = 'colleges';
+            $id_field = 'id';
+            $status_check = '';
             break;
         case 'vpo':
-            $column_name = 'vpo_url';
+            $column_name = 'url_slug';
             $urlPrefix = '/vpo/';
-            $table = 'vpo';
-            $id_table = 'vpo';
+            $table = 'universities';
+            $id_field = 'id';
+            $status_check = '';
             break;
         default:
             // Handle unknown entity types or set a default behavior
@@ -218,7 +221,7 @@ function getEntityNameById($connection, $entityType, $id_entity)
     // Check if a valid column name is determined
     if ($column_name) {
         // Query the database to find the entity name based on the selected column name and table
-        $query = "SELECT $column_name FROM $table WHERE id_$id_table = ?";
+        $query = "SELECT $column_name FROM $table WHERE $id_field = ? $status_check";
         $stmt = mysqli_prepare($connection, $query);
 
         if (!$stmt) {

@@ -1,18 +1,10 @@
 <?php
-// Get the requested URL path
-$requestPath = $_SERVER['REQUEST_URI'];
+// Use the parameters set by the .htaccess rewrite rule instead of manual URL parsing
+$region_name_en = isset($_GET['region_name_en']) ? mysqli_real_escape_string($connection, $_GET['region_name_en']) : null;
+$type = isset($_GET['type']) ? $_GET['type'] : null;
 
-// Remove query parameters
-$requestPath = strtok($requestPath, '?');
-
-// Split the path into segments
-$pathSegments = explode('/', trim($requestPath, '/'));
-
-// Check if the URL matches the expected structure
-if (count($pathSegments) >= 2) {
-  // The region name is the second segment
-  $region_name_en = isset($pathSegments[1]) ? mysqli_real_escape_string($connection, $pathSegments[1]) : null;
-  $type = $pathSegments[0];
+// Check if both required parameters are present
+if ($region_name_en && $type) {
 
   // Fetch data from the 'regions' table using region_name_en
   $query_regions = "SELECT * FROM regions WHERE region_name_en=?";
@@ -27,6 +19,7 @@ if (count($pathSegments) >= 2) {
     // Check if the region was found
     if ($myrow_region) {
       $region_id = $myrow_region['id_region'];
+      // Keep the region_name_en for later use (it's already set from GET parameter)
     } else {
       // Handle the case where the region is not found
       // Redirect to 404 page
@@ -42,8 +35,7 @@ if (count($pathSegments) >= 2) {
     header("Location: /error");
   }
 } else {
-  // Handle the case where the URL structure doesn't match
-  // Handle the case where the region is not found
+  // Handle the case where required parameters are missing
   // Redirect to 404 page
   header("Location: /404");
   exit();

@@ -1,0 +1,285 @@
+<?php
+// Only require database connection if not already loaded
+if (!isset($connection)) {
+    require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
+}
+
+function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD = null, $metaK = null) {
+    global $connection;
+    
+    // Handle backward compatibility for meta tags passed as separate parameters
+    if ($metaD !== null) {
+        $additionalData['metaD'] = $metaD;
+    }
+    if ($metaK !== null) {
+        $additionalData['metaK'] = $metaK;
+    }
+    
+    // Extract configuration options
+    $layoutType = $additionalData['layoutType'] ?? 'default'; // 'default', 'auth', 'dashboard', 'minimal'
+    $noHeader = isset($additionalData['noHeader']) && $additionalData['noHeader'];
+    $noFooter = isset($additionalData['noFooter']) && $additionalData['noFooter'];
+    $noIndex = isset($additionalData['noIndex']) && $additionalData['noIndex'];
+    $fullHeight = isset($additionalData['fullHeight']) && $additionalData['fullHeight'];
+    
+    // Extract additional data BEFORE including content
+    if (!empty($additionalData)) {
+        extract($additionalData);
+    }
+    
+    // Start output buffering to capture the main content
+    ob_start();
+    include $_SERVER['DOCUMENT_ROOT'] . '/' . $mainContent;
+    $content = ob_get_clean();
+?>
+<!DOCTYPE html>
+<html lang="ru" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo htmlspecialchars($pageTitle); ?> - 11-классники</title>
+    
+    <?php if ($noIndex): ?>
+        <meta name="robots" content="noindex, nofollow">
+    <?php endif; ?>
+    
+    <?php if (isset($metaD) && !empty($metaD)): ?>
+        <meta name="description" content="<?php echo htmlspecialchars($metaD); ?>">
+    <?php endif; ?>
+    
+    <?php if (isset($metaK) && !empty($metaK)): ?>
+        <meta name="keywords" content="<?php echo htmlspecialchars($metaK); ?>">
+    <?php endif; ?>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- TinyMCE for dashboard -->
+    <?php if ($layoutType === 'dashboard'): ?>
+        <script src="https://cdn.tiny.cloud/1/y4herhyxuwf9pi78y7tdxsrjpar8zqwxy7mn8vya74pjix2u/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <?php endif; ?>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    
+    <!-- Custom Styles -->
+    <style>
+        :root {
+            --bs-font-sans-serif: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        /* Light mode (default) */
+        [data-bs-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --border-color: #dee2e6;
+            --card-bg: #ffffff;
+        }
+        
+        /* Dark mode */
+        [data-bs-theme="dark"] {
+            --bg-primary: #212529;
+            --bg-secondary: #343a40;
+            --text-primary: #f8f9fa;
+            --text-secondary: #adb5bd;
+            --border-color: #495057;
+            --card-bg: #343a40;
+        }
+        
+        body {
+            font-family: var(--bs-font-sans-serif);
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        html, body {
+            height: 100%;
+        }
+        
+        <?php if ($fullHeight || $layoutType === 'auth'): ?>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        <?php else: ?>
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+        .main-content {
+            flex: 1;
+        }
+        <?php endif; ?>
+        
+        /* Dark mode toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        
+        .theme-toggle i {
+            margin-right: 8px;
+            transition: transform 0.3s ease;
+        }
+        
+        /* Card styles for dark mode */
+        .card, .news-card {
+            background-color: var(--card-bg);
+            border-color: var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        /* Navigation styles for dark mode */
+        .navbar {
+            background-color: var(--bg-primary) !important;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        /* Dashboard specific styles */
+        <?php if ($layoutType === 'dashboard'): ?>
+        .bg-secondary {
+            background-color: var(--bg-secondary) !important;
+        }
+        <?php endif; ?>
+        
+        /* Auth layout specific styles */
+        <?php if ($layoutType === 'auth'): ?>
+        .auth-container {
+            background: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 2rem;
+            max-width: 400px;
+            width: 100%;
+        }
+        <?php endif; ?>
+    </style>
+    
+    <!-- Layout specific CSS -->
+    <?php if ($layoutType === 'dashboard'): ?>
+        <link rel="stylesheet" href="/css/dashboard/dashboard.css">
+    <?php elseif ($layoutType === 'auth'): ?>
+        <link rel="stylesheet" href="/css/authorization.css">
+    <?php endif; ?>
+    
+    <!-- Additional styles from content -->
+    <?php if (isset($additionalStyles)): ?>
+        <?php echo $additionalStyles; ?>
+    <?php endif; ?>
+</head>
+<body<?php echo ($layoutType === 'auth' || $fullHeight) ? ' class="full-height-flex"' : ''; ?><?php echo ($layoutType === 'dashboard') ? ' class="full-height-flex bg-secondary"' : ''; ?>>
+    
+    <!-- Dark Mode Toggle -->
+    <div class="theme-toggle" onclick="toggleTheme()" title="Переключить тему">
+        <i class="fas fa-moon"></i>
+        <span class="theme-text">Темная</span>
+    </div>
+    
+    <?php if ($layoutType === 'auth'): ?>
+        <!-- Auth Layout -->
+        <main class="container">
+            <div class="d-flex justify-content-center align-items-center min-vh-100">
+                <div class="auth-container">
+                    <?php echo $content; ?>
+                </div>
+            </div>
+        </main>
+        
+    <?php elseif ($layoutType === 'dashboard'): ?>
+        <!-- Dashboard Layout -->
+        <?php if (!$noHeader): ?>
+            <?php include $_SERVER['DOCUMENT_ROOT'] . '/common-components/header.php'; ?>
+        <?php endif; ?>
+        
+        <div class="m-3">
+            <?php echo $content; ?>
+        </div>
+        
+    <?php elseif ($layoutType === 'minimal'): ?>
+        <!-- Minimal Layout -->
+        <main class="container">
+            <?php echo $content; ?>
+        </main>
+        
+    <?php else: ?>
+        <!-- Default Layout -->
+        <?php if (!$noHeader): ?>
+            <?php include $_SERVER['DOCUMENT_ROOT'] . '/common-components/header.php'; ?>
+        <?php endif; ?>
+        
+        <main class="main-content">
+            <?php echo $content; ?>
+        </main>
+        
+        <?php if (!$noFooter): ?>
+            <?php include $_SERVER['DOCUMENT_ROOT'] . '/common-components/footer.php'; ?>
+        <?php endif; ?>
+        
+    <?php endif; ?>
+    
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Dark Mode Script -->
+    <script>
+        // Check for saved theme preference or default to light mode
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-bs-theme', savedTheme);
+        updateThemeToggle(savedTheme);
+        
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-bs-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeToggle(newTheme);
+        }
+        
+        function updateThemeToggle(theme) {
+            const toggle = document.querySelector('.theme-toggle');
+            const icon = toggle.querySelector('i');
+            const text = toggle.querySelector('.theme-text');
+            
+            if (theme === 'dark') {
+                icon.className = 'fas fa-sun';
+                text.textContent = 'Светлая';
+            } else {
+                icon.className = 'fas fa-moon';
+                text.textContent = 'Темная';
+            }
+        }
+    </script>
+    
+    <!-- Additional scripts from content -->
+    <?php if (isset($additionalScripts)): ?>
+        <?php echo $additionalScripts; ?>
+    <?php endif; ?>
+</body>
+</html>
+<?php
+}
+?>

@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../../../../../includes/init.php';
+require_once __DIR__ . '/../../includes/init.php';
 
 include $_SERVER["DOCUMENT_ROOT"] . "/includes/functions/session_util.php";
 

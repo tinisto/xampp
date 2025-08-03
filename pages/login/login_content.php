@@ -5,17 +5,24 @@ require_once __DIR__ . '/../../includes/init.php';
     <div class="col-lg-4 col-md-6 col-sm-10 mx-auto">
         <div class="border border-dark-subtle rounded-3 mb-2 pb-2 px-2">
             <div class="p-3 shadow-sm">
+                <div class="text-center mb-3">
+                    <a href="/" class="text-decoration-none">
+                        <i class="fas fa-home text-success me-2"></i>
+                        <span class="text-muted small">Вернуться на главную</span>
+                    </a>
+                </div>
                 <h5 class="text-center mb-3 sign-up-custom">Логин</h5>
+                <p class="text-center mb-3">
+                    <small class="text-muted">Нет аккаунта? <a href="/registration" class="text-success">Зарегистрироваться</a></small>
+                </p>
                 <form method="post" action="/login/login_process.php">
                     <?php echo csrf_field(); ?>
                     <div class="mb-3 mx-2">
-                        <label for="exampleInputEmail1" class="form-label">Email address</label>
-                        <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+                        <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Email адрес" required>
                     </div>
-                    <div class="mx-2">
-                        <label for="exampleInputPassword1" class="form-label">Password</label>
+                    <div class="mx-2 mb-3">
                         <div class="input-group">
-                            <input type="password" name="password" class="form-control" id="passwordInput" required>
+                            <input type="password" name="password" class="form-control" id="passwordInput" placeholder="Пароль" required>
                             <span class="input-group-text" id="togglePassword" style="cursor: pointer;">
                                 <i class="fa fa-eye" id="toggleIcon"></i>
                             </span>
@@ -23,6 +30,22 @@ require_once __DIR__ . '/../../includes/init.php';
                     </div>
                     <button type="submit" class="btn btn-success d-block mx-auto mt-3">Логин</button>
                 </form>
+                
+                <div class="text-center my-3">
+                    <small class="text-muted">или войдите через социальные сети</small>
+                </div>
+                
+                <div class="d-flex gap-2 justify-content-center">
+                    <a href="/auth/vk" class="btn btn-primary btn-sm flex-fill" style="background: #4c75a3; border-color: #4c75a3;">
+                        <i class="fab fa-vk me-1"></i> VK
+                    </a>
+                    <a href="/auth/google" class="btn btn-danger btn-sm flex-fill">
+                        <i class="fab fa-google me-1"></i> Google
+                    </a>
+                    <a href="/auth/yandex" class="btn btn-warning btn-sm flex-fill" style="color: white;">
+                        <i class="fab fa-yandex me-1"></i> Яндекс
+                    </a>
+                </div>
                 
                 <?php if (isset($_SESSION['error'])): ?>
                     <div class="alert alert-danger mt-3">

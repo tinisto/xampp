@@ -49,7 +49,6 @@ if ($isAdmin && $isSelfDeletion) {
         </div>
         
         <button type="submit" class="btn btn-danger">Удалить аккаунт навсегда</button>
-        <a href="/account" class="btn btn-secondary ms-2">Отмена</a>
     </form>
 </div>
 

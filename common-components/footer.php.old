@@ -1,0 +1,238 @@
+<style>
+    .modern-footer {
+        background: #2c3e50;
+        color: #ecf0f1;
+        padding: 20px 0 10px;
+        margin-top: 10px;
+        margin-bottom: 0;
+    }
+    .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #34495e;
+        margin-bottom: 15px;
+    }
+    .footer-brand {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    .footer-logo {
+        font-size: 24px;
+        font-weight: 700;
+        color: #28a745;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    .footer-logo:hover {
+        color: #32d158;
+    }
+    .footer-tagline {
+        font-size: 14px;
+        color: #95a5a6;
+        margin: 0;
+    }
+    .footer-tagline-mobile {
+        display: none;
+    }
+    .footer-nav {
+        display: flex;
+        gap: 30px;
+        align-items: center;
+    }
+    .footer-nav-link {
+        color: #ecf0f1;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        transition: color 0.3s ease;
+        position: relative;
+    }
+    .footer-nav-link:hover {
+        color: #28a745;
+    }
+    .footer-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 13px;
+        color: #95a5a6;
+    }
+    .footer-copyright {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .footer-social {
+        display: flex;
+        gap: 15px;
+    }
+    .social-link {
+        width: 32px;
+        height: 32px;
+        background: #34495e;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ecf0f1;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-size: 14px;
+    }
+    .social-link:hover {
+        background: #28a745;
+        color: white;
+        transform: translateY(-2px);
+    }
+    .back-to-top {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 44px;
+        height: 44px;
+        background: #28a745;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        z-index: 1000;
+    }
+    .back-to-top.show {
+        opacity: 1;
+        visibility: visible;
+    }
+    .back-to-top:hover {
+        background: #218838;
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+    }
+    
+    /* Dark mode styles */
+    [data-bs-theme="dark"] .modern-footer {
+        background: #1a1d21;
+        color: #e4e6eb;
+    }
+    [data-bs-theme="dark"] .footer-content {
+        border-bottom-color: #3a3b3c;
+    }
+    [data-bs-theme="dark"] .footer-nav-link {
+        color: #e4e6eb;
+    }
+    [data-bs-theme="dark"] .footer-tagline,
+    [data-bs-theme="dark"] .footer-copyright {
+        color: #b0b3b8;
+    }
+    [data-bs-theme="dark"] .social-link {
+        background: #3a3b3c;
+        color: #e4e6eb;
+    }
+    
+    /* Mobile styles */
+    @media (max-width: 768px) {
+        .modern-footer {
+            padding: 15px 0 8px;
+            margin-top: 8px;
+        }
+        .footer-content {
+            flex-direction: column;
+            gap: 20px;
+            text-align: center;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+        }
+        .footer-brand {
+            flex-direction: column;
+            gap: 5px;
+        }
+        .footer-tagline {
+            display: none;
+        }
+        .footer-tagline-mobile {
+            display: block;
+            font-size: 14px;
+            color: #95a5a6;
+            margin: 0;
+        }
+        .footer-nav {
+            flex-direction: column;
+            gap: 12px;
+        }
+        .footer-bottom {
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+        }
+        .footer-copyright {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .back-to-top {
+            bottom: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+        }
+    }
+</style>
+
+<footer class="modern-footer" data-bs-theme="inherit">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="/" class="footer-logo">11-классники</a>
+                <p class="footer-tagline">Помогаем выпускникам сделать правильный выбор</p>
+                <p class="footer-tagline-mobile">Помогаем сделать правильный выбор</p>
+            </div>
+            <nav class="footer-nav">
+                <a href="/about" class="footer-nav-link">О проекте</a>
+                <a href="/write" class="footer-nav-link">Связаться с нами</a>
+                <a href="/tests" class="footer-nav-link">Тесты</a>
+                <a href="/news" class="footer-nav-link">Новости</a>
+            </nav>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-copyright">
+                <span>&copy; <?= date('Y') ?> 11-классники.</span>
+                <span>Все права защищены.</span>
+            </div>
+            <div class="footer-contact">
+                <a href="mailto:support@11klassniki.ru" style="color: #bdc3c7; text-decoration: none; transition: all 0.3s ease;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">
+                    <i class="fas fa-envelope" style="margin-right: 5px;"></i>support@11klassniki.ru
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Back to Top Button -->
+<div class="back-to-top" id="backToTop">
+    <i class="fas fa-arrow-up"></i>
+</div>
+
+<script>
+// Back to Top functionality
+window.addEventListener('scroll', function() {
+    const backToTop = document.getElementById('backToTop');
+    if (window.scrollY > 300) {
+        backToTop.classList.add('show');
+    } else {
+        backToTop.classList.remove('show');
+    }
+});
+
+document.getElementById('backToTop').addEventListener('click', function() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+});
+</script>

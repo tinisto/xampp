@@ -1,0 +1,628 @@
+<?php
+// Ensure session is started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Include loading spinner on all pages
+include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/loading-spinner.php';
+renderLoadingSpinner();
+
+// Include admin notifications for admin users
+$adminNotifications = ['messages' => 0, 'comments' => 0, 'users' => 0, 'total' => 0];
+if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin' && isset($connection)) {
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/admin-notifications.php';
+    $adminNotifications = getAdminNotificationCounts($connection);
+}
+?>
+<style>
+    /* Modern Header Styles */
+    .modern-navbar {
+        background: white;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        padding: 0;
+    }
+    .navbar-brand {
+        font-size: 24px;
+        font-weight: 700;
+        color: #28a745 !important;
+        padding: 20px 0;
+    }
+    .nav-link {
+        color: #333 !important;
+        font-weight: 500;
+        padding: 25px 20px !important;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    .nav-link:hover {
+        color: #28a745 !important;
+    }
+    .nav-link::after {
+        content: '';
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 3px;
+        background: #28a745;
+        transition: width 0.3s ease;
+    }
+    .nav-link:hover::after {
+        width: 80%;
+    }
+    /* Hide Bootstrap dropdown arrow but keep hover underline */
+    .dropdown-toggle::after {
+        display: none !important;
+    }
+    /* Also hide arrow for user avatar dropdown */
+    .user-avatar + .dropdown-toggle::after,
+    .notification-item .dropdown-toggle::after {
+        display: none !important;
+    }
+    .dropdown-menu {
+        border: none;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        border-radius: 8px;
+        padding: 5px 0;
+        margin-top: 10px;
+        min-width: 180px;
+    }
+    .dropdown-item {
+        padding: 6px 15px;
+        font-weight: 400;
+        font-size: 14px;
+        transition: all 0.2s ease;
+    }
+    .dropdown-item:hover {
+        background: #e7f5ec;
+        color: #28a745;
+    }
+    .auth-buttons {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    .btn-login {
+        color: #28a745;
+        border: 2px solid #28a745;
+        padding: 8px 20px;
+        border-radius: 50px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+    .btn-login:hover {
+        background: #28a745;
+        color: white;
+    }
+    .btn-signup {
+        background: #28a745;
+        color: white;
+        padding: 10px 25px;
+        border-radius: 50px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+    .btn-signup:hover {
+        background: #218838;
+        transform: translateY(-1px);
+        color: white;
+    }
+    .user-menu {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .user-avatar {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        object-fit: cover;
+        transition: all 0.2s ease;
+    }
+    .user-avatar:hover {
+        transform: scale(1.1);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .desktop-only {
+        display: inline-block;
+    }
+    @media (max-width: 991px) {
+        .desktop-only {
+            display: none !important;
+        }
+        .nav-link {
+            font-size: 14px;
+            padding: 20px 15px !important;
+        }
+        .dropdown-item {
+            font-size: 14px;
+        }
+    }
+    .user-avatar {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        object-fit: cover;
+        transition: all 0.3s ease;
+    }
+    .user-avatar:hover {
+        transform: scale(1.1);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .mobile-toggle {
+        border: none;
+        padding: 5px 10px;
+        position: relative;
+        width: 40px;
+        height: 40px;
+    }
+    .mobile-toggle:focus {
+        box-shadow: none;
+    }
+    /* Custom hamburger to X animation */
+    .navbar-toggler-icon {
+        background-image: none !important;
+        position: relative;
+        width: 24px;
+        height: 20px;
+        display: block;
+    }
+    .navbar-toggler-icon::before,
+    .navbar-toggler-icon::after,
+    .navbar-toggler-icon span {
+        content: '';
+        position: absolute;
+        height: 3px;
+        width: 100%;
+        background-color: #333;
+        border-radius: 1px;
+        transition: all 0.3s ease;
+        left: 0;
+    }
+    .navbar-toggler-icon::before {
+        top: 0;
+    }
+    .navbar-toggler-icon span {
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    .navbar-toggler-icon::after {
+        bottom: 0;
+    }
+    /* When menu is open - transform to X */
+    .navbar-toggler.active .navbar-toggler-icon::before {
+        transform: rotate(45deg);
+        top: 50%;
+        transform: translateY(-50%) rotate(45deg);
+    }
+    .navbar-toggler.active .navbar-toggler-icon span {
+        opacity: 0;
+    }
+    .navbar-toggler.active .navbar-toggler-icon::after {
+        transform: rotate(-45deg);
+        bottom: 50%;
+        transform: translateY(50%) rotate(-45deg);
+    }
+    @media (max-width: 991px) {
+        .modern-navbar {
+            padding: 10px 0;
+        }
+        .navbar-brand {
+            font-size: 20px;
+            padding: 10px 0;
+        }
+        .nav-link {
+            padding: 15px 20px !important;
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.2s ease;
+        }
+        .nav-link:hover {
+            background: #e7f5ec;
+            color: #28a745 !important;
+            padding-left: 25px !important;
+        }
+        .nav-item:last-child .nav-link {
+            border-bottom: none;
+        }
+        .nav-link::after {
+            display: none;
+        }
+        /* News is now a direct link, no special mobile handling needed */
+        .dropdown-menu {
+            position: static !important;
+            transform: none !important;
+            box-shadow: none;
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            display: block !important;
+            border: none;
+        }
+        .dropdown-item {
+            padding: 15px 20px !important;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .auth-buttons {
+            flex-direction: column;
+            align-items: stretch;
+            padding: 20px;
+            border-top: 2px solid #f0f0f0;
+            margin-top: 20px;
+        }
+        .btn-login, .btn-signup {
+            width: 100%;
+            text-align: center;
+            margin: 5px 0;
+        }
+        .user-menu {
+            width: 100%;
+        }
+        .user-menu .dropdown {
+            width: 100%;
+        }
+        .user-menu .dropdown {
+            display: none !important;
+        }
+        .mobile-user-links {
+            display: block !important;
+            width: 100%;
+        }
+        .mobile-user-links a {
+            display: block;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: #333;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .mobile-user-links a:last-child {
+            border-bottom: none;
+        }
+        .user-avatar {
+            width: 24px !important;
+            height: 24px !important;
+            margin-right: 10px;
+        }
+        .navbar-collapse {
+            background: white;
+            margin-top: 10px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+    }
+    
+    /* Admin Notification Badges */
+    .notification-badge {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: #dc3545;
+        color: white;
+        border-radius: 50%;
+        min-width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 600;
+        line-height: 1;
+        z-index: 10;
+        box-shadow: 0 2px 6px rgba(220, 53, 69, 0.3);
+    }
+    .notification-item {
+        position: relative;
+        display: inline-block;
+    }
+    .admin-notifications-dropdown {
+        min-width: 320px !important;
+        right: 0 !important;
+        left: auto !important;
+    }
+    .notification-header {
+        padding: 15px;
+        background: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+        margin: -5px -15px 10px -15px;
+        font-weight: 600;
+        color: #495057;
+        text-align: center;
+    }
+    .notification-list-item {
+        padding: 12px 15px;
+        border-bottom: 1px solid #f8f9fa;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: background 0.2s ease;
+        text-decoration: none;
+        color: inherit;
+    }
+    .notification-list-item:hover {
+        background: #f8f9fa;
+        color: inherit;
+    }
+    .notification-list-item:last-child {
+        border-bottom: none;
+    }
+    .notification-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        color: white;
+    }
+    .notification-icon-messages {
+        background: #007bff;
+    }
+    .notification-icon-comments {
+        background: #ffc107;
+        color: #212529;
+    }
+    .notification-icon-users {
+        background: #28a745;
+    }
+    .notification-content {
+        flex: 1;
+    }
+    .notification-title {
+        font-weight: 500;
+        margin-bottom: 2px;
+        font-size: 14px;
+    }
+    .notification-desc {
+        font-size: 12px;
+        color: #6c757d;
+    }
+    .notification-count {
+        background: #e9ecef;
+        color: #495057;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        min-width: 24px;
+        text-align: center;
+    }
+</style>
+
+<nav class="navbar navbar-expand-lg modern-navbar sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="/">11-классники</a>
+        
+        <button class="navbar-toggler mobile-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" id="mobileMenuToggle">
+            <span class="navbar-toggler-icon"><span></span></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto">
+                <!-- Categories Dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        Категории
+                    </a>
+                    <ul class="dropdown-menu">
+                        <?php
+                        $queryCategories = "SELECT * FROM categories ORDER BY title_category";
+                        $resultCategories = mysqli_query($connection, $queryCategories);
+                        while ($rowCategory = mysqli_fetch_assoc($resultCategories)) {
+                            echo '<li><a class="dropdown-item" href="/category/' . $rowCategory['url_category'] . '">' . 
+                                 htmlspecialchars($rowCategory['title_category']) . '</a></li>';
+                        }
+                        ?>
+                    </ul>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="/vpo-all-regions">ВУЗы</a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="/spo-all-regions">ССУЗы</a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="/schools-all-regions">Школы</a>
+                </li>
+                
+                <!-- News Link - hide on news pages -->
+                <?php 
+                $currentPath = $_SERVER['REQUEST_URI'];
+                $isNewsPage = strpos($currentPath, '/news') === 0;
+                if (!$isNewsPage): 
+                ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="/news">Новости</a>
+                </li>
+                <?php endif; ?>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="/tests">Тесты</a>
+                </li>
+                
+                <!-- Mobile only account links -->
+                <?php if (isset($_SESSION['email'])): ?>
+                <li class="nav-item d-lg-none">
+                    <a class="nav-link" href="/account">Мой аккаунт</a>
+                </li>
+                <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                <li class="nav-item d-lg-none">
+                    <a class="nav-link" href="/dashboard">Админ панель</a>
+                </li>
+                <?php endif; ?>
+                <li class="nav-item d-lg-none">
+                    <a class="nav-link" href="/logout">
+                        <i class="fas fa-sign-out-alt me-2"></i>Выйти
+                    </a>
+                </li>
+                <?php endif; ?>
+                
+                <!-- Mobile theme toggle -->
+                <li class="nav-item d-lg-none">
+                    <a class="nav-link" href="#" onclick="toggleTheme(); return false;">
+                        <i class="fas fa-moon me-2"></i>Темная тема
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="auth-buttons d-none d-lg-flex">
+                <!-- Theme Toggle -->
+                <button type="button" class="btn theme-toggle" style="background: none; border: none; padding: 0 15px; cursor: pointer; z-index: 1000; position: relative;" onclick="window.toggleTheme && window.toggleTheme()" title="Переключить тему">
+                    <i id="theme-icon" class="fas fa-moon" style="font-size: 20px; color: inherit;"></i>
+                </button>
+                <?php if (isset($_SESSION['email'])): ?>
+                    <div class="user-menu">
+                        <?php 
+                        $hasAvatar = false;
+                        $avatarUrl = '';
+                        
+                        // Check for Google avatar first
+                        if (isset($_SESSION['google_picture']) && !empty($_SESSION['google_picture'])) {
+                            $hasAvatar = true;
+                            $avatarUrl = htmlspecialchars($_SESSION['google_picture']);
+                        }
+                        // Then check for local avatar
+                        elseif (isset($_SESSION['avatar']) && !empty($_SESSION['avatar'])) {
+                            $hasAvatar = true;
+                            $avatarUrl = '/' . htmlspecialchars($_SESSION['avatar']);
+                        }
+                        ?>
+                        
+                        <div class="dropdown">
+                            <?php if ($hasAvatar): ?>
+                                <div class="notification-item">
+                                    <a href="#" class="text-decoration-none" role="button">
+                                        <img src="<?= $avatarUrl ?>" alt="Avatar" class="user-avatar">
+                                    </a>
+                                    <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin' && $adminNotifications['total'] > 0): ?>
+                                        <span class="notification-badge"><?= $adminNotifications['total'] > 99 ? '99+' : $adminNotifications['total'] ?></span>
+                                    <?php endif; ?>
+                                </div>
+                            <?php else: ?>
+                                <div class="notification-item">
+                                    <a href="#" class="text-decoration-none" role="button">
+                                        <div class="user-avatar" style="background: #28a745; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                                            <i class="fas fa-user" style="color: white; font-size: 16px;"></i>
+                                        </div>
+                                    </a>
+                                    <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin' && $adminNotifications['total'] > 0): ?>
+                                        <span class="notification-badge"><?= $adminNotifications['total'] > 99 ? '99+' : $adminNotifications['total'] ?></span>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endif; ?>
+                            
+                            <ul class="dropdown-menu dropdown-menu-end <?= isset($_SESSION['role']) && $_SESSION['role'] === 'admin' ? 'admin-notifications-dropdown' : '' ?>">
+                                <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin' && $adminNotifications['total'] > 0): ?>
+                                    <div class="notification-header">
+                                        <i class="fas fa-bell me-2"></i>Уведомления
+                                    </div>
+                                    
+                                    <?php if ($adminNotifications['messages'] > 0): ?>
+                                        <li>
+                                            <a href="/admin/messages" class="notification-list-item">
+                                                <div class="notification-icon notification-icon-messages">
+                                                    <i class="fas fa-envelope"></i>
+                                                </div>
+                                                <div class="notification-content">
+                                                    <div class="notification-title">Новые сообщения</div>
+                                                    <div class="notification-desc">Непрочитанные сообщения от пользователей</div>
+                                                </div>
+                                                <div class="notification-count"><?= $adminNotifications['messages'] ?></div>
+                                            </a>
+                                        </li>
+                                    <?php endif; ?>
+                                    
+                                    <?php if ($adminNotifications['comments'] > 0): ?>
+                                        <li>
+                                            <a href="/admin/comments" class="notification-list-item">
+                                                <div class="notification-icon notification-icon-comments">
+                                                    <i class="fas fa-comments"></i>
+                                                </div>
+                                                <div class="notification-content">
+                                                    <div class="notification-title">Комментарии на модерации</div>
+                                                    <div class="notification-desc">Ожидают одобрения</div>
+                                                </div>
+                                                <div class="notification-count"><?= $adminNotifications['comments'] ?></div>
+                                            </a>
+                                        </li>
+                                    <?php endif; ?>
+                                    
+                                    <?php if ($adminNotifications['users'] > 0): ?>
+                                        <li>
+                                            <a href="/admin/users" class="notification-list-item">
+                                                <div class="notification-icon notification-icon-users">
+                                                    <i class="fas fa-user-plus"></i>
+                                                </div>
+                                                <div class="notification-content">
+                                                    <div class="notification-title">Новые регистрации</div>
+                                                    <div class="notification-desc">Сегодня зарегистрировались</div>
+                                                </div>
+                                                <div class="notification-count"><?= $adminNotifications['users'] ?></div>
+                                            </a>
+                                        </li>
+                                    <?php endif; ?>
+                                    
+                                    <li><hr class="dropdown-divider"></li>
+                                <?php endif; ?>
+                                
+                                <li><a class="dropdown-item" href="/account">Мой аккаунт</a></li>
+                                <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                                    <li><a class="dropdown-item" href="/dashboard">Админ панель</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                <?php endif; ?>
+                                <li><a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt me-2"></i>Выйти</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                <?php else: ?>
+                    <a href="/login" class="btn-login">Войти</a>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<script>
+// Toggle hamburger to X animation and close on outside click
+document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.getElementById('mobileMenuToggle');
+    const navbarCollapse = document.getElementById('navbarNav');
+    const navbar = document.querySelector('.modern-navbar');
+    
+    if (toggle && navbarCollapse) {
+        // Listen for Bootstrap collapse events
+        navbarCollapse.addEventListener('show.bs.collapse', function () {
+            toggle.classList.add('active');
+        });
+        
+        navbarCollapse.addEventListener('hide.bs.collapse', function () {
+            toggle.classList.remove('active');
+        });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const isOpen = navbarCollapse.classList.contains('show');
+            const clickedInside = navbar.contains(event.target);
+            
+            if (isOpen && !clickedInside) {
+                // Use Bootstrap's collapse method to close the menu
+                const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse);
+                if (bsCollapse) {
+                    bsCollapse.hide();
+                }
+            }
+        });
+        
+        // Prevent menu from closing when clicking inside it
+        navbarCollapse.addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+    }
+});
+</script>

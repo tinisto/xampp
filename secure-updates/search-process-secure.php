@@ -60,8 +60,18 @@ if (isset($_GET['query']) && !empty($_GET['query'])) {
     $pageTitle = 'Поиск - 11-классники';
     $additionalData = ['searchQuery' => $searchQuery];
     
-    include $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine-search.php';
-    renderTemplate($pageTitle, $mainContent, $additionalData);
+    include $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine-ultimate.php';
+    
+// Template configuration
+$templateConfig = [
+    'layoutType' => 'default',
+    'cssFramework' => 'custom',
+    'headerType' => 'modern',
+    'footerType' => 'modern',
+    'darkMode' => true
+];
+
+renderTemplate($pageTitle, $mainContent, $templateConfig);
 } else {
     // No search query - redirect to search page
     header('Location: /search');

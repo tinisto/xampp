@@ -1,5 +1,6 @@
 <?php
-require_once __DIR__ . '/../../../../../includes/init.php';
+require_once __DIR__ . '/../../includes/init.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/check_under_construction.php';
 include $_SERVER['DOCUMENT_ROOT'] . '/includes/functions/email_functions.php';
@@ -10,7 +11,16 @@ $oldData = $_POST;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['g-recaptcha-response'])) {
     // Build POST request:
     $captcha = $_POST['g-recaptcha-response'];
-    $secret = '6LcBTE4pAAAAALqF7QTwR_2cr1sAP7EuVRF3h3jq'; // Hardcoded reCAPTCHA secret key
+    
+    try {
+        $recaptchaConfig = Environment::getRecaptchaConfig();
+        $secret = $recaptchaConfig['secret_key'];
+    } catch (Exception $e) {
+        // Fallback for backward compatibility - remove this after .env is set up
+        $secret = '6LcBTE4pAAAAALqF7QTwR_2cr1sAP7EuVRF3h3jq';
+        error_log('reCAPTCHA secret key not found in environment variables. Using fallback.');
+    }
+    
     $action = "submit";
 
     // Call curl to POST request

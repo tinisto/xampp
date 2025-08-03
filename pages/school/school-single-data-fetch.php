@@ -1,4 +1,14 @@
 <?php
+// Start session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Establish database connection only if not already established
+if (!isset($connection)) {
+    require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
+}
+
 include $_SERVER['DOCUMENT_ROOT'] . '/pages/school/extract-school-id.php';
 
 if (!is_numeric($id_school)) {

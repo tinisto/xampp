@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__ . '/../includes/init.php';
-require_once __DIR__ . '/../database/db_connections.php';
-require_once __DIR__ . '/../common-components/check_under_construction.php';
+require_once __DIR__ . '/../../includes/init.php';
+require_once __DIR__ . '/../../database/db_connections.php';
+require_once __DIR__ . '/../../common-components/check_under_construction.php';
 
 // Initialize database
 $db = Database::getInstance($connection);
@@ -55,13 +55,19 @@ if (isset($_GET['query']) && !empty($_GET['query'])) {
         'user_id' => $userId
     ]);
     
-    // Prepare data for template
-    $mainContent = 'search-content-secure.php';
-    $pageTitle = 'Поиск - 11-классники';
-    $additionalData = ['searchQuery' => $searchQuery];
+    // Template configuration
+    $templateConfig = [
+        'layoutType' => 'default',
+        'cssFramework' => 'custom',
+        'headerType' => 'modern',
+        'footerType' => 'modern',
+        'darkMode' => true,
+        'searchQuery' => $searchQuery
+    ];
     
-    include $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine-search.php';
-    renderTemplate($pageTitle, $mainContent, $additionalData);
+    // Render template
+    include $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine-ultimate.php';
+    renderTemplate('Поиск - 11-классники', 'pages/search/search-content-modern.php', $templateConfig);
 } else {
     // No search query - redirect to search page
     header('Location: /search');

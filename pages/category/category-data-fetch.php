@@ -1,8 +1,12 @@
 <?php
-// Check if the URL parameter is set
-if (isset($_GET['url_category'])) {
+// Check if the URL parameter is set (support both parameter names)
+if (isset($_GET['category_en']) || isset($_GET['url_category'])) {
   // Sanitize the input
-  $urlCategory = mysqli_real_escape_string($connection, $_GET['url_category']);
+  if (isset($_GET['category_en'])) {
+    $urlCategory = mysqli_real_escape_string($connection, $_GET['category_en']);
+  } else {
+    $urlCategory = mysqli_real_escape_string($connection, $_GET['url_category']);
+  }
 
   // Fetch category data
   $queryCategory = "SELECT * FROM categories WHERE url_category = '$urlCategory'";

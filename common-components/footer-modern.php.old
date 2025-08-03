@@ -1,0 +1,186 @@
+<style>
+    .modern-footer {
+        background: #2c3e50;
+        color: white;
+        padding: 60px 0 30px;
+        margin-top: 80px;
+    }
+    .footer-section h5 {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: #28a745;
+    }
+    .footer-links {
+        list-style: none;
+        padding: 0;
+    }
+    .footer-links li {
+        margin-bottom: 10px;
+    }
+    .footer-links a {
+        color: #bdc3c7;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    .footer-links a:hover {
+        color: #28a745;
+        padding-left: 5px;
+    }
+    .footer-bottom {
+        border-top: 1px solid #34495e;
+        margin-top: 40px;
+        padding-top: 30px;
+        text-align: center;
+        color: #95a5a6;
+    }
+    .footer-bottom a {
+        color: #28a745;
+        text-decoration: none;
+    }
+    .footer-bottom a:hover {
+        text-decoration: underline;
+    }
+    .social-links {
+        display: flex;
+        gap: 15px;
+        margin-top: 20px;
+    }
+    .social-link {
+        width: 40px;
+        height: 40px;
+        background: #34495e;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+    .social-link:hover {
+        background: #28a745;
+        transform: translateY(-3px);
+        color: white;
+    }
+    .back-to-top {
+        position: fixed;
+        bottom: 40px;
+        right: 40px;
+        width: 50px;
+        height: 50px;
+        background: #28a745;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        z-index: 1000;
+    }
+    .back-to-top.show {
+        opacity: 1;
+        visibility: visible;
+    }
+    .back-to-top:hover {
+        background: #218838;
+        transform: translateY(-3px);
+    }
+    @media (max-width: 768px) {
+        .footer-section {
+            margin-bottom: 30px;
+        }
+        .back-to-top {
+            bottom: 20px;
+            right: 20px;
+        }
+    }
+</style>
+
+<footer class="modern-footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-md-6 footer-section">
+                <h5>О проекте</h5>
+                <p style="color: #bdc3c7;">11-классники - образовательный портал для школьников и абитуриентов. Мы помогаем найти информацию об учебных заведениях и подготовиться к поступлению.</p>
+                <div class="contact-info">
+                    <p style="color: #bdc3c7; margin-top: 15px;">
+                        <i class="fas fa-envelope" style="margin-right: 8px;"></i>
+                        <a href="mailto:support@11klassniki.ru" style="color: #bdc3c7; text-decoration: none; transition: all 0.3s ease;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">support@11klassniki.ru</a>
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-lg-2 col-md-6 footer-section">
+                <h5>Разделы</h5>
+                <ul class="footer-links">
+                    <li><a href="/vpo">ВУЗы</a></li>
+                    <li><a href="/spo">ССУЗы</a></li>
+                    <li><a href="/schools-all-regions">Школы</a></li>
+                    <li><a href="/iq-test">Тесты</a></li>
+                </ul>
+            </div>
+            
+            <div class="col-lg-2 col-md-6 footer-section">
+                <h5>Категории</h5>
+                <ul class="footer-links">
+                    <li><a href="/category/11-klassniki">11-классники</a></li>
+                    <li><a href="/category/abiturient">Абитуриентам</a></li>
+                    <li><a href="/category/ege">ЕГЭ</a></li>
+                    <li><a href="/category/oge">ОГЭ</a></li>
+                </ul>
+            </div>
+            
+            <div class="col-lg-2 col-md-6 footer-section">
+                <h5>Информация</h5>
+                <ul class="footer-links">
+                    <li><a href="/about">О нас</a></li>
+                    <li><a href="/write">Написать в редакцию</a></li>
+                    <li><a href="/search">Поиск</a></li>
+                    <li><a href="/registration">Регистрация</a></li>
+                </ul>
+            </div>
+            
+            <div class="col-lg-2 col-md-6 footer-section">
+                <h5>Контакты</h5>
+                <ul class="footer-links" style="color: #bdc3c7;">
+                    <li><i class="fas fa-envelope"></i> admin@11klassniki.ru</li>
+                    <li><i class="fas fa-phone"></i> +7 (800) 123-45-67</li>
+                    <li><i class="fas fa-clock"></i> Пн-Пт: 9:00 - 18:00</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; <?= date('Y') ?> 11-классники. Все права защищены. | <a href="/privacy">Политика конфиденциальности</a> | <a href="/terms">Условия использования</a></p>
+        </div>
+    </div>
+</footer>
+
+<!-- Back to Top Button -->
+<div class="back-to-top" id="backToTop">
+    <i class="fas fa-arrow-up"></i>
+</div>
+
+<script>
+// Back to Top functionality
+window.addEventListener('scroll', function() {
+    const backToTop = document.getElementById('backToTop');
+    if (window.scrollY > 300) {
+        backToTop.classList.add('show');
+    } else {
+        backToTop.classList.remove('show');
+    }
+});
+
+document.getElementById('backToTop').addEventListener('click', function() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+});
+</script>

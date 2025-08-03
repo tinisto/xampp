@@ -2,6 +2,9 @@
 require_once __DIR__ . '/../../includes/Database.php';
 require_once __DIR__ . '/../../includes/Security.php';
 
+// Include loading placeholders
+include $_SERVER['DOCUMENT_ROOT'] . '/common-components/loading-placeholders.php';
+
 include 'search-form.php'; 
 ?>
 <div class="container mt-4">
@@ -124,6 +127,11 @@ include 'search-form.php';
     
     if ($totalResults === 0) {
         echo '<p class="custom-alert">Нет результатов.</p>';
+        // Show placeholder suggestions when no results
+        echo '<div class="mt-4">';
+        echo '<h5>Попробуйте поискать:</h5>';
+        renderListPlaceholder(5);
+        echo '</div>';
     }
     ?>
   <?php else: ?>

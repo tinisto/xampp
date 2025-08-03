@@ -1,126 +1,286 @@
 <?php
-// Check if the URL parameter is set
-if (isset($_GET['url_post'])) {
-  // Sanitize the input
-  $urlPost = mysqli_real_escape_string($connection, $_GET['url_post']);
+// Check if post data is already available from post-data-fetch.php
+if (isset($postData)) {
+  // Use the data already fetched
+  $rowPost = $postData;
 
-  // Fetch posts
-  $queryPosts = "SELECT * FROM posts WHERE url_post = '$urlPost'";
-  $resultPosts = mysqli_query($connection, $queryPosts);
-
-  if ($resultPosts) {
-    // Display posts
-    while ($rowPost = mysqli_fetch_assoc($resultPosts)) {
-
-      // Check if the user has not visited the page during the current session
-      if (!isset($_SESSION['visited'])) {
-        // Increase view count
-        $updatedViews = $rowPost['view_post'] + 1;
-        $queryUpdateViews = "UPDATE posts SET view_post = $updatedViews WHERE url_post = '$urlPost'";
-        mysqli_query($connection, $queryUpdateViews);
-        // Set the session variable to indicate that the user has visited the page
-        $_SESSION['visited'] = true;
-      }
-      include 'post-header-links.php';
+  // Check if the user has not visited the page during the current session
+  if (!isset($_SESSION['visited'])) {
+    // Increase view count
+    $updatedViews = $rowPost['view_post'] + 1;
+    $queryUpdateViews = "UPDATE posts SET view_post = $updatedViews WHERE id_post = " . (int)$rowPost['id_post'];
+    mysqli_query($connection, $queryUpdateViews);
+    // Set the session variable to indicate that the user has visited the page
+    $_SESSION['visited'] = true;
+  }
 ?>
+
+<style>
+  .post-header {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    padding: 60px 0 40px;
+    margin-bottom: 40px;
+  }
+  .post-category-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    color: white !important;
+    padding: 6px 16px;
+    border-radius: 25px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 1px solid rgba(255,255,255,0.3);
+    transition: all 0.3s ease;
+  }
+  .post-category-badge:hover {
+    background: rgba(255,255,255,0.3);
+    transform: translateY(-1px);
+  }
+  .post-title {
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 30px;
+  }
+  .post-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    opacity: 0.9;
+    font-size: 14px;
+  }
+  .post-meta-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .post-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .post-content-wrapper {
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  .post-description {
+    font-size: 20px;
+    line-height: 1.6;
+    color: var(--text-secondary, #666);
+    margin-bottom: 30px;
+    font-weight: 400;
+  }
+  .post-images {
+    margin: 30px 0;
+  }
+  .post-image {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    margin-bottom: 15px;
+  }
+  .post-bio {
+    background: var(--surface-variant, #f8f9fa);
+    padding: 20px;
+    border-radius: 12px;
+    margin: 20px 0;
+    border-left: 4px solid var(--primary-color, #28a745);
+    font-style: italic;
+    color: var(--text-primary, #333);
+  }
+  .post-text {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text-primary, #333);
+  }
+  .post-text p {
+    margin-bottom: 15px;
+  }
+  .post-text strong {
+    color: var(--primary-color, #28a745);
+  }
+  .admin-edit {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255,255,255,0.2);
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  .admin-edit:hover {
+    background: rgba(255,255,255,0.3);
+    transform: scale(1.05);
+  }
+  
+  /* Dark mode support */
+  [data-theme="dark"] .post-header {
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+  }
+  
+  [data-theme="dark"] .post-bio {
+    background: var(--surface-variant, #2d3748);
+    color: var(--text-primary, #f7fafc);
+    border-left-color: var(--primary-color, #68d391);
+  }
+  
+  [data-theme="dark"] .post-text {
+    color: var(--text-primary, #f7fafc);
+  }
+  
+  [data-theme="dark"] .post-description {
+    color: var(--text-secondary, #cbd5e0);
+  }
+  
+  [data-theme="dark"] .post-text strong {
+    color: var(--primary-color, #68d391);
+  }
+  
+  [data-theme="dark"] .post-image {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+
+  @media (max-width: 768px) {
+    .post-title {
+      font-size: 28px;
+    }
+    .post-header {
+      padding: 40px 0 30px;
+    }
+    .post-meta {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 15px;
+    }
+    .post-meta-left {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .post-text {
+      font-size: 15px;
+    }
+  }
+</style>
+
+<div class="post-header">
+  <div class="container position-relative">
       <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/getEntityIdFromURL.php'; ?>
 
-      <?php $entity_type = 'post';
-      $id_entity = getEntityIdFromPostURL($connection);
+      <?php 
+      $entity_type = 'post';
+      $entityData = getEntityIdFromPostURL($connection);
+      $id_entity = $entityData['id_entity'];
+      
+      // Get category name from database
+      $categoryName = 'Статьи';
+      $categoryUrl = '/';
+      if (!empty($rowPost['category'])) {
+        $categoryQuery = "SELECT title_category, url_category FROM categories WHERE id_category = ?";
+        $categoryStmt = mysqli_prepare($connection, $categoryQuery);
+        mysqli_stmt_bind_param($categoryStmt, "i", $rowPost['category']);
+        mysqli_stmt_execute($categoryStmt);
+        $categoryResult = mysqli_stmt_get_result($categoryStmt);
+        
+        if ($categoryRow = mysqli_fetch_assoc($categoryResult)) {
+          $categoryName = $categoryRow['title_category'];
+          $categoryUrl = '/category/' . $categoryRow['url_category'];
+        }
+        mysqli_stmt_close($categoryStmt);
+      }
       ?>
 
-      <div class="d-flex justify-content-between align-items-center">
-        <h1>
-          <?php echo $rowPost['title_post'];
-          ?>
-        </h1>
-        <div>
-          <?php
-          // Check if the user is an admin
-          if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
-            echo '<a href="/pages/dashboard/posts-dashboard/posts-view/posts-view-edit-form.php?id_post=' . $rowPost['id_post'] . '" class="edit-icon" style="color: red;"><i class="fas fa-edit"></i></a>';
-          }
-          ?>
-        </div>
-      </div>
+      <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+        <a href="/pages/dashboard/posts-dashboard/posts-view/posts-view-edit-form.php?id_post=<?= $rowPost['id_post'] ?>" class="admin-edit text-white">
+          <i class="fas fa-edit"></i>
+        </a>
+      <?php endif; ?>
+
+      <h1 class="post-title"><?= htmlspecialchars($rowPost['title_post']) ?></h1>
       
-
-      <p class="lead fw-medium">
-        <?php echo $rowPost['description_post']; ?>
-      </p>
-      <div class="float-md-start me-md-4 mx-auto mx-md-0 col-md-3">
-        <?php
-        $imageFileName = isset($rowPost['image_post_1']) ? $rowPost['image_post_1'] : null;
-        $imageUrl = $imageFileName ? "../images/posts-images/" . $imageFileName : null;
-        $imagePath = $imageFileName ? $_SERVER['DOCUMENT_ROOT'] . "/images/posts-images/" . $imageFileName : null;
-
-        if (!empty($rowPost['image_post_1']) && file_exists($imagePath)) {
-          echo '<div class="mb-2">';
-          echo '<img src="' . $imageUrl . '" alt="Post Image 1" style="width: 100%; height: 100%;">';
-          echo '</div>';
-        }
-        ?>
-        <?php
-        $imageFileName = isset($rowPost['image_post_2']) ? $rowPost['image_post_2'] : null;
-        $imageUrl = $imageFileName ? "../images/posts-images/" . $imageFileName : null;
-        $imagePath = $imageFileName ? $_SERVER['DOCUMENT_ROOT'] . "/images/posts-images/" . $imageFileName : null;
-
-        if (!empty($rowPost['image_post_2']) && file_exists($imagePath)) {
-          echo '<div class="mb-2">';
-          echo '<img src="' . $imageUrl . '" alt="Post Image 2" style="width: 100%; height: 100%;">';
-          echo '</div>';
-        }
-        ?>
-        <?php
-        $imageFileName = isset($rowPost['image_post_3']) ? $rowPost['image_post_3'] : null;
-        $imageUrl = $imageFileName ? "../images/posts-images/" . $imageFileName : null;
-        $imagePath = $imageFileName ? $_SERVER['DOCUMENT_ROOT'] . "/images/posts-images/" . $imageFileName : null;
-
-        if (!empty($rowPost['image_post_3']) && file_exists($imagePath)) {
-          echo '<div class="mb-2">';
-          echo '<img src="' . $imageUrl . '" alt="Post Image 3" style="width: 100%; height: 100%;">';
-          echo '</div>';
-        }
-        ?>
-
-        <?php if (
-          !empty($rowPost['bio_post']) &&
-          ((isset($rowPost['image_post_1']) && $rowPost['image_post_1']) ||
-            (isset($rowPost['image_post_2']) && $rowPost['image_post_2']) ||
-            (isset($rowPost['image_post_3']) && $rowPost['image_post_3']))
-        ) { ?>
-
-
-          <div class="bio-post">
-            <?= $rowPost['bio_post'] ?>
+      <div class="post-meta">
+        <div class="post-meta-left">
+          <div class="post-meta-item">
+            <i class="fas fa-user"></i>
+            <span><?= htmlspecialchars($rowPost['author_post']) ?></span>
           </div>
-        <?php } ?>
+          <div class="post-meta-item">
+            <i class="fas fa-calendar"></i>
+            <span><?= date('d F, Y', strtotime($rowPost['date_post'])) ?></span>
+          </div>
+          <div class="post-meta-item">
+            <i class="fas fa-eye"></i>
+            <span><?= number_format($rowPost['view_post']) ?></span>
+          </div>
+        </div>
+        <div>
+          <a href="<?= $categoryUrl ?>" class="post-category-badge text-decoration-none" style="position: static;"><?= $categoryName ?></a>
+        </div>
+  </div>
+</div>
+
+<div class="container">
+    <?php if (!empty($rowPost['description_post'])): ?>
+      <div class="post-description">
+        <?= htmlspecialchars($rowPost['description_post']) ?>
       </div>
-      <p>
-        <?= $rowPost['text_post'] ?>
-      </p>
+    <?php endif; ?>
+    
+    <div class="post-images">
+      <?php
+      // Image 1
+      $imageFileName = isset($rowPost['image_post_1']) ? $rowPost['image_post_1'] : null;
+      $imageUrl = $imageFileName ? "/images/posts-images/" . $imageFileName : null;
+      $imagePath = $imageFileName ? $_SERVER['DOCUMENT_ROOT'] . "/images/posts-images/" . $imageFileName : null;
 
-<?php
-    }
+      if (!empty($rowPost['image_post_1']) && file_exists($imagePath)) {
+        echo '<img src="' . $imageUrl . '" alt="Post Image 1" class="post-image">';
+      }
+      
+      // Image 2
+      $imageFileName = isset($rowPost['image_post_2']) ? $rowPost['image_post_2'] : null;
+      $imageUrl = $imageFileName ? "/images/posts-images/" . $imageFileName : null;
+      $imagePath = $imageFileName ? $_SERVER['DOCUMENT_ROOT'] . "/images/posts-images/" . $imageFileName : null;
 
-    // Free the result set for posts
-    mysqli_free_result($resultPosts);
-  } else {
-    echo '<p class="text-danger">Error fetching posts from the database</p>';
-  }
+      if (!empty($rowPost['image_post_2']) && file_exists($imagePath)) {
+        echo '<img src="' . $imageUrl . '" alt="Post Image 2" class="post-image">';
+      }
+      
+      // Image 3
+      $imageFileName = isset($rowPost['image_post_3']) ? $rowPost['image_post_3'] : null;
+      $imageUrl = $imageFileName ? "/images/posts-images/" . $imageFileName : null;
+      $imagePath = $imageFileName ? $_SERVER['DOCUMENT_ROOT'] . "/images/posts-images/" . $imageFileName : null;
+
+      if (!empty($rowPost['image_post_3']) && file_exists($imagePath)) {
+        echo '<img src="' . $imageUrl . '" alt="Post Image 3" class="post-image">';
+      }
+      ?>
+    </div>
+
+    <?php if (!empty($rowPost['bio_post']) && 
+              ((isset($rowPost['image_post_1']) && $rowPost['image_post_1']) ||
+               (isset($rowPost['image_post_2']) && $rowPost['image_post_2']) ||
+               (isset($rowPost['image_post_3']) && $rowPost['image_post_3']))): ?>
+      <div class="post-bio">
+        <?= $rowPost['bio_post'] ?>
+      </div>
+    <?php endif; ?>
+    
+    <div class="post-text">
+      <?= $rowPost['text_post'] ?>
+    </div>
+</div>
+
+<?php 
 } else {
-  echo '<p class="text-danger">Invalid URL</p>';
+  echo '<div class="container"><p class="text-danger">Post not found or invalid URL</p></div>';
 }
 ?>
 
-<?php require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/getEntityIdFromURL.php'; ?>
-<?php
-$result = getEntityIdFromPostURL($connection);
-
-$id_entity = $result['id_entity'];
-$entity_type = $result['entity_type'];
-
-?>
 <br clear="both">
 <?php
 include $_SERVER['DOCUMENT_ROOT'] . '/comments/user_comments.php';

@@ -1,5 +1,18 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/check_under_construction.php';
-$mainContent = 'login_content.php';
-$pageTitle = 'Вход - 11-классники';
-include $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine-authorization.php';
+// Configuration for the form
+$formConfig = [
+    'title' => 'Вход',
+    'action' => '/pages/login/login_process_simple.php',
+    'submitText' => 'Войти',
+    'bottomLink' => [
+        'text' => 'Нет аккаунта?',
+        'url' => '/registration',
+        'linkText' => 'Зарегистрироваться'
+    ]
+];
+
+// Specify which fields file to include
+$formFields = 'login-fields.php';
+
+// Use the fixed form template with CSS variables support
+include $_SERVER['DOCUMENT_ROOT'] . '/includes/form-template-fixed.php';

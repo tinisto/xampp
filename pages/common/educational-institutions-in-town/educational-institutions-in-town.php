@@ -10,8 +10,18 @@ $metaK = '';
 include $_SERVER['DOCUMENT_ROOT'] . '/pages/common/educational-institutions-in-town/educational-institutions-in-town-content.php';
 
 // Include the template engine
-include $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine-ultimate.php';
 
 // Render the template
+
+// Template configuration
+$templateConfig = [
+    'layoutType' => 'default',
+    'cssFramework' => 'bootstrap',
+    'headerType' => 'modern',
+    'footerType' => 'modern',
+    'darkMode' => true
+];
+
 renderTemplate($pageTitle, $mainContent, $additionalData, $metaD, $metaK);
 ?>

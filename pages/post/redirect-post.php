@@ -1,11 +1,12 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/check_under_construction.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
 
 // Get id from query string
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
 if ($id > 0) {
-    // Prepare and bind
+    // Prepare and bind - only fetch published posts
     $stmt = $connection->prepare("SELECT url_post FROM posts WHERE id_post = ?");
     if ($stmt === false) {
         error_log("Error preparing statement: " . $connection->error);

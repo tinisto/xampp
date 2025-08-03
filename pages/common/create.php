@@ -64,5 +64,15 @@ if ($_SESSION['role'] === 'admin') {
   }
 }
 
-include $_SERVER["DOCUMENT_ROOT"] . "/common-components/template-engine-dashboard.php";
-renderTemplate($pageTitle, $mainContent, $additionalData, $metaDescription, $metaKeywords);
+include $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine-ultimate.php';
+
+// Template configuration
+$templateConfig = [
+    'layoutType' => 'auth',
+    'cssFramework' => 'bootstrap',
+    'headerType' => 'modern',
+    'footerType' => 'modern',
+    'darkMode' => true
+];
+
+renderTemplate($pageTitle, $mainContent, $templateConfig);

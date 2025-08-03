@@ -51,7 +51,6 @@ if (
                     name="edited_comment_text"><?php echo $commentDetails["comment_text"]; ?></textarea>
             </div>
             <button type="submit" class="custom-button mr-2">Update</button>
-            <a href="/account" class="cancel-button">Cancel</a>
         </form>
 <?php
     } else {

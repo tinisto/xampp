@@ -1,0 +1,51 @@
+-- Direct migration from VPO to Universities
+-- Run this in phpMyAdmin while selecting the 11klassniki_new database
+
+INSERT INTO universities (
+    id, user_id, parent_university_id, university_name, university_name_genitive,
+    full_name, short_name, old_names, town_id, area_id, region_id, country_id,
+    postal_code, street_address, phone, fax, email, website,
+    director_name, director_role, director_info, director_email, director_phone,
+    accreditation, license, founding_year, meta_description, meta_keywords,
+    history, url_slug, image_1, image_2, image_3, vkontakte_url,
+    view_count, is_approved, updated_at
+)
+SELECT 
+    id_vpo as id,
+    user_id,
+    CASE WHEN parent_vpo_id = 0 THEN NULL ELSE parent_vpo_id END as parent_university_id,
+    vpo_name as university_name,
+    name_rod as university_name_genitive,
+    full_name,
+    short_name,
+    old_name as old_names,
+    id_town as town_id,
+    id_area as area_id,
+    id_region as region_id,
+    id_country as country_id,
+    zip_code as postal_code,
+    street as street_address,
+    tel as phone,
+    fax,
+    email,
+    site as website,
+    director_name,
+    director_role,
+    director_info,
+    director_email,
+    director_phone,
+    accreditation,
+    licence as license,
+    year as founding_year,
+    meta_d_vpo as meta_description,
+    meta_k_vpo as meta_keywords,
+    history,
+    vpo_url as url_slug,
+    image_vpo_1 as image_1,
+    image_vpo_2 as image_2,
+    image_vpo_3 as image_3,
+    vkontakte as vkontakte_url,
+    view as view_count,
+    approved as is_approved,
+    updated as updated_at
+FROM 11klassniki_ru.vpo;

@@ -1,0 +1,583 @@
+<?php
+// Only require database connection if not already loaded
+if (!isset($connection)) {
+    require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
+}
+
+function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD = null, $metaK = null) {
+    global $connection;
+    
+    // Handle backward compatibility for meta tags passed as separate parameters
+    if ($metaD !== null) {
+        $additionalData['metaD'] = $metaD;
+    }
+    if ($metaK !== null) {
+        $additionalData['metaK'] = $metaK;
+    }
+    
+    // Extract configuration options
+    $layoutType = $additionalData['layoutType'] ?? 'default'; // 'default', 'auth', 'dashboard', 'minimal'
+    $noHeader = isset($additionalData['noHeader']) && $additionalData['noHeader'];
+    $noFooter = isset($additionalData['noFooter']) && $additionalData['noFooter'];
+    $noIndex = isset($additionalData['noIndex']) && $additionalData['noIndex'];
+    $fullHeight = isset($additionalData['fullHeight']) && $additionalData['fullHeight'];
+    
+    // Extract additional data BEFORE including content
+    if (!empty($additionalData)) {
+        extract($additionalData);
+    }
+    
+    // Start output buffering to capture the main content
+    ob_start();
+    include $_SERVER['DOCUMENT_ROOT'] . '/' . $mainContent;
+    $content = ob_get_clean();
+?>
+<!DOCTYPE html>
+<html lang="ru" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo htmlspecialchars($pageTitle); ?> - 11-классники</title>
+    
+    <?php if ($noIndex): ?>
+        <meta name="robots" content="noindex, nofollow">
+    <?php endif; ?>
+    
+    <?php if (isset($metaD) && !empty($metaD)): ?>
+        <meta name="description" content="<?php echo htmlspecialchars($metaD); ?>">
+    <?php endif; ?>
+    
+    <?php if (isset($metaK) && !empty($metaK)): ?>
+        <meta name="keywords" content="<?php echo htmlspecialchars($metaK); ?>">
+    <?php endif; ?>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- TinyMCE for dashboard -->
+    <?php if ($layoutType === 'dashboard'): ?>
+        <script src="https://cdn.tiny.cloud/1/y4herhyxuwf9pi78y7tdxsrjpar8zqwxy7mn8vya74pjix2u/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <?php endif; ?>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    
+    <!-- Custom Styles -->
+    <style>
+        :root {
+            --bs-font-sans-serif: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        /* Light mode (default) */
+        [data-bs-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --border-color: #dee2e6;
+            --card-bg: #ffffff;
+        }
+        
+        /* Dark mode */
+        [data-bs-theme="dark"] {
+            --bg-primary: #212529;
+            --bg-secondary: #343a40;
+            --text-primary: #f8f9fa;
+            --text-secondary: #adb5bd;
+            --border-color: #495057;
+            --card-bg: #343a40;
+        }
+        
+        body {
+            font-family: var(--bs-font-sans-serif);
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        html, body {
+            height: 100%;
+        }
+        
+        <?php if ($fullHeight || $layoutType === 'auth'): ?>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        <?php else: ?>
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+        .main-content {
+            flex: 1;
+        }
+        <?php endif; ?>
+        
+        /* Dark mode toggle */
+        .theme-toggle {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle:hover i {
+            color: #28a745;
+        }
+        
+        .theme-toggle i {
+            transition: color 0.3s ease;
+            font-size: 20px;
+            color: #333;
+        }
+        
+        /* Dark mode specific toggle colors */
+        [data-bs-theme="dark"] .theme-toggle i {
+            color: #f8f9fa;
+        }
+        
+        [data-bs-theme="dark"] .theme-toggle:hover i {
+            color: #28a745;
+        }
+        
+        /* Theme toggle specific styles */
+        .theme-toggle {
+            position: relative;
+            z-index: 1000 !important;
+            cursor: pointer !important;
+            pointer-events: auto !important;
+        }
+        
+        .theme-toggle::after {
+            display: none !important;
+        }
+        
+        .theme-toggle:focus {
+            outline: none;
+            box-shadow: none;
+        }
+        
+        .auth-buttons .theme-toggle {
+            padding: 0 15px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            background: transparent !important;
+            border: none !important;
+        }
+        
+        .theme-toggle i {
+            pointer-events: none;
+        }
+        
+        /* Fixed position toggle for auth pages */
+        <?php if ($layoutType === 'auth'): ?>
+        .theme-toggle-fixed {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .theme-toggle-fixed:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        
+        .theme-toggle-fixed i {
+            font-size: 18px;
+        }
+        <?php endif; ?>
+        
+        /* Card styles for dark mode */
+        .card, .news-card {
+            background-color: var(--card-bg);
+            border-color: var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        /* Fix all text colors for dark mode */
+        body, body * {
+            color: inherit;
+        }
+        
+        /* Override inline styles and hardcoded colors */
+        [data-bs-theme="dark"] p, 
+        [data-bs-theme="dark"] span, 
+        [data-bs-theme="dark"] div,
+        [data-bs-theme="dark"] h1,
+        [data-bs-theme="dark"] h2,
+        [data-bs-theme="dark"] h3,
+        [data-bs-theme="dark"] h4,
+        [data-bs-theme="dark"] h5,
+        [data-bs-theme="dark"] h6,
+        [data-bs-theme="dark"] li,
+        [data-bs-theme="dark"] td,
+        [data-bs-theme="dark"] th {
+            color: var(--text-primary) !important;
+        }
+        
+        /* News content specific fixes */
+        [data-bs-theme="dark"] .news-content,
+        [data-bs-theme="dark"] .news-content *,
+        [data-bs-theme="dark"] .news-text,
+        [data-bs-theme="dark"] .news-text * {
+            color: var(--text-primary) !important;
+            background-color: transparent !important;
+        }
+        
+        /* Mobile specific styles */
+        @media (max-width: 768px) {
+            /* Remove all shadows, borders, and rounded corners on mobile */
+            .card, .news-card, .content-area, .info-card, .test-card,
+            .menu-item, .answer-option, .pagination-modern a,
+            .pagination-modern span, .news-category-nav a,
+            .search-box, .btn, .form-control, .modal-content,
+            .dropdown-menu, .alert, .badge, .list-group-item,
+            .nav-link, .nav-tabs, .nav-pills, .breadcrumb,
+            .page-link, .input-group, .custom-select,
+            .custom-file-label, .custom-range, .progress,
+            .media, .list-group, .close, .toast, .popover,
+            .tooltip, .img-thumbnail, .figure-img, .carousel-item,
+            .jumbotron, div[class*="card"], div[class*="shadow"],
+            div[class*="border"], div[class*="rounded"] {
+                box-shadow: none !important;
+                border: none !important;
+                border-radius: 0 !important;
+            }
+            
+            /* Remove container padding */
+            .container, .container-fluid {
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+            }
+            
+            /* Remove main content padding */
+            .main-content, main {
+                padding: 0 !important;
+            }
+            
+            /* Fix spacing between elements */
+            .row {
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+            }
+            
+            .col, [class*="col-"] {
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+            }
+            
+            /* Remove transform on hover */
+            *:hover {
+                transform: none !important;
+            }
+        }
+        
+        /* Fix white backgrounds */
+        [data-bs-theme="dark"] .card,
+        [data-bs-theme="dark"] .news-card,
+        [data-bs-theme="dark"] .dropdown-menu,
+        [data-bs-theme="dark"] .modal-content,
+        [data-bs-theme="dark"] .pagination-modern a,
+        [data-bs-theme="dark"] .pagination-modern span,
+        [data-bs-theme="dark"] .news-category-nav a,
+        [data-bs-theme="dark"] .search-box,
+        [data-bs-theme="dark"] .stats-card {
+            background-color: var(--card-bg) !important;
+            color: var(--text-primary) !important;
+        }
+        
+        /* Preserve Bootstrap utility classes */
+        .text-success { color: #198754 !important; }
+        .text-danger { color: #dc3545 !important; }
+        .text-warning { color: #ffc107 !important; }
+        .text-info { color: #0dcaf0 !important; }
+        .text-muted { color: var(--text-secondary) !important; }
+        
+        /* Fix footer colors */
+        [data-bs-theme="dark"] footer,
+        [data-bs-theme="dark"] .footer {
+            background-color: var(--bg-primary) !important;
+        }
+        
+        [data-bs-theme="dark"] footer a,
+        [data-bs-theme="dark"] .footer a {
+            color: var(--text-secondary) !important;
+        }
+        
+        [data-bs-theme="dark"] footer a:hover,
+        [data-bs-theme="dark"] .footer a:hover {
+            color: #28a745 !important;
+        }
+        
+        /* Navigation styles for dark mode */
+        .navbar {
+            background-color: var(--bg-primary) !important;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        /* Dark mode nav links */
+        [data-bs-theme="dark"] .nav-link {
+            color: var(--text-primary) !important;
+        }
+        
+        [data-bs-theme="dark"] .nav-link:hover {
+            color: #28a745 !important;
+        }
+        
+        [data-bs-theme="dark"] .dropdown-menu {
+            background-color: var(--bg-secondary);
+            border-color: var(--border-color);
+        }
+        
+        [data-bs-theme="dark"] .dropdown-item {
+            color: var(--text-primary);
+        }
+        
+        [data-bs-theme="dark"] .dropdown-item:hover {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+        
+        /* Fix navbar brand */
+        [data-bs-theme="dark"] .navbar-brand {
+            color: #28a745 !important;
+        }
+        
+        /* Fix search input */
+        [data-bs-theme="dark"] .form-control,
+        [data-bs-theme="dark"] .form-select {
+            background-color: var(--bg-secondary);
+            border-color: var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        [data-bs-theme="dark"] .form-control:focus,
+        [data-bs-theme="dark"] .form-select:focus {
+            background-color: var(--bg-secondary);
+            border-color: #28a745;
+            color: var(--text-primary);
+        }
+        
+        /* Fix badges and pills */
+        [data-bs-theme="dark"] .badge {
+            color: white !important;
+        }
+        
+        /* Fix buttons */
+        [data-bs-theme="dark"] .btn-outline-success {
+            color: #28a745;
+            border-color: #28a745;
+        }
+        
+        [data-bs-theme="dark"] .btn-outline-success:hover {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        /* Fix mobile menu */
+        [data-bs-theme="dark"] .navbar-collapse {
+            background-color: var(--bg-primary);
+        }
+        
+        /* Fix placeholder text */
+        [data-bs-theme="dark"] ::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+        
+        /* Dashboard specific styles */
+        <?php if ($layoutType === 'dashboard'): ?>
+        .bg-secondary {
+            background-color: var(--bg-secondary) !important;
+        }
+        <?php endif; ?>
+        
+        /* Auth layout specific styles */
+        <?php if ($layoutType === 'auth'): ?>
+        .auth-container {
+            background: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 2rem;
+            max-width: 400px;
+            width: 100%;
+        }
+        <?php endif; ?>
+    </style>
+    
+    <!-- Layout specific CSS -->
+    <?php if ($layoutType === 'dashboard'): ?>
+        <link rel="stylesheet" href="/css/dashboard/dashboard.css">
+    <?php elseif ($layoutType === 'auth'): ?>
+        <link rel="stylesheet" href="/css/authorization.css">
+    <?php endif; ?>
+    
+    <!-- Additional styles from content -->
+    <?php if (isset($additionalStyles)): ?>
+        <?php echo $additionalStyles; ?>
+    <?php endif; ?>
+    
+    <!-- Define toggleTheme early to ensure it's available -->
+    <script>
+    window.toggleTheme = function() {
+        console.log('toggleTheme called'); // Debug
+        var currentTheme = document.documentElement.getAttribute('data-bs-theme') || 'light';
+        var newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        console.log('Switching from', currentTheme, 'to', newTheme); // Debug
+        
+        document.documentElement.setAttribute('data-bs-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        
+        // Update all toggle buttons
+        var toggleButtons = document.querySelectorAll('.theme-toggle, .theme-toggle-fixed');
+        toggleButtons.forEach(function(button) {
+            var icon = button.querySelector('i');
+            if (icon) {
+                // Clear content and classes
+                icon.textContent = '';
+                icon.className = '';
+                // Add new classes
+                if (newTheme === 'dark') {
+                    icon.className = 'fas fa-sun';
+                } else {
+                    icon.className = 'fas fa-moon';
+                }
+            }
+        });
+        
+        // Update mobile menu
+        var mobileLink = document.querySelector('.nav-link[onclick*="toggleTheme"]');
+        if (mobileLink) {
+            var text = mobileLink.childNodes[1];
+            if (text) text.textContent = newTheme === 'dark' ? 'Светлая тема' : 'Темная тема';
+            var icon = mobileLink.querySelector('i');
+            if (icon) {
+                icon.className = newTheme === 'dark' ? 'fas fa-sun me-2' : 'fas fa-moon me-2';
+            }
+        }
+    }
+    </script>
+</head>
+<body<?php echo ($layoutType === 'auth' || $fullHeight) ? ' class="full-height-flex"' : ''; ?><?php echo ($layoutType === 'dashboard') ? ' class="full-height-flex bg-secondary"' : ''; ?>>
+    
+    <?php if ($layoutType === 'auth'): ?>
+        <!-- Dark Mode Toggle for Auth Pages -->
+        <div class="theme-toggle-fixed" onclick="toggleTheme()" title="Переключить тему">
+            <i class="fas fa-moon"></i>
+        </div>
+        <!-- Auth Layout -->
+        <main class="container">
+            <div class="d-flex justify-content-center align-items-center min-vh-100">
+                <div class="auth-container">
+                    <?php echo $content; ?>
+                </div>
+            </div>
+        </main>
+        
+    <?php elseif ($layoutType === 'dashboard'): ?>
+        <!-- Dashboard Layout -->
+        <?php if (!$noHeader): ?>
+            <?php include $_SERVER['DOCUMENT_ROOT'] . '/common-components/header.php'; ?>
+        <?php endif; ?>
+        
+        <div class="m-3">
+            <?php echo $content; ?>
+        </div>
+        
+    <?php elseif ($layoutType === 'minimal'): ?>
+        <!-- Minimal Layout -->
+        <main class="container">
+            <?php echo $content; ?>
+        </main>
+        
+    <?php else: ?>
+        <!-- Default Layout -->
+        <?php if (!$noHeader): ?>
+            <?php include $_SERVER['DOCUMENT_ROOT'] . '/common-components/header.php'; ?>
+        <?php endif; ?>
+        
+        <main class="main-content">
+            <?php echo $content; ?>
+        </main>
+        
+        <?php if (!$noFooter): ?>
+            <?php include $_SERVER['DOCUMENT_ROOT'] . '/common-components/footer.php'; ?>
+        <?php endif; ?>
+        
+    <?php endif; ?>
+    
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Initialize Dark Mode -->
+    <script>
+    // Set initial theme
+    (function() {
+        var savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-bs-theme', savedTheme);
+        
+        // Update icons on load
+        document.addEventListener('DOMContentLoaded', function() {
+            var icons = document.querySelectorAll('.theme-toggle i, .theme-toggle-fixed i');
+            icons.forEach(function(icon) {
+                // Remove any existing content first
+                icon.textContent = '';
+                icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            });
+            
+            // Update mobile menu
+            var mobileLink = document.querySelector('.nav-link[onclick*="toggleTheme"]');
+            if (mobileLink) {
+                var text = mobileLink.childNodes[1];
+                if (text) {
+                    text.textContent = savedTheme === 'dark' ? 'Светлая тема' : 'Темная тема';
+                }
+                var icon = mobileLink.querySelector('i');
+                if (icon) {
+                    icon.textContent = '';
+                    icon.className = savedTheme === 'dark' ? 'fas fa-sun me-2' : 'fas fa-moon me-2';
+                }
+            }
+            
+            // Ensure toggleTheme is available globally
+            if (typeof window.toggleTheme === 'undefined') {
+                console.error('toggleTheme function not found! Reloading may help.');
+            }
+        });
+    })();
+    </script>
+    
+    <!-- Additional scripts from content -->
+    <?php if (isset($additionalScripts)): ?>
+        <?php echo $additionalScripts; ?>
+    <?php endif; ?>
+</body>
+</html>
+<?php
+}
+?>

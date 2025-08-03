@@ -1,23 +1,42 @@
 <?php
-// loadEnv.php
+// loadEnv.php - Updated to work without Composer and use new database
 
-// Ensure the Composer autoloader is included
-require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
-
-use Dotenv\Dotenv;
-
-// Load the environment variables from .env file
-$dotenvPath = $_SERVER['DOCUMENT_ROOT'];
-if (file_exists($dotenvPath . '/.env')) {
-    $dotenv = Dotenv::createImmutable($dotenvPath);
-    try {
-        $dotenv->load();
-    } catch (Exception $e) {
-        redirectToErrorPage($connection->error, __FILE__, __LINE__);
+// Function to parse .env file
+function parseEnvFile($filePath) {
+    if (!file_exists($filePath)) {
+        return false;
     }
-} else {
-    header("Location: /error");
-    exit();
+    
+    $envContent = file_get_contents($filePath);
+    $lines = explode("\n", $envContent);
+    
+    foreach ($lines as $line) {
+        $line = trim($line);
+        if ($line && strpos($line, '=') !== false && strpos($line, '#') !== 0) {
+            list($key, $value) = explode('=', $line, 2);
+            $key = trim($key);
+            $value = trim($value, '"\'');
+            $_ENV[$key] = $value;
+        }
+    }
+    return true;
+}
+
+// Check for production environment file first
+$envLoaded = false;
+if (file_exists($_SERVER['DOCUMENT_ROOT'] . '/.env.production')) {
+    $envLoaded = parseEnvFile($_SERVER['DOCUMENT_ROOT'] . '/.env.production');
+} elseif (file_exists($_SERVER['DOCUMENT_ROOT'] . '/.env')) {
+    $envLoaded = parseEnvFile($_SERVER['DOCUMENT_ROOT'] . '/.env');
+}
+
+if (!$envLoaded) {
+    // Fallback to new database credentials
+    $_ENV['APP_ENV'] = 'production';
+    $_ENV['DB_HOST'] = '11klassnikiru67871.ipagemysql.com';
+    $_ENV['DB_USER'] = 'admin_claude';
+    $_ENV['DB_PASS'] = 'W4eZ!#9uwLmrMay';
+    $_ENV['DB_NAME'] = '11klassniki_claude';
 }
 
 // Check if APP_ENV is set to 'under_construction'
@@ -28,12 +47,17 @@ if (isset($_ENV['APP_ENV']) && $_ENV['APP_ENV'] === 'under_construction') {
 
 // Check if environment variables are loaded
 if (!isset($_ENV['DB_HOST'], $_ENV['DB_USER'], $_ENV['DB_PASS'], $_ENV['DB_NAME'])) {
-    header("Location: /error");
-    exit();
+    // Use new database fallback values
+    $_ENV['DB_HOST'] = '11klassnikiru67871.ipagemysql.com';
+    $_ENV['DB_USER'] = 'admin_claude';
+    $_ENV['DB_PASS'] = 'W4eZ!#9uwLmrMay';
+    $_ENV['DB_NAME'] = '11klassniki_claude';
 }
 
 // Define the constants using the loaded environment variables
-define('DB_HOST', $_ENV['DB_HOST']);
-define('DB_USER', $_ENV['DB_USER']);
-define('DB_PASS', $_ENV['DB_PASS']);
-define('DB_NAME', $_ENV['DB_NAME']);
+if (!defined('DB_HOST')) {
+    define('DB_HOST', $_ENV['DB_HOST']);
+    define('DB_USER', $_ENV['DB_USER']);
+    define('DB_PASS', $_ENV['DB_PASS']);
+    define('DB_NAME', $_ENV['DB_NAME']);
+}

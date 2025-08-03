@@ -5,8 +5,8 @@ $userId = isset($_SESSION['user_id']);
 include 'comment_functions.php'; ?>
 
 <script>
-    var id_entity = <?php echo json_encode($id_entity); ?>;
-    var entity_type = <?php echo json_encode($entity_type); ?>;
+    var id_entity = <?php echo json_encode(isset($id_entity) ? $id_entity : null); ?>;
+    var entity_type = <?php echo json_encode(isset($entity_type) ? $entity_type : null); ?>;
 </script>
 
 <div class="row justify-content-center">

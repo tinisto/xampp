@@ -1,0 +1,12 @@
+<?php
+require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/check_under_construction.php';
+include 'news-data-fetch.php';
+$mainContent = 'pages/common/news/news-content-modern.php';
+$additionalData = [
+    'newsData' => $newsData,
+    'urlNews' => $urlNews,
+    'metaD' => $metaD,
+    'metaK' => $metaK
+];
+include $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine.php';
+renderTemplate($pageTitle, $mainContent, $additionalData);

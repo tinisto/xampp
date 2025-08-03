@@ -1,16 +1,21 @@
 <?php
 function getInstitutions($connection, $region_id, $type, $offset, $limit)
 {
-    // Determine the sorting column based on the type of institution
-    $sortColumn = '';
+    // Map type to actual table names and columns
     switch ($type) {
         case 'schools':
+            $tableName = 'schools';
+            $regionColumn = 'id_region';
             $sortColumn = 'id_school';
             break;
         case 'spo':
+            $tableName = 'spo';  // Use old table since new is empty
+            $regionColumn = 'id_region';
             $sortColumn = 'spo_name';
             break;
         case 'vpo':
+            $tableName = 'vpo';  // Use old table since new is empty
+            $regionColumn = 'id_region';
             $sortColumn = 'vpo_name';
             break;
         default:
@@ -19,7 +24,7 @@ function getInstitutions($connection, $region_id, $type, $offset, $limit)
     }
 
     // Prepare the SQL statement with placeholders
-    $query = "SELECT * FROM $type WHERE id_region = ? ORDER BY $sortColumn ASC LIMIT ?, ?";
+    $query = "SELECT * FROM $tableName WHERE $regionColumn = ? ORDER BY $sortColumn ASC LIMIT ?, ?";
 
     // Prepare the statement
     $stmt = $connection->prepare($query);

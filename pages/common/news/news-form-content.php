@@ -52,8 +52,52 @@ if ($newsId) {
 }
 ?>
 
-<h3 class="text-center text-white"><?php echo htmlspecialchars($pageTitle ?? ''); ?></h3>
-<p class="text-center text-danger">Поля, отмеченные звездочкой (*), обязательны для заполнения.</p>
+<style>
+.news-form-container {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    margin: 20px auto;
+    max-width: 800px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.form-title {
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+.form-subtitle {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+.form-floating > .form-control {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+.form-floating > .form-control:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.1);
+}
+.image-upload-section {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+}
+.image-preview-container {
+    margin-top: 15px;
+}
+.btn-group-form {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+</style>
+
+<div class="news-form-container">
+    <h3 class="text-center form-title"><?php echo htmlspecialchars($pageTitle ?? ''); ?></h3>
+    <p class="text-center form-subtitle">Поля, отмеченные звездочкой (*), обязательны для заполнения.</p>
 
 <form action="/pages/common/news/news-process.php" method="post" enctype="multipart/form-data">
   <!-- Hidden inputs for PHP variables -->
@@ -123,26 +167,34 @@ if ($newsId) {
     <label for="text_news">Полный текст новости <?php echo requiredAsterisk(); ?></label>
   </div>
 
-  <div class="row my-3">
-    <?php for ($i = 1; $i <= 3; $i++): ?>
-      <div class="col-md-4">
-        <div class="form-floating mb-3">
-          <input type="file" class="form-control" id="image_news_<?= $i ?>" name="image_news_<?= $i ?>" accept="image/*">
-          <label for="image_news_<?= $i ?>">Загрузить изображение <?= $i ?> (необязательно)</label>
-          <!-- Image Preview Container -->
-          <div class="mt-3 position-relative" id="image-container-<?= $i ?>" style="display: <?= !empty($newsData['image_news_' . $i]) ? 'block' : 'none'; ?>;">
-            <img id="image-preview-<?= $i ?>" src="<?= !empty($newsData['image_news_' . $i]) ? '/images/news-images/' . htmlspecialchars($newsData['image_news_' . $i]) : '' ?>" alt="Предпросмотр изображения <?= $i ?>" style="max-width: 200px; border: 1px solid #ddd; padding: 5px;">
-            <!-- Close Button -->
-            <button type="button" id="clear-image-<?= $i ?>" class="ms-2 btn btn-light btn-sm">Удалить</button>
+  <div class="image-upload-section">
+    <h5 class="mb-3">Изображения</h5>
+    <div class="row">
+      <?php for ($i = 1; $i <= 3; $i++): ?>
+        <div class="col-md-4">
+          <div class="form-floating mb-3">
+            <input type="file" class="form-control" id="image_news_<?= $i ?>" name="image_news_<?= $i ?>" accept="image/*">
+            <label for="image_news_<?= $i ?>">Изображение <?= $i ?></label>
+            <!-- Image Preview Container -->
+            <div class="image-preview-container" id="image-container-<?= $i ?>" style="display: <?= !empty($newsData['image_news_' . $i]) ? 'block' : 'none'; ?>;">
+              <img id="image-preview-<?= $i ?>" src="<?= !empty($newsData['image_news_' . $i]) ? '/images/news-images/' . htmlspecialchars($newsData['image_news_' . $i]) : '' ?>" alt="Предпросмотр изображения <?= $i ?>" class="img-thumbnail" style="max-width: 100%; max-height: 150px;">
+              <!-- Close Button -->
+              <button type="button" id="clear-image-<?= $i ?>" class="btn btn-sm btn-outline-danger mt-2">
+                <i class="fas fa-times"></i> Удалить
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    <?php endfor; ?>
+      <?php endfor; ?>
+    </div>
   </div>
 
   <!-- Submit Button -->
-  <?= renderButtonBlock("Сохранить", "Отмена"); ?>
+  <div class="btn-group-form">
+    <?= renderButtonBlock("Сохранить", "Отмена", "/news", !empty($newsId), $newsId, 'news'); ?>
+  </div>
 </form>
+</div>
 
 
 <script>

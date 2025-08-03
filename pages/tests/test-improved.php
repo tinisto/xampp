@@ -128,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $timeSpent = (int)($_POST['time_spent'] ?? 0);
     
     if ($selectedAnswer && $currentQuestion) {
-        $isCorrect = $selectedAnswer === $currentQuestion['correct_answer'];
+        $isCorrect = $selectedAnswer === (string)$currentQuestion['correct_answer'];
         if ($isCorrect) {
             $_SESSION['score']++;
         }
@@ -187,8 +187,9 @@ $progress = (($questionIndex + 1) / $totalQuestions) * 100;
         }
         
         [data-theme="dark"] .test-container {
-            background: #1f2937;
+            background: transparent;
             color: #f9fafb;
+            box-shadow: none;
         }
         
         [data-theme="dark"] .question-text {
@@ -196,13 +197,20 @@ $progress = (($questionIndex + 1) / $totalQuestions) * 100;
         }
         
         [data-theme="dark"] .answer-option {
-            background: #374151;
-            border-color: #4b5563;
+            background: #374151 !important;
+            border-color: #4b5563 !important;
             color: #f9fafb;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
         }
         
         [data-theme="dark"] .answer-option:hover {
             background: #4b5563;
+        }
+        
+        [data-theme="dark"] .answer-text {
+            color: #f9fafb !important;
         }
         
         [data-theme="dark"] .test-controls {
@@ -210,22 +218,28 @@ $progress = (($questionIndex + 1) / $totalQuestions) * 100;
             border-color: #374151;
         }
         
-        /* Theme toggle button */
-        .theme-toggle {
+        /* Top buttons container */
+        .top-buttons {
             position: fixed;
             top: 20px;
-            right: 80px; /* Moved left to avoid timer overlap */
-            width: 50px;
-            height: 50px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+        
+        /* Theme toggle button */
+        .theme-toggle {
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.9);
             border: none;
             cursor: pointer;
-            font-size: 20px;
+            font-size: 18px;
             color: #333;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             transition: all 0.3s ease;
-            z-index: 1001; /* Higher z-index to ensure it's visible */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -243,6 +257,28 @@ $progress = (($questionIndex + 1) / $totalQuestions) * 100;
         
         [data-theme="dark"] .theme-toggle:hover {
             background: rgba(31, 41, 55, 1);
+        }
+        
+        [data-theme="dark"] .timer {
+            background: #1f2937;
+            color: #f9fafb;
+        }
+        
+        [data-theme="dark"] .timer.warning {
+            background: #92400e;
+            color: #fcd34d;
+        }
+        
+        [data-theme="dark"] .btn-leave {
+            background: #374151 !important;
+            color: #fca5a5 !important;
+            border-color: #fca5a5 !important;
+        }
+        
+        [data-theme="dark"] .btn-leave:hover {
+            background: #ef4444 !important;
+            color: white !important;
+            border-color: #ef4444 !important;
         }
         
         /* Main Content - Consistent with site padding */
@@ -265,6 +301,36 @@ $progress = (($questionIndex + 1) / $totalQuestions) * 100;
             display: flex;
             flex-direction: column;
             min-height: 0; /* Allow flexbox children to shrink */
+        }
+        
+        /* Container wrapper for centering */
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+        
+        .test-header {
+            text-align: center;
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            position: relative;
+        }
+        
+        .test-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+        
+        [data-theme="dark"] .test-header {
+            border-bottom-color: #374151;
+        }
+        
+        [data-theme="dark"] .test-title {
+            color: #f9fafb;
         }
         
         /* Test Body - Consistent padding with site */
@@ -310,35 +376,63 @@ $progress = (($questionIndex + 1) / $totalQuestions) * 100;
         }
         
         .answer-option {
-            background: #f8f9fa;
-            border: 2px solid #e9ecef;
+            background: #f8f9fa !important;
+            border: 2px solid #e9ecef !important;
             border-radius: 12px;
-            padding: 15px;
+            padding: 15px !important;
             margin-bottom: 12px;
-            cursor: pointer;
+            cursor: pointer !important;
             transition: all 0.3s ease;
             position: relative;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            pointer-events: all !important;
+            z-index: 1;
         }
         
         .answer-option:hover {
             border-color: <?= $testConfig['color'] ?>;
             background: <?= $testConfig['color'] ?>10;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .answer-option:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
         
         .answer-option.selected {
-            border-color: <?= $testConfig['color'] ?>;
-            background: <?= $testConfig['color'] ?>20;
+            border-color: <?= $testConfig['color'] ?> !important;
+            background: <?= $testConfig['color'] ?>30 !important;
+            border-width: 3px !important;
         }
         
         .answer-option input[type="radio"] {
             position: absolute;
-            opacity: 0;
+            opacity: 0.01;
+            width: calc(100% - 30px);
+            height: calc(100% - 30px);
+            top: 15px;
+            left: 15px;
+            cursor: pointer !important;
+            z-index: 10;
+            pointer-events: all !important;
+            margin: 0;
+            padding: 0;
         }
         
         .answer-text {
-            font-size: 16px;
+            font-size: 16px !important;
             font-weight: 500;
             margin: 0;
+            color: #333 !important;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            line-height: 1.5 !important;
+            text-align: left !important;
         }
         
         /* Test Controls - Always visible */
@@ -364,6 +458,20 @@ $progress = (($questionIndex + 1) / $totalQuestions) * 100;
             transition: all 0.3s ease;
             opacity: 0.5;
             pointer-events: none;
+            display: block;
+            width: 100%;
+            max-width: 400px;
+            margin: 20px auto 0;
+        }
+        
+        .btn-next:hover.enabled {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+        
+        .btn-next:active.enabled {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
         
         .btn-next.enabled {
@@ -376,36 +484,40 @@ $progress = (($questionIndex + 1) / $totalQuestions) * 100;
             box-shadow: 0 8px 25px rgba(0,0,0,0.2);
         }
         
-        .leave-test-container {
-            text-align: center;
-            margin-top: 20px;
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 12px;
-        }
         
+        /* Exit button as circular icon */
         .btn-leave {
-            background: transparent;
-            color: #dc3545;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: white;
             border: 2px solid #dc3545;
-            padding: 10px 24px;
-            border-radius: 25px;
-            font-weight: 600;
-            font-size: 15px;
-            transition: all 0.3s ease;
+            color: #dc3545;
             cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
         
         .btn-leave:hover {
             background: #dc3545;
             color: white;
-            transform: scale(1.05);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220,53,69,0.3);
+        }
+        
+        .btn-leave:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(220,53,69,0.3);
         }
         
         .timer {
             position: fixed;
             top: 20px;
-            right: 20px;
+            left: 20px;
             background: white;
             padding: 15px 20px;
             border-radius: 10px;
@@ -423,20 +535,40 @@ $progress = (($questionIndex + 1) / $totalQuestions) * 100;
         /* Mobile Styles - Optimized for long questions */
         @media (max-width: 768px) {
             .main-content {
-                padding: 15px; /* Consistent mobile padding */
-                align-items: stretch; /* Full height on mobile */
+                padding: 0 15px; /* Standard mobile padding */
+                margin: 0;
+                align-items: flex-start; /* Don't stretch */
+                position: relative; /* For absolute positioning */
             }
+            
             
             .test-container {
                 border-radius: 16px;
-                height: calc(100vh - 30px); /* Full height minus padding */
-                max-height: none; /* Remove max-height restriction */
+                margin: 10px 0; /* Simple margins */
+                width: 100%; /* Full container width */
+                height: auto; /* Auto height, not 100vh */
+                max-height: calc(100vh - 100px); /* Leave space for buttons */
+                min-height: auto; /* No minimum height */
+                overflow-y: auto; /* Allow scrolling if needed */
+            }
+            
+            .test-header {
+                padding: 60px 20px 20px !important; /* Extra top padding for buttons */
+            }
+            
+            .test-title {
+                font-size: 22px !important; /* Smaller on mobile */
+                line-height: 1.3 !important;
+                margin: 0 !important;
             }
             
             .test-body {
-                padding: 15px; /* Consistent mobile padding */
-                height: 100%;
+                padding: 15px; /* Standard mobile padding */
+                margin: 0;
+                height: auto; /* Auto height */
                 min-height: 0;
+                max-height: none; /* No height constraints */
+                overflow: visible; /* Show all content */
             }
             
             .question-content {
@@ -462,38 +594,39 @@ $progress = (($questionIndex + 1) / $totalQuestions) * 100;
                 font-size: 14px;
             }
             
-            /* Controls are always visible and accessible */
-            .test-controls {
-                flex-shrink: 0;
-                position: sticky;
-                bottom: 0;
-                background: white;
-                border-top: 2px solid #eee;
-                margin: 0 -15px -15px; /* Extend to edges */
-                padding: 15px;
-                box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-            }
-            
+            /* Next button - full width on mobile */
             .btn-next {
-                width: 100%;
-                padding: 12px 20px;
-                font-size: 16px; /* Larger touch target */
+                width: 100% !important;
+                max-width: none !important;
+                margin: 20px 0 !important;
+                padding: 14px 20px !important;
+                font-size: 16px !important;
+                display: block !important;
+                position: static !important;
+                background: <?= $testConfig['color'] ?> !important;
+                color: white !important;
+                border: none !important;
+                border-radius: 25px !important;
+                font-weight: 600 !important;
+                cursor: pointer !important;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
             }
             
-            .timer {
-                position: static;
-                margin-bottom: 15px;
-                text-align: center;
-                font-size: 14px;  
-                padding: 10px 15px;
+            .btn-next.enabled {
+                opacity: 1 !important;
+            }
+            
+            
+            .top-buttons {
+                top: 15px !important;
+                right: 15px !important;
+                gap: 8px !important;
             }
             
             .theme-toggle {
-                top: 15px;
-                right: 15px;
-                width: 45px;
-                height: 45px;
-                font-size: 18px;
+                width: 40px !important;
+                height: 40px !important;
+                font-size: 16px !important;
             }
             
             .question-info {
@@ -501,21 +634,36 @@ $progress = (($questionIndex + 1) / $totalQuestions) * 100;
                 margin-bottom: 15px;
             }
             
-            .leave-test-container {
-                margin-top: 15px;
-                padding: 15px;
+            /* Ensure test controls are visible on mobile */
+            .test-controls {
+                position: sticky !important;
+                bottom: 0 !important;
+                background: white !important;
+                z-index: 50 !important;
+                padding: 15px !important;
+                border-top: 1px solid #eee !important;
+                margin: 0 -15px !important; /* Negative margin to full width */
+                width: calc(100% + 30px) !important;
             }
             
+            [data-theme="dark"] .test-controls {
+                background: #1f2937 !important;
+                border-top-color: #374151 !important;
+            }
+            
+            
+            /* Exit button on mobile - keep circular */
             .btn-leave {
-                width: 100%;
-                padding: 10px 20px;
+                width: 40px !important;
+                height: 40px !important;
+                font-size: 16px !important;
             }
         }
         
         /* Very small screens - ensure button is always visible */
         @media (max-width: 480px) {
             .test-container {
-                height: calc(100vh - 20px);
+                max-height: calc(100vh - 180px); /* More space for buttons */
             }
             
             .main-content {
@@ -540,7 +688,7 @@ $progress = (($questionIndex + 1) / $totalQuestions) * 100;
         /* Landscape mobile - optimize for wide screens with less height */
         @media (max-width: 768px) and (max-height: 500px) {
             .test-container {
-                height: calc(100vh - 10px);
+                max-height: calc(100vh - 140px); /* Space for buttons */
             }
             
             .main-content {
@@ -565,31 +713,25 @@ $progress = (($questionIndex + 1) / $totalQuestions) * 100;
     </style>
 </head>
 <body>
-    <!-- Theme Toggle Button -->
-    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Переключить тему">
-        <i class="fas fa-moon" id="theme-icon"></i>
-    </button>
+    <!-- Top Buttons Container -->
+    <div class="top-buttons">
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Переключить тему">
+            <i class="fas fa-moon" id="theme-icon"></i>
+        </button>
+        <button type="button" class="btn-leave" onclick="leaveTest()" aria-label="Покинуть тест">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
     
     <?php // Header hidden during test - include $_SERVER['DOCUMENT_ROOT'] . '/common-components/header.php'; ?>
     
     <main class="main-content">
         <div class="container">
             <?php if ($currentQuestion): ?>
-                <div class="timer" id="timer">
-                    <i class="fas fa-clock me-2"></i>
-                    <span id="time-display">00:00</span>
-                </div>
                 
                 <div class="test-container">
                     <div class="test-header">
-                        <i class="fas fa-<?= $testConfig['icon'] ?> test-icon"></i>
                         <h1 class="test-title"><?= htmlspecialchars($testConfig['title']) ?></h1>
-                        <div class="question-number">
-                            Вопрос <?= $questionIndex + 1 ?> из <?= $totalQuestions ?>
-                        </div>
-                        <div class="test-progress">
-                            <div class="progress-bar" style="width: <?= $progress ?>%"></div>
-                        </div>
                     </div>
                     
                     <div class="test-body">
@@ -605,27 +747,20 @@ $progress = (($questionIndex + 1) / $totalQuestions) * 100;
                             
                             <?php foreach ($currentQuestion['choices'] as $index => $choice): ?>
                                 <label class="answer-option" for="choice-<?= $index ?>">
-                                    <input type="radio" name="answer" value="<?= htmlspecialchars($choice) ?>" id="choice-<?= $index ?>">
-                                    <p class="answer-text"><?= htmlspecialchars($choice) ?></p>
+                                    <input type="radio" name="answer" value="<?= htmlspecialchars((string)$choice) ?>" id="choice-<?= $index ?>">
+                                    <p class="answer-text"><?= htmlspecialchars((string)$choice) ?></p>
                                 </label>
                             <?php endforeach; ?>
                             
-                            <div class="test-controls">
-                                <button type="submit" class="btn-next" id="next-btn">
-                                    <?= $questionIndex + 1 < $totalQuestions ? 'Следующий вопрос' : 'Завершить тест' ?>
-                                    <i class="fas fa-arrow-right ms-2"></i>
-                                </button>
-                            </div>
+                            <button type="submit" class="btn-next" id="next-btn">
+                                <?= $questionIndex + 1 < $totalQuestions ? 'Следующий вопрос' : 'Завершить тест' ?>
+                                <i class="fas fa-arrow-right ms-2"></i>
+                            </button>
                         </form>
                     </div>
                 </div>
                 
-                <div class="leave-test-container">
-                    <button type="button" class="btn-leave" onclick="leaveTest()">
-                        <i class="fas fa-times me-2"></i>
-                        Покинуть тест
-                    </button>
-                </div>
+            </div>
             <?php else: ?>
                 <div class="test-container">
                     <div class="test-body text-center">
@@ -638,12 +773,10 @@ $progress = (($questionIndex + 1) / $totalQuestions) * 100;
         </div>
     </main>
 
-    <?php // Footer hidden during test - include $_SERVER['DOCUMENT_ROOT'] . '/common-components/footer.php'; ?>
+    <?php // Footer hidden during test - include \$_SERVER['DOCUMENT_ROOT'] . '/common-components/footer-unified.php'; ?>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        let questionStartTime = Date.now();
-        let timerInterval;
         
         // Leave test function
         function leaveTest() {
@@ -652,24 +785,8 @@ $progress = (($questionIndex + 1) / $totalQuestions) * 100;
             window.location.href = '/tests';
         }
         
-        // Timer functionality
-        function startTimer() {
-            timerInterval = setInterval(function() {
-                const elapsed = Math.floor((Date.now() - questionStartTime) / 1000);
-                const minutes = Math.floor(elapsed / 60);
-                const seconds = elapsed % 60;
-                const timeDisplay = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                document.getElementById('time-display').textContent = timeDisplay;
-                document.getElementById('time_spent').value = elapsed;
-                
-                // Warning after 2 minutes per question
-                if (elapsed > 120) {
-                    document.getElementById('timer').classList.add('warning');
-                }
-            }, 1000);
-        }
         
-        // Answer selection
+        // Answer selection - Enhanced click handling
         document.querySelectorAll('input[name="answer"]').forEach(function(radio) {
             radio.addEventListener('change', function() {
                 // Remove selected class from all options
@@ -685,6 +802,17 @@ $progress = (($questionIndex + 1) / $totalQuestions) * 100;
             });
         });
         
+        // Additional click handling for labels
+        document.querySelectorAll('.answer-option').forEach(function(label) {
+            label.addEventListener('click', function(e) {
+                const radio = this.querySelector('input[type="radio"]');
+                if (radio && !radio.checked) {
+                    radio.checked = true;
+                    radio.dispatchEvent(new Event('change'));
+                }
+            });
+        });
+        
         // Form validation
         document.getElementById('test-form').addEventListener('submit', function(e) {
             const selectedAnswer = document.querySelector('input[name="answer"]:checked');
@@ -694,7 +822,6 @@ $progress = (($questionIndex + 1) / $totalQuestions) * 100;
                 return false;
             }
             
-            clearInterval(timerInterval);
         });
         
         // Keyboard navigation
@@ -714,8 +841,6 @@ $progress = (($questionIndex + 1) / $totalQuestions) * 100;
             }
         });
         
-        // Start timer when page loads
-        startTimer();
         
         // Prevent accidental page refresh
         function beforeUnloadHandler(e) {

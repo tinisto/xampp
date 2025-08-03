@@ -1,4 +1,6 @@
 <?php
+// Include getAvatar function
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/functions/get_avatar.php';
 
 // Get the current URL
 $currentUrl = $_SERVER['REQUEST_URI'];
@@ -62,7 +64,7 @@ if (isset($schoolMatches[1])) {
             <div class="mb-2">
               <textarea class="form-control form-control-sm rounded" id="comment" name="comment" rows="2"
                 maxlength="2000" placeholder="Введите Ваш комментарий или вопрос (макс. 2000 символов)" required
-                style="background-color: #f5f5f5; color: black;"></textarea>
+                style="background-color: var(--surface-variant, #f5f5f5); color: var(--text-primary, black);"></textarea>
             </div>
 
             <input type="hidden" name="id_school" value="<?php echo htmlspecialchars($id_school ?? ''); ?>">

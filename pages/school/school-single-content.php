@@ -1,108 +1,114 @@
-<?php $row = $additionalData['row']; ?>
-<?php if (!include 'school-single-functions.php') {
-    header("Location: /error");
-    exit();
-} ?>
-
-<div class="container mt-4" style="font-size: 14px;">
-    <?php include 'school-single-header-links.php' ?>
-
-    <!-- Assuming $row is already defined or fetched;
-    Include the location_info.php file   -->
-    <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/location_info.php'; ?>
-
-    <h1 class="display-6">
-        <?php echo $pageTitle; ?>
-    </h1>
-
-    <div class="row">
-        <?php if (!empty($row['image_school_1'])) : ?>
-            <div class="col-md-4 mb-3">
-                <img src="../images/schools-images/<?= htmlspecialchars($row['image_school_1']); ?>"
-                    class="img-fluid img-thumbnail" alt="Image 1">
-            </div>
-        <?php endif; ?>
-
-        <?php if (!empty($row['image_school_2'])) : ?>
-            <div class="col-md-4 mb-3">
-                <img src="../images/schools-images/<?= htmlspecialchars($row['image_school_2']); ?>"
-                    class="img-fluid img-thumbnail" alt="Image 2">
-            </div>
-        <?php endif; ?>
-
-        <?php if (!empty($row['image_school_3'])) : ?>
-            <div class="col-md-4 mb-3">
-                <img src="../images/schools-images/<?= htmlspecialchars($row['image_school_3']); ?>"
-                    class="img-fluid img-thumbnail" alt="Image 3">
-            </div>
-        <?php endif; ?>
-    </div>
-
-    <?php
-    if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
-    ?>
-        <div class="d-flex justify-content-evenly align-items-center bg-warning-subtle p-2 my-2 border border-danger">
-            <div>
-                <?php
-                echo '<h3>' . $row['id_school'] . '</h3>';
-                ?>
-            </div>
-            <!-- Form with target="_blank" to open a new window and send data -->
-            <div>
-                <form method="post" action='/pages/school/send-emails-to-current-school.php' target="_blank">
-                    <!-- Hidden input fields for additional data -->
-                    <input type="hidden" name="id_school" value="<?php echo $row['id_school']; ?>">
-                    <input type="hidden" name="email" value="<?php echo $row['email']; ?>">
-                    <input type="hidden" name="director_email" value="<?php echo $row['director_email']; ?>">
-                    <button type="submit" name="send_emails" class="custom-button">Send Emails to School</button>
-                </form>
-            </div>
-            <div>
-                <i class="fas fa-trash" onclick="deleteSchool(<?php echo $row['id_school']; ?>)"
-                    style="color: red; cursor: pointer;"></i>
-            </div>
-        </div>
-    <?php
-    }
-
-    require('school-tabs.php');
-    ?>
-
-    <div class="d-flex flex-row text-muted d-flex justify-content-between" style="font-size: 12px;">
-        <div><span>
-                <?php displayIfNotEmptyDate($row['updated']); ?>
-            </span>
-            <span class='ms-2'>
-                <?php echo '<a href="/pages/school/edit/school-edit-form.php?id_school=' . $row['id_school'] . '" class="edit-icon" style="color: red;"><i class="fa fa-pencil"></i></a>'; ?>
-            </span>
-        </div>
-        <div class="d-flex align-items-center">
-            <span class="me-1"><i class='fas fa-eye'></i></span>
-            <?php echo $row['view']; ?>
-        </div>
-    </div>
-</div>
-
-<?php require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/getEntityIdFromURL.php'; ?>
 <?php
-$result = extractSchoolIdEntityFromURL();
-
-$id_entity = $result['id_entity'];
-$entity_type = $result['entity_type'];
-
-?>
-
-<?php
-include $_SERVER['DOCUMENT_ROOT'] . '/comments/user_comments.php';
-?>
-
-<script>
-    function deleteSchool(schoolId) {
-        // You can implement the logic to delete the post using AJAX or a form submission
-        // For simplicity, let's use a confirm dialog
-        if (confirm('Are you sure you want to delete this college?')) {
-            // Use window.location.href to redirect to the delete page with the post ID
-            window.location.href = '/pages/dashboard/schools-dashboard/schools-delete/schools-delete.php?id=' + schoolId;
+// Additional styles for school page
+$additionalStyles = '<style>
+        .school-header {
+            background: linear-gradient(135deg, #6f42c1 0%, #495057 100%);
+            color: white;
+            padding: 60px 0 40px;
+            margin-bottom: 40px;
         }
-    }
-</script>
+        .school-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .info-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+        .info-value {
+            font-size: 16px;
+            color: #333;
+        }
+    </style>';
+?>
+
+<div class="school-header">
+        <div class="container">
+            <div class="school-badge">
+                <i class="fas fa-school"></i> Школа
+            </div>
+            <h1 class="display-4 fw-bold mb-3"><?= htmlspecialchars($school['school_name']) ?></h1>
+            <p class="lead mb-0">
+                <i class="fas fa-map-marker-alt me-2"></i>
+                <?= htmlspecialchars($school['address'] ?? 'Адрес не указан') ?>
+            </p>
+        </div>
+    </div>
+    
+    <div class="container mb-5">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="info-card">
+                    <h2 class="h4 mb-4">Основная информация</h2>
+                    
+                    <?php if (!empty($school['fio_director'])): ?>
+                    <div class="mb-3">
+                        <div class="info-label">Директор</div>
+                        <div class="info-value"><?= htmlspecialchars($school['fio_director']) ?></div>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <?php if (!empty($school['tel'])): ?>
+                    <div class="mb-3">
+                        <div class="info-label">Телефон</div>
+                        <div class="info-value">
+                            <i class="fas fa-phone text-primary me-2"></i>
+                            <?= htmlspecialchars($school['tel']) ?>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <?php if (!empty($school['email'])): ?>
+                    <div class="mb-3">
+                        <div class="info-label">Email</div>
+                        <div class="info-value">
+                            <i class="fas fa-envelope text-primary me-2"></i>
+                            <a href="mailto:<?= htmlspecialchars($school['email']) ?>">
+                                <?= htmlspecialchars($school['email']) ?>
+                            </a>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <?php if (!empty($school['site'])): ?>
+                    <div class="mb-3">
+                        <div class="info-label">Сайт</div>
+                        <div class="info-value">
+                            <i class="fas fa-globe text-primary me-2"></i>
+                            <a href="<?= htmlspecialchars($school['site']) ?>" target="_blank">
+                                <?= htmlspecialchars($school['site']) ?>
+                            </a>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="info-card">
+                    <h3 class="h5 mb-3">Статистика</h3>
+                    <p class="mb-2">
+                        <i class="fas fa-eye text-muted me-2"></i>
+                        Просмотров: <?= $school['view'] ?? 0 ?>
+                    </p>
+                    <p class="mb-0">
+                        <i class="fas fa-id-card text-muted me-2"></i>
+                        ID: <?= $school['id_school'] ?>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>

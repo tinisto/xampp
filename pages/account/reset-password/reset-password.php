@@ -65,9 +65,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 $pageTitle = 'Сброс пароля';
-$mainContent = 'reset-password-content.php';
 
-include $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine-authorization.php';
+// Template configuration
+$templateConfig = [
+    'layoutType' => 'auth',
+    'cssFramework' => 'custom',
+    'headerType' => 'modern',
+    'footerType' => 'modern',
+    'darkMode' => true,
+    'noHeader' => true,
+    'noFooter' => true,
+    'resetSuccess' => $resetSuccess,
+    'token' => $token
+];
+
+// Render template
+include $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine-ultimate.php';
+renderTemplate($pageTitle, 'pages/account/reset-password/reset-password-content.php', $templateConfig);
 
 // Function to check if email exists in the database
 function checkEmailExistsInDatabase($email, $connection)

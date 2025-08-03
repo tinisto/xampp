@@ -1,0 +1,275 @@
+/**
+ * Modern Theme Variables System
+ * Based on YouTube, GitHub, Discord design systems
+ */
+
+:root {
+  /* ========== Light Theme (Default) ========== */
+  
+  /* Primary Colors */
+  --color-primary: #28a745;
+  --color-primary-hover: #218838;
+  --color-primary-active: #1e7e34;
+  
+  /* Surface Colors (Backgrounds) */
+  --color-surface-primary: #ffffff;
+  --color-surface-secondary: #f8f9fa;
+  --color-surface-tertiary: #e9ecef;
+  --color-surface-elevated: #ffffff;
+  
+  /* Text Colors */
+  --color-text-primary: #212529;
+  --color-text-secondary: #6c757d;
+  --color-text-tertiary: #868e96;
+  --color-text-inverse: #ffffff;
+  
+  /* Border Colors */
+  --color-border-primary: #dee2e6;
+  --color-border-secondary: #e9ecef;
+  --color-border-tertiary: #f1f3f5;
+  
+  /* Interactive Elements */
+  --color-link: #007bff;
+  --color-link-hover: #0056b3;
+  --color-link-visited: #5a67d8;
+  
+  /* Status Colors */
+  --color-success: #28a745;
+  --color-warning: #ffc107;
+  --color-danger: #dc3545;
+  --color-info: #17a2b8;
+  
+  /* Shadows and Overlays */
+  --color-shadow-sm: rgba(0, 0, 0, 0.075);
+  --color-shadow-md: rgba(0, 0, 0, 0.15);
+  --color-shadow-lg: rgba(0, 0, 0, 0.25);
+  --color-overlay: rgba(0, 0, 0, 0.5);
+  
+  /* Subtle Backgrounds (YouTube-style) */
+  --color-bg-hover: rgba(0, 0, 0, 0.05);
+  --color-bg-active: rgba(0, 0, 0, 0.08);
+  --color-bg-selected: rgba(0, 0, 0, 0.1);
+  
+  /* Specific Component Colors */
+  --color-header-bg: #ffffff;
+  --color-footer-bg: #f8f9fa;
+  --color-card-bg: #ffffff;
+  --color-badge-bg: var(--color-primary);
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow: 350ms ease;
+}
+
+/* ========== Dark Theme ========== */
+[data-theme="dark"] {
+  /* Primary Colors */
+  --color-primary: #4ade80;
+  --color-primary-hover: #22c55e;
+  --color-primary-active: #16a34a;
+  
+  /* Surface Colors (Backgrounds) */
+  --color-surface-primary: #0f0f0f;
+  --color-surface-secondary: #1a1a1a;
+  --color-surface-tertiary: #272727;
+  --color-surface-elevated: #1f1f1f;
+  
+  /* Text Colors */
+  --color-text-primary: #f1f1f1;
+  --color-text-secondary: #aaaaaa;
+  --color-text-tertiary: #717171;
+  --color-text-inverse: #0f0f0f;
+  
+  /* Border Colors */
+  --color-border-primary: #3f3f3f;
+  --color-border-secondary: #303030;
+  --color-border-tertiary: #1a1a1a;
+  
+  /* Interactive Elements */
+  --color-link: #3ea6ff;
+  --color-link-hover: #65b8ff;
+  --color-link-visited: #8ab4f8;
+  
+  /* Status Colors */
+  --color-success: #4ade80;
+  --color-warning: #facc15;
+  --color-danger: #f87171;
+  --color-info: #60a5fa;
+  
+  /* Shadows and Overlays */
+  --color-shadow-sm: rgba(0, 0, 0, 0.3);
+  --color-shadow-md: rgba(0, 0, 0, 0.5);
+  --color-shadow-lg: rgba(0, 0, 0, 0.7);
+  --color-overlay: rgba(0, 0, 0, 0.7);
+  
+  /* Subtle Backgrounds (YouTube-style) */
+  --color-bg-hover: rgba(255, 255, 255, 0.08);
+  --color-bg-active: rgba(255, 255, 255, 0.1);
+  --color-bg-selected: rgba(255, 255, 255, 0.12);
+  
+  /* Specific Component Colors */
+  --color-header-bg: #0f0f0f;
+  --color-footer-bg: #1a1a1a;
+  --color-card-bg: #1a1a1a;
+  --color-badge-bg: var(--color-primary);
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #374151 0%, #4b5563 100%);
+  --gradient-secondary: linear-gradient(135deg, #581c87 0%, #7c3aed 100%);
+}
+
+/* ========== Global Resets ========== */
+* {
+  transition: background-color var(--transition-normal),
+              color var(--transition-normal),
+              border-color var(--transition-normal);
+}
+
+/* Disable transitions during theme switch */
+.theme-transition-disabled * {
+  transition: none !important;
+}
+
+/* ========== Base Elements ========== */
+body {
+  background-color: var(--color-surface-primary);
+  color: var(--color-text-primary);
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+a {
+  color: var(--color-link);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-link-hover);
+}
+
+a:visited {
+  color: var(--color-link-visited);
+}
+
+/* ========== Common Components ========== */
+.card {
+  background-color: var(--color-card-bg);
+  border: 1px solid var(--color-border-primary);
+  transition: all var(--transition-normal);
+}
+
+.card:hover {
+  background-color: var(--color-bg-hover);
+  border-color: var(--color-border-secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--color-shadow-md);
+}
+
+.btn {
+  background-color: var(--color-surface-secondary);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-primary);
+  transition: all var(--transition-fast);
+}
+
+.btn:hover {
+  background-color: var(--color-bg-hover);
+  border-color: var(--color-border-secondary);
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-text-inverse);
+  border-color: var(--color-primary);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+}
+
+/* ========== Forms ========== */
+input, textarea, select {
+  background-color: var(--color-surface-secondary);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-primary);
+  transition: all var(--transition-fast);
+}
+
+input:focus, textarea:focus, select:focus {
+  background-color: var(--color-surface-primary);
+  border-color: var(--color-primary);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(var(--color-primary), 0.1);
+}
+
+/* ========== Header & Navigation ========== */
+.header, .navbar {
+  background-color: var(--color-header-bg);
+  border-bottom: 1px solid var(--color-border-primary);
+}
+
+.nav-link {
+  color: var(--color-text-secondary);
+  transition: all var(--transition-fast);
+}
+
+.nav-link:hover {
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-hover);
+}
+
+.nav-link.active {
+  color: var(--color-primary);
+  background-color: var(--color-bg-selected);
+}
+
+/* ========== Footer ========== */
+.footer {
+  background-color: var(--color-footer-bg);
+  border-top: 1px solid var(--color-border-primary);
+  color: var(--color-text-secondary);
+}
+
+/* ========== Utility Classes ========== */
+.bg-surface-primary { background-color: var(--color-surface-primary); }
+.bg-surface-secondary { background-color: var(--color-surface-secondary); }
+.bg-surface-tertiary { background-color: var(--color-surface-tertiary); }
+
+.text-primary { color: var(--color-text-primary); }
+.text-secondary { color: var(--color-text-secondary); }
+.text-tertiary { color: var(--color-text-tertiary); }
+
+.border-primary { border-color: var(--color-border-primary); }
+.border-secondary { border-color: var(--color-border-secondary); }
+
+/* ========== Scrollbar Styling ========== */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-text-tertiary);
+  border-radius: 6px;
+  border: 3px solid var(--color-surface-secondary);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-text-tertiary) var(--color-surface-secondary);
+}

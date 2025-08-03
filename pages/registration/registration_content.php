@@ -18,6 +18,13 @@
       ];
       ?>
 
+      <div class="text-center mb-3">
+          <a href="/" class="text-decoration-none">
+              <i class="fas fa-home text-success me-2"></i>
+              <span class="text-muted small">Вернуться на главную</span>
+          </a>
+      </div>
+      
       <a href="/" class="link-custom"><img src="../images/logo.png" alt="Avatar" class="rounded-circle mx-auto d-block"
           width="50" /></a>
 
@@ -35,7 +42,7 @@
       }
       ?>
 
-      <?php include 'registration_form.php'; ?>
+      <?php include 'registration_form_include.php'; ?>
       <script src="registration.js"></script>
     </div>
   </div>
