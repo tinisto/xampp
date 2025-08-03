@@ -262,7 +262,7 @@ if (!isset($_SESSION['csrf_token'])) {
                 Введите email адрес, указанный при регистрации. Мы отправим вам инструкции по восстановлению пароля.
             </p>
             
-            <form method="post" action="/pages/account/reset-password/reset-password-process-simple-no-rate-limit.php">
+            <form method="post" action="/reset-password-simple.php">
                 <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                 
                 <div class="form-group">

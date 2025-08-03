@@ -15,6 +15,8 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
 $url_post = isset($_GET['url_post']) ? mysqli_real_escape_string($connection, $_GET['url_post']) : '';
 
 if (empty($url_post)) {
+    // Log the error
+    error_log("Post error: Empty url_post parameter. Request URI: " . $_SERVER['REQUEST_URI']);
     header("Location: /404");
     exit();
 }
@@ -33,6 +35,8 @@ if ($row = mysqli_fetch_assoc($result)) {
     $metaD = $row['meta_d_post'] ?? '';
     $metaK = $row['meta_k_post'] ?? '';
 } else {
+    // Log which post was not found
+    error_log("Post not found in database: " . $url_post);
     header("Location: /404");
     exit();
 }
