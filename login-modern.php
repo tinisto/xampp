@@ -414,6 +414,9 @@ if (!isset($_SESSION['csrf_token'])) {
             
             <form id="loginForm" method="post" action="/pages/login/login_process_simple.php">
                 <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                <?php if (isset($_GET['redirect'])): ?>
+                    <input type="hidden" name="redirect" value="<?= htmlspecialchars($_GET['redirect']) ?>">
+                <?php endif; ?>
                 
                 <div class="form-group">
                     <label for="email" class="form-label">

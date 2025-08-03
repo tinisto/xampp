@@ -192,7 +192,7 @@ $pageTitle = 'Напишите нам';
             
             <?php if (!$isLoggedIn): ?>
                 <div class="alert alert-info">
-                    Чтобы отправить сообщение, пожалуйста,&nbsp;<a href="/login">войдите</a>.
+                    Чтобы отправить сообщение, пожалуйста,&nbsp;<a href="/login?redirect=<?= urlencode($_SERVER['REQUEST_URI']) ?>">войдите</a>.
                 </div>
             <?php else: ?>
                 <form action="/pages/write/write-process-form.php" method="post">

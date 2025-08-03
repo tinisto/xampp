@@ -13,10 +13,12 @@ if (!isset($_POST['csrf_token']) || !isset($_SESSION['csrf_token']) ||
 $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
 $password = $_POST['password'] ?? '';
 $remember = isset($_POST['remember']) ? true : false;
+$redirect = $_POST['redirect'] ?? null;
 
 if (!$email || empty($password)) {
     $_SESSION['error'] = 'Пожалуйста, введите email и пароль.';
-    header('Location: /login');
+    $redirectParam = $redirect ? '?redirect=' . urlencode($redirect) : '';
+    header('Location: /login' . $redirectParam);
     exit();
 }
 
@@ -52,7 +54,8 @@ $result = $stmt->get_result();
 
 if ($result->num_rows === 0) {
     $_SESSION['error'] = 'Неверный email или пароль.';
-    header('Location: /login');
+    $redirectParam = $redirect ? '?redirect=' . urlencode($redirect) : '';
+    header('Location: /login' . $redirectParam);
     exit();
 }
 
@@ -61,14 +64,16 @@ $user = $result->fetch_assoc();
 // Verify password
 if (!password_verify($password, $user['password'])) {
     $_SESSION['error'] = 'Неверный email или пароль.';
-    header('Location: /login');
+    $redirectParam = $redirect ? '?redirect=' . urlencode($redirect) : '';
+    header('Location: /login' . $redirectParam);
     exit();
 }
 
 // Check if account is active
 if (isset($user['is_active']) && $user['is_active'] == 0) {
     $_SESSION['error'] = 'Ваш аккаунт не активирован.';
-    header('Location: /login');
+    $redirectParam = $redirect ? '?redirect=' . urlencode($redirect) : '';
+    header('Location: /login' . $redirectParam);
     exit();
 }
 
@@ -96,7 +101,17 @@ if ($remember) {
 $stmt->close();
 $connection->close();
 
-// Redirect based on role
+// Redirect based on redirect parameter or role
+if ($redirect) {
+    // Security check: only allow internal relative paths
+    if (strpos($redirect, '/') === 0 && strpos($redirect, '//') !== 0) {
+        // It's a relative path starting with / and not //
+        header('Location: ' . $redirect);
+        exit();
+    }
+}
+
+// Default redirect based on role
 if (isset($user['role']) && $user['role'] === 'admin') {
     header('Location: /dashboard');
 } else {
