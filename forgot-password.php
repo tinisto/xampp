@@ -15,6 +15,7 @@ if (!isset($_SESSION['csrf_token'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Восстановление пароля - 11-классники</title>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/css/site-logo.css">
     <style>
         * {
             margin: 0;
@@ -210,14 +211,10 @@ if (!isset($_SESSION['csrf_token'])) {
 <body>
     <div class="reset-container">
         <div class="logo-section">
-            <a href="/" class="logo-link">
-                <div class="logo-placeholder">
-                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2"/>
-                        <text x="20" y="26" text-anchor="middle" fill="currentColor" font-size="18" font-weight="bold">11</text>
-                    </svg>
-                </div>
-            </a>
+            <?php 
+            require_once __DIR__ . '/includes/components/site-logo.php';
+            echo renderSiteLogo(['showText' => false]);
+            ?>
         </div>
         <div class="reset-header">
             <h1>Восстановление пароля</h1>

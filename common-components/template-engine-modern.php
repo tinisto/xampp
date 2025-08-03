@@ -24,6 +24,9 @@ function renderTemplate($pageTitle, $mainContent, $templateConfig = []) {
     
     // Get current theme from session/cookie
     $currentTheme = $_COOKIE['preferred-theme'] ?? 'light';
+    
+    // Include cookie consent system
+    require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/components/cookie-consent.php';
 ?>
 <!DOCTYPE html>
 <html lang="ru" data-theme="<?= htmlspecialchars($currentTheme) ?>">
@@ -256,8 +259,9 @@ function renderTemplate($pageTitle, $mainContent, $templateConfig = []) {
             const savedTheme = localStorage.getItem('preferred-theme') || 'light';
             document.documentElement.setAttribute('data-theme', savedTheme);
             
-            // Also set cookie for PHP
-            document.cookie = `preferred-theme=${savedTheme};path=/;max-age=31536000`;
+            // Also set cookie for PHP with proper security
+            const isSecure = window.location.protocol === 'https:';
+            document.cookie = `preferred-theme=${savedTheme};path=/;max-age=31536000;${isSecure ? 'secure;' : ''}samesite=lax`;
         })();
     </script>
     
@@ -311,7 +315,8 @@ function renderTemplate($pageTitle, $mainContent, $templateConfig = []) {
             // Update theme
             document.documentElement.setAttribute('data-theme', newTheme);
             localStorage.setItem('preferred-theme', newTheme);
-            document.cookie = `preferred-theme=${newTheme};path=/;max-age=31536000`;
+            const isSecure = window.location.protocol === 'https:';
+            document.cookie = `preferred-theme=${newTheme};path=/;max-age=31536000;${isSecure ? 'secure;' : ''}samesite=lax`;
             
             // Update all theme toggle buttons
             document.querySelectorAll('[data-theme-toggle]').forEach(btn => {
@@ -349,6 +354,9 @@ function renderTemplate($pageTitle, $mainContent, $templateConfig = []) {
     <?php foreach ($additionalJS as $js): ?>
     <script src="<?= htmlspecialchars($js) ?>"></script>
     <?php endforeach; ?>
+    
+    <!-- Cookie Consent Banner -->
+    <?= renderCookieConsent() ?>
 </body>
 </html>
 <?php

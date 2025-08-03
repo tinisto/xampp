@@ -113,6 +113,9 @@
     RewriteRule ^about/?$ pages/about/about.php [QSA,NC,L]
     RewriteRule ^write/?$ pages/write/write-simple.php [QSA,NC,L]
     RewriteRule ^thank-you/?$ pages/thank-you/thank-you.php [QSA,NC,L]
+    RewriteRule ^privacy/?$ pages/privacy/privacy.php [QSA,NC,L]
+    RewriteRule ^terms/?$ pages/terms/terms.php [QSA,NC,L]
+    RewriteRule ^cookie-consent/?$ cookie-consent-process.php [QSA,NC,L]
 
     # API Routes (if needed)
     RewriteRule ^api/([^/]+)/?$ api/$1.php [QSA,NC,L]

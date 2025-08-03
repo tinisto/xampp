@@ -49,6 +49,9 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
     // Set darkModeEnabled for backward compatibility
     $darkModeEnabled = $darkMode;
     
+    // Include cookie consent system
+    require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/components/cookie-consent.php';
+    
     // Auto-detect framework based on layout type for backward compatibility
     if ($layoutType === 'no-bootstrap') {
         $cssFramework = 'custom';
@@ -369,6 +372,10 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
             html.setAttribute('data-theme', newTheme);
             localStorage.setItem('preferred-theme', newTheme);
             
+            // Set secure cookie
+            const isSecure = window.location.protocol === 'https:';
+            document.cookie = `preferred-theme=${newTheme};path=/;max-age=31536000;${isSecure ? 'secure;' : ''}samesite=lax`;
+            
             // Update theme icons
             const themeIcon = document.getElementById('theme-icon');
             const themeIconUser = document.getElementById('theme-icon-user');
@@ -429,8 +436,12 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
                 const newTheme = currentTheme === 'light' ? 'dark' : 'light';
                 
                 html.setAttribute('data-bs-theme', newTheme);
-                html.setAttribute('data-theme', newTheme);
+                html.setAttribute('data-theme', newTheme);  
                 localStorage.setItem('preferred-theme', newTheme);
+                
+                // Set secure cookie
+                const isSecure = window.location.protocol === 'https:';
+                document.cookie = `preferred-theme=${newTheme};path=/;max-age=31536000;${isSecure ? 'secure;' : ''}samesite=lax`;
                 
                 // Update theme icons (handle multiple icons for different user states)
                 const themeIcon = document.getElementById('theme-icon');
@@ -453,6 +464,10 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
             
             html.setAttribute('data-bs-theme', savedTheme);
             html.setAttribute('data-theme', savedTheme);
+            
+            // Set secure cookie on page load
+            const isSecure = window.location.protocol === 'https:';
+            document.cookie = `preferred-theme=${savedTheme};path=/;max-age=31536000;${isSecure ? 'secure;' : ''}samesite=lax`;
             
             const themeIcon = document.getElementById('theme-icon');
             const themeIconUser = document.getElementById('theme-icon-user');
@@ -507,6 +522,9 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
     <?php if (isset($additionalScripts)): ?>
         <?php echo $additionalScripts; ?>
     <?php endif; ?>
+    
+    <!-- Cookie Consent Banner -->
+    <?= renderCookieConsent() ?>
 </body>
 </html>
 <?php
