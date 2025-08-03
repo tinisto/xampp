@@ -1,25 +1,34 @@
 # Environment files
 .env
 .env.local
+.env.production
+.env.*
+!.env.example
 
 # Logs
 logs/
 *.log
+error_log
 
 # Cache
 cache/
+*.cache
 
 # Temporary files
 temp_deploy_config.php
 filezilla-deploy.txt
+*.tmp
+*.temp
 
 # IDE files
 .vscode/
 .idea/
+*.sublime-*
 
 # OS files
 .DS_Store
 Thumbs.db
+desktop.ini
 
 # Vendor (if using Composer)
 vendor/
@@ -27,3 +36,45 @@ vendor/
 # Sensitive deploy configs
 deploy-config.php
 deploy-credentials.json
+*_credentials.php
+
+# Backup files
+*.backup
+*.bak
+*.old
+*~
+
+# SQL files (often contain sensitive data)
+*.sql
+!create-new-database-schema.sql
+
+# Debug and test files
+debug_*.php
+test_*.php
+check_*.php
+fix_*.php
+ftp_*.py
+*_test.php
+*_debug.php
+
+# Migration scripts
+migrate_*.php
+migrate_*.py
+
+# Temporary Python scripts
+*.pyc
+__pycache__/
+
+# Upload directories (user content)
+uploads/
+images/news-images/
+images/user-avatars/
+
+# Session data
+sessions/
+
+# Private keys and certificates
+*.pem
+*.key
+*.crt
+*.p12

@@ -31,12 +31,9 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . '/.env.production')) {
 }
 
 if (!$envLoaded) {
-    // Fallback to new database credentials
-    $_ENV['APP_ENV'] = 'production';
-    $_ENV['DB_HOST'] = '11klassnikiru67871.ipagemysql.com';
-    $_ENV['DB_USER'] = 'admin_claude';
-    $_ENV['DB_PASS'] = 'W4eZ!#9uwLmrMay';
-    $_ENV['DB_NAME'] = '11klassniki_claude';
+    // No environment file found
+    error_log("Environment configuration file not found");
+    die("Configuration error. Please contact the administrator.");
 }
 
 // Check if APP_ENV is set to 'under_construction'
@@ -47,11 +44,8 @@ if (isset($_ENV['APP_ENV']) && $_ENV['APP_ENV'] === 'under_construction') {
 
 // Check if environment variables are loaded
 if (!isset($_ENV['DB_HOST'], $_ENV['DB_USER'], $_ENV['DB_PASS'], $_ENV['DB_NAME'])) {
-    // Use new database fallback values
-    $_ENV['DB_HOST'] = '11klassnikiru67871.ipagemysql.com';
-    $_ENV['DB_USER'] = 'admin_claude';
-    $_ENV['DB_PASS'] = 'W4eZ!#9uwLmrMay';
-    $_ENV['DB_NAME'] = '11klassniki_claude';
+    error_log("Database configuration not found in environment variables");
+    die("Database configuration error. Please contact the administrator.");
 }
 
 // Define the constants using the loaded environment variables
