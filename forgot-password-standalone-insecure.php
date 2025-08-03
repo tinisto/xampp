@@ -1,9 +1,5 @@
 <?php
 session_start();
-require_once $_SERVER['DOCUMENT_ROOT'] . '/config/loadEnv.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/functions/email_functions.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/email-templates/password-reset.php';
 
 // Initialize CSRF token if not set
 if (!isset($_SESSION['csrf_token'])) {
@@ -15,73 +11,63 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL);
     
     if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        // Always show the same message for security
-        $_SESSION['reset_message'] = 'Если этот email зарегистрирован в системе, вы получите инструкции для восстановления пароля на указанный адрес.';
+        // Check if email exists in database
+        require_once $_SERVER['DOCUMENT_ROOT'] . '/config/loadEnv.php';
         
-        // Check if email exists and send reset email
-        try {
-            $stmt = $connection->prepare("SELECT id, firstname FROM users WHERE email = ?");
-            if ($stmt) {
-                $stmt->bind_param("s", $email);
-                $stmt->execute();
-                $result = $stmt->get_result();
+        if (defined('DB_HOST') && defined('DB_USER') && defined('DB_PASS') && defined('DB_NAME')) {
+            $connection = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+            
+            if (!$connection->connect_error) {
+                $connection->set_charset("utf8mb4");
                 
-                if ($result->num_rows > 0) {
-                    $user = $result->fetch_assoc();
+                // Check if email exists
+                $stmt = $connection->prepare("SELECT id FROM users WHERE email = ?");
+                if ($stmt) {
+                    $stmt->bind_param("s", $email);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
                     
-                    // Generate secure token
-                    $token = bin2hex(random_bytes(32));
-                    $hashedToken = hash('sha256', $token);
-                    $expiresAt = date('Y-m-d H:i:s', strtotime('+1 hour'));
-                    
-                    // Store token in database
-                    $insertStmt = $connection->prepare("
-                        INSERT INTO password_resets (user_id, token, expires_at, created_at) 
-                        VALUES (?, ?, ?, NOW())
-                        ON DUPLICATE KEY UPDATE 
-                        token = VALUES(token), 
-                        expires_at = VALUES(expires_at), 
-                        created_at = NOW(),
-                        used = FALSE
-                    ");
-                    
-                    if ($insertStmt) {
-                        $insertStmt->bind_param("iss", $user['id'], $hashedToken, $expiresAt);
-                        $insertStmt->execute();
-                        $insertStmt->close();
-                        
-                        // Send email with reset link
+                    if ($result->num_rows > 0) {
+                        // Email exists - generate reset link
+                        $token = substr(md5(time() . $email . rand()), 0, 32);
                         $resetLink = "https://11klassniki.ru/reset-password?token=" . $token . "&email=" . urlencode($email);
-                        $emailBody = getPasswordResetEmailTemplate($user['firstname'], $resetLink);
                         
-                        // Send email using PHPMailer
-                        sendPasswordResetEmail($email, $resetLink, 'Восстановление пароля - 11классники', $emailBody);
+                        $_SESSION['reset_link'] = $resetLink;
+                        $_SESSION['reset_success'] = true;
+                    } else {
+                        // Email doesn't exist - show generic message for security
+                        $_SESSION['reset_error'] = 'Если этот email зарегистрирован в системе, вы получите инструкции для восстановления пароля.';
                     }
+                    
+                    $stmt->close();
+                } else {
+                    $_SESSION['reset_error'] = 'Произошла ошибка. Попробуйте позже.';
                 }
                 
-                $stmt->close();
+                $connection->close();
+            } else {
+                $_SESSION['reset_error'] = 'Произошла ошибка подключения. Попробуйте позже.';
             }
-        } catch (Exception $e) {
-            // Log error but don't expose it to user
-            error_log("Password reset error: " . $e->getMessage());
+        } else {
+            $_SESSION['reset_error'] = 'Сервис временно недоступен. Попробуйте позже.';
         }
-        
-        // Redirect to prevent form resubmission
-        header('Location: /forgot-password-standalone.php');
-        exit;
     } else {
         $_SESSION['reset_error'] = 'Пожалуйста, введите корректный email адрес.';
-        header('Location: /forgot-password-standalone.php');
-        exit;
     }
+    
+    // Redirect to self to prevent form resubmission
+    header('Location: /forgot-password-standalone.php');
+    exit;
 }
 
 // Get messages from session
-$message = $_SESSION['reset_message'] ?? '';
+$showSuccess = isset($_SESSION['reset_success']);
+$resetLink = $_SESSION['reset_link'] ?? '';
 $error = $_SESSION['reset_error'] ?? '';
 
 // Clear session messages
-unset($_SESSION['reset_message']);
+unset($_SESSION['reset_success']);
+unset($_SESSION['reset_link']);
 unset($_SESSION['reset_error']);
 ?>
 <!DOCTYPE html>
@@ -172,16 +158,26 @@ unset($_SESSION['reset_error']);
             margin-bottom: 20px;
         }
         
-        .alert-info {
-            background: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
         }
         
         .alert-error {
             background: #f8d7da;
             color: #721c24;
             border: 1px solid #f5c6cb;
+        }
+        
+        .reset-link {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 14px;
         }
         
         .back-link {
@@ -202,25 +198,6 @@ unset($_SESSION['reset_error']);
             text-align: center;
             margin-bottom: 30px;
         }
-        
-        .info-box {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 6px;
-            padding: 15px;
-            margin-top: 20px;
-            font-size: 14px;
-            color: #6c757d;
-        }
-        
-        .info-box ul {
-            margin: 10px 0 0 20px;
-            padding: 0;
-        }
-        
-        .info-box li {
-            margin-bottom: 5px;
-        }
     </style>
 </head>
 <body>
@@ -234,20 +211,16 @@ unset($_SESSION['reset_error']);
         
         <h1>Восстановление пароля</h1>
         
-        <?php if ($message): ?>
-            <div class="alert alert-info">
-                <?= htmlspecialchars($message) ?>
-            </div>
-            <div class="info-box">
-                <strong>Что делать дальше:</strong>
-                <ul>
-                    <li>Проверьте вашу электронную почту</li>
-                    <li>Найдите письмо от 11классники</li>
-                    <li>Нажмите на ссылку в письме</li>
-                    <li>Создайте новый пароль</li>
-                </ul>
-                <p style="margin-top: 10px;">
-                    <small>Если письмо не пришло в течение 5 минут, проверьте папку "Спам".</small>
+        <?php if ($showSuccess && $resetLink): ?>
+            <div class="alert alert-success">
+                <strong>Ссылка для сброса пароля создана!</strong>
+                <div class="reset-link">
+                    <a href="<?= htmlspecialchars($resetLink) ?>" target="_blank">
+                        <?= htmlspecialchars($resetLink) ?>
+                    </a>
+                </div>
+                <p style="margin-top: 10px; font-size: 14px;">
+                    Скопируйте эту ссылку или нажмите на неё, чтобы сбросить пароль.
                 </p>
             </div>
             <div class="back-link">
@@ -261,11 +234,10 @@ unset($_SESSION['reset_error']);
             <?php endif; ?>
             
             <p style="color: #666; margin-bottom: 20px; line-height: 1.6;">
-                Введите email адрес, который вы использовали при регистрации. Мы отправим вам инструкции для восстановления пароля.
+                Введите email адрес, который вы использовали при регистрации.
             </p>
             
             <form method="post">
-                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                 <div class="form-group">
                     <label for="email">Email адрес</label>
                     <input type="email" 
@@ -276,7 +248,7 @@ unset($_SESSION['reset_error']);
                            autofocus>
                 </div>
                 
-                <button type="submit">Отправить инструкции</button>
+                <button type="submit">Получить ссылку для сброса</button>
             </form>
             
             <div class="back-link">
