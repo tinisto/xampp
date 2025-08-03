@@ -142,6 +142,9 @@
     # Custom error pages
     ErrorDocument 404 /pages/404/404.php
     ErrorDocument 500 /pages/error/error.php
+    
+    # Direct error page route
+    RewriteRule ^error/?$ /pages/error/error.php [L]
 
     # ============================================================================
     # FALLBACK - Must be last

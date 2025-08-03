@@ -1,67 +1,79 @@
-<?php
-// Simple 404 page without construction check
-$pageTitle = 'Страница не найдена';
-?>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $pageTitle ?> - 11 Классники</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <title>404 - Страница не найдена</title>
     <style>
-        .error-container {
-            text-align: center;
-            padding: 100px 20px;
-            min-height: 60vh;
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
+            min-height: 100vh;
         }
+        
+        .error-container {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .logo-link {
+            margin-bottom: 2rem;
+        }
+        
         .error-code {
-            font-size: 120px;
-            font-weight: bold;
-            color: #28a745;
+            font-size: 6rem;
+            font-weight: 300;
+            color: #333;
             margin: 0;
+            line-height: 1;
         }
+        
+        .error-title {
+            font-size: 2rem;
+            color: #666;
+            margin: 1rem 0;
+            font-weight: normal;
+        }
+        
         .error-message {
-            font-size: 24px;
-            margin: 20px 0;
+            font-size: 1.1rem;
+            color: #888;
+            margin: 2rem 0;
+            line-height: 1.6;
         }
-        .back-home {
+        
+        .back-link {
             display: inline-block;
-            padding: 10px 30px;
-            background: #28a745;
+            padding: 0.8rem 2rem;
+            background: #333;
             color: white;
             text-decoration: none;
             border-radius: 5px;
-            margin-top: 20px;
+            transition: background 0.3s ease;
+        }
+        
+        .back-link:hover {
+            background: #555;
         }
     </style>
 </head>
 <body>
-    <?php 
-    // Include header safely
-    $headerFile = $_SERVER['DOCUMENT_ROOT'] . '/common-components/header.php';
-    if (file_exists($headerFile)) {
-        @include $headerFile;
-    }
-    ?>
-    
     <div class="error-container">
+<?php include $_SERVER['DOCUMENT_ROOT'] . '/common-components/logo.php'; renderLogo('large'); ?>
+        
         <h1 class="error-code">404</h1>
-        <p class="error-message">Страница не найдена</p>
-        <p>Запрашиваемая страница не существует или была удалена.</p>
-        <a href="/" class="back-home">Вернуться на главную</a>
+        <h2 class="error-title">Ой-ой!</h2>
+        <p class="error-message">
+            Возможно, это ваша ошибка, а может быть, это наша,<br>
+            но здесь нет нужной вам страницы.
+        </p>
+        
+        <a href="/" class="back-link">Вернуться на главную</a>
     </div>
-    
-    <?php 
-    // Include footer
-    $footerFile = $_SERVER['DOCUMENT_ROOT'] . '/common-components/footer-unified.php';
-    if (file_exists($footerFile)) {
-        @include $footerFile;
-    }
-    ?>
 </body>
 </html>

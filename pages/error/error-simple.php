@@ -35,28 +35,7 @@
         }
         
         .logo-link {
-            display: inline-block;
             margin-bottom: 40px;
-            transition: transform 0.3s ease;
-        }
-        
-        .logo-link:hover {
-            transform: scale(1.05);
-        }
-        
-        .logo-icon {
-            width: 80px;
-            height: 80px;
-            background: #28a745;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto;
-            font-size: 40px;
-            color: white;
-            font-weight: bold;
-            text-decoration: none;
         }
         
         .error-code {
@@ -122,9 +101,7 @@
 </head>
 <body>
     <div class="error-container">
-        <a href="/" class="logo-link">
-            <div class="logo-icon">11</div>
-        </a>
+<?php include $_SERVER['DOCUMENT_ROOT'] . '/common-components/logo.php'; renderLogo('large'); ?>
         
         <div class="error-code">500</div>
         <h1 class="error-title">Что-то пошло не так</h1>
