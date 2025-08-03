@@ -1,4 +1,7 @@
 <?php
+// Include the query fix for id_category issue
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/news_query_fix.php';
+
 require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
 include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/news-card.php';
 

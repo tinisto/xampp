@@ -2,6 +2,9 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+// Include the query fix for id_category issue
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/news_query_fix.php';
+
 require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/check_under_construction.php';
 // Database connection is already included in check_under_construction.php
 
