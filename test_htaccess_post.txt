@@ -1,0 +1,2 @@
+# Test rewrite rule for post_test_minimal.php
+RewriteRule ^post-test/([^/]+)/?$ post_test_minimal.php?url_post=$1 [QSA,NC,L]
