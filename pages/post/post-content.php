@@ -169,12 +169,11 @@ if (isset($postData)) {
 
 <div class="post-header">
   <div class="container position-relative">
-      <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/getEntityIdFromURL.php'; ?>
-
       <?php 
+      // Skip the problematic getEntityIdFromURL.php include
+      // We already have the post data in $rowPost
       $entity_type = 'post';
-      $entityData = getEntityIdFromPostURL($connection);
-      $id_entity = $entityData['id_entity'];
+      $id_entity = $rowPost['id_post'];
       
       // Get category name from database
       $categoryName = 'Статьи';
