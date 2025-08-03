@@ -21,7 +21,7 @@ if (isset($_GET['url_news']) && !empty($_GET['url_news'])) {
 } else {
     // This is a news listing page
     $newsType = $_GET['news_type'] ?? '';
-    $showBadges = empty($newsType); // Hide badges when filtering by type
+    $showBadges = true; // Always show badges
     
     // Set page title and meta based on news type
     switch ($newsType) {
@@ -343,9 +343,8 @@ if (isset($_GET['direct_test'])) {
                 $totalPages = ceil($totalNews / $newsPerPage);
                 
                 // Fetch latest news with optional filtering and pagination
-                $baseQuery = "SELECT n.*, nc.title_category_news 
+                $baseQuery = "SELECT n.* 
                              FROM news n 
-                             LEFT JOIN news_categories nc ON n.category_news = nc.id_category_news 
                              WHERE n.approved = 1";
                 if (isset($categoryFilter) && !empty($categoryFilter)) {
                     $query = $baseQuery . " " . $categoryFilter . " ORDER BY n.date_news DESC LIMIT $newsPerPage OFFSET $offset";
@@ -376,24 +375,28 @@ if (isset($_GET['direct_test'])) {
                         $categoryName = '';
                         $badgeColor = '';
                         
-                        // Get news category info for badge only if badges should be shown
-                        if ($showBadges && !empty($row['title_category_news'])) {
-                            $categoryName = $row['title_category_news'];
-                            // Set color based on category ID
+                        // Get news category info for badge
+                        if ($showBadges) {
+                            // Set category name and color based on category ID
                             switch ($row['category_news']) {
                                 case '1':
+                                    $categoryName = 'Новости ВПО';
                                     $badgeColor = '#9b59b6'; // Purple for ВПО
                                     break;
                                 case '2':
+                                    $categoryName = 'Новости СПО';
                                     $badgeColor = '#f39c12'; // Orange for СПО
                                     break;
                                 case '3':
+                                    $categoryName = 'Новости школ';
                                     $badgeColor = '#2ecc71'; // Green for Школы
                                     break;
                                 case '4':
+                                    $categoryName = 'Новости образования';
                                     $badgeColor = '#3498db'; // Blue for Образование
                                     break;
                                 default:
+                                    $categoryName = 'Общие новости';
                                     $badgeColor = '#95a5a6'; // Gray for others
                             }
                         }
