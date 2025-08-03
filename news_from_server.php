@@ -2,7 +2,6 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-
 require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/check_under_construction.php';
 // Database connection is already included in check_under_construction.php
 
@@ -28,22 +27,22 @@ if (isset($_GET['url_news']) && !empty($_GET['url_news'])) {
         case 'vpo':
             $pageTitle = 'Новости ВПО';
             $metaD = 'Новости высшего профессионального образования, университетов и институтов России.';
-            $categoryFilter = "AND category_news = 1";
+            $categoryFilter = "AND (id_vpo > 0 OR category_news IN (SELECT id_category FROM categories WHERE title_category LIKE '%ВПО%' OR title_category LIKE '%вуз%'))";
             break;
         case 'spo':
             $pageTitle = 'Новости СПО';
             $metaD = 'Новости среднего профессионального образования, колледжей и техникумов России.';
-            $categoryFilter = "AND category_news = 2";
+            $categoryFilter = "AND (id_spo > 0 OR category_news IN (SELECT id_category FROM categories WHERE title_category LIKE '%СПО%' OR title_category LIKE '%колледж%'))";
             break;
         case 'school':
             $pageTitle = 'Новости школ';
             $metaD = 'Новости общего образования, школ и учебных заведений России.';
-            $categoryFilter = "AND category_news = 3";
+            $categoryFilter = "AND (id_school > 0 OR category_news IN (SELECT id_category FROM categories WHERE title_category LIKE '%школ%'))";
             break;
         case 'education':
             $pageTitle = 'Новости образования';
             $metaD = 'Новости системы образования, ЕГЭ, ОГЭ и образовательной политики России.';
-            $categoryFilter = "AND category_news = 4";
+            $categoryFilter = "AND category_news IN (SELECT id_category FROM categories WHERE title_category LIKE '%образован%' OR title_category LIKE '%ЕГЭ%')";
             break;
         default:
             $pageTitle = 'Новости образования';
@@ -322,7 +321,7 @@ if (isset($_GET['direct_test'])) {
                 
                 if (!$countResult) {
                     // Database query failed - show error
-                    echo '<div class="alert alert-danger">Database query error: ' . mysqli_error($connection) . '<br>Query: ' . htmlspecialchars($countQuery) . '</div>';
+                    echo '<div class="alert alert-danger">Database query error: ' . mysqli_error($connection) . '</div>';
                     $totalNews = 0;
                 } else {
                     $totalNews = mysqli_fetch_assoc($countResult)['total'];
@@ -343,10 +342,7 @@ if (isset($_GET['direct_test'])) {
                 $totalPages = ceil($totalNews / $newsPerPage);
                 
                 // Fetch latest news with optional filtering and pagination
-                $baseQuery = "SELECT n.*, nc.title_category_news 
-                             FROM news n 
-                             LEFT JOIN news_categories nc ON n.category_news = nc.id_category_news 
-                             WHERE n.approved = 1";
+                $baseQuery = "SELECT n.* FROM news n WHERE n.approved = 1";
                 if (isset($categoryFilter) && !empty($categoryFilter)) {
                     $query = $baseQuery . " " . $categoryFilter . " ORDER BY n.date_news DESC LIMIT $newsPerPage OFFSET $offset";
                 } else {
@@ -365,7 +361,7 @@ if (isset($_GET['direct_test'])) {
                 $result = mysqli_query($connection, $query);
                 
                 if (!$result) {
-                    echo '<div class="alert alert-danger">News query failed: ' . mysqli_error($connection) . '<br>Query: ' . htmlspecialchars($query) . '</div>';
+                    echo '<div class="alert alert-danger">News query failed: ' . mysqli_error($connection) . '</div>';
                 }
                 
                 if ($result && mysqli_num_rows($result) > 0) {
@@ -377,24 +373,35 @@ if (isset($_GET['direct_test'])) {
                         $badgeColor = '';
                         
                         // Get news category info for badge only if badges should be shown
-                        if ($showBadges && !empty($row['title_category_news'])) {
-                            $categoryName = $row['title_category_news'];
-                            // Set color based on category ID
-                            switch ($row['category_news']) {
-                                case '1':
-                                    $badgeColor = '#9b59b6'; // Purple for ВПО
-                                    break;
-                                case '2':
-                                    $badgeColor = '#f39c12'; // Orange for СПО
-                                    break;
-                                case '3':
-                                    $badgeColor = '#2ecc71'; // Green for Школы
-                                    break;
-                                case '4':
-                                    $badgeColor = '#3498db'; // Blue for Образование
-                                    break;
-                                default:
-                                    $badgeColor = '#95a5a6'; // Gray for others
+                        if ($showBadges) {
+                            // First check if we have a specific news category from the join
+                            if (!empty($row['news_category_name'])) {
+                                $categoryName = $row['news_category_name'];
+                                // Set color based on category name
+                                if (strpos($categoryName, 'ВУЗ') !== false || strpos($categoryName, 'ВПО') !== false) {
+                                    $badgeColor = '#9b59b6'; // Purple
+                                } elseif (strpos($categoryName, 'ССУЗ') !== false || strpos($categoryName, 'СПО') !== false) {
+                                    $badgeColor = '#f39c12'; // Orange
+                                } elseif (strpos($categoryName, 'школ') !== false) {
+                                    $badgeColor = '#2ecc71'; // Green
+                                } else {
+                                    $badgeColor = '#3498db'; // Blue
+                                }
+                            } else {
+                                // Fallback: Determine news category based on VPO/SPO/School IDs
+                                if (isset($row['id_vpo']) && $row['id_vpo'] > 0) {
+                                    $categoryName = 'Новости ВУЗов';
+                                    $badgeColor = '#9b59b6'; // Purple
+                                } elseif (isset($row['id_spo']) && $row['id_spo'] > 0) {
+                                    $categoryName = 'Новости ССУЗов';
+                                    $badgeColor = '#f39c12'; // Orange
+                                } elseif (isset($row['id_school']) && $row['id_school'] > 0) {
+                                    $categoryName = 'Новости школ';
+                                    $badgeColor = '#2ecc71'; // Green
+                                } else {
+                                    $categoryName = 'Новости образования';
+                                    $badgeColor = '#3498db'; // Blue
+                                }
                             }
                         }
                         ?>

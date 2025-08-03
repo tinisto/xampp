@@ -192,7 +192,20 @@ $currentTheme = $_COOKIE['preferred-theme'] ?? 'light';
                     
                     <!-- Form fields will be included here -->
                     <?php if (isset($formFields)): ?>
-                        <?php include $formFields; ?>
+                        <?php 
+                        // Check if it's a relative path from pages directory
+                        if (file_exists($_SERVER['DOCUMENT_ROOT'] . '/pages/registration/' . $formFields)) {
+                            include $_SERVER['DOCUMENT_ROOT'] . '/pages/registration/' . $formFields;
+                        } elseif (file_exists($_SERVER['DOCUMENT_ROOT'] . '/pages/login/' . $formFields)) {
+                            include $_SERVER['DOCUMENT_ROOT'] . '/pages/login/' . $formFields;
+                        } elseif (file_exists($_SERVER['DOCUMENT_ROOT'] . '/pages/account/' . $formFields)) {
+                            include $_SERVER['DOCUMENT_ROOT'] . '/pages/account/' . $formFields;
+                        } elseif (file_exists($formFields)) {
+                            include $formFields;
+                        } else {
+                            echo "<!-- Form fields file not found: $formFields -->";
+                        }
+                        ?>
                     <?php endif; ?>
                     
                     <button type="submit" class="btn btn-submit"><?= htmlspecialchars($submitText) ?></button>
