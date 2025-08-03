@@ -72,6 +72,30 @@ unset($_SESSION['oldData']);
             }
         }
         
+        .logo-section {
+            text-align: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .logo-link {
+            display: inline-block;
+            text-decoration: none;
+            color: var(--primary-color);
+            transition: var(--transition);
+        }
+        
+        .logo-link:hover {
+            transform: scale(1.05);
+            color: var(--primary-hover);
+        }
+        
+        .logo-placeholder {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
         .registration-header {
             background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
             color: white;
@@ -353,6 +377,16 @@ unset($_SESSION['oldData']);
 </head>
 <body>
     <div class="registration-container">
+        <div class="logo-section">
+            <a href="/" class="logo-link">
+                <div class="logo-placeholder">
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2"/>
+                        <text x="20" y="26" text-anchor="middle" fill="currentColor" font-size="18" font-weight="bold">11</text>
+                    </svg>
+                </div>
+            </a>
+        </div>
         <div class="registration-header">
             <h1>Регистрация</h1>
         </div>

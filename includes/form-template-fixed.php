@@ -145,6 +145,28 @@ $currentTheme = $_COOKIE['preferred-theme'] ?? 'light';
         .input-group-text:hover {
             background: var(--color-bg-hover);
         }
+        
+        /* Logo section */
+        .logo-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo-link {
+            display: inline-block;
+            text-decoration: none;
+            transition: transform 0.2s ease;
+        }
+        
+        .logo-link:hover {
+            transform: scale(1.05);
+        }
+        
+        .logo-placeholder {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
     
     <!-- Theme initialization -->
@@ -159,6 +181,16 @@ $currentTheme = $_COOKIE['preferred-theme'] ?? 'light';
 <body>
     <div class="form-container">
         <div class="form-wrapper">
+            <div class="logo-section">
+                <a href="/" class="logo-link">
+                    <div class="logo-placeholder">
+                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="20" cy="20" r="18" stroke="#28a745" stroke-width="2"/>
+                            <text x="20" y="26" text-anchor="middle" fill="#28a745" font-size="18" font-weight="bold">11</text>
+                        </svg>
+                    </div>
+                </a>
+            </div>
             <div class="form-card">
                 <?php if ($title): ?>
                     <h1 class="form-title"><?= htmlspecialchars($title) ?></h1>
