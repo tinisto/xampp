@@ -43,7 +43,7 @@ unset($_SESSION['oldData']);
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-primary);
-            line-height: 1.6;
+            line-height: 1.5;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -53,7 +53,7 @@ unset($_SESSION['oldData']);
         
         .registration-container {
             width: 100%;
-            max-width: 480px;
+            max-width: 600px;
             background: var(--card-bg);
             border-radius: 12px;
             box-shadow: var(--shadow);
@@ -75,31 +75,31 @@ unset($_SESSION['oldData']);
         .registration-header {
             background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
             color: white;
-            padding: 20px 30px;
+            padding: 15px 20px;
             text-align: center;
         }
         
         .registration-header h1 {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 600;
             margin: 0;
         }
         
         .registration-body {
-            padding: 30px;
+            padding: 20px;
         }
         
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             position: relative;
         }
         
         .form-label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
             font-weight: 500;
             color: var(--text-primary);
-            font-size: 14px;
+            font-size: 13px;
         }
         
         .form-label .required {
@@ -110,10 +110,10 @@ unset($_SESSION['oldData']);
         .form-input,
         .form-select {
             width: 100%;
-            padding: 12px 16px;
+            padding: 10px 14px;
             border: 2px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 16px;
+            border-radius: 6px;
+            font-size: 15px;
             transition: var(--transition);
             background-color: white;
             -webkit-appearance: none;
@@ -216,12 +216,12 @@ unset($_SESSION['oldData']);
         
         .submit-btn {
             width: 100%;
-            padding: 14px 24px;
+            padding: 12px 20px;
             background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
+            border-radius: 6px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
@@ -246,14 +246,15 @@ unset($_SESSION['oldData']);
         
         .form-footer {
             text-align: center;
-            margin-top: 24px;
-            padding-top: 24px;
+            margin-top: 15px;
+            padding-top: 15px;
             border-top: 1px solid var(--border-color);
         }
         
         .form-footer p {
             color: var(--text-secondary);
-            font-size: 14px;
+            font-size: 13px;
+            margin: 0;
         }
         
         .form-footer a {
@@ -321,6 +322,22 @@ unset($_SESSION['oldData']);
             background-color: var(--primary-color);
         }
         
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        @media (max-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
         @media (max-width: 480px) {
             .registration-container {
                 margin: 0;
@@ -360,104 +377,106 @@ unset($_SESSION['oldData']);
             <form id="registrationForm" method="post" action="/pages/registration/registration_process_simple.php">
                 <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                 
-                <div class="form-group">
-                    <label for="firstname" class="form-label">
-                        Имя <span class="required">*</span>
-                    </label>
-                    <input type="text" 
-                           id="firstname" 
-                           name="firstname" 
-                           class="form-input" 
-                           value="<?= isset($oldData['firstname']) ? htmlspecialchars($oldData['firstname']) : '' ?>"
-                           required>
-                    <div class="error-message" id="firstname-error">Пожалуйста, введите ваше имя</div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="lastname" class="form-label">
-                        Фамилия <span class="required">*</span>
-                    </label>
-                    <input type="text" 
-                           id="lastname" 
-                           name="lastname" 
-                           class="form-input" 
-                           value="<?= isset($oldData['lastname']) ? htmlspecialchars($oldData['lastname']) : '' ?>"
-                           required>
-                    <div class="error-message" id="lastname-error">Пожалуйста, введите вашу фамилию</div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="occupation" class="form-label">
-                        Род деятельности <span class="required">*</span>
-                    </label>
-                    <select name="occupation" id="occupation" class="form-select" required>
-                        <option value="">Выберите из списка</option>
-                        <option value="Представитель ВУЗа" <?= isset($oldData['occupation']) && $oldData['occupation'] === 'Представитель ВУЗа' ? 'selected' : '' ?>>Представитель ВУЗа</option>
-                        <option value="Представитель ССУЗа" <?= isset($oldData['occupation']) && $oldData['occupation'] === 'Представитель ССУЗа' ? 'selected' : '' ?>>Представитель ССУЗа</option>
-                        <option value="Представитель школы" <?= isset($oldData['occupation']) && $oldData['occupation'] === 'Представитель школы' ? 'selected' : '' ?>>Представитель школы</option>
-                        <option value="Родитель" <?= isset($oldData['occupation']) && $oldData['occupation'] === 'Родитель' ? 'selected' : '' ?>>Родитель</option>
-                        <option value="Учащийся/учащаяся" <?= isset($oldData['occupation']) && $oldData['occupation'] === 'Учащийся/учащаяся' ? 'selected' : '' ?>>Учащийся</option>
-                        <option value="Другое" <?= isset($oldData['occupation']) && $oldData['occupation'] === 'Другое' ? 'selected' : '' ?>>Другое</option>
-                    </select>
-                    <div class="error-message" id="occupation-error">Пожалуйста, выберите род деятельности</div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="email" class="form-label">
-                        Email адрес <span class="required">*</span>
-                    </label>
-                    <input type="email" 
-                           id="email" 
-                           name="email" 
-                           class="form-input" 
-                           value="<?= isset($oldData['email']) ? htmlspecialchars($oldData['email']) : '' ?>"
-                           required>
-                    <div class="error-message" id="email-error">Пожалуйста, введите корректный email</div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="newPassword" class="form-label">
-                        Пароль <span class="required">*</span>
-                    </label>
-                    <div class="input-group">
-                        <input type="password" 
-                               id="newPassword" 
-                               name="newPassword" 
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="firstname" class="form-label">
+                            Имя <span class="required">*</span>
+                        </label>
+                        <input type="text" 
+                               id="firstname" 
+                               name="firstname" 
                                class="form-input" 
+                               value="<?= isset($oldData['firstname']) ? htmlspecialchars($oldData['firstname']) : '' ?>"
                                required>
-                        <button type="button" class="password-toggle" id="togglePassword1">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path class="eye-open" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                <circle class="eye-open" cx="12" cy="12" r="3"/>
-                                <path class="eye-closed" style="display: none;" d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22"/>
-                            </svg>
-                        </button>
+                        <div class="error-message" id="firstname-error">Пожалуйста, введите ваше имя</div>
                     </div>
-                    <div class="password-strength" id="passwordStrength">
-                        <div class="password-strength-bar" id="strengthBar"></div>
-                    </div>
-                    <div class="error-message" id="password-error">Пароль должен содержать минимум 8 символов</div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="confirmPassword" class="form-label">
-                        Подтвердите пароль <span class="required">*</span>
-                    </label>
-                    <div class="input-group">
-                        <input type="password" 
-                               id="confirmPassword" 
-                               name="confirmPassword" 
+                    
+                    <div class="form-group">
+                        <label for="lastname" class="form-label">
+                            Фамилия <span class="required">*</span>
+                        </label>
+                        <input type="text" 
+                               id="lastname" 
+                               name="lastname" 
                                class="form-input" 
+                               value="<?= isset($oldData['lastname']) ? htmlspecialchars($oldData['lastname']) : '' ?>"
                                required>
-                        <button type="button" class="password-toggle" id="togglePassword2">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path class="eye-open" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                <circle class="eye-open" cx="12" cy="12" r="3"/>
-                                <path class="eye-closed" style="display: none;" d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22"/>
-                            </svg>
-                        </button>
+                        <div class="error-message" id="lastname-error">Пожалуйста, введите вашу фамилию</div>
                     </div>
-                    <div class="error-message" id="confirmPassword-error">Пароли не совпадают</div>
+                    
+                    <div class="form-group full-width">
+                        <label for="occupation" class="form-label">
+                            Род деятельности <span class="required">*</span>
+                        </label>
+                        <select name="occupation" id="occupation" class="form-select" required>
+                            <option value="">Выберите из списка</option>
+                            <option value="Представитель ВУЗа" <?= isset($oldData['occupation']) && $oldData['occupation'] === 'Представитель ВУЗа' ? 'selected' : '' ?>>Представитель ВУЗа</option>
+                            <option value="Представитель ССУЗа" <?= isset($oldData['occupation']) && $oldData['occupation'] === 'Представитель ССУЗа' ? 'selected' : '' ?>>Представитель ССУЗа</option>
+                            <option value="Представитель школы" <?= isset($oldData['occupation']) && $oldData['occupation'] === 'Представитель школы' ? 'selected' : '' ?>>Представитель школы</option>
+                            <option value="Родитель" <?= isset($oldData['occupation']) && $oldData['occupation'] === 'Родитель' ? 'selected' : '' ?>>Родитель</option>
+                            <option value="Учащийся/учащаяся" <?= isset($oldData['occupation']) && $oldData['occupation'] === 'Учащийся/учащаяся' ? 'selected' : '' ?>>Учащийся</option>
+                            <option value="Другое" <?= isset($oldData['occupation']) && $oldData['occupation'] === 'Другое' ? 'selected' : '' ?>>Другое</option>
+                        </select>
+                        <div class="error-message" id="occupation-error">Пожалуйста, выберите род деятельности</div>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="email" class="form-label">
+                            Email адрес <span class="required">*</span>
+                        </label>
+                        <input type="email" 
+                               id="email" 
+                               name="email" 
+                               class="form-input" 
+                               value="<?= isset($oldData['email']) ? htmlspecialchars($oldData['email']) : '' ?>"
+                               required>
+                        <div class="error-message" id="email-error">Пожалуйста, введите корректный email</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newPassword" class="form-label">
+                            Пароль <span class="required">*</span>
+                        </label>
+                        <div class="input-group">
+                            <input type="password" 
+                                   id="newPassword" 
+                                   name="newPassword" 
+                                   class="form-input" 
+                                   required>
+                            <button type="button" class="password-toggle" id="togglePassword1">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path class="eye-open" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                    <circle class="eye-open" cx="12" cy="12" r="3"/>
+                                    <path class="eye-closed" style="display: none;" d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="password-strength" id="passwordStrength">
+                            <div class="password-strength-bar" id="strengthBar"></div>
+                        </div>
+                        <div class="error-message" id="password-error">Пароль должен содержать минимум 8 символов</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmPassword" class="form-label">
+                            Подтвердите пароль <span class="required">*</span>
+                        </label>
+                        <div class="input-group">
+                            <input type="password" 
+                                   id="confirmPassword" 
+                                   name="confirmPassword" 
+                                   class="form-input" 
+                                   required>
+                            <button type="button" class="password-toggle" id="togglePassword2">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path class="eye-open" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                    <circle class="eye-open" cx="12" cy="12" r="3"/>
+                                    <path class="eye-closed" style="display: none;" d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="error-message" id="confirmPassword-error">Пароли не совпадают</div>
+                    </div>
                 </div>
                 
                 

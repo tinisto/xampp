@@ -15,13 +15,33 @@ if (isset($_GET['debug'])) {
 }
 
 // Check if this is a specific news article, filtered news, or news listing
-if (isset($_GET['url_news']) && !empty($_GET['url_news'])) {
+$categoryUrls = ['novosti-vuzov', 'novosti-spo', 'novosti-shkol', 'novosti-obrazovaniya'];
+if (isset($_GET['url_news']) && !empty($_GET['url_news']) && !in_array($_GET['url_news'], $categoryUrls)) {
     // Include the news data fetch logic for specific article
     include $_SERVER['DOCUMENT_ROOT'] . '/pages/common/news/news-data-fetch.php';
 } else {
     // This is a news listing page
     $newsType = $_GET['news_type'] ?? '';
-    $showBadges = true; // Always show badges
+    
+    // Map category URLs to news types
+    if (isset($_GET['url_news'])) {
+        switch ($_GET['url_news']) {
+            case 'novosti-vuzov':
+                $newsType = 'vpo';
+                break;
+            case 'novosti-spo':
+                $newsType = 'spo';
+                break;
+            case 'novosti-shkol':
+                $newsType = 'school';
+                break;
+            case 'novosti-obrazovaniya':
+                $newsType = 'education';
+                break;
+        }
+    }
+    
+    $showBadges = empty($newsType); // Show badges only on main news page
     
     // Set page title and meta based on news type
     switch ($newsType) {
