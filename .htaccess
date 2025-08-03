@@ -101,7 +101,7 @@
     RewriteRule ^reset-password/?$ pages/account/reset-password/reset-password-confirm.php [QSA,NC,L]
     RewriteRule ^account/?$ pages/account/account.php [QSA,NC,L]
     RewriteRule ^dashboard/?$ pages/dashboard/admin-index/dashboard.php [QSA,NC,L]
-    RewriteRule ^logout/?$ logout.php [QSA,NC,L]
+    RewriteRule ^logout/?$ simple_logout.php [QSA,NC,L]
 
     # Search
     RewriteRule ^search/?$ pages/search/search.php [QSA,NC,L]
