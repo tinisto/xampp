@@ -228,16 +228,25 @@ if (!isset($_SESSION['csrf_token'])) {
                 <div class="alert alert-success">
                     <?= htmlspecialchars($_SESSION['reset_success']) ?>
                     <?php 
-                    // Temporary: show reset link for testing
+                    // Show reset link when email is not configured or fails
                     if (isset($_SESSION['reset_link'])): ?>
                         <div style="margin-top: 10px; padding: 10px; background: #f0f0f0; border-radius: 5px; word-break: break-all;">
-                            <strong>Тестовая ссылка для сброса пароля:</strong><br>
+                            <strong>Ссылка для сброса пароля:</strong><br>
                             <a href="<?= htmlspecialchars($_SESSION['reset_link']) ?>" style="color: #28a745;">
                                 <?= htmlspecialchars($_SESSION['reset_link']) ?>
                             </a>
                         </div>
                         <?php unset($_SESSION['reset_link']); ?>
                     <?php endif; ?>
+                    
+                    <?php // Show info about email configuration
+                    if (isset($_SESSION['reset_info'])): ?>
+                        <div style="margin-top: 10px; padding: 10px; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px; color: #856404;">
+                            <small><?= htmlspecialchars($_SESSION['reset_info']) ?></small>
+                        </div>
+                        <?php unset($_SESSION['reset_info']); ?>
+                    <?php endif; ?>
+                    
                     <?php unset($_SESSION['reset_success']); ?>
                 </div>
             <?php endif; ?>
@@ -253,7 +262,7 @@ if (!isset($_SESSION['csrf_token'])) {
                 Введите email адрес, указанный при регистрации. Мы отправим вам инструкции по восстановлению пароля.
             </p>
             
-            <form method="post" action="/pages/account/reset-password/reset-password-process-simple.php">
+            <form method="post" action="/pages/account/reset-password/reset-password-process-email.php">
                 <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                 
                 <div class="form-group">

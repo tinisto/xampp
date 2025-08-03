@@ -2,7 +2,7 @@
 // Configuration for the form
 $formConfig = [
     'title' => 'Регистрация',
-    'action' => '/pages/registration/registration_process_simple.php',
+    'action' => '/pages/registration/registration_process_email.php',
     'submitText' => 'Зарегистрироваться',
     'enctype' => 'multipart/form-data',
     'bottomLink' => [

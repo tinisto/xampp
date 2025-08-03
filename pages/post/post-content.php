@@ -180,17 +180,17 @@ if (isset($postData)) {
       $categoryName = 'Статьи';
       $categoryUrl = '/';
       if (!empty($rowPost['category'])) {
-        $categoryQuery = "SELECT title_category, url_category FROM categories WHERE id_category = ?";
-        $categoryStmt = mysqli_prepare($connection, $categoryQuery);
-        mysqli_stmt_bind_param($categoryStmt, "i", $rowPost['category']);
-        mysqli_stmt_execute($categoryStmt);
-        $categoryResult = mysqli_stmt_get_result($categoryStmt);
+        // Map category IDs to names (since categories table might not exist)
+        $categoryMap = [
+          1 => ['name' => '11-классники', 'url' => '11-klassniki'],
+          2 => ['name' => 'Абитуриенты', 'url' => 'abiturient'],
+          3 => ['name' => 'Статьи', 'url' => 'statyi']
+        ];
         
-        if ($categoryRow = mysqli_fetch_assoc($categoryResult)) {
-          $categoryName = $categoryRow['title_category'];
-          $categoryUrl = '/category/' . $categoryRow['url_category'];
+        if (isset($categoryMap[$rowPost['category']])) {
+          $categoryName = $categoryMap[$rowPost['category']]['name'];
+          $categoryUrl = '/category/' . $categoryMap[$rowPost['category']]['url'];
         }
-        mysqli_stmt_close($categoryStmt);
       }
       ?>
 
