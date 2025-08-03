@@ -20,7 +20,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Check if email exists and send reset email
         try {
-            $stmt = $connection->prepare("SELECT id, firstname FROM users WHERE email = ?");
+            // First, create the password_resets table if it doesn't exist
+            $createTableQuery = "CREATE TABLE IF NOT EXISTS password_resets (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                user_id INT NOT NULL,
+                token VARCHAR(255) NOT NULL,
+                expires_at TIMESTAMP NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                used BOOLEAN DEFAULT FALSE,
+                INDEX idx_user_id (user_id),
+                INDEX idx_token (token),
+                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+            )";
+            $connection->query($createTableQuery);
+            
+            $stmt = $connection->prepare("SELECT id, first_name FROM users WHERE email = ?");
             if ($stmt) {
                 $stmt->bind_param("s", $email);
                 $stmt->execute();
@@ -34,28 +48,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $hashedToken = hash('sha256', $token);
                     $expiresAt = date('Y-m-d H:i:s', strtotime('+1 hour'));
                     
+                    // Delete old tokens for this user
+                    $deleteStmt = $connection->prepare("DELETE FROM password_resets WHERE user_id = ?");
+                    if ($deleteStmt) {
+                        $deleteStmt->bind_param("i", $user['id']);
+                        $deleteStmt->execute();
+                        $deleteStmt->close();
+                    }
+                    
                     // Store token in database
                     $insertStmt = $connection->prepare("
-                        INSERT INTO password_resets (user_id, token, expires_at, created_at) 
-                        VALUES (?, ?, ?, NOW())
-                        ON DUPLICATE KEY UPDATE 
-                        token = VALUES(token), 
-                        expires_at = VALUES(expires_at), 
-                        created_at = NOW(),
-                        used = FALSE
+                        INSERT INTO password_resets (user_id, token, expires_at) 
+                        VALUES (?, ?, ?)
                     ");
                     
                     if ($insertStmt) {
                         $insertStmt->bind_param("iss", $user['id'], $hashedToken, $expiresAt);
-                        $insertStmt->execute();
+                        if ($insertStmt->execute()) {
+                            // Send email with reset link
+                            $resetLink = "https://11klassniki.ru/reset-password?token=" . $token . "&email=" . urlencode($email);
+                            $emailBody = getPasswordResetEmailTemplate($user['first_name'], $resetLink);
+                            
+                            // Send email using PHPMailer - log result
+                            try {
+                                sendPasswordResetEmail($email, $resetLink, 'Восстановление пароля - 11классники', $emailBody);
+                                error_log("Password reset email sent successfully to: {$email}");
+                            } catch (Exception $mailException) {
+                                error_log("Failed to send password reset email to {$email}: " . $mailException->getMessage());
+                            }
+                        }
                         $insertStmt->close();
-                        
-                        // Send email with reset link
-                        $resetLink = "https://11klassniki.ru/reset-password?token=" . $token . "&email=" . urlencode($email);
-                        $emailBody = getPasswordResetEmailTemplate($user['firstname'], $resetLink);
-                        
-                        // Send email using PHPMailer
-                        sendPasswordResetEmail($email, $resetLink, 'Восстановление пароля - 11классники', $emailBody);
                     }
                 }
                 
