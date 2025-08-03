@@ -47,5 +47,20 @@ $templateConfig = [
 ];
 
 // Render template
-include $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine-ultimate.php';
-renderTemplate($pageTitle, 'pages/post/post-content.php', $templateConfig);
+$templateFile = $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine-ultimate.php';
+if (file_exists($templateFile)) {
+    include $templateFile;
+    renderTemplate($pageTitle, 'pages/post/post-content.php', $templateConfig);
+} else {
+    // Fallback to modern template
+    $mainContent = 'pages/post/post-content.php';
+    $templateFile2 = $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine-modern.php';
+    if (file_exists($templateFile2)) {
+        include $templateFile2;
+    } else {
+        // Direct include fallback
+        include $_SERVER['DOCUMENT_ROOT'] . '/common-components/header.php';
+        include $_SERVER['DOCUMENT_ROOT'] . '/' . $mainContent;
+        include $_SERVER['DOCUMENT_ROOT'] . '/common-components/footer-unified.php';
+    }
+}

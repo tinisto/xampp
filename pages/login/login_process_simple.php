@@ -12,6 +12,7 @@ if (!isset($_POST['csrf_token']) || !isset($_SESSION['csrf_token']) ||
 // Get form data
 $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
 $password = $_POST['password'] ?? '';
+$remember = isset($_POST['remember']) ? true : false;
 
 if (!$email || empty($password)) {
     $_SESSION['error'] = 'Пожалуйста, введите email и пароль.';
@@ -83,6 +84,13 @@ $_SESSION['username'] = $username;
 $_SESSION['role'] = $user['role'];
 $_SESSION['occupation'] = $user['occupation'];
 $_SESSION['logged_in'] = true; // Important: SessionManager checks for this
+
+// Handle "Remember Me"
+if ($remember) {
+    // Set a cookie that expires in 30 days
+    $cookieValue = $user['id'] . ':' . hash('sha256', $email . $user['password']);
+    setcookie('remember_user', $cookieValue, time() + (30 * 24 * 60 * 60), '/', '', true, true);
+}
 
 // Close connection
 $stmt->close();

@@ -227,6 +227,17 @@ if (!isset($_SESSION['csrf_token'])) {
             <?php if (isset($_SESSION['reset_success'])): ?>
                 <div class="alert alert-success">
                     <?= htmlspecialchars($_SESSION['reset_success']) ?>
+                    <?php 
+                    // Temporary: show reset link for testing
+                    if (isset($_SESSION['reset_link'])): ?>
+                        <div style="margin-top: 10px; padding: 10px; background: #f0f0f0; border-radius: 5px; word-break: break-all;">
+                            <strong>Тестовая ссылка для сброса пароля:</strong><br>
+                            <a href="<?= htmlspecialchars($_SESSION['reset_link']) ?>" style="color: #28a745;">
+                                <?= htmlspecialchars($_SESSION['reset_link']) ?>
+                            </a>
+                        </div>
+                        <?php unset($_SESSION['reset_link']); ?>
+                    <?php endif; ?>
                     <?php unset($_SESSION['reset_success']); ?>
                 </div>
             <?php endif; ?>
@@ -242,7 +253,7 @@ if (!isset($_SESSION['csrf_token'])) {
                 Введите email адрес, указанный при регистрации. Мы отправим вам инструкции по восстановлению пароля.
             </p>
             
-            <form method="post" action="/pages/account/reset-password/reset-password-process.php">
+            <form method="post" action="/pages/account/reset-password/reset-password-process-simple.php">
                 <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                 
                 <div class="form-group">

@@ -412,7 +412,7 @@ if (!isset($_SESSION['csrf_token'])) {
                 </div>
             <?php endif; ?>
             
-            <form id="loginForm" method="post" action="/pages/login/login_process_enhanced.php">
+            <form id="loginForm" method="post" action="/pages/login/login_process_simple.php">
                 <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                 
                 <div class="form-group">
