@@ -11,14 +11,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL);
     
     if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        // Generate simple token
-        $token = substr(md5(time() . $email), 0, 32);
+        // Check if email exists in database
+        require_once $_SERVER['DOCUMENT_ROOT'] . '/config/loadEnv.php';
         
-        // Generate reset link
-        $resetLink = "https://11klassniki.ru/reset-password?token=" . $token . "&email=" . urlencode($email);
-        
-        $_SESSION['reset_link'] = $resetLink;
-        $_SESSION['reset_success'] = true;
+        if (defined('DB_HOST') && defined('DB_USER') && defined('DB_PASS') && defined('DB_NAME')) {
+            $connection = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+            
+            if (!$connection->connect_error) {
+                $connection->set_charset("utf8mb4");
+                
+                // Check if email exists
+                $stmt = $connection->prepare("SELECT id FROM users WHERE email = ?");
+                if ($stmt) {
+                    $stmt->bind_param("s", $email);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    
+                    if ($result->num_rows > 0) {
+                        // Email exists - generate reset link
+                        $token = substr(md5(time() . $email . rand()), 0, 32);
+                        $resetLink = "https://11klassniki.ru/reset-password?token=" . $token . "&email=" . urlencode($email);
+                        
+                        $_SESSION['reset_link'] = $resetLink;
+                        $_SESSION['reset_success'] = true;
+                    } else {
+                        // Email doesn't exist - show generic message for security
+                        $_SESSION['reset_error'] = 'Если этот email зарегистрирован в системе, вы получите инструкции для восстановления пароля.';
+                    }
+                    
+                    $stmt->close();
+                } else {
+                    $_SESSION['reset_error'] = 'Произошла ошибка. Попробуйте позже.';
+                }
+                
+                $connection->close();
+            } else {
+                $_SESSION['reset_error'] = 'Произошла ошибка подключения. Попробуйте позже.';
+            }
+        } else {
+            $_SESSION['reset_error'] = 'Сервис временно недоступен. Попробуйте позже.';
+        }
     } else {
         $_SESSION['reset_error'] = 'Пожалуйста, введите корректный email адрес.';
     }
