@@ -1,14 +1,10 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/check_under_construction.php';
 include $_SERVER['DOCUMENT_ROOT'] . '/includes/functions/email_functions.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/includes/email-templates/password-changed.php';
 
-// Customize the email subject and body
-$customSubject = 'Изменение пароля на сайте 11klassniki.ru';
-$customBody = "
-<p style='font-size: 14px;'>Здравствуйте!<br><br>
-Ваш пароль был успешно изменен на сайте 11klassniki.ru<br>
-Если вы не совершали это действие, пожалуйста, свяжитесь с нами по адресу <a href='mailto:support@11klassniki.ru'>support@11klassniki.ru</a><br><br>
-С наилучшими пожеланиями, команда 11klasssniki.ru</p>";
+// Customize the email subject
+$customSubject = 'Пароль изменен - 11klassniki.ru';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   // Check if 'token' and 'password' keys are present in $_POST
@@ -44,6 +40,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       mysqli_stmt_bind_param($stmt, "sss", $hashedPassword, $token, $email);
 
       if (mysqli_stmt_execute($stmt)) {
+        // Get user's first name if available
+        $nameQuery = "SELECT firstname FROM users WHERE email = ?";
+        $nameStmt = mysqli_prepare($connection, $nameQuery);
+        $firstname = '';
+        if ($nameStmt) {
+            mysqli_stmt_bind_param($nameStmt, "s", $email);
+            mysqli_stmt_execute($nameStmt);
+            $nameResult = mysqli_stmt_get_result($nameStmt);
+            if ($row = mysqli_fetch_assoc($nameResult)) {
+                $firstname = $row['firstname'];
+            }
+            mysqli_stmt_close($nameStmt);
+        }
+        
+        // Send email with modern template
+        $customBody = getPasswordChangedEmailTemplate($firstname);
         sendPasswordChangedEmail($email, $customSubject, $customBody);
         $successMessage = "Пароль успешно изменен. Теперь вы можете войти.";
         header("Location: /login?registration_success=true&message=" . urlencode($successMessage));
