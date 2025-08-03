@@ -15,7 +15,11 @@ function renderDashboardTemplate($pageTitle, $mainContent, $config = []) {
     
     $config = array_merge($defaults, $config);
     
-    // Include cookie consent system
+    // Include environment and database connection
+    require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
+    if (!isset($connection)) {
+        require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
+    }
     require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/components/cookie-consent.php';
     
     // Get theme preference
@@ -172,6 +176,9 @@ function renderDashboardTemplate($pageTitle, $mainContent, $config = []) {
         
         <div class="dashboard-content">
             <?php 
+            // Make $connection global for included files
+            global $connection;
+            
             if (is_file($_SERVER['DOCUMENT_ROOT'] . '/' . $mainContent)) {
                 include $_SERVER['DOCUMENT_ROOT'] . '/' . $mainContent;
             } else {

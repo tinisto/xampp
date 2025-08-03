@@ -606,7 +606,7 @@ $username = $_SESSION['username'] ?? $_SESSION['email'] ?? 'Admin';
                             Создавайте, редактируйте и модерируйте новостные статьи для публикации.
                         </div>
                         <div class="action-buttons">
-                            <a href="/pages/common/news/news-create.php" class="btn btn-primary">Создать новость</a>
+                            <a href="/create/news" class="btn btn-primary">Создать новость</a>
                             <a href="/news" class="btn btn-secondary">Все новости</a>
                         </div>
                     </div>
@@ -639,7 +639,7 @@ $username = $_SESSION['username'] ?? $_SESSION['email'] ?? 'Admin';
                             Создавайте и публикуйте новые статьи, посты и образовательные материалы.
                         </div>
                         <div class="action-buttons">
-                            <a href="/pages/common/create.php" class="btn btn-primary">Создать пост</a>
+                            <a href="/create/post" class="btn btn-primary">Создать пост</a>
                             <a href="/write" class="btn btn-secondary">Написать статью</a>
                         </div>
                     </div>

@@ -75,14 +75,3 @@ foreach ($cardGroups as $index => $cards) {
     echo '</div>';
 }
 ?>
-
-</div>
-<div class="row d-flex mt-4 gap-2">
-    <!-- <div class="col text-center"><a href="/pages/dashboard/send_emails_to_vpo.php" class="link-custom">Send Emails
-                to VPO</a></div> -->
-    <div class="col text-center"><a href="/pages/dashboard/send-emails-to-spo.php" class="link-custom">Send Emails
-            to SPO</a></div>
-    <!-- <div class="col text-center"><a href="/pages/dashboard/send_emails_to_schools.php" class="link-custom">Send
-                Emails to Schools</a> -->
-</div>
-</div>

@@ -102,7 +102,10 @@
     RewriteRule ^reset-password/?$ pages/account/reset-password/reset-password-confirm-standalone.php [QSA,NC,L]
     RewriteRule ^reset-password-confirm-process/?$ pages/account/reset-password/reset-password-confirm-process.php [QSA,NC,L]
     RewriteRule ^account/?$ pages/account/account.php [QSA,NC,L]
-    RewriteRule ^dashboard/?$ pages/dashboard/admin-index/dashboard.php [QSA,NC,L]
+    RewriteRule ^dashboard/?$ dashboard-professional.php [QSA,NC,L]
+    RewriteRule ^dashboard/users/?$ dashboard-users-professional.php [QSA,NC,L]
+    RewriteRule ^create/(news|post)/?$ dashboard-create-content.php?type=$1 [QSA,NC,L]
+    RewriteRule ^create/?$ dashboard-create-content.php [QSA,NC,L]
     RewriteRule ^logout/?$ simple_logout.php [QSA,NC,L]
 
     # Search

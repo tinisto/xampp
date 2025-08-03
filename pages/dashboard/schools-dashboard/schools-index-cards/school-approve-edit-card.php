@@ -7,6 +7,9 @@ $result = $connection->query($query);
 $pendingEditSchoolCount = 0;
 if ($result && ($row = $result->fetch_assoc())) {
     $pendingEditSchoolCount = $row["pending_count"];
+} else {
+    // Table might not exist, set to 0
+    $pendingEditSchoolCount = 0;
 }
 
 // Set card color based on pending approvals count

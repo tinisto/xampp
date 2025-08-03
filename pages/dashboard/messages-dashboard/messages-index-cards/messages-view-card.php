@@ -3,7 +3,10 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/button.php';
 
 $sqlCountMessages = "SELECT COUNT(*) as total FROM messages";
 $resultCountMessages = $connection->query($sqlCountMessages);
-$rowCountMessages = $resultCountMessages->fetch_assoc()["total"];
+$rowCountMessages = 0;
+if ($resultCountMessages && ($row = $resultCountMessages->fetch_assoc())) {
+    $rowCountMessages = $row["total"];
+}
 
 $buttonTitle = "<i class=\"fas fa-envelope\"></i> {$rowCountMessages}";
 ?>

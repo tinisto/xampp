@@ -11,10 +11,14 @@ $currentPage = isset($_GET["page"]) ? (int) $_GET["page"] : 1;
 $offset = ($currentPage - 1) * $perPage;
 
 // Query to fetch paginated results
-$sql = "SELECT * FROM users ORDER BY registration_date DESC LIMIT $perPage OFFSET $offset";
+$sql = "SELECT * FROM users ORDER BY created_at DESC LIMIT $perPage OFFSET $offset";
 $result = $connection->query($sql);
 
-if ($result->num_rows > 0) {
+// Debug: Check for query errors
+if (!$result) {
+    echo '<div class="alert alert-danger">Database Error: ' . $connection->error . '</div>';
+    echo '<div class="alert alert-info">Query: ' . htmlspecialchars($sql) . '</div>';
+} else if ($result->num_rows > 0) {
     echo '<div class="table-responsive">';
     echo '<table class="table table-hover table-sm table-bordered align-middle text-center" style="font-size: 13px;">';
     echo '<thead class="table-dark">';
@@ -49,13 +53,13 @@ if ($result->num_rows > 0) {
         if ($row["role"] === "admin") {
             echo "<tr class=\"$rowClass $roleClass\">";
             echo "<td>" . $row["id"] . "</td>";
-            echo "<td>" . $row["firstname"] . "</td>";
-            echo "<td>" . $row["lastname"] . "</td>";
+            echo "<td>" . ($row["first_name"] ?? '') . "</td>";
+            echo "<td>" . ($row["last_name"] ?? '') . "</td>";
             echo "<td><a href='/dashboard/user.php?id=" . $row["id"] . "'>" . $row["email"] . "</a></td>";
             echo "<td>" . $row["occupation"] . "</td>";
             echo "<td>" . $row["timezone"] . "</td>";
-            echo "<td>" . $row["avatar"] . "</td>";
-            echo "<td>" . $row["registration_date"] . "</td>";
+            echo "<td>" . ($row["avatar_url"] ?? $row["avatar"] ?? '') . "</td>";
+            echo "<td>" . ($row["created_at"] ?? $row["registration_date"] ?? '') . "</td>";
             echo "<td>" . $row["is_active"] . "</td>";
             echo "<td>" . $row["role"] . "</td>";
             echo '<td colspan="3">Admin actions not available</td>';
@@ -64,14 +68,14 @@ if ($result->num_rows > 0) {
             // If the user is NOT an admin, show `is_suspended` column
             echo "<tr class=\"$rowClass $roleClass\">";
             echo "<td>" . $row["id"] . "</td>";
-            echo "<td>" . $row["firstname"] . "</td>";
-            echo "<td>" . $row["lastname"] . "</td>";
+            echo "<td>" . ($row["first_name"] ?? '') . "</td>";
+            echo "<td>" . ($row["last_name"] ?? '') . "</td>";
             // echo "<td><a href='/dashboard/user.php?id=" . $row["id"] . "'>" . $row["email"] . "</a></td>";
             echo "<td><a href='/pages/dashboard/users-dashboard/user.php?id=" . $row["id"] . "'>" . $row["email"] . "</a></td>";
             echo "<td>" . $row["occupation"] . "</td>";
             echo "<td>" . $row["timezone"] . "</td>";
-            echo "<td>" . $row["avatar"] . "</td>";
-            echo "<td>" . $row["registration_date"] . "</td>";
+            echo "<td>" . ($row["avatar_url"] ?? $row["avatar"] ?? '') . "</td>";
+            echo "<td>" . ($row["created_at"] ?? $row["registration_date"] ?? '') . "</td>";
             echo "<td>" . $row["is_active"] . "</td>";
             echo "<td>" . $row["role"] . "</td>";
             echo "<td>" . $row["is_suspended"] . "</td>";
