@@ -75,27 +75,22 @@ unset($_SESSION['oldData']);
         .registration-header {
             background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
             color: white;
-            padding: 30px;
+            padding: 20px 30px;
             text-align: center;
         }
         
         .registration-header h1 {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 600;
-            margin-bottom: 10px;
-        }
-        
-        .registration-header p {
-            font-size: 16px;
-            opacity: 0.9;
+            margin: 0;
         }
         
         .registration-body {
-            padding: 40px 30px;
+            padding: 30px;
         }
         
         .form-group {
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             position: relative;
         }
         
@@ -342,8 +337,7 @@ unset($_SESSION['oldData']);
 <body>
     <div class="registration-container">
         <div class="registration-header">
-            <h1>Создайте аккаунт</h1>
-            <p>Присоединяйтесь к образовательному сообществу</p>
+            <h1>Регистрация</h1>
         </div>
         
         <div class="registration-body">
@@ -363,7 +357,7 @@ unset($_SESSION['oldData']);
                 </div>
             <?php endif; ?>
             
-            <form id="registrationForm" method="post" action="/pages/registration/registration_process_simple.php" enctype="multipart/form-data">
+            <form id="registrationForm" method="post" action="/pages/registration/registration_process_simple.php">
                 <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                 
                 <div class="form-group">
@@ -466,22 +460,6 @@ unset($_SESSION['oldData']);
                     <div class="error-message" id="confirmPassword-error">Пароли не совпадают</div>
                 </div>
                 
-                <div class="form-group">
-                    <label for="avatar" class="form-label">
-                        Аватар (необязательно)
-                    </label>
-                    <div class="file-input-wrapper">
-                        <input type="file" id="avatar" name="avatar" accept="image/*">
-                        <label for="avatar" class="file-input-label" id="avatarLabel">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                <polyline points="17 8 12 3 7 8"/>
-                                <line x1="12" y1="3" x2="12" y2="15"/>
-                            </svg>
-                            Выберите изображение
-                        </label>
-                    </div>
-                </div>
                 
                 <input type="hidden" name="timezone" id="timezone" value="">
                 
@@ -627,14 +605,6 @@ unset($_SESSION['oldData']);
         }
     });
     
-    // File input handling
-    const fileInput = document.getElementById('avatar');
-    const fileLabel = document.getElementById('avatarLabel');
-    
-    fileInput.addEventListener('change', function() {
-        const fileName = this.files[0]?.name || 'Выберите изображение';
-        fileLabel.textContent = fileName;
-    });
     </script>
 </body>
 </html>
