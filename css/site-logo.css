@@ -1,0 +1,69 @@
+/* Site Logo Styles */
+.site-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-link {
+    text-decoration: none;
+    color: inherit;
+    display: inline-flex;
+    align-items: center;
+    transition: opacity 0.3s ease;
+}
+
+.logo-link:hover {
+    opacity: 0.8;
+    text-decoration: none;
+}
+
+.logo-svg {
+    color: #4a90e2;
+    transition: transform 0.3s ease;
+}
+
+.logo-link:hover .logo-svg {
+    transform: scale(1.05);
+}
+
+.logo-image {
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.logo-text {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+    margin-left: 8px;
+}
+
+/* Dark mode support */
+.dark-mode .logo-svg {
+    color: #64b5f6;
+}
+
+.dark-mode .logo-text {
+    color: #e0e0e0;
+}
+
+/* Size variations */
+.site-logo.logo-small .logo-text {
+    font-size: 1rem;
+}
+
+.site-logo.logo-large .logo-text {
+    font-size: 1.5rem;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .site-logo {
+        gap: 6px;
+    }
+    
+    .logo-text {
+        font-size: 1.1rem;
+    }
+}

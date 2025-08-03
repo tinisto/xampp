@@ -16,18 +16,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Validate and sanitize token and password
     $token = filter_input(INPUT_POST, 'token', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-    $hashedPassword = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $password = $_POST['password'];
+    
+    // Validate password strength
+    $errorMessage = null;
+    if (strlen($password) < 8) {
+        $errorMessage = "Пароль должен содержать минимум 8 символов.";
+    } elseif (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$/', $password)) {
+        $errorMessage = "Пароль должен содержать минимум одну строчную букву, одну заглавную букву, одну цифру и один специальный символ.";
+    }
+    
+    if (!$errorMessage) {
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    // Debugging output
-    // echo "Debug: token=$token, email=$email, hashedPassword=$hashedPassword<br>";
+        // Debugging output
+        // echo "Debug: token=$token, email=$email, hashedPassword=$hashedPassword<br>";
 
-    // Update the user's password and token in the database
-    $updateQuery = "UPDATE users SET password = ?, activation_token = ? WHERE email = ?";
-    // echo "Debug: Update Query - $updateQuery<br>"; // Debugging output
+        // Update the user's password and token in the database
+        $updateQuery = "UPDATE users SET password = ?, activation_token = ? WHERE email = ?";
+        // echo "Debug: Update Query - $updateQuery<br>"; // Debugging output
 
 
-    // Use prepared statement to prevent SQL injection
-    $stmt = mysqli_prepare($connection, $updateQuery);
+        // Use prepared statement to prevent SQL injection
+        $stmt = mysqli_prepare($connection, $updateQuery);
 
     if ($stmt) {
       mysqli_stmt_bind_param($stmt, "sss", $hashedPassword, $token, $email);
@@ -51,6 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       // Debugging output
       echo "Debug: MySQL Error - " . mysqli_error($connection) . "<br>";
     }
+    } // End of password validation if
   } else {
     // Handle missing keys
     $errorMessage = "Invalid form submission. Please try again.";

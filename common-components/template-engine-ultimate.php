@@ -537,6 +537,7 @@ function renderAuthLayout($pageTitle, $mainContent, $config = []) {
         
         <!-- Custom CSS -->
         <link rel="stylesheet" href="/css/unified-styles.css">
+        <link rel="stylesheet" href="/css/site-logo.css">
         <?php if (!empty($authConfig['customCSS'])): ?>
             <link rel="stylesheet" href="<?php echo $authConfig['customCSS']; ?>">
         <?php endif; ?>

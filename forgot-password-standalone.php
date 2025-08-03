@@ -76,6 +76,7 @@ unset($_SESSION['reset_error']);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Восстановление пароля - 11классники</title>
+    <link rel="stylesheet" href="/css/site-logo.css">
     <style>
         * {
             margin: 0;
@@ -193,23 +194,19 @@ unset($_SESSION['reset_error']);
             text-decoration: underline;
         }
         
-        .logo {
+        .logo-section {
             text-align: center;
             margin-bottom: 30px;
-        }
-        
-        .logo a {
-            color: #28a745;
-            text-decoration: none;
-            font-size: 20px;
-            font-weight: bold;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="logo">
-            <a href="/">11классники</a>
+        <div class="logo-section">
+            <?php 
+            require_once __DIR__ . '/includes/components/site-logo.php';
+            echo renderSiteLogo(['showText' => true]);
+            ?>
         </div>
         
         <h1>Восстановление пароля</h1>

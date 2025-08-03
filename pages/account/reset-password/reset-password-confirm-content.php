@@ -1,9 +1,12 @@
 <div class="col-md-6">
   <div class="card">
     <div class="card-body" style="font-size: 14px;">
-      <a href="/" class="link-custom">
-        <img src="../images/logo.png" alt="Avatar" class="rounded-circle mx-auto d-block" width="50" />
-      </a>
+      <?php 
+      require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/components/site-logo.php';
+      echo '<div class="text-center mb-3">';
+      echo renderSiteLogo(['showText' => true]);
+      echo '</div>';
+      ?>
       <h4 class="card-title text-center fw-bold my-3">Подтверждение сброса пароля</h4>
       <?php
       $token = filter_input(INPUT_GET, 'token', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -20,7 +23,7 @@
           <div class="mb-3">
             <div class="input-group">
               <input type="password" id="password" name="password" class="form-control"
-                placeholder="Введите ваш новый пароль" required>
+                placeholder="Введите ваш новый пароль" required minlength="8">
               <span class="input-group-text" id="togglePassword">
                 <i class="fas fa-eye"></i>
               </span>
@@ -30,7 +33,7 @@
           <div class="mb-3">
             <div class="input-group">
               <input type="password" id="confirmPassword" name="confirmPassword" class="form-control"
-                placeholder="Повторите ваш новый пароль" required>
+                placeholder="Повторите ваш новый пароль" required minlength="8">
               <span class="input-group-text" id="toggleConfirmPassword">
                 <i class="fas fa-eye"></i>
               </span>
@@ -38,6 +41,9 @@
           </div>
 
           <div id="passwordError" class="text-danger mb-3" style="display: none;">Пароли не совпадают.</div>
+          <div class="text-muted small mb-3">
+            Пароль должен содержать минимум 8 символов, включая заглавную букву, строчную букву, цифру и специальный символ
+          </div>
 
           <div class="d-grid">
             <button type="submit" class="btn btn-danger"><span class="fw-bold">Сохранить новый пароль</span></button>
@@ -86,7 +92,19 @@
     const passwordError = document.getElementById('passwordError');
 
     form.addEventListener('submit', function (event) {
-      if (password.value !== confirmPassword.value) {
+      let error = '';
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$/;
+      
+      if (password.value.length < 8) {
+        error = 'Пароль должен содержать минимум 8 символов.';
+      } else if (!passwordRegex.test(password.value)) {
+        error = 'Пароль должен содержать минимум одну строчную букву, одну заглавную букву, одну цифру и один специальный символ.';
+      } else if (password.value !== confirmPassword.value) {
+        error = 'Пароли не совпадают.';
+      }
+      
+      if (error) {
+        passwordError.textContent = error;
         passwordError.style.display = 'block';
         event.preventDefault();
       } else {
