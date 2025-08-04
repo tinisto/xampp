@@ -10,6 +10,10 @@ require_once __DIR__ . '/rate_limiter.php';
 require_once __DIR__ . '/security_headers.php';
 require_once __DIR__ . '/input_sanitizer.php';
 
+// Load monitoring components
+require_once __DIR__ . '/../monitoring/error_logger.php';
+require_once __DIR__ . '/../monitoring/performance_monitor.php';
+
 /**
  * Security Bootstrap Class
  */
