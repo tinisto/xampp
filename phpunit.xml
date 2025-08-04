@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="tests/bootstrap.php"
+         colors="true"
+         testdox="true"
+         stopOnFailure="false"
+         executionOrder="depends,defects"
+         cacheDirectory=".phpunit.cache">
+    
+    <testsuites>
+        <testsuite name="Unit Tests">
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Integration Tests">
+            <directory>tests/Integration</directory>
+        </testsuite>
+        <testsuite name="Feature Tests">
+            <directory>tests/Feature</directory>
+        </testsuite>
+    </testsuites>
+
+    <source>
+        <include>
+            <directory>includes</directory>
+            <directory>pages</directory>
+            <directory>common-components</directory>
+        </include>
+        <exclude>
+            <directory>vendor</directory>
+            <directory>logs</directory>
+            <directory>cache</directory>
+            <directory>uploads</directory>
+            <file>config/loadEnv.php</file>
+        </exclude>
+    </source>
+
+    <coverage>
+        <report>
+            <html outputDirectory="tests/coverage/html"/>
+            <text outputFile="tests/coverage/coverage.txt"/>
+            <clover outputFile="tests/coverage/clover.xml"/>
+        </report>
+    </coverage>
+
+    <logging>
+        <junit outputFile="tests/results/junit.xml"/>
+    </logging>
+
+    <php>
+        <env name="APP_ENV" value="testing"/>
+        <env name="DB_CONNECTION" value="test"/>
+        <ini name="memory_limit" value="512M"/>
+    </php>
+</phpunit>

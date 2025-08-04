@@ -18,4 +18,16 @@ fix: ## Apply code style fixes
 
 lint: stan cs ## Run all linters (PHPStan + PHPCS)
 
-check: lint ## Run all checks before commit
+test: ## Run all tests
+	./vendor/bin/phpunit
+
+test-unit: ## Run unit tests only
+	./vendor/bin/phpunit tests/Unit
+
+test-integration: ## Run integration tests only
+	./vendor/bin/phpunit tests/Integration
+
+test-coverage: ## Run tests with coverage report
+	./vendor/bin/phpunit --coverage-html tests/coverage/html
+
+check: lint test ## Run all checks and tests before commit
