@@ -408,16 +408,9 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
                         <i class="fas fa-user"></i>
                     </div>
                     <div class="dropdown-menu">
-                        <?php 
-                        // Get current page URL
-                        $current_url = $_SERVER['REQUEST_URI'];
-                        // Only show profile link if not already on account page
-                        if ($current_url !== '/account' && $current_url !== '/account/'): 
-                        ?>
                         <a href="/account" class="dropdown-item">
-                            <i class="fas fa-user" style="margin-right: 10px; width: 16px;"></i>Профиль
+                            <i class="fas fa-user" style="margin-right: 10px; width: 16px;"></i>Мой аккаунт
                         </a>
-                        <?php endif; ?>
                         <?php if (SessionManager::get('role') === 'admin'): ?>
                         <a href="/dashboard" class="dropdown-item">
                             <i class="fas fa-tachometer-alt" style="margin-right: 10px; width: 16px;"></i>Dashboard
