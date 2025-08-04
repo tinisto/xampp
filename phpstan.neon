@@ -1,0 +1,27 @@
+parameters:
+    level: 5
+    paths:
+        - .
+    excludePaths:
+        - vendor
+        - node_modules (?)
+        - cache (?)
+        - logs (?)
+        - uploads (?)
+        - vendor_js (?)
+        - bower_components (?)
+        - test_files (?)
+        - xamppfiles (?)
+        - deploy-*.php
+        - fix-*.php
+    treatPhpDocTypesAsCertain: false
+    checkMissingIterableValueType: false
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        # Ignore errors for missing includes/functions that are defined elsewhere
+        - '#Function .* not found#'
+        - '#Constant .* not found#'
+        - '#Call to an undefined method#'
+        # Ignore database connection variable that's defined in included files
+        - '#Variable \$connection might not be defined#'
+        - '#Variable \$_SESSION might not be defined#'
