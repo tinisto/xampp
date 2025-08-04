@@ -15,7 +15,6 @@ parameters:
         - deploy-*.php
         - fix-*.php
     treatPhpDocTypesAsCertain: false
-    checkMissingIterableValueType: false
     reportUnmatchedIgnoredErrors: false
     ignoreErrors:
         # Ignore errors for missing includes/functions that are defined elsewhere
