@@ -45,4 +45,7 @@ migrate-create: ## Create new migration (usage: make migrate-create name=migrati
 minify: ## Minify CSS and JavaScript assets
 	php build/minify-assets.php
 
+setup-dev: ## Setup development environment
+	php scripts/setup-dev-environment.php
+
 check: lint test ## Run all checks and tests before commit
