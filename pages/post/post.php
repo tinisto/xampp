@@ -50,10 +50,10 @@ $templateConfig = [
 $templateFile = $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine-ultimate.php';
 if (file_exists($templateFile)) {
     include $templateFile;
-    renderTemplate($pageTitle, 'pages/post/post-content.php', $templateConfig);
+    renderTemplate($pageTitle, 'pages/post/post-content-professional.php', $templateConfig);
 } else {
     // Fallback to modern template
-    $mainContent = 'pages/post/post-content.php';
+    $mainContent = 'pages/post/post-content-professional.php';
     $templateFile2 = $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine-modern.php';
     if (file_exists($templateFile2)) {
         include $templateFile2;

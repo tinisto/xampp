@@ -83,6 +83,10 @@
     RewriteRule ^news/([^/]+)/?$ pages/common/news/news.php?url_news=$1 [QSA,NC,L]
     RewriteRule ^post/([^/]+)/?$ pages/post/post.php?url_post=$1 [QSA,NC,L]
     
+    # Edit routes
+    RewriteRule ^edit/news/(\d+)/?$ dashboard-edit-content.php?type=news&id=$1 [QSA,NC,L]
+    RewriteRule ^edit/post/(\d+)/?$ dashboard-edit-content.php?type=post&id=$1 [QSA,NC,L]
+    
     # Redirect /posts to homepage (posts are shown there)
     RewriteRule ^posts/?$ / [R=301,L]
     
@@ -104,8 +108,13 @@
     RewriteRule ^account/?$ pages/account/account.php [QSA,NC,L]
     RewriteRule ^dashboard/?$ dashboard-professional.php [QSA,NC,L]
     RewriteRule ^dashboard/users/?$ dashboard-users-professional.php [QSA,NC,L]
-    RewriteRule ^create/(news|post)/?$ dashboard-create-content.php?type=$1 [QSA,NC,L]
-    RewriteRule ^create/?$ dashboard-create-content.php [QSA,NC,L]
+    RewriteRule ^dashboard/news/?$ dashboard-news-management.php [QSA,NC,L]
+    RewriteRule ^dashboard/posts/?$ dashboard-posts-management.php [QSA,NC,L]
+    RewriteRule ^dashboard/comments/?$ pages/dashboard/comments-dashboard/comments-view/comments-view.php [QSA,NC,L]
+    RewriteRule ^create/(news|post)/?$ dashboard-create-content-unified.php?type=$1 [QSA,NC,L]
+    RewriteRule ^create/?$ dashboard-create-content-unified.php [QSA,NC,L]
+    RewriteRule ^create/process/?$ create-process.php [QSA,NC,L]
+    RewriteRule ^edit/process/?$ edit-process.php [QSA,NC,L]
     RewriteRule ^logout/?$ simple_logout.php [QSA,NC,L]
 
     # Search

@@ -196,6 +196,7 @@ $pageTitle = $contentType === 'news' ? 'Создать новость' : 'Соз
         }
 
         .user-menu {
+            position: relative;
             display: flex;
             align-items: center;
             gap: 12px;
@@ -203,12 +204,102 @@ $pageTitle = $contentType === 'news' ? 'Создать новость' : 'Соз
             background: var(--light);
             border-radius: 8px;
             color: var(--dark);
-            text-decoration: none;
+            cursor: pointer;
             transition: background 0.2s;
         }
 
         .user-menu:hover {
             background: var(--border);
+        }
+
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 8px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            min-width: 200px;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s ease;
+        }
+
+        .user-dropdown.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            background: var(--light);
+            border-radius: 8px 8px 0 0;
+        }
+
+        .dropdown-user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .dropdown-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .dropdown-user-details h4 {
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+
+        .dropdown-user-details p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: var(--secondary);
+        }
+
+        .dropdown-menu {
+            padding: 8px 0;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: var(--dark);
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background: var(--light);
+            color: var(--dark);
+        }
+
+        .dropdown-item.danger:hover {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .dropdown-icon {
+            font-size: 1rem;
+            width: 20px;
+            text-align: center;
         }
 
         .user-avatar {
@@ -469,9 +560,52 @@ $pageTitle = $contentType === 'news' ? 'Создать новость' : 'Соз
             </div>
             
             <div class="header-right">
-                <div class="user-menu">
+                <div class="user-menu" id="userMenu">
                     <div class="user-avatar"><?= strtoupper(substr($username, 0, 1)) ?></div>
                     <span><?= htmlspecialchars($username) ?></span>
+                    <span style="margin-left: 8px; font-size: 0.8rem;">▼</span>
+                    
+                    <div class="user-dropdown" id="userDropdown">
+                        <div class="dropdown-header">
+                            <div class="dropdown-user-info">
+                                <div class="dropdown-avatar"><?= strtoupper(substr($username, 0, 1)) ?></div>
+                                <div class="dropdown-user-details">
+                                    <h4><?= htmlspecialchars($username) ?></h4>
+                                    <p>Администратор</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dropdown-menu">
+                            <a href="/account" class="dropdown-item">
+                                <span class="dropdown-icon">👤</span>
+                                Мой профиль
+                            </a>
+                            <a href="/dashboard" class="dropdown-item">
+                                <span class="dropdown-icon">📊</span>
+                                Dashboard
+                            </a>
+                            <a href="/dashboard/users" class="dropdown-item">
+                                <span class="dropdown-icon">👥</span>
+                                Пользователи
+                            </a>
+                            <a href="/create/news" class="dropdown-item">
+                                <span class="dropdown-icon">📰</span>
+                                Создать новость
+                            </a>
+                            <a href="/create/post" class="dropdown-item">
+                                <span class="dropdown-icon">📝</span>
+                                Создать пост
+                            </a>
+                            <a href="/" class="dropdown-item">
+                                <span class="dropdown-icon">🏠</span>
+                                Главная страница
+                            </a>
+                            <a href="/logout" class="dropdown-item danger">
+                                <span class="dropdown-icon">🚪</span>
+                                Выйти
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -567,6 +701,29 @@ $pageTitle = $contentType === 'news' ? 'Создать новость' : 'Соз
             
             sidebar.classList.toggle('collapsed');
             mainContent.classList.toggle('expanded');
+        });
+
+        // User dropdown menu
+        const userMenu = document.getElementById('userMenu');
+        const userDropdown = document.getElementById('userDropdown');
+
+        userMenu.addEventListener('click', (e) => {
+            e.stopPropagation();
+            userDropdown.classList.toggle('active');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!userMenu.contains(e.target)) {
+                userDropdown.classList.remove('active');
+            }
+        });
+
+        // Close dropdown when pressing Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                userDropdown.classList.remove('active');
+            }
         });
 
         // Auto-resize textarea

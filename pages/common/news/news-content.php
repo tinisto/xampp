@@ -52,14 +52,24 @@ if (!empty($newsData) && !empty($urlNews)) {
   </div>
 
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-    <h1 style="color: var(--text-primary, #333); margin: 0;">
-      <?php echo htmlspecialchars($newsData['title_news']); ?>
-    </h1>
+    <div style="display: flex; align-items: center; gap: 15px;">
+      <h1 style="color: var(--text-primary, #333); margin: 0;">
+        <?php echo htmlspecialchars($newsData['title_news']); ?>
+      </h1>
+      <?php if ($newsData['approved'] == 0): ?>
+      <span style="background: #fbbf24; color: #000; padding: 4px 12px; border-radius: 20px; font-size: 14px; font-weight: 500;">
+        📝 Черновик
+      </span>
+      <?php endif; ?>
+    </div>
     <div>
       <?php
       // Check if the user is an admin
       if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
-        echo '<a href="/pages/common/news/news-form.php?id_news=' . (int)$newsData['id_news'] . '" class="edit-icon"><i class="fas fa-edit"></i></a>&nbsp;&nbsp;';
+        echo '<div style="display: flex; gap: 10px;">';
+        echo '<a href="/edit/news/' . (int)$newsData['id_news'] . '" style="padding: 6px 12px; background: #3b82f6; color: white; text-decoration: none; border-radius: 6px; font-size: 14px; display: inline-flex; align-items: center; gap: 5px; transition: background 0.2s;"><i class="fas fa-edit"></i> Редактировать</a>';
+        echo '<a href="/delete-news.php?id=' . (int)$newsData['id_news'] . '" onclick="return confirm(\'Вы уверены, что хотите удалить эту новость?\')" style="padding: 6px 12px; background: #ef4444; color: white; text-decoration: none; border-radius: 6px; font-size: 14px; display: inline-flex; align-items: center; gap: 5px; transition: background 0.2s;"><i class="fas fa-trash"></i> Удалить</a>';
+        echo '</div>';
       }
       ?>
     </div>
@@ -85,6 +95,32 @@ if (!empty($newsData) && !empty($urlNews)) {
   <p class="lead fw-medium" style="color: var(--text-secondary, #666); font-size: 1.1em; margin-bottom: 20px;">
     <?php echo htmlspecialchars($newsData['description_news']); ?>
   </p>
+  <?php endif; ?>
+
+  <?php 
+  // Display main image if exists - check both new and old image fields
+  $imageToShow = null;
+  
+  // First check for new image_news field
+  if (!empty($newsData['image_news'])) {
+      $imageToShow = $newsData['image_news'];
+  } 
+  // If no image_news, check for old image fields
+  elseif (!empty($newsData['image_news_1'])) {
+      // Check if old format image exists on server
+      $oldImagePath = "/images/news-images/{$newsData['id_news']}_1.jpg";
+      if (file_exists($_SERVER['DOCUMENT_ROOT'] . $oldImagePath)) {
+          $imageToShow = $oldImagePath;
+      }
+  }
+  
+  // Display the image if we found one
+  if ($imageToShow): ?>
+    <div style="margin-bottom: 30px;">
+      <img src="<?= htmlspecialchars($imageToShow) ?>" 
+           alt="<?= htmlspecialchars($newsData['title_news']) ?>" 
+           style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    </div>
   <?php endif; ?>
 
   <div class="row">

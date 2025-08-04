@@ -13,6 +13,39 @@ $username = $_SESSION['username'] ?? $_SESSION['email'] ?? 'Admin';
 $contentType = $_GET['type'] ?? 'news'; // Default to news
 $pageTitle = $contentType === 'news' ? 'Создать новость' : 'Создать пост';
 
+// Check for success or error messages
+$success = $_GET['success'] ?? null;
+$error = $_SESSION['error'] ?? null;
+$successMsg = $_SESSION['success'] ?? null;
+unset($_SESSION['error']);
+unset($_SESSION['success']);
+
+// Get counts for sidebar badges
+$news_published = 0;
+$news_drafts = 0;
+$posts_total = 0;
+
+// Count news
+$news_count_sql = "SELECT approved, COUNT(*) as count FROM news GROUP BY approved";
+$news_result = $connection->query($news_count_sql);
+if ($news_result) {
+    while ($row = $news_result->fetch_assoc()) {
+        if ($row['approved'] == 1) {
+            $news_published = $row['count'];
+        } else {
+            $news_drafts = $row['count'];
+        }
+    }
+}
+
+// Count posts (all posts since no status field)
+$posts_count_sql = "SELECT COUNT(*) as count FROM posts";
+$posts_result = $connection->query($posts_count_sql);
+if ($posts_result) {
+    $row = $posts_result->fetch_assoc();
+    $posts_total = $row['count'];
+}
+
 // Copy the exact styles from dashboard-professional.php
 ?>
 <!DOCTYPE html>
@@ -46,12 +79,43 @@ $pageTitle = $contentType === 'news' ? 'Создать новость' : 'Соз
             --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
         }
 
+        /* Dark mode variables */
+        [data-theme="dark"] {
+            --light: #1e293b;
+            --dark: #f1f5f9;
+            --white: #0f172a;
+            --border: #334155;
+            --secondary: #94a3b8;
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            background: var(--light);
+            border: 1px solid var(--border);
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.25rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle:hover {
+            background: var(--border);
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
             background: var(--light);
             color: var(--dark);
             line-height: 1.6;
             overflow-x: hidden;
+        
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         /* Sidebar - matching dashboard-professional.php exactly */
@@ -67,6 +131,7 @@ $pageTitle = $contentType === 'news' ? 'Создать новость' : 'Соз
             transition: transform 0.3s ease;
             display: flex;
             flex-direction: column;
+            transform: translateX(-100%); /* Start closed */
         }
 
         .sidebar.active {
@@ -147,13 +212,14 @@ $pageTitle = $contentType === 'news' ? 'Создать новость' : 'Соз
         }
 
         .nav-item:hover {
-            background: rgba(37, 99, 235, 0.1);
+            background: rgba(37, 99, 235, 0.05);
             color: var(--primary);
         }
 
         .nav-item.active {
             background: rgba(37, 99, 235, 0.1);
             color: var(--primary);
+            font-weight: 600;
         }
 
         .nav-item.active::after {
@@ -177,10 +243,15 @@ $pageTitle = $contentType === 'news' ? 'Создать новость' : 'Соз
 
         /* Main Content Area */
         .main-content {
-            margin-left: var(--sidebar-width);
+            margin-left: 0; /* Start with no margin since sidebar is closed */
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            transition: margin-left 0.3s ease;
+        }
+        
+        .main-content.sidebar-open {
+            margin-left: var(--sidebar-width);
         }
 
         .header {
@@ -203,7 +274,7 @@ $pageTitle = $contentType === 'news' ? 'Создать новость' : 'Соз
         }
 
         .toggle-btn {
-            display: none;
+            display: block; /* Always show toggle button */
             background: none;
             border: none;
             font-size: 1.5rem;
@@ -241,6 +312,93 @@ $pageTitle = $contentType === 'news' ? 'Создать новость' : 'Соз
             color: var(--dark);
             cursor: pointer;
             transition: background 0.2s;
+        }
+
+        /* Alert System */
+        .alert-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            max-width: 400px;
+        }
+
+        .custom-alert {
+            padding: 16px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+            animation: slideIn 0.3s ease-out;
+            position: relative;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        .alert-error {
+            background-color: #fee;
+            border-left: 4px solid #dc3545;
+            color: #721c24;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            border-left: 4px solid #28a745;
+            color: #155724;
+        }
+
+        .alert-warning {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            color: #856404;
+        }
+
+        .alert-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .alert-message {
+            flex: 1;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .alert-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: inherit;
+            opacity: 0.5;
+            padding: 0;
+            margin-left: 10px;
+        }
+
+        .alert-close:hover {
+            opacity: 1;
         }
 
         .user-menu:hover {
@@ -506,17 +664,7 @@ $pageTitle = $contentType === 'news' ? 'Создать новость' : 'Соз
 
         /* Mobile responsive */
         @media (max-width: 1024px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            
-            .main-content {
-                margin-left: 0;
-            }
-            
-            .toggle-btn {
-                display: block;
-            }
+            /* Sidebar already starts closed, no changes needed */
         }
 
         /* Overlay for mobile */
@@ -540,6 +688,9 @@ $pageTitle = $contentType === 'news' ? 'Создать новость' : 'Соз
     </style>
 </head>
 <body>
+    <!-- Alert Container -->
+    <div id="alertContainer" class="alert-container"></div>
+    
     <!-- Overlay for mobile -->
     <div class="overlay" id="overlay"></div>
 
@@ -569,13 +720,27 @@ $pageTitle = $contentType === 'news' ? 'Создать новость' : 'Соз
             
             <div class="nav-section">
                 <div class="nav-section-title">Контент</div>
-                <a href="/create/news" class="nav-item <?= $contentType === 'news' ? 'active' : '' ?>">
+                <a href="/dashboard/news" class="nav-item">
                     <span class="nav-icon">📰</span>
-                    Новости
+                    Управление новостями
+                    <?php if ($news_published > 0 || $news_drafts > 0): ?>
+                    <span class="nav-badge" style="margin-left: auto; background: var(--primary); color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem;"><?= $news_published ?>/<?= $news_drafts ?></span>
+                    <?php endif; ?>
+                </a>
+                <a href="/dashboard/posts" class="nav-item">
+                    <span class="nav-icon">📋</span>
+                    Управление постами
+                    <?php if ($posts_total > 0): ?>
+                    <span class="nav-badge" style="margin-left: auto; background: var(--primary); color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem;"><?= $posts_total ?></span>
+                    <?php endif; ?>
+                </a>
+                <a href="/create/news" class="nav-item <?= $contentType === 'news' ? 'active' : '' ?>">
+                    <span class="nav-icon">➕</span>
+                    Создать новость
                 </a>
                 <a href="/create/post" class="nav-item <?= $contentType === 'post' ? 'active' : '' ?>">
                     <span class="nav-icon">📝</span>
-                    Посты
+                    Создать пост
                 </a>
                 <a href="/pages/dashboard/comments-dashboard/comments-view/comments-view.php" class="nav-item">
                     <span class="nav-icon">💬</span>
@@ -623,6 +788,10 @@ $pageTitle = $contentType === 'news' ? 'Создать новость' : 'Соз
             </div>
             
             <div class="header-right">
+                <button class="theme-toggle" id="themeToggle" title="Переключить тему">
+                    <span class="theme-icon-light">🌞</span>
+                    <span class="theme-icon-dark" style="display: none;">🌙</span>
+                </button>
                 <div class="user-menu" id="userMenu">
                     <div class="user-avatar"><?= strtoupper(substr($username, 0, 1)) ?></div>
                     <span><?= htmlspecialchars($username) ?></span>
@@ -675,6 +844,22 @@ $pageTitle = $contentType === 'news' ? 'Создать новость' : 'Соз
 
         <!-- Content -->
         <div class="content">
+            <?php if ($success && $successMsg): ?>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    showAlert('<?= htmlspecialchars($successMsg, ENT_QUOTES) ?>', 'success');
+                });
+            </script>
+            <?php endif; ?>
+            
+            <?php if ($error): ?>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    showAlert('<?= htmlspecialchars($error, ENT_QUOTES) ?>', 'error');
+                });
+            </script>
+            <?php endif; ?>
+            
             <!-- Content Type Selector -->
             <div class="type-selector">
                 <a href="/create/news" class="type-btn <?= $contentType === 'news' ? 'active' : '' ?>">
@@ -694,7 +879,7 @@ $pageTitle = $contentType === 'news' ? 'Создать новость' : 'Соз
                 </div>
                 
                 <div class="form-card-body">
-                    <form action="/create/process" method="POST" enctype="multipart/form-data">
+                    <form action="/create-process.php" method="POST" enctype="multipart/form-data" id="contentForm">
                         <input type="hidden" name="content_type" value="<?= htmlspecialchars($contentType) ?>">
                         
                         <div class="form-group">
@@ -711,6 +896,10 @@ $pageTitle = $contentType === 'news' ? 'Создать новость' : 'Соз
 
                         <div class="form-group">
                             <label class="form-label" for="content">Содержание</label>
+                            <div id="editor-loading" style="background: var(--light); border: 1px solid var(--border); border-radius: 8px; padding: 40px; text-align: center; color: var(--secondary);">
+                                <div style="font-size: 2rem; margin-bottom: 10px;">⏳</div>
+                                <div>Загрузка редактора...</div>
+                            </div>
                             <textarea id="content" name="content" class="form-input tinymce-editor" required
                                       placeholder="Основной текст <?= $contentType === 'news' ? 'новости' : 'поста' ?>..."></textarea>
                         </div>
@@ -730,7 +919,13 @@ $pageTitle = $contentType === 'news' ? 'Создать новость' : 'Соз
 
                         <div class="form-group">
                             <label class="form-label" for="image">Изображение (необязательно)</label>
-                            <input type="file" id="image" name="image" class="form-input" accept="image/*">
+                            <input type="file" id="image" name="image" class="form-input" accept="image/*" onchange="previewImage(event)">
+                            <div id="imagePreview" style="margin-top: 16px; display: none;">
+                                <img id="preview" src="" alt="Preview" style="max-width: 100%; max-height: 300px; border-radius: 8px; box-shadow: var(--shadow);">
+                                <button type="button" onclick="removeImage()" style="display: block; margin-top: 8px; padding: 8px 16px; background: var(--danger); color: white; border: none; border-radius: 6px; cursor: pointer;">
+                                    ❌ Удалить изображение
+                                </button>
+                            </div>
                         </div>
 
                         <div class="form-group">
@@ -742,8 +937,8 @@ $pageTitle = $contentType === 'news' ? 'Создать новость' : 'Соз
                         </div>
 
                         <div class="btn-group">
-                            <button type="submit" class="btn btn-primary">
-                                ✅ <?= $contentType === 'news' ? 'Создать новость' : 'Создать пост' ?>
+                            <button type="submit" class="btn btn-primary" id="submitBtn" disabled>
+                                <span id="submitBtnText">⏳ Загрузка редактора...</span>
                             </button>
                             <a href="/dashboard" class="btn btn-secondary">
                                 ❌ Отмена
@@ -755,8 +950,8 @@ $pageTitle = $contentType === 'news' ? 'Создать новость' : 'Соз
         </div>
     </div>
 
-    <!-- TinyMCE Cloud CDN -->
-    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+    <!-- TinyMCE Cloud CDN - Free Version -->
+    <script src="https://cdn.jsdelivr.net/npm/tinymce@7/tinymce.min.js" referrerpolicy="origin"></script>
     
     <script>
         const sidebar = document.getElementById('sidebar');
@@ -769,25 +964,23 @@ $pageTitle = $contentType === 'news' ? 'Создать новость' : 'Соз
 
         // Toggle sidebar
         toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            mainContent.classList.toggle('sidebar-open');
             if (window.innerWidth <= 1024) {
-                sidebar.classList.toggle('active');
                 overlay.classList.toggle('active');
-            } else {
-                sidebar.classList.toggle('collapsed');
-                mainContent.classList.toggle('expanded');
             }
         });
 
         // Close sidebar on overlay click
         overlay.addEventListener('click', () => {
             sidebar.classList.remove('active');
+            mainContent.classList.remove('sidebar-open');
             overlay.classList.remove('active');
         });
 
         // Handle window resize
         window.addEventListener('resize', () => {
             if (window.innerWidth > 1024) {
-                sidebar.classList.remove('active');
                 overlay.classList.remove('active');
             }
         });
@@ -812,11 +1005,17 @@ $pageTitle = $contentType === 'news' ? 'Создать новость' : 'Соз
             }
         });
 
+        // Flag to track if TinyMCE is ready
+        let editorReady = false;
+        
+        // Store content to prevent loss
+        let lastContent = '';
+        
         // Initialize TinyMCE
         tinymce.init({
             selector: '#content',
             height: 400,
-            language: 'ru',
+            license_key: 'gpl',
             skin: 'oxide',
             content_css: 'default',
             menubar: false,
@@ -827,6 +1026,11 @@ $pageTitle = $contentType === 'news' ? 'Создать новость' : 'Соз
             ],
             toolbar: 'undo redo | blocks | bold italic forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | image link | code preview fullscreen | help',
             block_formats: 'Paragraph=p; Heading 1=h1; Heading 2=h2; Heading 3=h3; Heading 4=h4; Heading 5=h5; Heading 6=h6;',
+            
+            // Fix line breaks - use BR instead of P for Enter key
+            forced_root_block: false,
+            force_br_newlines: true,
+            force_p_newlines: false,
             
             // Image upload
             images_upload_url: '/upload-image.php',
@@ -855,11 +1059,11 @@ $pageTitle = $contentType === 'news' ? 'Создать новость' : 'Соз
                             if (result.location) {
                                 callback(result.location, { alt: file.name });
                             } else {
-                                alert('Ошибка загрузки изображения: ' + (result.error || 'Неизвестная ошибка'));
+                                showAlert('Ошибка загрузки изображения: ' + (result.error || 'Неизвестная ошибка'), 'error');
                             }
                         })
                         .catch(error => {
-                            alert('Ошибка загрузки изображения: ' + error.message);
+                            showAlert('Ошибка загрузки изображения: ' + error.message, 'error');
                         });
                     };
                     
@@ -912,8 +1116,56 @@ $pageTitle = $contentType === 'news' ? 'Создать новость' : 'Соз
             
             // Setup function
             setup: function(editor) {
+                editor.on('init', function() {
+                    // Hide loading placeholder
+                    document.getElementById('editor-loading').style.display = 'none';
+                    
+                    // Remove required attribute as TinyMCE will handle validation
+                    document.getElementById('content').removeAttribute('required');
+                    
+                    // Get any existing content from textarea
+                    const existingContent = document.getElementById('content').value;
+                    if (existingContent && existingContent.trim()) {
+                        editor.setContent(existingContent);
+                    }
+                    
+                    // Mark editor as ready
+                    editorReady = true;
+                    console.log('TinyMCE is ready!');
+                    
+                    // Update submit button
+                    const submitBtn = document.getElementById('submitBtn');
+                    const submitBtnText = document.getElementById('submitBtnText');
+                    const contentType = '<?= $contentType ?>';
+                    
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtnText.textContent = contentType === 'news' ? '✅ Создать новость' : '✅ Создать пост';
+                    }
+                });
+                // Save on any change
                 editor.on('change', function() {
+                    console.log('TinyMCE change event');
                     editor.save();
+                    // Store content
+                    lastContent = editor.getContent();
+                    console.log('Content saved on change:', lastContent);
+                    // Also manually update textarea
+                    document.getElementById('content').value = lastContent;
+                });
+                // Save on keyup for better reliability
+                editor.on('keyup', function() {
+                    editor.save();
+                    lastContent = editor.getContent();
+                    console.log('Content saved on keyup:', lastContent.substring(0, 50) + '...');
+                });
+                // Save when editor loses focus
+                editor.on('blur', function() {
+                    console.log('TinyMCE blur event');
+                    editor.save();
+                    lastContent = editor.getContent();
+                    // Also manually update textarea
+                    document.getElementById('content').value = lastContent;
                 });
             },
             
@@ -951,25 +1203,231 @@ $pageTitle = $contentType === 'news' ? 'Создать новость' : 'Соз
             });
         });
 
+        // Alert System Functions
+        function showAlert(message, type = 'error') {
+            const alertContainer = document.getElementById('alertContainer');
+            if (!alertContainer) return;
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `custom-alert alert-${type}`;
+            
+            const icons = {
+                error: '❌',
+                success: '✅',
+                warning: '⚠️'
+            };
+            
+            alertDiv.innerHTML = `
+                <span class="alert-icon">${icons[type]}</span>
+                <span class="alert-message">${message}</span>
+                <button class="alert-close" onclick="this.parentElement.remove()">×</button>
+            `;
+            
+            alertContainer.appendChild(alertDiv);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                alertDiv.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => alertDiv.remove(), 300);
+            }, 5000);
+        }
+
         // Form validation
-        document.querySelector('form').addEventListener('submit', function(e) {
-            const title = document.getElementById('title').value.trim();
+        const form = document.getElementById('contentForm');
+        
+        // Prevent default form submission and handle manually
+        form.addEventListener('submit', function(e) {
+            console.log('=== FORM SUBMIT START ===');
+            e.preventDefault(); // Always prevent default first
             
-            // Get content from TinyMCE
-            const contentEditor = tinymce.get('content');
-            const content = contentEditor ? contentEditor.getContent().trim() : document.getElementById('content').value.trim();
-            
-            if (!title || !content) {
-                e.preventDefault();
-                alert('Пожалуйста, заполните все обязательные поля');
+            // Check if TinyMCE is still loading
+            if (!editorReady) {
+                console.log('Editor not ready');
+                showAlert('Пожалуйста, подождите загрузку редактора', 'warning');
                 return false;
             }
             
-            // Update the textarea with TinyMCE content before submission
+            const title = document.getElementById('title').value.trim();
+            console.log('Title:', title);
+            
+            // Get content from TinyMCE
+            const contentEditor = tinymce.get('content');
+            let content = '';
+            
+            console.log('Editor found:', !!contentEditor);
+            console.log('Editor hidden:', contentEditor ? contentEditor.isHidden() : 'N/A');
+            
             if (contentEditor) {
-                document.getElementById('content').value = contentEditor.getContent();
+                console.log('Editor state:', {
+                    isHidden: contentEditor.isHidden(),
+                    isDirty: contentEditor.isDirty(),
+                    initialized: contentEditor.initialized
+                });
+                
+                // Force TinyMCE to save content to textarea
+                contentEditor.save();
+                
+                // Try multiple methods to get content
+                content = contentEditor.getContent() || '';
+                
+                // If editor is hidden, try to get content from DOM directly
+                if (!content && contentEditor.isHidden()) {
+                    const editorElement = contentEditor.getElement();
+                    if (editorElement) {
+                        content = editorElement.value || '';
+                        console.log('Got content from hidden editor element:', content);
+                    }
+                }
+                
+                // Also check the textarea value as backup
+                const textareaContent = document.getElementById('content').value || '';
+                
+                // Also check lastContent variable
+                if (!content && lastContent) {
+                    content = lastContent;
+                    console.log('Using lastContent backup:', content);
+                }
+                
+                // Debug all content sources
+                console.log('Content validation debug:');
+                console.log('TinyMCE editor found:', !!contentEditor);
+                console.log('Editor hidden:', contentEditor.isHidden());
+                console.log('Content from getContent():', content);
+                console.log('Content from textarea:', textareaContent);
+                console.log('Content from lastContent:', lastContent);
+                console.log('Editor body innerHTML:', contentEditor.getBody() ? contentEditor.getBody().innerHTML : 'No body');
+                
+                // Use whichever has content
+                if (!content && textareaContent) {
+                    content = textareaContent;
+                }
+                
+                // If still no content, try getting from editor body directly
+                if (!content && contentEditor.getBody()) {
+                    content = contentEditor.getBody().innerHTML || '';
+                }
+                
+                // Remove HTML tags to check if there's actual content
+                const textContent = content.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
+                
+                console.log('Final content:', content);
+                console.log('Text content:', textContent);
+                console.log('Text length:', textContent.length);
+                console.log('lastContent backup:', lastContent);
+                
+                if (!title) {
+                    console.log('Title validation failed');
+                    showAlert('Пожалуйста, введите заголовок', 'error');
+                    document.getElementById('title').focus();
+                    return false;
+                }
+                
+                if (!textContent || textContent.length < 1) {
+                    console.log('Content validation failed');
+                    console.log('Attempting to restore content...');
+                    
+                    // Try to restore content from backup
+                    if (lastContent) {
+                        console.log('Restoring from lastContent:', lastContent);
+                        contentEditor.setContent(lastContent);
+                        // Try validation again
+                        const restoredContent = contentEditor.getContent();
+                        const restoredText = restoredContent.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
+                        if (restoredText && restoredText.length > 0) {
+                            console.log('Content restored successfully, continuing submission');
+                            document.getElementById('content').value = restoredContent;
+                            // Continue with submission
+                            console.log('=== FORM SUBMIT SUCCESS ===');
+                            e.target.submit();
+                            return;
+                        }
+                    }
+                    
+                    showAlert('Пожалуйста, введите содержание', 'error');
+                    contentEditor.focus();
+                    return false;
+                }
+                
+                // Ensure the textarea has the content before submission
+                document.getElementById('content').value = content;
+                
+                // All validation passed - manually submit the form
+                console.log('=== FORM SUBMIT SUCCESS ===');
+                console.log('Submitting with content:', content.substring(0, 100) + '...');
+                e.target.submit();
+            } else {
+                // Fallback if TinyMCE is not loaded
+                content = document.getElementById('content').value.trim();
+                
+                if (!title || !content) {
+                    showAlert('Пожалуйста, заполните все обязательные поля', 'error');
+                    return false;
+                }
+                
+                // All validation passed - manually submit the form
+                e.target.submit();
             }
         });
+
+        // Dark mode toggle
+        const themeToggle = document.getElementById('themeToggle');
+        if (themeToggle) {
+            const lightIcon = themeToggle.querySelector('.theme-icon-light');
+            const darkIcon = themeToggle.querySelector('.theme-icon-dark');
+            
+            // Check for saved theme preference or default to 'light' mode
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            updateThemeIcon(currentTheme);
+            
+            // Toggle theme
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function updateThemeIcon(theme) {
+                if (theme === 'dark') {
+                    lightIcon.style.display = 'none';
+                    darkIcon.style.display = 'inline';
+                } else {
+                    lightIcon.style.display = 'inline';
+                    darkIcon.style.display = 'none';
+                }
+            }
+        }
+
+        // Image preview functions
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('preview');
+            const imagePreview = document.getElementById('imagePreview');
+            
+            if (file) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                }
+                
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        function removeImage() {
+            const imageInput = document.getElementById('image');
+            const imagePreview = document.getElementById('imagePreview');
+            const preview = document.getElementById('preview');
+            
+            imageInput.value = '';
+            preview.src = '';
+            imagePreview.style.display = 'none';
+        }
     </script>
 </body>
 </html>

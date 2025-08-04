@@ -19,8 +19,8 @@ if (isset($_SESSION['user_id'])) {
 
         // If the logged-in user is the author of the news, show edit and delete options
         if ($userId === $newsRecord['user_id']) : ?>
-            <a href="/pages/common/news/news-form.php?id_news=<?= htmlspecialchars($newsId, ENT_QUOTES, 'UTF-8') ?>" class="text-secondary me-2" title="Редактировать"><i class="fas fa-edit"></i></a>
-            <a href="/pages/common/news/news-user-delete-news.php?id_news=<?= htmlspecialchars($newsId, ENT_QUOTES, 'UTF-8') ?>" class="text-danger" title="Удалить" onclick="return confirm('Вы уверены, что хотите удалить эту новость?');"><i class="fas fa-trash-alt"></i></a>
+            <a href="/edit/news/<?= htmlspecialchars($newsId, ENT_QUOTES, 'UTF-8') ?>" class="text-secondary me-2" title="Редактировать"><i class="fas fa-edit"></i></a>
+            <a href="/delete-news.php?id=<?= htmlspecialchars($newsId, ENT_QUOTES, 'UTF-8') ?>" class="text-danger" title="Удалить" onclick="return confirm('Вы уверены, что хотите удалить эту новость?');"><i class="fas fa-trash-alt"></i></a>
 <?php endif;
     }
 }
