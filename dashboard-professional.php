@@ -675,6 +675,14 @@ if ($posts_result) {
             
             <div class="nav-section">
                 <div class="nav-section-title">Система</div>
+                <a href="/admin/cache-management.php" class="nav-item">
+                    <span class="nav-icon">⚡</span>
+                    Управление кэшем
+                </a>
+                <a href="/admin/monitoring.php" class="nav-item">
+                    <span class="nav-icon">📊</span>
+                    Мониторинг системы
+                </a>
                 <a href="/" class="nav-item">
                     <span class="nav-icon">🏠</span>
                     Главная
