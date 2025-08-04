@@ -33,7 +33,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/check_under_constru
         comments.id,
         comments.id_entity,
         comments.user_id,
-        COALESCE(users.avatar, 'default_avatar.jpg') AS avatar,
+        COALESCE(users.avatar_url, 'default_avatar.jpg') AS avatar,
         comments.comment_text,
         comments.date,
         COALESCE(users.timezone, 'UTC') AS user_timezone,
@@ -109,14 +109,17 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/check_under_constru
                 } else {
                   // Fetch user's first and last names based on user_id
                   $userNames = getUserNames($comment['user_id'], $connection);
-                  echo $userNames['firstname'] . ' ' . $userNames['lastname'];
+                  echo $userNames['first_name'] . ' ' . $userNames['last_name'];
                 }
 
                 echo '</strong><br>';
 
                 $commentText = $comment['comment_text'];
                 if ($commentText !== null) {
-                  echo '<span class="text-break">' . nl2br(htmlspecialchars($commentText)) . '</span>';
+                  // Apply same XSS protection as posts/news
+                  $allowed_tags = '<p><br><strong><b><em><i><u><a><ul><ol><li><blockquote><h1><h2><h3><h4><h5><h6><span><div>';
+                  $safeText = strip_tags($commentText, $allowed_tags);
+                  echo '<span class="text-break">' . nl2br($safeText) . '</span>';
                 } else {
                   echo 'Comment text is empty.';
                 }

@@ -29,12 +29,15 @@ foreach ($childComments as $reply):
                 echo $reply['author_of_comment'];
 
             } else {
-                echo $replyUserNames['firstname'] . ' ' . $replyUserNames['lastname'];
+                echo $replyUserNames['first_name'] . ' ' . $replyUserNames['last_name'];
 
             }
 
             echo '</strong><br>';
-            echo nl2br(htmlspecialchars($reply['comment_text']));
+            // Apply same XSS protection as posts/news
+            $allowed_tags = '<p><br><strong><b><em><i><u><a><ul><ol><li><blockquote><h1><h2><h3><h4><h5><h6><span><div>';
+            $safeText = strip_tags($reply['comment_text'], $allowed_tags);
+            echo nl2br($safeText);
             ?>
         </div>
     </div>

@@ -163,7 +163,11 @@ if (!empty($newsData) && !empty($urlNews)) {
   
   <?php if (!empty($newsData['text_news'])): ?>
   <div style="color: var(--text-primary, #333); line-height: 1.6; font-size: 16px;">
-    <?= $newsData['text_news'] ?>
+    <?php 
+    // Safely display HTML content by allowing only specific tags
+    $allowed_tags = '<p><br><strong><b><em><i><u><a><ul><ol><li><blockquote><h1><h2><h3><h4><h5><h6><span><div>';
+    echo strip_tags($newsData['text_news'], $allowed_tags);
+    ?>
   </div>
   <?php endif; ?>
 

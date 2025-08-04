@@ -37,13 +37,13 @@ if (!function_exists('getChildComments')) {
     {
         $entityField = getEntityField($entityType);
 
-        // $query = "SELECT comments.id, comments.$entityField, comments.user_id, users.avatar, comments.comment_text,
+        // $query = "SELECT comments.id, comments.$entityField, comments.user_id, users.avatar_url, comments.comment_text,
         //     comments.date, users.timezone AS user_timezone
         //     FROM comments
         //     JOIN users ON comments.user_id = users.id
         //     WHERE comments.parent_id = ? ORDER BY comments.date DESC";
 
-        $query = "SELECT comments.id, comments.$entityField, comments.user_id, users.avatar, comments.comment_text,
+        $query = "SELECT comments.id, comments.$entityField, comments.user_id, users.avatar_url AS avatar, comments.comment_text,
     comments.date, users.timezone AS user_timezone, comments.author_of_comment
     FROM comments
     LEFT JOIN users ON comments.user_id = users.id
@@ -100,7 +100,7 @@ if (!function_exists('getUserNames')) {
     // Function to get user names based on user_id
     function getUserNames($userId, $connection)
     {
-        $query = "SELECT firstname, lastname FROM users WHERE id=?";
+        $query = "SELECT first_name, last_name FROM users WHERE id=?";
         $stmt = mysqli_prepare($connection, $query);
 
         if (!$stmt) {

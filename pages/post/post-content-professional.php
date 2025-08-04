@@ -101,15 +101,23 @@ if (isset($postData)) {
 
   <?php if (!empty($rowPost['bio_post'])): ?>
   <div style="background: var(--light, #f8f9fa); padding: 20px; border-radius: 8px; margin-bottom: 30px; border-left: 4px solid var(--primary, #3b82f6);">
-    <p style="margin: 0; font-style: italic; color: var(--text-primary, #333);">
-      <?php echo nl2br(htmlspecialchars($rowPost['bio_post'])); ?>
-    </p>
+    <div style="font-style: italic; color: var(--text-primary, #333);">
+      <?php 
+      // Safely display HTML content by allowing only specific tags
+      $allowed_tags = '<p><br><strong><b><em><i><u><a><ul><ol><li><blockquote><h1><h2><h3><h4><h5><h6>';
+      echo strip_tags($rowPost['bio_post'], $allowed_tags);
+      ?>
+    </div>
   </div>
   <?php endif; ?>
 
   <?php if (!empty($rowPost['text_post'])): ?>
   <div style="color: var(--text-primary, #333); line-height: 1.6; font-size: 16px;">
-    <?= $rowPost['text_post'] ?>
+    <?php 
+    // Safely display HTML content by allowing only specific tags
+    $allowed_tags = '<p><br><strong><b><em><i><u><a><ul><ol><li><blockquote><h1><h2><h3><h4><h5><h6><span><div>';
+    echo strip_tags($rowPost['text_post'], $allowed_tags);
+    ?>
   </div>
   <?php endif; ?>
 
@@ -138,6 +146,11 @@ if (isset($postData)) {
           </div>
         <?php endif;
     } ?>
+  </div>
+
+  <!-- Comments Section -->
+  <div style="margin-top: 50px;">
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/comments/modern-comments-component.php'; ?>
   </div>
 
 </div> <!-- Close container -->

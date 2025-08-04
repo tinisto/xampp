@@ -635,9 +635,98 @@ if ($posts_result) {
             opacity: 1;
             visibility: visible;
         }
+
+        /* Alert System */
+        .alert-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            max-width: 400px;
+        }
+
+        .custom-alert {
+            padding: 16px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+            animation: slideIn 0.3s ease-out;
+            position: relative;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        .alert-error {
+            background-color: #fee;
+            border-left: 4px solid #dc3545;
+            color: #721c24;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            border-left: 4px solid #28a745;
+            color: #155724;
+        }
+
+        .alert-warning {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            color: #856404;
+        }
+
+        .alert-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .alert-message {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .alert-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: inherit;
+            opacity: 0.5;
+            padding: 0;
+            margin-left: 10px;
+        }
+
+        .alert-close:hover {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
+    <!-- Alert Container -->
+    <div id="alertContainer" class="alert-container"></div>
+    
     <!-- Overlay for mobile -->
     <div class="overlay" id="overlay"></div>
 
@@ -792,15 +881,19 @@ if ($posts_result) {
         <!-- Content -->
         <div class="content">
             <?php if ($success && $successMsg): ?>
-            <div style="background: #10b981; color: white; padding: 16px; border-radius: 8px; margin-bottom: 24px;">
-                ✅ <?= htmlspecialchars($successMsg) ?>
-            </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    showAlert('<?= htmlspecialchars($successMsg, ENT_QUOTES) ?>', 'success');
+                });
+            </script>
             <?php endif; ?>
             
             <?php if ($error): ?>
-            <div style="background: #ef4444; color: white; padding: 16px; border-radius: 8px; margin-bottom: 24px;">
-                ❌ <?= htmlspecialchars($error) ?>
-            </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    showAlert('<?= htmlspecialchars($error, ENT_QUOTES) ?>', 'error');
+                });
+            </script>
             <?php endif; ?>
             
             <!-- Form Card -->
@@ -835,8 +928,8 @@ if ($posts_result) {
                                 <div style="font-size: 2rem; margin-bottom: 10px;">⏳</div>
                                 <div>Загрузка редактора...</div>
                             </div>
-                            <textarea id="content" name="content" class="form-input tinymce-editor" required style="display: none;"
-                                      placeholder="Основной текст <?= $contentType === 'news' ? 'новости' : 'поста' ?>..."><?= htmlspecialchars($contentType === 'news' ? $item['text_news'] : $item['text_post']) ?></textarea>
+                            <textarea id="content" name="content" class="form-input tinymce-editor" required
+                                      placeholder="Основной текст <?= $contentType === 'news' ? 'новости' : 'поста' ?>..."><?= $contentType === 'news' ? $item['text_news'] : $item['text_post'] ?></textarea>
                         </div>
 
                         <?php if ($contentType === 'news'): ?>
@@ -906,7 +999,7 @@ if ($posts_result) {
     </div>
 
     <!-- TinyMCE Cloud CDN - Free Version -->
-    <script src="https://cdn.jsdelivr.net/npm/tinymce@7/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tinymce@7/tinymce.min.js?v=<?= time() ?>" referrerpolicy="origin"></script>
     
     <script>
         const sidebar = document.getElementById('sidebar');
@@ -967,6 +1060,9 @@ if ($posts_result) {
             license_key: 'gpl',
             skin: 'oxide',
             content_css: 'default',
+            entity_encoding: 'raw',
+            entities: '160,nbsp',
+            forced_root_block: 'p',
             menubar: false,
             plugins: [
                 'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
@@ -1008,11 +1104,11 @@ if ($posts_result) {
                             if (result.location) {
                                 callback(result.location, { alt: file.name });
                             } else {
-                                alert('Ошибка загрузки изображения: ' + (result.error || 'Неизвестная ошибка'));
+                                showAlert('Ошибка загрузки изображения: ' + (result.error || 'Неизвестная ошибка'), 'error');
                             }
                         })
                         .catch(error => {
-                            alert('Ошибка загрузки изображения: ' + error.message);
+                            showAlert('Ошибка загрузки изображения: ' + error.message, 'error');
                         });
                     };
                     
@@ -1066,9 +1162,8 @@ if ($posts_result) {
             // Setup function
             setup: function(editor) {
                 editor.on('init', function() {
-                    // Hide loading placeholder and show editor
+                    // Hide loading placeholder
                     document.getElementById('editor-loading').style.display = 'none';
-                    document.getElementById('content').style.display = 'block';
                 });
                 editor.on('change', function() {
                     editor.save();
@@ -1119,7 +1214,7 @@ if ($posts_result) {
             
             if (!title || !content) {
                 e.preventDefault();
-                alert('Пожалуйста, заполните все обязательные поля');
+                showAlert('Пожалуйста, заполните все обязательные поля', 'error');
                 return false;
             }
             
@@ -1187,6 +1282,35 @@ if ($posts_result) {
             imageInput.value = '';
             preview.src = '';
             imagePreview.style.display = 'none';
+        }
+
+        // Alert System Functions
+        function showAlert(message, type = 'error') {
+            const alertContainer = document.getElementById('alertContainer');
+            if (!alertContainer) return;
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `custom-alert alert-${type}`;
+            
+            const icons = {
+                error: '❌',
+                success: '✅',
+                warning: '⚠️'
+            };
+            
+            alertDiv.innerHTML = `
+                <span class="alert-icon">${icons[type]}</span>
+                <span class="alert-message">${message}</span>
+                <button class="alert-close" onclick="this.parentElement.remove()">×</button>
+            `;
+            
+            alertContainer.appendChild(alertDiv);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                alertDiv.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => alertDiv.remove(), 300);
+            }, 5000);
         }
     </script>
 </body>

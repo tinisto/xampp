@@ -34,7 +34,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
 try {
     // Check if user exists
-    $stmt = $connection->prepare("SELECT id, firstname, email FROM users WHERE email = ?");
+    $stmt = $connection->prepare("SELECT id, first_name, email FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -65,7 +65,7 @@ try {
     $subject = "Восстановление пароля - 11классники";
     $message = "
         <h2>Восстановление пароля</h2>
-        <p>Здравствуйте, {$user['firstname']}!</p>
+        <p>Здравствуйте, {$user['first_name']}!</p>
         <p>Мы получили запрос на восстановление пароля для вашего аккаунта.</p>
         <p>Для сброса пароля перейдите по ссылке:</p>
         <p><a href='{$resetLink}' style='display: inline-block; padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px;'>Сбросить пароль</a></p>
@@ -76,7 +76,7 @@ try {
     ";
     
     // Send email (using email_functions.php)
-    if (sendPasswordResetEmail($user['email'], $user['firstname'], $resetLink)) {
+    if (sendPasswordResetEmail($user['email'], $user['first_name'], $resetLink)) {
         resetRateLimit($userIP, 'reset_password');
         $_SESSION['reset_success'] = 'Инструкции по восстановлению пароля отправлены на ваш email.';
     } else {

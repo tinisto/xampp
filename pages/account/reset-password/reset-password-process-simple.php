@@ -22,7 +22,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
 try {
     // Check if user exists
-    $stmt = $connection->prepare("SELECT id, firstname, email FROM users WHERE email = ?");
+    $stmt = $connection->prepare("SELECT id, first_name, email FROM users WHERE email = ?");
     if (!$stmt) {
         throw new Exception("Database error");
     }

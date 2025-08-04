@@ -17,7 +17,7 @@ function getUserInfoById(mysqli $connection, ?int $userId): ?array
         ];
     }
 
-    $stmt = $connection->prepare("SELECT firstname, lastname, avatar FROM users WHERE id = ?");
+    $stmt = $connection->prepare("SELECT first_name, last_name, avatar_url FROM users WHERE id = ?");
     if ($stmt) {
         $stmt->bind_param("i", $userId);
         $stmt->execute();

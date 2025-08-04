@@ -46,7 +46,7 @@ if (empty($password)) {
 
 try {
     // Check user credentials
-    $stmt = $connection->prepare("SELECT id, firstname, lastname, email, password, is_active, role FROM users WHERE email = ?");
+    $stmt = $connection->prepare("SELECT id, first_name, last_name, email, password, is_active, role FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -85,8 +85,8 @@ try {
     // Set session variables
     $_SESSION['user_id'] = $user['id'];
     $_SESSION['user_email'] = $user['email'];
-    $_SESSION['user_firstname'] = $user['firstname'];
-    $_SESSION['user_lastname'] = $user['lastname'];
+    $_SESSION['user_firstname'] = $user['first_name'];
+    $_SESSION['user_lastname'] = $user['last_name'];
     $_SESSION['user_role'] = $user['role'];
     $_SESSION['logged_in'] = true;
     

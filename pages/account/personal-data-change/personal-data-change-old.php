@@ -10,7 +10,7 @@ if (!isset($_SESSION['user_id'])) {
 
 // Get user data
 $userId = $_SESSION['user_id'];
-$userData = $db->queryOne("SELECT firstname, lastname, occupation FROM users WHERE id = ?", [$userId]);
+$userData = $db->queryOne("SELECT first_name, last_name, occupation FROM users WHERE id = ?", [$userId]);
 ?>
 <div>
 
@@ -20,14 +20,14 @@ $userData = $db->queryOne("SELECT firstname, lastname, occupation FROM users WHE
     
     <div class="mb-3">
         <div class="form-floating">
-            <input type="text" id="firstname" name="firstname" class="form-control" value="<?php echo htmlspecialchars($userData['firstname']); ?>" required>
+            <input type="text" id="firstname" name="firstname" class="form-control" value="<?php echo htmlspecialchars($userData['first_name']); ?>" required>
             <label for="firstname" class="form-label">Имя:</label>
         </div>
     </div>
 
     <div class="mb-3">
         <div class="form-floating">
-            <input type="text" id="lastname" name="lastname" class="form-control" value="<?php echo htmlspecialchars($userData['lastname']); ?>" required>
+            <input type="text" id="lastname" name="lastname" class="form-control" value="<?php echo htmlspecialchars($userData['last_name']); ?>" required>
             <label for="lastname" class="form-label">Фамилия:</label>
         </div>
     </div>

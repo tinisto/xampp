@@ -41,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
       if (mysqli_stmt_execute($stmt)) {
         // Get user's first name if available
-        $nameQuery = "SELECT firstname FROM users WHERE email = ?";
+        $nameQuery = "SELECT first_name FROM users WHERE email = ?";
         $nameStmt = mysqli_prepare($connection, $nameQuery);
         $firstname = '';
         if ($nameStmt) {
@@ -49,7 +49,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             mysqli_stmt_execute($nameStmt);
             $nameResult = mysqli_stmt_get_result($nameStmt);
             if ($row = mysqli_fetch_assoc($nameResult)) {
-                $firstname = $row['firstname'];
+                $firstname = $row['first_name'];
             }
             mysqli_stmt_close($nameStmt);
         }

@@ -1,5 +1,5 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/config/loadEnv.php';
+require_once __DIR__ . '/../config/loadEnv.php';
 
 // Check if the constants are defined
 if (!defined('DB_HOST') || !defined('DB_USER') || !defined('DB_PASS') || !defined('DB_NAME')) {
