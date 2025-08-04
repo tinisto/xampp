@@ -645,10 +645,10 @@ if ($posts_result) {
                     Создать новость
                 </a>
                 <a href="/create/post" class="nav-item">
-                    <span class="nav-icon">📝</span>
+                    <span class="nav-icon">➕</span>
                     Создать пост
                 </a>
-                <a href="/pages/dashboard/comments-dashboard/comments-view/comments-view.php" class="nav-item">
+                <a href="/dashboard/comments-simple.php" class="nav-item">
                     <span class="nav-icon">💬</span>
                     Комментарии
                 </a>
@@ -684,6 +684,10 @@ if ($posts_result) {
                     <span class="nav-icon">🗄️</span>
                     Миграции БД
                 </a>
+                <a href="/dashboard/database-text-cleanup.php" class="nav-item">
+                    <span class="nav-icon">🧹</span>
+                    Очистка текста
+                </a>
             </div>
             
         </nav>
@@ -698,15 +702,13 @@ if ($posts_result) {
                 <h1 class="page-title">Dashboard</h1>
             </div>
             
-            <div class="header-right">
-                <button class="theme-toggle" id="themeToggle" title="Переключить тему">
-                    <span class="theme-icon-light">🌞</span>
-                    <span class="theme-icon-dark" style="display: none;">🌙</span>
-                </button>
-                <div class="user-menu" id="userMenu">
-                    <div class="user-avatar"><?= strtoupper(substr($username, 0, 1)) ?></div>
-                    <span><?= htmlspecialchars($username) ?></span>
-                    <span style="margin-left: 8px; font-size: 0.8rem;">▼</span>
+            <button class="theme-toggle" id="themeToggle" title="Переключить тему">
+                <span class="theme-icon-light">🌞</span>
+                <span class="theme-icon-dark" style="display: none;">🌙</span>
+            </button>
+            <div class="user-menu" id="userMenu">
+                <div class="user-avatar"><?= strtoupper(substr($username, 0, 1)) ?></div>
+                <span><?= htmlspecialchars($username) ?></span>
                     
                     <div class="user-dropdown" id="userDropdown">
                         <div class="dropdown-header">
@@ -730,30 +732,6 @@ if ($posts_result) {
                                 Мой аккаунт
                             </a>
                             <?php endif; ?>
-                            <a href="/dashboard" class="dropdown-item">
-                                <span class="dropdown-icon">📊</span>
-                                Dashboard
-                            </a>
-                            <a href="/dashboard/users" class="dropdown-item">
-                                <span class="dropdown-icon">👥</span>
-                                Пользователи
-                            </a>
-                            <a href="/create/news" class="dropdown-item">
-                                <span class="dropdown-icon">📰</span>
-                                Создать новость
-                            </a>
-                            <a href="/create/post" class="dropdown-item">
-                                <span class="dropdown-icon">📝</span>
-                                Создать пост
-                            </a>
-                            <a href="/admin-backup-tool.php" class="dropdown-item">
-                                <span class="dropdown-icon">💾</span>
-                                Backup
-                            </a>
-                            <a href="/" class="dropdown-item">
-                                <span class="dropdown-icon">🏠</span>
-                                Главная страница
-                            </a>
                             <a href="/logout" class="dropdown-item danger">
                                 <span class="dropdown-icon">🚪</span>
                                 Выйти
@@ -761,7 +739,6 @@ if ($posts_result) {
                         </div>
                     </div>
                 </div>
-            </div>
         </div>
 
         <!-- Content -->
@@ -861,23 +838,14 @@ if ($posts_result) {
                     </div>
 
                     <div class="action-card">
-                        <div class="action-title">📝 Создание контента</div>
+                        <div class="action-title">⚡ Система</div>
                         <div class="action-description">
-                            Создавайте и публикуйте новые статьи, посты и образовательные материалы.
+                            Управляйте кэшем, мониторингом и выполняйте миграции базы данных.
                         </div>
                         <div class="action-buttons">
-                            <a href="/create/post" class="btn btn-primary">Создать пост</a>
-                            <a href="/write" class="btn btn-secondary">Написать статью</a>
-                        </div>
-                    </div>
-
-                    <div class="action-card">
-                        <div class="action-title">💬 Модерация</div>
-                        <div class="action-description">
-                            Просматривайте и модерируйте пользовательские комментарии и сообщения.
-                        </div>
-                        <div class="action-buttons">
-                            <a href="/dashboard/comments" class="btn btn-secondary">Комментарии</a>
+                            <a href="/dashboard/cache-management.php" class="btn btn-primary">Кэш</a>
+                            <a href="/dashboard/monitoring.php" class="btn btn-secondary">Мониторинг</a>
+                            <a href="/dashboard/run-migrations.php" class="btn btn-secondary">Миграции</a>
                         </div>
                     </div>
                 </div>
