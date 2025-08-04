@@ -30,4 +30,16 @@ test-integration: ## Run integration tests only
 test-coverage: ## Run tests with coverage report
 	./vendor/bin/phpunit --coverage-html tests/coverage/html
 
+migrate: ## Run database migrations
+	php database/migrate.php migrate
+
+migrate-status: ## Show migration status
+	php database/migrate.php status
+
+migrate-rollback: ## Rollback last migration
+	php database/migrate.php rollback
+
+migrate-create: ## Create new migration (usage: make migrate-create name=migration_name)
+	php database/migrate.php create $(name)
+
 check: lint test ## Run all checks and tests before commit
