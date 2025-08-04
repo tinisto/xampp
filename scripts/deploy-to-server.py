@@ -75,9 +75,26 @@ class DeploymentManager:
         """Connect to FTP server"""
         try:
             print(f"🔌 Connecting to {FTP_HOST}...")
-            self.ftp = ftplib.FTP(FTP_HOST)
+            self.ftp = ftplib.FTP()
+            
+            # Set passive mode (like FileZilla)
+            self.ftp.set_pasv(True)
+            
+            # Connect with timeout
+            self.ftp.connect(FTP_HOST, 21, timeout=30)
+            print("🔗 Connection established, logging in...")
+            
             self.ftp.login(FTP_USER, FTP_PASS)
-            self.ftp.cwd(FTP_PATH)
+            print("✅ Login successful")
+            
+            # Try to change to the target directory
+            try:
+                self.ftp.cwd(FTP_PATH)
+                print(f"📁 Changed to directory: {FTP_PATH}")
+            except Exception as e:
+                print(f"⚠️  Could not change to {FTP_PATH}, using root directory")
+                print(f"Directory error: {e}")
+            
             print("✅ Connected successfully")
             return True
         except Exception as e:
