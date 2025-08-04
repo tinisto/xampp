@@ -625,6 +625,10 @@ if ($posts_result) {
                     <span class="nav-icon">💾</span>
                     База данных
                 </a>
+                <a href="/admin/run-migrations.php" class="nav-item">
+                    <span class="nav-icon">🗄️</span>
+                    Миграции БД
+                </a>
             </div>
             
             <div class="nav-section">

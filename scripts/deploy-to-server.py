@@ -12,10 +12,10 @@ import mimetypes
 from datetime import datetime
 
 # FTP Configuration
-FTP_HOST = "185.46.8.204"
-FTP_USER = "u2666700"
-FTP_PASS = "19Dima08Dima08"
-FTP_PATH = "/domains/11klassniki.ru/public_html/"
+FTP_HOST = "ftp.ipage.com"
+FTP_USER = "franko"
+FTP_PASS = "JyvR!HK2E!N55Zt"
+FTP_PATH = "/11klassnikiru/"
 
 # Local paths
 LOCAL_BASE = "/Applications/XAMPP/xamppfiles/htdocs"
