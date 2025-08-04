@@ -576,10 +576,17 @@ $pageTitle = $contentType === 'news' ? 'Создать новость' : 'Соз
                             </div>
                         </div>
                         <div class="dropdown-menu">
+                            <?php 
+                            // Get current page URL
+                            $current_url = $_SERVER['REQUEST_URI'];
+                            // Only show My Account link if not already on account page
+                            if ($current_url !== '/account' && $current_url !== '/account/'): 
+                            ?>
                             <a href="/account" class="dropdown-item">
                                 <span class="dropdown-icon">👤</span>
                                 Мой аккаунт
                             </a>
+                            <?php endif; ?>
                             <a href="/dashboard" class="dropdown-item">
                                 <span class="dropdown-icon">📊</span>
                                 Dashboard
