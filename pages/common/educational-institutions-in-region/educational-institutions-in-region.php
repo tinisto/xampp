@@ -55,18 +55,18 @@ switch ($type) {
     case 'spo':
         $pageTitle = 'СПО в регионе ' . $region_name;
         $institutionType = 'Средние профессиональные образовательные учреждения';
-        $tableName = 'colleges';
+        $tableName = 'spo';
         $regionColumn = 'region_id';
-        $nameColumn = 'college_name';
+        $nameColumn = 'name';
         $urlColumn = 'url_slug';
         $idColumn = 'id';
         break;
     case 'vpo':
         $pageTitle = 'ВПО в регионе ' . $region_name;
         $institutionType = 'Высшие учебные заведения';
-        $tableName = 'universities';
+        $tableName = 'vpo';
         $regionColumn = 'region_id';
-        $nameColumn = 'university_name';
+        $nameColumn = 'name';
         $urlColumn = 'url_slug';
         $idColumn = 'id';
         break;
@@ -75,9 +75,9 @@ switch ($type) {
         $institutionType = 'Общеобразовательные учреждения';
         $tableName = 'schools';
         $regionColumn = 'region_id';
-        $nameColumn = 'school_name';
-        $urlColumn = 'id_school';
-        $idColumn = 'id_school';
+        $nameColumn = 'name';
+        $urlColumn = 'id';
+        $idColumn = 'id';
         $type = 'schools';
         break;
 }
@@ -334,11 +334,11 @@ $stmt_total->close();
                     <?php
                     // Get towns with institutions
                     $towns_query = "
-                        SELECT DISTINCT t.id_town, t.town_name, t.town_name_en, COUNT(i.id_town) as count
+                        SELECT DISTINCT t.town_id, t.town_name, t.town_name_en, COUNT(i.town_id) as count
                         FROM towns t
-                        JOIN $tableName i ON t.id_town = i.id_town
+                        JOIN $tableName i ON t.town_id = i.town_id
                         WHERE t.region_id = ?
-                        GROUP BY t.id_town, t.town_name, t.town_name_en
+                        GROUP BY t.town_id, t.town_name, t.town_name_en
                         ORDER BY t.town_name ASC
                     ";
                     $stmt_towns = $connection->prepare($towns_query);

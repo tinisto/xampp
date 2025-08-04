@@ -60,16 +60,19 @@
     # Educational Institutions - By Town  
     RewriteRule ^(schools|spo|vpo)/([^/]+)/([^/]+)/?$ pages/common/educational-institutions-in-town/educational-institutions-in-town.php?type=$1&region_name_en=$2&url_slug_town=$3 [L,QSA]
 
-    # School Pages
+    # School Pages - ID-based URLs (backward compatibility) - must come first!
     RewriteRule ^school/(\d+)/?$ pages/school/school-single.php?id_school=$1 [QSA,NC,L]
     
+    # School Pages - slug-based URLs (new)
+    RewriteRule ^school/([a-zA-Z0-9-]+)/?$ pages/school/school-single.php?url_slug=$1 [QSA,NC,L]
+    
     # VPO (Universities) - URL-based routing
-    RewriteRule ^vpo/([^/]+)/?$ pages/common/vpo-spo/single.php?vpo_url=$1 [QSA,NC,L]
+    RewriteRule ^vpo/([^/]+)/?$ pages/common/vpo-spo/single.php?url_slug=$1&type=vpo [QSA,NC,L]
     RewriteRule ^vpo/(\d+)/?$ pages/common/vpo-spo/redirect.php?id_university=$1 [L,QSA]
     RewriteRule ^high-edu/(.*)$ /vpo/$1 [R=301,L]
     
     # SPO (Colleges) - URL-based routing  
-    RewriteRule ^spo/([^/]+)/?$ pages/common/vpo-spo/single.php?spo_url=$1 [QSA,NC,L]
+    RewriteRule ^spo/([^/]+)/?$ pages/common/vpo-spo/single.php?url_slug=$1&type=spo [QSA,NC,L]
     RewriteRule ^spo/(\d+)/?$ pages/common/vpo-spo/redirect.php?id_college=$1 [L,QSA]
     RewriteRule ^middle-edu/(.*)$ /spo/$1 [R=301,L]
 

@@ -13,6 +13,43 @@ require_once __DIR__ . '/../database/db_connections.php';
 $message = '';
 $messageType = '';
 
+// Function to get the correct URL for an entity
+function getEntityUrl($entityType, $entityId, $urlsArray) {
+    switch ($entityType) {
+        case 'post':
+            if (isset($urlsArray['posts'][$entityId])) {
+                return "/post/" . $urlsArray['posts'][$entityId];
+            }
+            break;
+            
+        case 'news':
+            if (isset($urlsArray['news'][$entityId])) {
+                return "/news/" . $urlsArray['news'][$entityId];
+            }
+            break;
+            
+        case 'school':
+            // Schools use direct ID links
+            return "/school/$entityId";
+            
+        case 'vpo':
+        case 'university':
+            if (isset($urlsArray['vpo'][$entityId])) {
+                return "/vpo/" . $urlsArray['vpo'][$entityId];
+            }
+            break;
+            
+        case 'spo':
+        case 'college':
+            if (isset($urlsArray['spo'][$entityId])) {
+                return "/spo/" . $urlsArray['spo'][$entityId];
+            }
+            break;
+    }
+    
+    return '#';
+}
+
 // Handle comment actions
 if ($_POST && isset($_POST['action'])) {
     try {
@@ -42,7 +79,7 @@ $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $limit = 20;
 $offset = ($page - 1) * $limit;
 
-$sql = "SELECT c.*, u.first_name, u.last_name, u.email 
+$sql = "SELECT c.*, u.first_name, u.last_name, u.email
         FROM comments c 
         LEFT JOIN users u ON c.user_id = u.id 
         ORDER BY c.date DESC 
@@ -52,6 +89,64 @@ $stmt = $connection->prepare($sql);
 $stmt->bind_param("ii", $limit, $offset);
 $stmt->execute();
 $comments = $stmt->get_result();
+
+// Fetch all comments into array and collect entity IDs by type
+$commentsArray = [];
+$postIds = [];
+$newsIds = [];
+$vpoIds = [];
+$spoIds = [];
+
+while ($comment = $comments->fetch_assoc()) {
+    $commentsArray[] = $comment;
+    
+    if ($comment['entity_type'] === 'post' && $comment['id_entity']) {
+        $postIds[] = $comment['id_entity'];
+    } elseif ($comment['entity_type'] === 'news' && $comment['id_entity']) {
+        $newsIds[] = $comment['id_entity'];
+    } elseif (($comment['entity_type'] === 'vpo' || $comment['entity_type'] === 'university') && $comment['id_entity']) {
+        $vpoIds[] = $comment['id_entity'];
+    } elseif (($comment['entity_type'] === 'spo' || $comment['entity_type'] === 'college') && $comment['id_entity']) {
+        $spoIds[] = $comment['id_entity'];
+    }
+}
+
+// Fetch URLs for each entity type
+$postUrls = [];
+if (!empty($postIds)) {
+    $ids = implode(',', array_map('intval', $postIds));
+    $result = $connection->query("SELECT id, url_post FROM posts WHERE id IN ($ids)");
+    while ($row = $result->fetch_assoc()) {
+        $postUrls[$row['id']] = $row['url_post'];
+    }
+}
+
+$newsUrls = [];
+if (!empty($newsIds)) {
+    $ids = implode(',', array_map('intval', $newsIds));
+    $result = $connection->query("SELECT id, url_news FROM news WHERE id IN ($ids)");
+    while ($row = $result->fetch_assoc()) {
+        $newsUrls[$row['id']] = $row['url_news'];
+    }
+}
+
+$vpoUrls = [];
+if (!empty($vpoIds)) {
+    $ids = implode(',', array_map('intval', $vpoIds));
+    $result = $connection->query("SELECT id, vpo_url FROM vpo WHERE id IN ($ids)");
+    while ($row = $result->fetch_assoc()) {
+        $vpoUrls[$row['id']] = $row['vpo_url'];
+    }
+}
+
+$spoUrls = [];
+if (!empty($spoIds)) {
+    $ids = implode(',', array_map('intval', $spoIds));
+    $result = $connection->query("SELECT id, spo_url FROM spo WHERE id IN ($ids)");
+    while ($row = $result->fetch_assoc()) {
+        $spoUrls[$row['id']] = $row['spo_url'];
+    }
+}
 
 // Get total count
 $countSql = "SELECT COUNT(*) as total FROM comments";
@@ -81,14 +176,17 @@ $totalPages = ceil($totalComments / $limit);
         .alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
         .back-link { display: inline-block; margin-bottom: 20px; color: #3498db; text-decoration: none; }
         .back-link:hover { text-decoration: underline; }
-        .comments-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-        .comments-table th, .comments-table td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+        .comments-table { width: 100%; border-collapse: collapse; margin: 20px 0; table-layout: fixed; }
+        .comments-table th, .comments-table td { padding: 12px; border: 1px solid #ddd; text-align: left; vertical-align: top; }
         .comments-table th { background: #f8f9fa; font-weight: 600; }
+        .comments-table td { word-wrap: break-word; }
         .comment-content { max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .pagination { text-align: center; margin: 20px 0; }
-        .pagination a { display: inline-block; padding: 8px 12px; margin: 0 4px; background: #3498db; color: white; text-decoration: none; border-radius: 4px; }
-        .pagination a.active { background: #2c3e50; }
-        .pagination a:hover { background: #2980b9; }
+        .comments-table th:nth-child(1) { width: 60px; }
+        .comments-table th:nth-child(2) { width: 150px; }
+        .comments-table th:nth-child(3) { width: 35%; }
+        .comments-table th:nth-child(4) { width: 150px; }
+        .comments-table th:nth-child(5) { width: 120px; }
+        .comments-table th:nth-child(6) { width: 100px; }
         .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
         .stat-card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; }
         .stat-number { font-size: 2rem; font-weight: bold; color: #3498db; }
@@ -124,20 +222,29 @@ $totalPages = ceil($totalComments / $limit);
         <div class="card">
             <h3>Recent Comments</h3>
             
-            <?php if ($comments->num_rows > 0): ?>
+            <?php if (!empty($commentsArray)): ?>
+                <?php 
+                // Prepare URLs array for the template
+                $urlsArray = [
+                    'posts' => $postUrls,
+                    'news' => $newsUrls,
+                    'vpo' => $vpoUrls,
+                    'spo' => $spoUrls
+                ];
+                ?>
                 <table class="comments-table">
                     <thead>
                         <tr>
                             <th>ID</th>
                             <th>User</th>
                             <th>Content</th>
-                            <th>Posted On</th>
+                            <th>Location</th>
                             <th>Date</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php while ($comment = $comments->fetch_assoc()): ?>
+                        <?php foreach ($commentsArray as $comment): ?>
                             <tr>
                                 <td><?= $comment['id'] ?></td>
                                 <td><?= htmlspecialchars($comment['author_of_comment'] ?? trim($comment['first_name'] . ' ' . $comment['last_name']) ?: $comment['email'] ?: 'Anonymous') ?></td>
@@ -145,8 +252,22 @@ $totalPages = ceil($totalComments / $limit);
                                     <?= htmlspecialchars(substr($comment['comment_text'], 0, 100)) ?>...
                                 </td>
                                 <td>
-                                    <?= htmlspecialchars($comment['entity_type'] ?? 'Unknown') ?>
-                                    (ID: <?= $comment['id_entity'] ?? 'N/A' ?>)
+                                    <?php 
+                                    $entityType = $comment['entity_type'] ?? 'Unknown';
+                                    $entityId = $comment['id_entity'] ?? 0;
+                                    $viewUrl = getEntityUrl($entityType, $entityId, $urlsArray);
+                                    ?>
+                                    <div style="font-size: 12px;">
+                                        <strong><?= htmlspecialchars($entityType) ?></strong>
+                                        <small>(ID: <?= $entityId ?>)</small>
+                                    </div>
+                                    <?php if ($viewUrl !== '#'): ?>
+                                        <a href="<?= $viewUrl ?>" target="_blank" class="btn" style="font-size: 12px; padding: 4px 8px; margin-top: 5px;">
+                                            View →
+                                        </a>
+                                    <?php else: ?>
+                                        <small>(ID: <?= $entityId ?>)</small>
+                                    <?php endif; ?>
                                 </td>
                                 <td><?= date('Y-m-d H:i', strtotime($comment['date'])) ?></td>
                                 <td>
@@ -159,18 +280,15 @@ $totalPages = ceil($totalComments / $limit);
                                     </form>
                                 </td>
                             </tr>
-                        <?php endwhile; ?>
+                        <?php endforeach; ?>
                     </tbody>
                 </table>
                 
                 <?php if ($totalPages > 1): ?>
-                    <div class="pagination">
-                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                            <a href="?page=<?= $i ?>" <?= $i == $page ? 'class="active"' : '' ?>>
-                                <?= $i ?>
-                            </a>
-                        <?php endfor; ?>
-                    </div>
+                    <?php
+                    include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/pagination-modern.php';
+                    renderPaginationModern($page, $totalPages);
+                    ?>
                 <?php endif; ?>
                 
             <?php else: ?>
