@@ -1,8 +1,8 @@
 <?php
 session_start();
-require_once __DIR__ . '/../config/loadEnv.php';
-require_once __DIR__ . '/../database/db_connections.php';
-require_once __DIR__ . '/../includes/cache/page_cache.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/config/loadEnv.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/cache/page_cache.php';
 
 // Check admin access
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {

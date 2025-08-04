@@ -146,15 +146,17 @@ if ($posts_result) {
 
         .sidebar-nav {
             padding: 24px 0;
+            overflow-y: auto;
+            height: calc(100vh - var(--header-height));
         }
 
         .nav-section {
-            margin-bottom: 32px;
+            margin-bottom: 20px;
         }
 
         .nav-section-title {
-            padding: 0 24px 12px;
-            font-size: 0.75rem;
+            padding: 0 24px 8px;
+            font-size: 0.7rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.05em;
@@ -163,11 +165,12 @@ if ($posts_result) {
 
         .nav-item {
             display: block;
-            padding: 12px 24px;
+            padding: 8px 24px;
             color: var(--dark);
             text-decoration: none;
             transition: all 0.2s;
             border-left: 3px solid transparent;
+            font-size: 0.9rem;
         }
 
         .nav-item:hover {
@@ -184,10 +187,10 @@ if ($posts_result) {
         }
 
         .nav-icon {
-            width: 20px;
+            width: 18px;
             display: inline-block;
-            margin-right: 12px;
-            font-size: 1.1rem;
+            margin-right: 10px;
+            font-size: 1rem;
         }
 
         /* Main content */
@@ -625,10 +628,6 @@ if ($posts_result) {
                     <span class="nav-icon">💾</span>
                     База данных
                 </a>
-                <a href="/admin/run-migrations.php" class="nav-item">
-                    <span class="nav-icon">🗄️</span>
-                    Миграции БД
-                </a>
             </div>
             
             <div class="nav-section">
@@ -636,16 +635,10 @@ if ($posts_result) {
                 <a href="/dashboard/news" class="nav-item">
                     <span class="nav-icon">📰</span>
                     Управление новостями
-                    <?php if ($news_published > 0 || $news_drafts > 0): ?>
-                    <span class="nav-badge" style="margin-left: auto; background: var(--primary); color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem;"><?= $news_published ?>/<?= $news_drafts ?></span>
-                    <?php endif; ?>
                 </a>
                 <a href="/dashboard/posts" class="nav-item">
                     <span class="nav-icon">📋</span>
                     Управление постами
-                    <?php if ($posts_total > 0): ?>
-                    <span class="nav-badge" style="margin-left: auto; background: var(--primary); color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem;"><?= $posts_total ?></span>
-                    <?php endif; ?>
                 </a>
                 <a href="/create/news" class="nav-item">
                     <span class="nav-icon">➕</span>
@@ -679,23 +672,20 @@ if ($posts_result) {
             
             <div class="nav-section">
                 <div class="nav-section-title">Система</div>
-                <a href="/admin/cache-management.php" class="nav-item">
+                <a href="/dashboard/cache-management.php" class="nav-item">
                     <span class="nav-icon">⚡</span>
                     Управление кэшем
                 </a>
-                <a href="/admin/monitoring.php" class="nav-item">
+                <a href="/dashboard/monitoring.php" class="nav-item">
                     <span class="nav-icon">📊</span>
-                    Мониторинг системы
+                    Системные метрики
                 </a>
-                <a href="/" class="nav-item">
-                    <span class="nav-icon">🏠</span>
-                    Главная
-                </a>
-                <a href="/logout" class="nav-item">
-                    <span class="nav-icon">🚪</span>
-                    Выход
+                <a href="/dashboard/run-migrations.php" class="nav-item">
+                    <span class="nav-icon">🗄️</span>
+                    Миграции БД
                 </a>
             </div>
+            
         </nav>
     </div>
 
