@@ -68,8 +68,8 @@ try {
         'email' => $email
     ]);
     
-    // Redirect to dashboard or home
-    header('Location: /account');
+    // Redirect to home page
+    header('Location: /');
     exit();
     
 } catch (Exception $e) {

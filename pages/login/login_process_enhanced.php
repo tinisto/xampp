@@ -111,12 +111,8 @@ try {
     $stmt->bind_param("i", $user['id']);
     $stmt->execute();
     
-    // Redirect based on role
-    if ($user['role'] === 'admin') {
-        header('Location: /dashboard');
-    } else {
-        header('Location: /account');
-    }
+    // Redirect all users to home page
+    header('Location: /');
     exit;
     
 } catch (Exception $e) {

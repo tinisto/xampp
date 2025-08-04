@@ -111,10 +111,6 @@ if ($redirect) {
     }
 }
 
-// Default redirect based on role
-if (isset($user['role']) && $user['role'] === 'admin') {
-    header('Location: /dashboard');
-} else {
-    header('Location: /account');
-}
+// Default redirect to home page for all users
+header('Location: /');
 exit();
