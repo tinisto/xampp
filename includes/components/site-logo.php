@@ -35,8 +35,13 @@ function renderSiteLogo($options = []) {
         $output .= '<text x="20" y="26" text-anchor="middle" fill="currentColor" font-size="18" font-weight="bold">11</text>';
         $output .= '</svg>';
     } else {
-        // Fallback image implementation
-        $output .= '<img src="/images/logo.png" alt="11классники" width="' . $settings['size'] . '" height="' . $settings['size'] . '" class="logo-image">';
+        // Fallback image implementation with lazy loading
+        require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/utils/lazy_loading.php';
+        $output .= LazyLoading::image('/images/logo.png', '11классники', [
+            'width' => $settings['size'],
+            'height' => $settings['size'],
+            'class' => 'logo-image'
+        ]);
     }
     
     // Optional text

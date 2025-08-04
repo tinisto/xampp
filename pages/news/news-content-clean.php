@@ -131,7 +131,12 @@ include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/card-badge.php';
                     }
                     ?>
                     <?php if ($hasImage): ?>
-                        <img src="<?= htmlspecialchars($image) ?>" alt="<?= htmlspecialchars($news['title_news']) ?>" class="news-image">
+                        <?php 
+                        require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/utils/lazy_loading.php';
+                        echo LazyLoading::image(htmlspecialchars($image), htmlspecialchars($news['title_news']), [
+                            'class' => 'news-image'
+                        ]);
+                        ?>
                     <?php else: ?>
                         <div class="news-image-placeholder">
                             <i class="fas fa-newspaper fa-2x"></i><br>

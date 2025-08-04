@@ -42,4 +42,7 @@ migrate-rollback: ## Rollback last migration
 migrate-create: ## Create new migration (usage: make migrate-create name=migration_name)
 	php database/migrate.php create $(name)
 
+minify: ## Minify CSS and JavaScript assets
+	php build/minify-assets.php
+
 check: lint test ## Run all checks and tests before commit

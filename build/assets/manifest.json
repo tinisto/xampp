@@ -1,0 +1,91 @@
+{
+    "build_time": "2025-08-04 19:44:48",
+    "css_files": [
+        {
+            "original": "css\/styles.css",
+            "minified": "css\/styles.min.css",
+            "size": 1562
+        },
+        {
+            "original": "css\/unified-styles.css",
+            "minified": "css\/unified-styles.min.css",
+            "size": 4720
+        },
+        {
+            "original": "css\/buttons-styles.css",
+            "minified": "css\/buttons-styles.min.css",
+            "size": 1236
+        },
+        {
+            "original": "css\/post-styles.css",
+            "minified": "css\/post-styles.min.css",
+            "size": 558
+        },
+        {
+            "original": "css\/dashboard\/styles.css",
+            "minified": "css\/dashboard\/styles.min.css",
+            "size": 1562
+        },
+        {
+            "original": "css\/dashboard\/dashboard.css",
+            "minified": "css\/dashboard\/dashboard.min.css",
+            "size": 177
+        },
+        {
+            "original": "css\/authorization.css",
+            "minified": "css\/authorization.min.css",
+            "size": 57
+        },
+        {
+            "original": "css\/theme-variables.css",
+            "minified": "css\/theme-variables.min.css",
+            "size": 5346
+        },
+        {
+            "original": "css\/site-logo.css",
+            "minified": "css\/site-logo.min.css",
+            "size": 688
+        }
+    ],
+    "js_files": [
+        {
+            "original": "js\/dropdown-fix.js",
+            "minified": "js\/dropdown-fix.min.js",
+            "size": 1822
+        },
+        {
+            "original": "js\/form-handler.js",
+            "minified": "js\/form-handler.min.js",
+            "size": 454
+        },
+        {
+            "original": "js\/header-fix-simple.js",
+            "minified": "js\/header-fix-simple.min.js",
+            "size": 1686
+        },
+        {
+            "original": "js\/header-fix.js",
+            "minified": "js\/header-fix.min.js",
+            "size": 3240
+        },
+        {
+            "original": "js\/lazy-content-loader.js",
+            "minified": "js\/lazy-content-loader.min.js",
+            "size": 5443
+        },
+        {
+            "original": "js\/lazy-loading.js",
+            "minified": "js\/lazy-loading.min.js",
+            "size": 1764
+        },
+        {
+            "original": "js\/script.js",
+            "minified": "js\/script.min.js",
+            "size": 1599
+        }
+    ],
+    "bundles": {
+        "css": "build\/assets\/bundle.min.css",
+        "js": "build\/assets\/bundle.min.js"
+    }
+}

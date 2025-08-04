@@ -1,6 +1,7 @@
 <?php
 /**
  * Image Lazy Loading Component with YouTube-style Placeholders
+ * Updated to use enhanced LazyLoading utility class
  * 
  * Provides lazy loading for images with smooth placeholder animations
  * 
@@ -14,6 +15,8 @@
  *     'aspectRatio' => '16:9'
  * ]);
  */
+
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/utils/lazy_loading.php';
 
 function renderLazyImage($options = []) {
     $src = $options['src'] ?? '';
