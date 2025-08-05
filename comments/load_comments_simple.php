@@ -12,7 +12,7 @@ if (isset($postMatches[1])) {
     $url_slug = $postMatches[1];
     
     // Get post ID directly from database
-    $postQuery = "SELECT id_post FROM posts WHERE url_post = ?";
+    $postQuery = "SELECT id FROM posts WHERE url_slug = ?";
     $postStmt = $connection->prepare($postQuery);
     if (!$postStmt) {
         echo "<div class='comments-empty'>Database error: " . $connection->error . "</div>";
@@ -25,7 +25,7 @@ if (isset($postMatches[1])) {
     
     if ($postResult->num_rows > 0) {
         $post = $postResult->fetch_assoc();
-        $entity_id = $post['id_post'];
+        $entity_id = $post['id'];
     } else {
         echo "<div class='comments-empty'>Post not found: $url_slug</div>";
         return;

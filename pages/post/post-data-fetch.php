@@ -15,7 +15,7 @@ if (isset($_GET['url_post']) && !empty($_GET['url_post'])) {
   $urlPost = mysqli_real_escape_string($connection, $_GET['url_post']);
 
   // Use prepared statement for better security
-  $queryPost = "SELECT * FROM posts WHERE url_post = ?";
+  $queryPost = "SELECT * FROM posts WHERE url_slug = ?";
   $stmt = mysqli_prepare($connection, $queryPost);
   
   if ($stmt) {

@@ -10,7 +10,7 @@ echo "<h1>Comments Debug for Post: $url_slug</h1>";
 
 // 1. Check if post exists
 echo "<h2>1. Post Lookup:</h2>";
-$postQuery = "SELECT id_post, title_post, url_post FROM posts WHERE url_post = ?";
+$postQuery = "SELECT id_post, title_post, url_post FROM posts WHERE url_slug = ?";
 $postStmt = $connection->prepare($postQuery);
 $postStmt->bind_param("s", $url_slug);
 $postStmt->execute();

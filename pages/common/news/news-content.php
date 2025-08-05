@@ -21,7 +21,7 @@ if (!empty($newsData) && !empty($urlNews)) {
   if (!isset($_SESSION['visited'])) {
     // Increase view count
     $updatedViews = (int)$newsData['view_news'] + 1;
-    $queryUpdateViews = "UPDATE news SET view_news = ? WHERE url_news = ?";
+    $queryUpdateViews = "UPDATE news SET view_news = ? WHERE url_slug = ?";
     $stmt = mysqli_prepare($connection, $queryUpdateViews);
     mysqli_stmt_bind_param($stmt, 'is', $updatedViews, $urlNews);
     mysqli_stmt_execute($stmt);

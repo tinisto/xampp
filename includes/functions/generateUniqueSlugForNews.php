@@ -16,7 +16,7 @@ function generateUniqueSlugForNews($title, $connection) {
     $counter = 1;
 
     while (true) {
-        $query = "SELECT COUNT(*) AS count FROM news WHERE url_news = ?";
+        $query = "SELECT COUNT(*) AS count FROM news WHERE url_slug = ?";
         $stmt = $connection->prepare($query);
         $stmt->bind_param("s", $uniqueSlug);
         $stmt->execute();

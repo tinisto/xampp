@@ -26,8 +26,8 @@ $vpo_name_en = isset($universityMatches[1]) ? $universityMatches[1] : null;
 // Check if the part for spo_name_en is found
 $spo_name_en = isset($collegeMatches[1]) ? $collegeMatches[1] : null;
 
-// Check if the part for url_post is found
-$url_post = isset($postMatches[1]) ? $postMatches[1] : null;
+// Check if the part for url_slug is found
+$url_slug = isset($postMatches[1]) ? $postMatches[1] : null;
 
 // Determine the entity type based on the URL structure
 if (isset($schoolMatches[1])) {
@@ -70,7 +70,7 @@ if (isset($schoolMatches[1])) {
             <input type="hidden" name="id_school" value="<?php echo htmlspecialchars($id_school ?? ''); ?>">
             <input type="hidden" name="vpo_name_en" value="<?php echo htmlspecialchars($vpo_name_en ?? ''); ?>">
             <input type="hidden" name="spo_name_en" value="<?php echo htmlspecialchars($spo_name_en ?? ''); ?>">
-            <input type="hidden" name="url_post" value="<?php echo htmlspecialchars($url_post ?? ''); ?>">
+            <input type="hidden" name="url_slug" value="<?php echo htmlspecialchars($url_slug ?? ''); ?>">
             <input type="hidden" name="parent_id" value="<?php echo htmlspecialchars($_GET['parent_id'] ?? 0); ?>">
             <input type="hidden" name="email" value="<?php echo htmlspecialchars($_SESSION['email'] ?? ''); ?>">
             <input type="hidden" name="entity_type" value="<?php echo htmlspecialchars($entity_type ?? ''); ?>">

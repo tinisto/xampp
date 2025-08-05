@@ -3,7 +3,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/functions/cache.php';
 
 // Get regions with caching (cache for 2 hours)
-$sql = "SELECT id, region_name, region_name_en FROM regions WHERE country_id = 1 ORDER BY region_name ASC";
+$sql = "SELECT id_region, region_name, region_name_en FROM regions WHERE id_country = 1 ORDER BY region_name ASC";
 $regions = cached_query($connection, $sql, 7200);
 
 if (!$regions) {
@@ -29,7 +29,7 @@ foreach ($counts_data as $count_row) {
     <div class="row">
         <?php foreach ($regions as $row): ?>
             <?php
-            $institution_count = $institution_counts[$row['id']] ?? 0;
+            $institution_count = $institution_counts[$row['id_region']] ?? 0;
             
             // Only display regions with institutions
             if ($institution_count > 0):

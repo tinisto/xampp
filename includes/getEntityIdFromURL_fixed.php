@@ -36,7 +36,7 @@ function getEntityIdFromURL($connection, $entity_type = '') {
     } elseif (preg_match('/\/post\/([^\/]+)/', $current_url, $matches)) {
         // For posts, need to look up by URL
         $url = mysqli_real_escape_string($connection, $matches[1]);
-        $query = "SELECT id_post FROM posts WHERE url_post = '$url' LIMIT 1";
+        $query = "SELECT id_post FROM posts WHERE url_slug = '$url' LIMIT 1";
         $res = mysqli_query($connection, $query);
         if ($res && $row = mysqli_fetch_assoc($res)) {
             $result['id_entity'] = $row['id_post'];

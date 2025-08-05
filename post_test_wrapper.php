@@ -15,7 +15,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
 $url_post = 'ledi-v-pogonah';
 
 // Fetch post data
-$query = "SELECT * FROM posts WHERE url_post = ?";
+$query = "SELECT * FROM posts WHERE url_slug = ?";
 $stmt = mysqli_prepare($connection, $query);
 mysqli_stmt_bind_param($stmt, "s", $url_post);
 mysqli_stmt_execute($stmt);

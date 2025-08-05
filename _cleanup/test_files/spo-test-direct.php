@@ -50,7 +50,7 @@ if ($cols) {
 }
 
 // The SQL query
-$sql = "SELECT id, region_name, region_name_en FROM regions WHERE country_id = 1 ORDER BY region_name ASC";
+$sql = "SELECT id_region, region_name, region_name_en FROM regions WHERE id_country = 1 ORDER BY region_name ASC";
 echo "<p>SQL Query: <code>$sql</code></p>";
 
 $result = $connection->query($sql);
@@ -63,7 +63,7 @@ if ($result) {
     
     while ($row = $result->fetch_assoc()) {
         // Count institutions in this region
-        $count_sql = "SELECT COUNT(*) AS count FROM $table WHERE $regionColumn = {$row['id']}";
+        $count_sql = "SELECT COUNT(*) AS count FROM $table WHERE $regionColumn = {$row['id_region']}";
         $count_result = $connection->query($count_sql);
         
         if ($count_result) {
@@ -80,7 +80,7 @@ if ($result) {
                 echo "</div>";
             }
         } else {
-            echo "<p style='color: red;'>Count error for region {$row['id']}: " . $connection->error . "</p>";
+            echo "<p style='color: red;'>Count error for region {$row['id_region']}: " . $connection->error . "</p>";
         }
     }
     

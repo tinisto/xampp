@@ -13,7 +13,7 @@ echo "<table border='1'>";
 echo "<tr><th>URL</th><th>ID</th><th>Title Length</th><th>Text Length</th><th>Has Images</th><th>Special Fields</th></tr>";
 
 foreach ($working as $url) {
-    $query = "SELECT * FROM posts WHERE url_post = ?";
+    $query = "SELECT * FROM posts WHERE url_slug = ?";
     $stmt = mysqli_prepare($connection, $query);
     mysqli_stmt_bind_param($stmt, "s", $url);
     mysqli_stmt_execute($stmt);
@@ -48,7 +48,7 @@ echo "<table border='1'>";
 echo "<tr><th>URL</th><th>ID</th><th>Title Length</th><th>Text Length</th><th>Has Images</th><th>Special Fields</th></tr>";
 
 foreach ($not_working as $url) {
-    $query = "SELECT * FROM posts WHERE url_post = ?";
+    $query = "SELECT * FROM posts WHERE url_slug = ?";
     $stmt = mysqli_prepare($connection, $query);
     mysqli_stmt_bind_param($stmt, "s", $url);
     mysqli_stmt_execute($stmt);
@@ -83,7 +83,7 @@ echo "<h3>Test Minimal Post Display:</h3>";
 echo "<p>Testing if we can display a non-working post with minimal content...</p>";
 
 $test_url = 'ledi-v-pogonah';
-$query = "SELECT * FROM posts WHERE url_post = ?";
+$query = "SELECT * FROM posts WHERE url_slug = ?";
 $stmt = mysqli_prepare($connection, $query);
 mysqli_stmt_bind_param($stmt, "s", $test_url);
 mysqli_stmt_execute($stmt);

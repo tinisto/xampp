@@ -5,7 +5,7 @@ if (isset($_GET['url_news'])) {
   $urlNews = mysqli_real_escape_string($connection, $_GET['url_news']);
 
   // Fetch post data
-  $queryNews = "SELECT * FROM news WHERE url_news = '$urlNews'";
+  $queryNews = "SELECT * FROM news WHERE url_slug = '$urlNews'";
   $resultNews = mysqli_query($connection, $queryNews);
 
   if ($resultNews && mysqli_num_rows($resultNews) > 0) {

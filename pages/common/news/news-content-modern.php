@@ -8,7 +8,7 @@ if ($newsData && $urlNews) {
   if (!isset($_SESSION['visited'])) {
     // Increase view count
     $updatedViews = $newsData['view_news'] + 1;
-    $queryUpdateViews = "UPDATE news SET view_news = $updatedViews WHERE url_news = ?";
+    $queryUpdateViews = "UPDATE news SET view_news = $updatedViews WHERE url_slug = ?";
     $stmt = mysqli_prepare($connection, $queryUpdateViews);
     mysqli_stmt_bind_param($stmt, 's', $urlNews);
     mysqli_stmt_execute($stmt);

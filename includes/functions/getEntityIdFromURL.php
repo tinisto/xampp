@@ -8,7 +8,7 @@ function getEntityIdFromURL($connection, $entityType)
 
     switch ($entityType) {
         case 'post':
-            $columnName = 'url_post';
+            $columnName = 'url_slug';
             $table = 'posts';
             $idTable = 'post';
             break;
@@ -115,7 +115,7 @@ function getEntityNameById($connection, $entityType, $idEntity)
     // Determine the column name and URL prefix based on the entity type
     switch ($entityType) {
         case 'post':
-            $columnName = 'url_post';
+            $columnName = 'url_slug';
             $urlPrefix = '/post/';
             $table = 'posts';
             $idTable = 'post';

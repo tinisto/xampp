@@ -8,17 +8,17 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
 
 // Get URL parameter
-$url_post = isset($_GET['url_post']) ? mysqli_real_escape_string($connection, $_GET['url_post']) : '';
+$url_slug = isset($_GET['url_post']) ? mysqli_real_escape_string($connection, $_GET['url_post']) : '';
 
-if (empty($url_post)) {
+if (empty($url_slug)) {
     header("Location: /404");
     exit();
 }
 
-// Fetch post data
-$query = "SELECT * FROM posts WHERE url_post = ?";
+// Fetch post data - using url_slug field
+$query = "SELECT * FROM posts WHERE url_slug = ?";
 $stmt = mysqli_prepare($connection, $query);
-mysqli_stmt_bind_param($stmt, "s", $url_post);
+mysqli_stmt_bind_param($stmt, "s", $url_slug);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 

@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                       approved = ?,
                                       description_news = ?,
                                       text_news = ?,
-                                      url_news = ?,
+                                      url_slug = ?,
                                       user_id = ?
                                     WHERE id_news = ?");
 

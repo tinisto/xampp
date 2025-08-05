@@ -81,7 +81,7 @@ if ($content_type === 'news') {
                 text_news = ?, 
                 description_news = ?, 
                 category_news = ?, 
-                url_news = ?, 
+                url_slug = ?, 
                 image_news = ?,
                 approved = ?
                 WHERE id_news = ?";
@@ -100,7 +100,7 @@ if ($content_type === 'news') {
                 text_news = ?, 
                 description_news = ?, 
                 category_news = ?, 
-                url_news = ?, 
+                url_slug = ?, 
                 approved = ?
                 WHERE id_news = ?";
         
@@ -127,7 +127,7 @@ if ($content_type === 'news') {
                 title_post = ?, 
                 text_post = ?, 
                 description_post = ?, 
-                url_post = ?,
+                url_slug = ?,
                 image_post = ?
                 WHERE id_post = ?";
         
@@ -144,7 +144,7 @@ if ($content_type === 'news') {
                 title_post = ?, 
                 text_post = ?, 
                 description_post = ?, 
-                url_post = ?
+                url_slug = ?
                 WHERE id_post = ?";
         
         $stmt = $connection->prepare($sql);

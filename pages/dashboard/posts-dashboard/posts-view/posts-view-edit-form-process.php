@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                       description_post = ?,
                                       bio_post = ?,
                                       text_post = ?,
-                                      url_post = ?,
+                                      url_slug = ?,
                                       view_post = ?
                                     WHERE id_post = ?");
     $query->bind_param(

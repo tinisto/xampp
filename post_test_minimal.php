@@ -22,7 +22,7 @@ if (isset($_GET['url_post'])) {
             
             // Try to fetch the post
             $url = mysqli_real_escape_string($connection, $_GET['url_post']);
-            $query = "SELECT * FROM posts WHERE url_post = '$url'";
+            $query = "SELECT * FROM posts WHERE url_slug = '$url'";
             $result = mysqli_query($connection, $query);
             
             if ($result && mysqli_num_rows($result) > 0) {

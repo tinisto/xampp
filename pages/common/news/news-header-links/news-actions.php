@@ -7,7 +7,7 @@ if (isset($_SESSION['user_id'])) {
     $urlNews = basename($currentUrl);
 
     // Prepare the query to get the news ID by url_news
-    $stmt = $connection->prepare("SELECT id_news, user_id FROM news WHERE url_news = ?");
+    $stmt = $connection->prepare("SELECT id_news, user_id FROM news WHERE url_slug = ?");
     $stmt->bind_param("s", $urlNews);
     $stmt->execute();
     $result = $stmt->get_result();

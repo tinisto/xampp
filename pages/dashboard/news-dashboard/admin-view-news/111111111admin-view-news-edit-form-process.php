@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                       meta_k_news = ?,
                                       description_news = ?,
                                       text_news = ?,
-                                      url_news = ?,
+                                      url_slug = ?,
                                       view_news = ? 
                                     WHERE id_news = ?");
 
@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   meta_k_news = '$metaKNews',
                   description_news = '$descriptionNews',
                   text_news = '$textNews',
-                  url_news = '$urlNews',
+                  url_slug = '$urlNews',
                   view_news = '$viewNews'
                 WHERE id_news = $newsId";
 

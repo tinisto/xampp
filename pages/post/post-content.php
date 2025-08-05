@@ -173,7 +173,7 @@ if (isset($postData)) {
       // Skip the problematic getEntityIdFromURL.php include
       // We already have the post data in $rowPost
       $entity_type = 'post';
-      $id_entity = $rowPost['id_post'];
+      $id_entity = $rowPost['id'];
       
       // Get category name from database
       $categoryName = 'Статьи';

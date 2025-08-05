@@ -45,7 +45,7 @@ echo "<h3>Testing News URLs</h3>";
 foreach ($testUrls as $url) {
     echo "<h4>Testing URL: $url</h4>";
     
-    $query = "SELECT id_news, title_news, url_news FROM news WHERE url_news = ?";
+    $query = "SELECT id_news, title_news, url_news FROM news WHERE url_slug = ?";
     $stmt = $connection->prepare($query);
     $stmt->bind_param("s", $url);
     $stmt->execute();
@@ -58,7 +58,7 @@ foreach ($testUrls as $url) {
         echo "❌ Not found in news table<br>";
         
         // Check if it's in posts table instead
-        $query2 = "SELECT id_post, title_post, url_post FROM posts WHERE url_post = ?";
+        $query2 = "SELECT id_post, title_post, url_post FROM posts WHERE url_slug = ?";
         $stmt2 = $connection->prepare($query2);
         $stmt2->bind_param("s", $url);
         $stmt2->execute();

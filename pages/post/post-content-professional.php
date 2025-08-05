@@ -8,7 +8,7 @@ if (isset($postData)) {
   if (!isset($_SESSION['visited'])) {
     // Increase view count
     $updatedViews = $rowPost['view_post'] + 1;
-    $queryUpdateViews = "UPDATE posts SET view_post = $updatedViews WHERE id_post = " . (int)$rowPost['id_post'];
+    $queryUpdateViews = "UPDATE posts SET view_post = $updatedViews WHERE id = " . (int)$rowPost['id'];
     mysqli_query($connection, $queryUpdateViews);
     // Set the session variable to indicate that the user has visited the page
     $_SESSION['visited'] = true;
@@ -37,8 +37,8 @@ if (isset($postData)) {
       // Check if the user is an admin
       if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
         echo '<div style="display: flex; gap: 10px;">';
-        echo '<a href="/edit/post/' . (int)$rowPost['id_post'] . '" style="padding: 6px 12px; background: #3b82f6; color: white; text-decoration: none; border-radius: 6px; font-size: 14px; display: inline-flex; align-items: center; gap: 5px; transition: background 0.2s;"><i class="fas fa-edit"></i> Редактировать</a>';
-        echo '<a href="/delete-post.php?id=' . (int)$rowPost['id_post'] . '" onclick="return confirm(\'Вы уверены, что хотите удалить этот пост?\')" style="padding: 6px 12px; background: #ef4444; color: white; text-decoration: none; border-radius: 6px; font-size: 14px; display: inline-flex; align-items: center; gap: 5px; transition: background 0.2s;"><i class="fas fa-trash"></i> Удалить</a>';
+        echo '<a href="/edit/post/' . (int)$rowPost['id'] . '" style="padding: 6px 12px; background: #3b82f6; color: white; text-decoration: none; border-radius: 6px; font-size: 14px; display: inline-flex; align-items: center; gap: 5px; transition: background 0.2s;"><i class="fas fa-edit"></i> Редактировать</a>';
+        echo '<a href="/delete-post.php?id=' . (int)$rowPost['id'] . '" onclick="return confirm(\'Вы уверены, что хотите удалить этот пост?\')" style="padding: 6px 12px; background: #ef4444; color: white; text-decoration: none; border-radius: 6px; font-size: 14px; display: inline-flex; align-items: center; gap: 5px; transition: background 0.2s;"><i class="fas fa-trash"></i> Удалить</a>';
         echo '</div>';
       }
       ?>
@@ -84,7 +84,7 @@ if (isset($postData)) {
   // If no image_post, check for old image fields
   elseif (!empty($rowPost['img1_post'])) {
       // Check if old format image exists on server
-      $oldImagePath = "/images/post-images/{$rowPost['id_post']}_1.jpg";
+      $oldImagePath = "/images/post-images/{$rowPost['id']}_1.jpg";
       if (file_exists($_SERVER['DOCUMENT_ROOT'] . $oldImagePath)) {
           $imageToShow = $oldImagePath;
       }
@@ -126,10 +126,10 @@ if (isset($postData)) {
     <?php 
     // Check for image 2
     if (!empty($rowPost['img2_post'])) {
-        $imagePath = $_SERVER['DOCUMENT_ROOT'] . "/images/post-images/{$rowPost['id_post']}_2.jpg";
+        $imagePath = $_SERVER['DOCUMENT_ROOT'] . "/images/post-images/{$rowPost['id']}_2.jpg";
         if (file_exists($imagePath)) : ?>
           <div class="col-md-4 mb-3">
-            <img src="/images/post-images/<?= htmlspecialchars($rowPost['id_post']) ?>_2.jpg"
+            <img src="/images/post-images/<?= htmlspecialchars($rowPost['id']) ?>_2.jpg"
               class="img-fluid img-thumbnail" alt="Image 2" style="border-radius: 8px;">
           </div>
         <?php endif;
@@ -138,10 +138,10 @@ if (isset($postData)) {
     <?php 
     // Check for image 3
     if (!empty($rowPost['img3_post'])) {
-        $imagePath = $_SERVER['DOCUMENT_ROOT'] . "/images/post-images/{$rowPost['id_post']}_3.jpg";
+        $imagePath = $_SERVER['DOCUMENT_ROOT'] . "/images/post-images/{$rowPost['id']}_3.jpg";
         if (file_exists($imagePath)) : ?>
           <div class="col-md-4 mb-3">
-            <img src="/images/post-images/<?= htmlspecialchars($rowPost['id_post']) ?>_3.jpg"
+            <img src="/images/post-images/<?= htmlspecialchars($rowPost['id']) ?>_3.jpg"
               class="img-fluid img-thumbnail" alt="Image 3" style="border-radius: 8px;">
           </div>
         <?php endif;
@@ -150,7 +150,12 @@ if (isset($postData)) {
 
   <!-- Comments Section -->
   <div style="margin-top: 50px;">
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/comments/modern-comments-component.php'; ?>
+    <?php 
+    // Set up variables for comments component
+    $entityType = 'post';
+    $entityId = $rowPost['id'];
+    include $_SERVER['DOCUMENT_ROOT'] . '/comments/modern-comments-component.php'; 
+    ?>
   </div>
 
 </div> <!-- Close container -->

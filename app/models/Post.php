@@ -16,7 +16,7 @@ class Post extends Model {
         $sql = "SELECT p.*, u.username as author_name 
                 FROM {$this->db->escapeIdentifier($this->table)} p
                 LEFT JOIN users u ON p.author_id = u.id_users
-                WHERE p.url_post = ?";
+                WHERE p.url_slug = ?";
         return $this->db->queryOne($sql, [$url]);
     }
     

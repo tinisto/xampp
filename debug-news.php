@@ -7,7 +7,7 @@ if (!isset($_GET['url_news'])) {
 }
 
 $urlNews = mysqli_real_escape_string($connection, $_GET['url_news']);
-$queryNews = "SELECT * FROM news WHERE url_news = '$urlNews'";
+$queryNews = "SELECT * FROM news WHERE url_slug = '$urlNews'";
 $resultNews = mysqli_query($connection, $queryNews);
 
 echo "<!DOCTYPE html>";

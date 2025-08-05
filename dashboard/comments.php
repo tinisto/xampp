@@ -29,7 +29,10 @@ function getEntityUrl($entityType, $entityId, $urlsArray) {
             break;
             
         case 'school':
-            // Schools use direct ID links
+            if (isset($urlsArray['schools'][$entityId])) {
+                return "/school/" . $urlsArray['schools'][$entityId];
+            }
+            // Fallback to ID link if no slug found
             return "/school/$entityId";
             
         case 'vpo':
@@ -94,6 +97,8 @@ $comments = $stmt->get_result();
 $commentsArray = [];
 $postIds = [];
 $newsIds = [];
+$schoolIds = [];
+$schoolUrls = [];
 $vpoIds = [];
 $spoIds = [];
 
@@ -104,6 +109,8 @@ while ($comment = $comments->fetch_assoc()) {
         $postIds[] = $comment['id_entity'];
     } elseif ($comment['entity_type'] === 'news' && $comment['id_entity']) {
         $newsIds[] = $comment['id_entity'];
+    } elseif ($comment['entity_type'] === 'school' && $comment['id_entity']) {
+        $schoolIds[] = $comment['id_entity'];
     } elseif (($comment['entity_type'] === 'vpo' || $comment['entity_type'] === 'university') && $comment['id_entity']) {
         $vpoIds[] = $comment['id_entity'];
     } elseif (($comment['entity_type'] === 'spo' || $comment['entity_type'] === 'college') && $comment['id_entity']) {
@@ -115,36 +122,45 @@ while ($comment = $comments->fetch_assoc()) {
 $postUrls = [];
 if (!empty($postIds)) {
     $ids = implode(',', array_map('intval', $postIds));
-    $result = $connection->query("SELECT id, url_post FROM posts WHERE id IN ($ids)");
+    $result = $connection->query("SELECT id, url_slug FROM posts WHERE id IN ($ids)");
     while ($row = $result->fetch_assoc()) {
-        $postUrls[$row['id']] = $row['url_post'];
+        $postUrls[$row['id']] = $row['url_slug'];
     }
 }
 
 $newsUrls = [];
 if (!empty($newsIds)) {
     $ids = implode(',', array_map('intval', $newsIds));
-    $result = $connection->query("SELECT id, url_news FROM news WHERE id IN ($ids)");
+    $result = $connection->query("SELECT id, url_slug FROM news WHERE id IN ($ids)");
     while ($row = $result->fetch_assoc()) {
-        $newsUrls[$row['id']] = $row['url_news'];
+        $newsUrls[$row['id']] = $row['url_slug'];
     }
 }
 
 $vpoUrls = [];
 if (!empty($vpoIds)) {
     $ids = implode(',', array_map('intval', $vpoIds));
-    $result = $connection->query("SELECT id, vpo_url FROM vpo WHERE id IN ($ids)");
+    $result = $connection->query("SELECT id, url_slug FROM vpo WHERE id IN ($ids)");
     while ($row = $result->fetch_assoc()) {
-        $vpoUrls[$row['id']] = $row['vpo_url'];
+        $vpoUrls[$row['id']] = $row['url_slug'];
     }
 }
 
 $spoUrls = [];
 if (!empty($spoIds)) {
     $ids = implode(',', array_map('intval', $spoIds));
-    $result = $connection->query("SELECT id, spo_url FROM spo WHERE id IN ($ids)");
+    $result = $connection->query("SELECT id, url_slug FROM spo WHERE id IN ($ids)");
     while ($row = $result->fetch_assoc()) {
-        $spoUrls[$row['id']] = $row['spo_url'];
+        $spoUrls[$row['id']] = $row['url_slug'];
+    }
+}
+
+$schoolUrls = [];
+if (!empty($schoolIds)) {
+    $ids = implode(',', array_map('intval', $schoolIds));
+    $result = $connection->query("SELECT id, url_slug FROM schools WHERE id IN ($ids)");
+    while ($row = $result->fetch_assoc()) {
+        $schoolUrls[$row['id']] = $row['url_slug'];
     }
 }
 
@@ -228,6 +244,7 @@ $totalPages = ceil($totalComments / $limit);
                 $urlsArray = [
                     'posts' => $postUrls,
                     'news' => $newsUrls,
+                    'schools' => $schoolUrls,
                     'vpo' => $vpoUrls,
                     'spo' => $spoUrls
                 ];

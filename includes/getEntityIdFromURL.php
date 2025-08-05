@@ -16,10 +16,10 @@ function getEntityIdFromPostURL($connection)
     // Check if the URL matches the expected structure for 'post' pages
     if (count($pathSegments) >= 2 && $pathSegments[0] === 'post') {
         // Dynamically select the column name and table based on the entity type
-        $column_name = 'url_post';
+        $column_name = 'url_slug';
 
         // Query the database to find the ID based on the selected column name and table
-        $query = "SELECT id_$id_table FROM posts WHERE LOWER(TRIM($column_name)) = LOWER(?)";
+        $query = "SELECT id FROM posts WHERE LOWER(TRIM($column_name)) = LOWER(?)";
         $stmt = mysqli_prepare($connection, $query);
 
         if (!$stmt) {
@@ -192,10 +192,10 @@ function getEntityNameById($connection, $entityType, $id_entity)
     // Determine the column name and URL prefix based on the entity type
     switch ($entityType) {
         case 'post':
-            $column_name = 'url_post';
+            $column_name = 'url_slug';
             $urlPrefix = '/post/';
             $table = 'posts';
-            $id_field = 'id_post';
+            $id_field = 'id';
             $status_check = '';
             break;
         case 'spo':
@@ -250,6 +250,52 @@ function getEntityNameById($connection, $entityType, $id_entity)
     }
 
     // Handle the case where the column name is not determined or record not found
+    return null;
+}
+// Simple function to get entity ID from URL
+function getEntityIdFromURL($entityType, $urlSlug) {
+    global $connection;
+    
+    switch ($entityType) {
+        case 'post':
+            $query = "SELECT id FROM posts WHERE url_slug = ?";
+            break;
+        case 'news':
+            $query = "SELECT id FROM news WHERE url_slug = ?";
+            break;
+        case 'vpo':
+        case 'university':
+            $query = "SELECT id FROM vpo WHERE url_slug = ?";
+            break;
+        case 'spo':
+        case 'college':
+            $query = "SELECT id FROM spo WHERE url_slug = ?";
+            break;
+        case 'school':
+            // For schools, check if it's a slug or ID
+            if (is_numeric($urlSlug)) {
+                return intval($urlSlug);
+            }
+            $query = "SELECT id FROM schools WHERE url_slug = ?";
+            break;
+        default:
+            return null;
+    }
+    
+    $stmt = $connection->prepare($query);
+    if (!$stmt) {
+        return null;
+    }
+    
+    $stmt->bind_param("s", $urlSlug);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        return $row['id'];
+    }
+    
     return null;
 }
 ?>

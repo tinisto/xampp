@@ -7,7 +7,7 @@ echo "Link Prefix: " . ($linkPrefix ?? 'NOT SET') . "\n";
 echo "Page Title: " . ($pageTitle ?? 'NOT SET') . "\n";
 echo "Connection: " . (isset($connection) ? 'SET' : 'NOT SET') . "\n";
 
-$sql = "SELECT id, region_name, region_name_en FROM regions WHERE country_id = 1 ORDER BY region_name ASC";
+$sql = "SELECT id_region, region_name, region_name_en FROM regions WHERE id_country = 1 ORDER BY region_name ASC";
 
 // Perform the query
 $result = $connection->query($sql);
@@ -33,23 +33,23 @@ if (!$result) {
             // Query to count the number of institutions in the region
             // Use the appropriate column name based on table
             $region_col = ($table == 'schools') ? 'id_region' : 'region_id';
-            $count_sql = "SELECT COUNT(*) AS count FROM $table WHERE $region_col = {$row['id']}";
+            $count_sql = "SELECT COUNT(*) AS count FROM $table WHERE $region_col = {$row['id_region']}";
             $count_result = $connection->query($count_sql);
 
             if (!$count_result) {
-                echo "<!-- Count Query Error for region {$row['id']}: " . $connection->error . " -->\n";
+                echo "<!-- Count Query Error for region {$row['id_region']}: " . $connection->error . " -->\n";
                 continue;
             }
 
             $row_data = $count_result->fetch_assoc();
             $institution_count = $row_data['count'] ?? 0;
-            echo "<!-- Region {$row['region_name']} (ID: {$row['id']}): {$institution_count} institutions -->\n";
+            echo "<!-- Region {$row['region_name']} (ID: {$row['id_region']}): {$institution_count} institutions -->\n";
 
             // Check if $institution_count is greater than 0 before displaying the region
             if ($institution_count > 0):
             ?>
                 <div class="col-md-4">
-                    <div class="region" data-region-id="<?= $row['id'] ?>">
+                    <div class="region" data-region-id="<?= $row['id_region'] ?>">
                         <h6 class="text-lg font-bold">
                             <a href="<?= $linkPrefix ?>/<?= $row['region_name_en'] ?>"
                                 class="text-dark link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">

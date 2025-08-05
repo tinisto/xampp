@@ -151,14 +151,14 @@ $metaK = 'ВПО, университеты, институты, регионы, 
                 
                 // Based on the check_regions_columns output, the column is 'id'
                 // Now query with the correct column names
-                $sql = "SELECT id, region_name, region_name_en FROM regions WHERE country_id = 1 ORDER BY region_name ASC";
+                $sql = "SELECT id_region, region_name, region_name_en FROM regions WHERE id_country = 1 ORDER BY region_name ASC";
                 $result = $connection->query($sql);
                 
                 if ($result && $result->num_rows > 0):
                     $displayed_count = 0;
                     while ($row = $result->fetch_assoc()): 
                         // Count institutions in this region
-                        $count_sql = "SELECT COUNT(*) AS count FROM $table WHERE region_id = {$row['id']}";
+                        $count_sql = "SELECT COUNT(*) AS count FROM $table WHERE region_id = {$row['id_region']}";
                         $count_result = $connection->query($count_sql);
                         
                         if ($count_result) {
@@ -169,7 +169,7 @@ $metaK = 'ВПО, университеты, институты, регионы, 
                                 $displayed_count++;
                 ?>
                     <div class="col-md-4">
-                        <div class="region" data-region-id="<?= $row['id'] ?>">
+                        <div class="region" data-region-id="<?= $row['id_region'] ?>">
                             <h6>
                                 <a href="<?= $linkPrefix ?>/<?= $row['region_name_en'] ?>">
                                     <?= htmlspecialchars($row['region_name']) ?>

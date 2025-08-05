@@ -21,23 +21,17 @@ try {
     exit();
 }
 
-// Handle both slug-based and ID-based URLs
+// Handle slug-based URLs only (ID URLs redirect here via school-redirect.php)
 $url_slug = $_GET['url_slug'] ?? null;
-$school_id = $_GET['id_school'] ?? null;
 
-if ($url_slug) {
-    $query = "SELECT * FROM schools WHERE url_slug = ?";
-    $stmt = $connection->prepare($query);
-    $stmt->bind_param("s", $url_slug);
-} elseif ($school_id && intval($school_id) > 0) {
-    $school_id_int = intval($school_id);
-    $query = "SELECT * FROM schools WHERE id = ?";
-    $stmt = $connection->prepare($query);
-    $stmt->bind_param("i", $school_id_int);
-} else {
+if (!$url_slug) {
     header("Location: /404");
     exit();
 }
+
+$query = "SELECT * FROM schools WHERE url_slug = ?";
+$stmt = $connection->prepare($query);
+$stmt->bind_param("s", $url_slug);
 
 $stmt->execute();
 $result = $stmt->get_result();

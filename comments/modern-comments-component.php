@@ -5,24 +5,34 @@
  */
 
 // Include necessary functions
+require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/functions/check-user-suspend.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/functions/get_avatar.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/comments/comment_functions.php';
 
-// Get the current URL for entity detection
-$currentUrl = $_SERVER['REQUEST_URI'];
+// Check if entity variables are already set
+if (!isset($entityType) || !isset($entityId)) {
+    // Get the current URL for entity detection
+    $currentUrl = $_SERVER['REQUEST_URI'];
 
-// Extract entity information from URL
-preg_match('/\/school\/(\d+)/', $currentUrl, $schoolMatches);
-preg_match('/\/vpo\/([\w-]+)/', $currentUrl, $universityMatches);
-preg_match('/\/spo\/([\w-]+)/', $currentUrl, $collegeMatches);
-preg_match('/\/post\/([\w-]+)/', $currentUrl, $postMatches);
+    // Extract entity information from URL
+    preg_match('/\/school\/(\d+)/', $currentUrl, $schoolMatches);
+    preg_match('/\/vpo\/([\w-]+)/', $currentUrl, $universityMatches);
+    preg_match('/\/spo\/([\w-]+)/', $currentUrl, $collegeMatches);
+    preg_match('/\/post\/([\w-]+)/', $currentUrl, $postMatches);
 
-// Determine entity type and ID
-$entity_type = 'unknown';
-$entity_id = null;
+    // Determine entity type and ID
+    $entity_type = 'unknown';
+    $entity_id = null;
+} else {
+    // Use pre-set variables
+    $entity_type = $entityType;
+    $entity_id = $entityId;
+}
 
-if (isset($schoolMatches[1])) {
+// Only do URL parsing if variables weren't pre-set
+if (!isset($entityType) || !isset($entityId)) {
+    if (isset($schoolMatches[1])) {
     $entity_type = 'school';
     $entity_id = $schoolMatches[1];
 } elseif (isset($universityMatches[1])) {
@@ -36,7 +46,7 @@ if (isset($schoolMatches[1])) {
     $url_slug = $postMatches[1];
     
     // Get post ID directly from database
-    $postQuery = "SELECT id_post FROM posts WHERE url_post = ?";
+    $postQuery = "SELECT id FROM posts WHERE url_slug = ?";
     $postStmt = $connection->prepare($postQuery);
     if ($postStmt) {
         $postStmt->bind_param("s", $url_slug);
@@ -45,19 +55,32 @@ if (isset($schoolMatches[1])) {
         
         if ($postResult->num_rows > 0) {
             $post = $postResult->fetch_assoc();
-            $entity_id = $post['id_post'];
+            $entity_id = $post['id'];
+        } else {
+            // Debug: Log when post is not found
+            error_log("Comment component: Post not found for URL slug: " . $url_slug);
         }
         $postStmt->close();
+    } else {
+        // Debug: Log prepare failures
+        error_log("Comment component: Failed to prepare post query: " . $connection->error);
     }
 }
+} // End of URL parsing block
 
 // Get existing comments count
-$commentsQuery = "SELECT COUNT(*) as count FROM comments WHERE id_entity = ? AND entity_type = ?";
-$commentsStmt = $connection->prepare($commentsQuery);
-$commentsStmt->bind_param("is", $entity_id, $entity_type);
-$commentsStmt->execute();
-$commentsResult = $commentsStmt->get_result();
-$commentsCount = $commentsResult->fetch_assoc()['count'];
+$commentsCount = 0;
+if ($entity_id !== null && $entity_id > 0) {
+    $commentsQuery = "SELECT COUNT(*) as count FROM comments WHERE id_entity = ? AND entity_type = ?";
+    $commentsStmt = $connection->prepare($commentsQuery);
+    if ($commentsStmt) {
+        $commentsStmt->bind_param("is", $entity_id, $entity_type);
+        $commentsStmt->execute();
+        $commentsResult = $commentsStmt->get_result();
+        $commentsCount = $commentsResult->fetch_assoc()['count'];
+        $commentsStmt->close();
+    }
+}
 ?>
 
 <style>
@@ -361,6 +384,15 @@ $commentsCount = $commentsResult->fetch_assoc()['count'];
                     </p>
                 </div>
             </div>
+        <?php elseif ($entity_id === null || $entity_id <= 0): ?>
+            <!-- Error loading entity -->
+            <div class="comments-form">
+                <div class="comments-login-message" style="background: linear-gradient(135deg, #fef2f2, #fee2e2); border-color: #fecaca; color: #991b1b;">
+                    <p style="margin: 0; font-size: 0.875rem;">
+                        Ошибка загрузки страницы. Комментарии временно недоступны.
+                    </p>
+                </div>
+            </div>
         <?php else: ?>
             <!-- Comment Form -->
             <div class="comments-form">
@@ -396,11 +428,17 @@ $commentsCount = $commentsResult->fetch_assoc()['count'];
 
     <!-- Comments List -->
     <div class="comments-list">
-        <?php if ($commentsCount > 0): ?>
-            <?php include $_SERVER['DOCUMENT_ROOT'] . '/comments/load_comments_simple.php'; ?>
+        <?php if ($entity_id !== null && $entity_id > 0): ?>
+            <?php if ($commentsCount > 0): ?>
+                <?php include $_SERVER['DOCUMENT_ROOT'] . '/comments/load_comments_simple.php'; ?>
+            <?php else: ?>
+                <div class="comments-empty">
+                    Пока нет комментариев. Будьте первым!
+                </div>
+            <?php endif; ?>
         <?php else: ?>
             <div class="comments-empty">
-                Пока нет комментариев. Будьте первым!
+                Комментарии недоступны - ошибка загрузки страницы.
             </div>
         <?php endif; ?>
     </div>

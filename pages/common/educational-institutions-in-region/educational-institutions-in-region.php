@@ -76,7 +76,7 @@ switch ($type) {
         $tableName = 'schools';
         $regionColumn = 'region_id';
         $nameColumn = 'name';
-        $urlColumn = 'id';
+        $urlColumn = 'url_slug';
         $idColumn = 'id';
         $type = 'schools';
         break;

@@ -10,7 +10,7 @@ if (empty($url_post)) {
 }
 
 // Fetch post data
-$stmt = $connection->prepare("SELECT * FROM posts WHERE url_post = ?");
+$stmt = $connection->prepare("SELECT * FROM posts WHERE url_slug = ?");
 $stmt->bind_param("s", $url_post);
 $stmt->execute();
 $result = $stmt->get_result();

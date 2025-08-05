@@ -14,7 +14,7 @@ if ($newsData && $urlNews) {
   if (!isset($_SESSION['visited'])) {
     // Increase view count
     $updatedViews = $newsData['view_news'] + 1;
-    $queryUpdateViews = "UPDATE news SET view_news = $updatedViews WHERE url_news = '$urlNews'";
+    $queryUpdateViews = "UPDATE news SET view_news = $updatedViews WHERE url_slug = '$urlNews'";
     mysqli_query($connection, $queryUpdateViews);
     // Set the session variable to indicate that the user has visited the page
     $_SESSION['visited'] = true;

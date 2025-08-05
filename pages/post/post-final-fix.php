@@ -20,7 +20,7 @@ if (empty($url_post)) {
 }
 
 // Fetch post data
-$query = "SELECT * FROM posts WHERE url_post = ?";
+$query = "SELECT * FROM posts WHERE url_slug = ?";
 $stmt = mysqli_prepare($connection, $query);
 if (!$stmt) {
     die("Prepare failed: " . mysqli_error($connection));
