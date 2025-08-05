@@ -173,7 +173,7 @@ if (isset($postData)) {
       // Skip the problematic getEntityIdFromURL.php include
       // We already have the post data in $rowPost
       $entity_type = 'post';
-      $id_entity = $rowPost['id'];
+      $id_entity = $rowPost['post_id'];
       
       // Get category name from database
       $categoryName = 'Статьи';
@@ -282,5 +282,10 @@ if (isset($postData)) {
 
 <br clear="both">
 <?php
-include $_SERVER['DOCUMENT_ROOT'] . '/comments/user_comments.php';
+// Set up variables for comments component
+$entityType = 'post';
+$entityId = $rowPost['id_post'] ?? $rowPost['id'] ?? null;
+
+// Include the modern comments component instead of user_comments.php
+include $_SERVER['DOCUMENT_ROOT'] . '/comments/modern-comments-component.php';
 ?>

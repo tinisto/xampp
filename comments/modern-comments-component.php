@@ -4,11 +4,17 @@
  * Matches the design of the post/news content with professional styling
  */
 
+// Start session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 // Include necessary functions
 require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/functions/check-user-suspend.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/functions/get_avatar.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/comments/comment_functions.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/comments/timezone-handler.php';
 
 // Check if entity variables are already set
 if (!isset($entityType) || !isset($entityId)) {
@@ -71,7 +77,8 @@ if (!isset($entityType) || !isset($entityId)) {
 // Get existing comments count
 $commentsCount = 0;
 if ($entity_id !== null && $entity_id > 0) {
-    $commentsQuery = "SELECT COUNT(*) as count FROM comments WHERE id_entity = ? AND entity_type = ?";
+    // Count only top-level comments (parent_id = 0)
+    $commentsQuery = "SELECT COUNT(*) as count FROM comments WHERE entity_id = ? AND entity_type = ? AND parent_id = 0";
     $commentsStmt = $connection->prepare($commentsQuery);
     if ($commentsStmt) {
         $commentsStmt->bind_param("is", $entity_id, $entity_type);
@@ -335,13 +342,17 @@ if ($entity_id !== null && $entity_id > 0) {
 
 <div class="comments-container">
     <!-- Comments Header -->
-    <div class="comments-header">
+    <div class="comments-header" style="display: flex; justify-content: space-between; align-items: center;">
         <h3>
             💬 Комментарии
             <?php if ($commentsCount > 0): ?>
                 <span class="comments-count"><?= $commentsCount ?></span>
             <?php endif; ?>
         </h3>
+        <div style="font-size: 0.8em;">
+            <label style="font-weight: normal; margin-right: 10px;">Timezone:</label>
+            <?= getTimezoneSelector() ?>
+        </div>
     </div>
 
     <!-- Success Message -->
@@ -475,8 +486,55 @@ function updateCharCount(textarea) {
     }
 }
 
+// Detect and set user timezone
+function detectUserTimezone() {
+    if (!sessionStorage.getItem('timezone_detected')) {
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        
+        fetch('/comments/timezone-handler.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'timezone=' + encodeURIComponent(timezone)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                sessionStorage.setItem('timezone_detected', 'true');
+                console.log('Timezone set:', data.timezone);
+            }
+        })
+        .catch(error => console.error('Error setting timezone:', error));
+    }
+}
+
+// Manual timezone update
+function updateTimezone(timezone) {
+    if (!timezone) return;
+    
+    fetch('/comments/timezone-handler.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'timezone=' + encodeURIComponent(timezone)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            sessionStorage.setItem('timezone_detected', 'true');
+            location.reload(); // Reload to show times in new timezone
+        }
+    })
+    .catch(error => console.error('Error setting timezone:', error));
+}
+
 // Auto-scroll to comments after successful submission
 document.addEventListener('DOMContentLoaded', function() {
+    // Detect timezone
+    detectUserTimezone();
+    
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('comment_success') === '1') {
         // Wait a bit for the page to fully load
@@ -521,3 +579,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+
+<?php
+// Add timezone detection script
+echo getTimezoneDetectionScript();
+?>

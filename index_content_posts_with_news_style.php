@@ -10,7 +10,7 @@ function renderPostCard($post, $categoryName, $categoryUrl, $badgeColor = 'green
     $hasImage = false;
     $image = '';
     
-    $imagePath = "/images/posts-images/{$post['id_post']}_1.jpg";
+    $imagePath = "/images/posts-images/{$post['id']}_1.jpg";
     if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
         $hasImage = true;
         $image = $imagePath;
@@ -21,7 +21,7 @@ function renderPostCard($post, $categoryName, $categoryUrl, $badgeColor = 'green
     $excerpt = mb_strlen($excerpt) > 120 ? mb_substr($excerpt, 0, 120) . '...' : $excerpt;
     
     // Post URL
-    $postUrl = "/post/" . htmlspecialchars($post['url_post']);
+    $postUrl = "/post/" . htmlspecialchars($post['url_slug']);
     ?>
     
     <article class="news-card">

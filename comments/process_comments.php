@@ -90,7 +90,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["comment"]) && isset($_
         $stmtUserId->close();
 
         // Insert comment
-        $insertCommentQuery = "INSERT INTO comments (id_entity, user_id, comment_text, parent_id, entity_type, date) VALUES (?, ?, ?, ?, ?, NOW())";
+        $insertCommentQuery = "INSERT INTO comments (entity_id, user_id, comment_text, parent_id, entity_type, date) VALUES (?, ?, ?, ?, ?, NOW())";
         $stmtInsertComment = $connection->prepare($insertCommentQuery);
 
         if (!$stmtInsertComment) {

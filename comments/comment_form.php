@@ -1,6 +1,8 @@
 <?php
-// Include getAvatar function
+// Include getAvatar function and database connection
 require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/functions/get_avatar.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/functions/getEntityIdFromURL.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
 
 // Get the current URL
 $currentUrl = $_SERVER['REQUEST_URI'];
@@ -29,18 +31,37 @@ $spo_name_en = isset($collegeMatches[1]) ? $collegeMatches[1] : null;
 // Check if the part for url_slug is found
 $url_slug = isset($postMatches[1]) ? $postMatches[1] : null;
 
-// Determine the entity type based on the URL structure
-if (isset($schoolMatches[1])) {
-  $entity_type = 'school';
-} elseif (isset($universityMatches[1])) {
-  $entity_type = 'vpo';
-} elseif (isset($collegeMatches[1])) {
-  $entity_type = 'spo';
-} elseif (isset($postMatches[1])) {
-  $entity_type = 'post';
-} else {
-  // Set a default entity type or handle the case where it's not determined
-  $entity_type = 'default';
+// Determine the entity type and ID based on the URL structure (only if not already set by parent page)
+if (!isset($id_entity) || !isset($entity_type)) {
+  $id_entity = null;
+  if (isset($schoolMatches[1])) {
+    $entity_type = 'school';
+    $id_entity = $schoolMatches[1]; // For schools, ID is directly in URL
+  } elseif (isset($universityMatches[1])) {
+    $entity_type = 'vpo';
+    // For VPO, need to get ID from database using the URL slug
+    if (isset($connection)) {
+      $result = getEntityIdFromURL($connection, 'vpo');
+      $id_entity = $result['entity_id'];
+    }
+  } elseif (isset($collegeMatches[1])) {
+    $entity_type = 'spo';
+    // For SPO, need to get ID from database using the URL slug
+    if (isset($connection)) {
+      $result = getEntityIdFromURL($connection, 'spo');
+      $id_entity = $result['entity_id'];
+    }
+  } elseif (isset($postMatches[1])) {
+    $entity_type = 'post';
+    // For posts, need to get ID from database using the URL slug
+    if (isset($connection)) {
+      $result = getEntityIdFromURL($connection, 'post');
+      $id_entity = $result['entity_id'];
+    }
+  } else {
+    // Set a default entity type or handle the case where it's not determined
+    $entity_type = 'default';
+  }
 }
 ?>
 

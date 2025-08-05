@@ -80,13 +80,13 @@ if (!function_exists('getChildComments')) {
     {
         switch ($entityType) {
             case 'school':
-                return 'id_entity'; // Replace with the actual field name for school
+                return 'entity_id'; // Updated field name for school
             case 'vpo':
-                return 'id_entity'; // Replace with the actual field name for university
+                return 'entity_id'; // Updated field name for university
             case 'spo':
-                return 'id_entity'; // Replace with the actual field name for college
+                return 'entity_id'; // Updated field name for college
             case 'post':
-                return 'id_entity'; // Replace with the actual field name for college
+                return 'entity_id'; // Updated field name for post
                 // Add more cases for other entity types if needed
             default:
                 header("Location: /error");
@@ -158,37 +158,23 @@ if (!function_exists('getFormattedDate')) {
 
 
 if (!function_exists('getElapsedTime')) {
-    function getElapsedTime($timestamp, $timezone)
+    function getElapsedTime($timestamp, $timezone = null)
     {
         if ($timestamp === null) {
             return 'Неверная метка времени';
         }
 
-        $now = new DateTime('now', new DateTimeZone($timezone));
-        $commentTimestamp = new DateTime($timestamp, new DateTimeZone($timezone));
-
-        $diff = $now->diff($commentTimestamp);
-
-        $units = [
-            "y" => ['г.', 'год', 'года', 'лет'],
-            "m" => ['мес.', 'месяц', 'месяца', 'месяцев'],
-            "d" => ['д.', 'день', 'дня', 'дней'],
-            "h" => ['ч.', 'час', 'часа', 'часов'],
-            "i" => ['мин.', 'минута', 'минуты', 'минут'],
-        ];
-
-        foreach ($units as $unit => $formats) {
-            if ($diff->$unit > 0) {
-                $value = $diff->$unit;
-                $formatIndex = ($value % 10 == 1 && $value % 100 != 11)
-                    ? 1
-                    : (($value % 10 >= 2 && $value % 10 <= 4 && ($value % 100 < 10 || $value % 100 >= 20))
-                        ? 2
-                        : 3);
-                return $value . ' ' . $formats[$formatIndex] . ' назад';
-            }
+        // Include timezone handler if not already included
+        if (!function_exists('getUserTimezone')) {
+            require_once $_SERVER['DOCUMENT_ROOT'] . '/comments/timezone-handler.php';
+        }
+        
+        // Use user's timezone from session if not provided
+        if ($timezone === null) {
+            $timezone = getUserTimezone();
         }
 
-        return 'Только что';
+        // Use the timezone handler function for consistency
+        return formatTimeAgoUserTZ($timestamp, $timezone);
     }
 }

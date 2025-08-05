@@ -3,37 +3,43 @@
  * Simple Comments Loader for Testing
  */
 
-// Get entity information from the URL
-$currentUrl = $_SERVER['REQUEST_URI'];
-preg_match('/\/post\/([\w-]+)/', $currentUrl, $postMatches);
+// Include timezone handler
+require_once $_SERVER['DOCUMENT_ROOT'] . '/comments/timezone-handler.php';
 
-if (isset($postMatches[1])) {
-    $entity_type = 'post';
-    $url_slug = $postMatches[1];
-    
-    // Get post ID directly from database
-    $postQuery = "SELECT id FROM posts WHERE url_slug = ?";
-    $postStmt = $connection->prepare($postQuery);
-    if (!$postStmt) {
-        echo "<div class='comments-empty'>Database error: " . $connection->error . "</div>";
-        return;
-    }
-    
-    $postStmt->bind_param("s", $url_slug);
-    $postStmt->execute();
-    $postResult = $postStmt->get_result();
-    
-    if ($postResult->num_rows > 0) {
-        $post = $postResult->fetch_assoc();
-        $entity_id = $post['id'];
+// Check if entity_id and entity_type are already set by parent component
+if (!isset($entity_id) || !isset($entity_type)) {
+    // Get entity information from the URL
+    $currentUrl = $_SERVER['REQUEST_URI'];
+    preg_match('/\/post\/([\w-]+)/', $currentUrl, $postMatches);
+
+    if (isset($postMatches[1])) {
+        $entity_type = 'post';
+        $url_slug = $postMatches[1];
+        
+        // Get post ID directly from database
+        $postQuery = "SELECT id FROM posts WHERE url_slug = ?";
+        $postStmt = $connection->prepare($postQuery);
+        if (!$postStmt) {
+            echo "<div class='comments-empty'>Database error: " . $connection->error . "</div>";
+            return;
+        }
+        
+        $postStmt->bind_param("s", $url_slug);
+        $postStmt->execute();
+        $postResult = $postStmt->get_result();
+        
+        if ($postResult->num_rows > 0) {
+            $post = $postResult->fetch_assoc();
+            $entity_id = $post['id'];
+        } else {
+            echo "<div class='comments-empty'>Post not found: $url_slug</div>";
+            return;
+        }
+        $postStmt->close();
     } else {
-        echo "<div class='comments-empty'>Post not found: $url_slug</div>";
+        echo "<div class='comments-empty'>Invalid URL format</div>";
         return;
     }
-    $postStmt->close();
-} else {
-    echo "<div class='comments-empty'>Invalid URL format</div>";
-    return;
 }
 
 if (!$entity_id) {
@@ -41,20 +47,10 @@ if (!$entity_id) {
     return;
 }
 
-// Simple date formatting functions with timezone correction
+// Simple date formatting functions with user timezone support
 function simpleTimeAgo($datetime) {
-    // Convert to Moscow timezone
-    $moscowTime = new DateTime('now', new DateTimeZone('Europe/Moscow'));
-    $commentTime = new DateTime($datetime, new DateTimeZone('UTC'));
-    $commentTime->setTimezone(new DateTimeZone('Europe/Moscow'));
-    
-    $time = $moscowTime->getTimestamp() - $commentTime->getTimestamp();
-    
-    if ($time < 60) return 'только что';
-    if ($time < 3600) return floor($time/60) . ' мин назад';
-    if ($time < 86400) return floor($time/3600) . ' ч назад';
-    if ($time < 2592000) return floor($time/86400) . ' дн назад';
-    return $commentTime->format('d.m.Y');
+    // Use the timezone handler function
+    return formatTimeAgoUserTZ($datetime);
 }
 
 // Pagination
@@ -65,7 +61,7 @@ $offset = ($page - 1) * $commentsPerPage;
 // Get comments with user info
 $query = "SELECT 
     comments.id,
-    comments.id_entity,
+    comments.entity_id,
     comments.user_id,
     comments.comment_text,
     comments.date,
@@ -76,7 +72,7 @@ $query = "SELECT
     users.email
 FROM comments 
 LEFT JOIN users ON comments.user_id = users.id 
-WHERE comments.id_entity = ? 
+WHERE comments.entity_id = ? 
   AND comments.entity_type = ? 
   AND comments.parent_id = 0 
 ORDER BY comments.date DESC 

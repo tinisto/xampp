@@ -25,6 +25,22 @@ try {
         exit;
     }
     
+    // Check comments table structure
+    echo "<h2>📋 Comments Table Structure</h2>";
+    $table_info = $connection->query("DESCRIBE comments");
+    if ($table_info) {
+        echo "<table border='1' cellpadding='5'>";
+        echo "<tr><th>Field</th><th>Type</th><th>Null</th><th>Key</th><th>Default</th><th>Extra</th></tr>";
+        while ($field = $table_info->fetch_assoc()) {
+            echo "<tr>";
+            foreach ($field as $value) {
+                echo "<td>" . htmlspecialchars($value) . "</td>";
+            }
+            echo "</tr>";
+        }
+        echo "</table>";
+    }
+    
     // Test post lookup
     echo "<h2>🔍 Post Lookup Test</h2>";
     $test_slug = 'kuda-dvigatsya-posle-shkoly';
@@ -58,11 +74,40 @@ try {
         
         // Test comments for this post
         echo "<h3>Comments Test:</h3>";
-        $comments_query = "SELECT COUNT(*) as count FROM comments WHERE entity_type = 'post' AND id_entity = {$post['id']}";
+        $comments_query = "SELECT COUNT(*) as count FROM comments WHERE entity_type = 'post' AND entity_id = {$post['id']}";
         $comments_result = $connection->query($comments_query);
         if ($comments_result) {
             $comment_count = $comments_result->fetch_assoc()['count'];
-            echo "<p>Comments for this post: <strong>{$comment_count}</strong></p>";
+            echo "<p>Comments for this post (using entity_id): <strong>{$comment_count}</strong></p>";
+        }
+        
+        // Also test with old column name to see if data exists
+        $old_query = "SELECT COUNT(*) as count FROM comments WHERE entity_type = 'post' AND id_entity = {$post['id']}";
+        $old_result = $connection->query($old_query);
+        if ($old_result) {
+            $old_count = $old_result->fetch_assoc()['count'];
+            echo "<p>Comments for this post (using id_entity): <strong>{$old_count}</strong></p>";
+        }
+        
+        // Show all comments for debugging
+        echo "<h3>All Comments in Database:</h3>";
+        $all_comments = $connection->query("SELECT id, entity_id, id_entity, entity_type, comment_text, date FROM comments ORDER BY id DESC LIMIT 10");
+        if ($all_comments && $all_comments->num_rows > 0) {
+            echo "<table border='1' cellpadding='5'>";
+            echo "<tr><th>ID</th><th>entity_id</th><th>id_entity</th><th>entity_type</th><th>comment_text</th><th>date</th></tr>";
+            while ($comment = $all_comments->fetch_assoc()) {
+                echo "<tr>";
+                echo "<td>" . $comment['id'] . "</td>";
+                echo "<td>" . ($comment['entity_id'] ?? 'NULL') . "</td>";
+                echo "<td>" . ($comment['id_entity'] ?? 'NULL') . "</td>";
+                echo "<td>" . htmlspecialchars($comment['entity_type']) . "</td>";
+                echo "<td>" . htmlspecialchars(substr($comment['comment_text'], 0, 50)) . "...</td>";
+                echo "<td>" . $comment['date'] . "</td>";
+                echo "</tr>";
+            }
+            echo "</table>";
+        } else {
+            echo "<p>No comments found in database.</p>";
         }
         
         // Test loading comments component directly

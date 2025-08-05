@@ -21,7 +21,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/check_under_constru
     $offset = ($page - 1) * $commentsPerPage;
 
     // Query to count total comments
-    $queryCount = "SELECT COUNT(*) AS total FROM comments WHERE id_entity=? AND entity_type=? AND parent_id=0";
+    $queryCount = "SELECT COUNT(*) AS total FROM comments WHERE entity_id=? AND entity_type=? AND parent_id=0";
     $stmtCount = mysqli_prepare($connection, $queryCount);
     mysqli_stmt_bind_param($stmtCount, "is", $id_entity, $entity_type);
     mysqli_stmt_execute($stmtCount);
@@ -31,7 +31,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/check_under_constru
     // Query to fetch comments
     $queryComments = "SELECT
         comments.id,
-        comments.id_entity,
+        comments.entity_id,
         comments.user_id,
         COALESCE(users.avatar_url, 'default_avatar.jpg') AS avatar,
         comments.comment_text,
@@ -42,7 +42,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/check_under_constru
         comments
     LEFT JOIN users ON comments.user_id = users.id
     WHERE
-        comments.id_entity=? AND comments.entity_type=? AND parent_id=0
+        comments.entity_id=? AND comments.entity_type=? AND parent_id=0
     ORDER BY
         comments.date DESC LIMIT ?, ?;
     ";

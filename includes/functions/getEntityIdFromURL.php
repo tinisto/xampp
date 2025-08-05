@@ -23,6 +23,7 @@ function getEntityIdFromURL($connection, $entityType)
             $idTable = 'vpo';
             break;
         case 'school':
+        case 'schools':
             // For school, we directly extract the ID from the URL
             return extractSchoolIdEntityFromURL();
         default:
@@ -43,7 +44,9 @@ function getEntityIdFromURL($connection, $entityType)
     // Check if the URL matches the expected structure for the entity type
     if (count($pathSegments) >= 2 && $pathSegments[0] === $entityType) {
         // Query the database to find the ID based on the selected column name and table
-        $query = "SELECT id_$idTable FROM $table WHERE LOWER(TRIM($columnName)) = LOWER(?)";
+        // For posts table, the primary key is just 'id'
+        $idColumn = ($table === 'posts') ? 'id' : "{$idTable}_id";
+        $query = "SELECT $idColumn FROM $table WHERE LOWER(TRIM($columnName)) = LOWER(?)";
         $stmt = mysqli_prepare($connection, $query);
 
         if (!$stmt) {
@@ -70,7 +73,7 @@ function getEntityIdFromURL($connection, $entityType)
     }
 
     return [
-        'id_entity' => $idEntity,
+        'entity_id' => $idEntity,
         'entity_type' => $entityType,
     ];
 }
@@ -99,7 +102,7 @@ function extractSchoolIdEntityFromURL()
     }
 
     return [
-        'id_entity' => $idEntity,
+        'entity_id' => $idEntity,
         'entity_type' => $entityType,
     ];
 }
@@ -141,7 +144,9 @@ function getEntityNameById($connection, $entityType, $idEntity)
     // Check if a valid column name is determined
     if ($columnName) {
         // Query the database to find the entity name based on the selected column name and table
-        $query = "SELECT $columnName FROM $table WHERE id_$idTable = ?";
+        // For posts table, the primary key is just 'id'
+        $idColumn = ($table === 'posts') ? 'id' : "{$idTable}_id";
+        $query = "SELECT $columnName FROM $table WHERE $idColumn = ?";
         $stmt = mysqli_prepare($connection, $query);
 
         if (!$stmt) {

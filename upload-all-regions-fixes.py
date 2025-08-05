@@ -9,8 +9,8 @@ USER = "franko"
 PASS = "JyvR!HK2E!N55Zt"
 PATH = "/11klassnikiru/"
 
-def upload_comment_fixes():
-    print("🚀 Uploading comment system fixes")
+def upload_all_regions_fixes():
+    print("🚀 Uploading all-regions pages fixes")
     
     try:
         print("🔌 Connecting...")
@@ -22,11 +22,8 @@ def upload_comment_fixes():
         
         # Upload fixed files
         files_to_upload = [
-            ('comments/process_comments.php', 'comments/process_comments.php'),
-            ('comments/comment_form.php', 'comments/comment_form.php'),
-            ('comments/load_comments.php', 'comments/load_comments.php'),
-            ('comments/display_comments.php', 'comments/display_comments.php'),
-            ('includes/functions/getEntityIdFromURL.php', 'includes/functions/getEntityIdFromURL.php'),
+            ('find-and-replace-old-fields.php', 'find-and-replace-old-fields.php'),
+            ('migrations/prioritized_field_migration.php', 'migrations/prioritized_field_migration.php'),
         ]
         
         for local_file, remote_file in files_to_upload:
@@ -64,15 +61,16 @@ def upload_comment_fixes():
         
         ftp.quit()
         
-        print("\n🎉 Comment system fixes uploaded!")
-        print("\n🔧 Fixed Issues:")
-        print("- Updated all comment queries to use entity_id (was id_entity)")
-        print("- Fixed getEntityIdFromURL function for new field names")
-        print("- Updated comment form to properly calculate entity ID")
-        print("- Fixed comment loading and processing queries")
-        print("\n🌍 Test comments now:")
-        print("https://11klassniki.ru/post/kogda-ege-ostalis-pozadi")
-        print("\n✅ Comment submission should now work!")
+        print("\n🎉 All-regions pages fixes uploaded!")
+        print("\n📋 Fixed Issues:")
+        print("- ✅ Changed id_region → id in regions table queries")
+        print("- ✅ Changed id_region → region_id for foreign keys")
+        print("- ✅ Changed id_school → id for schools table")
+        print("- ✅ Updated all data attributes and references")
+        print("\n🧪 Test the pages now:")
+        print("- https://11klassniki.ru/schools-all-regions")
+        print("- https://11klassniki.ru/vpo-all-regions")
+        print("- https://11klassniki.ru/spo-all-regions")
         
         return True
         
@@ -81,4 +79,4 @@ def upload_comment_fixes():
         return False
 
 if __name__ == "__main__":
-    upload_comment_fixes()
+    upload_all_regions_fixes()

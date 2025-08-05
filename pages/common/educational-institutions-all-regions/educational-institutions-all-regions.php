@@ -29,7 +29,7 @@ $type = $_GET['type'] ?? 'schools';
 // Define table and field names based on type
 switch ($type) {
     case 'spo':
-        $table = 'colleges';
+        $table = 'spo';
         $countField = 'spo_count';
         $linkPrefix = '/spo-in-region';
         $pageTitle = 'СПО по регионам';
@@ -39,7 +39,7 @@ switch ($type) {
         $idColumn = 'id'; // Standard id column
         break;
     case 'vpo':
-        $table = 'universities';
+        $table = 'vpo';
         $countField = 'vpo_count';
         $linkPrefix = '/vpo-in-region';
         $pageTitle = 'ВПО по регионам';
@@ -55,8 +55,8 @@ switch ($type) {
         $pageTitle = 'Школы по регионам';
         $metaD = 'Школы по регионам России';
         $metaK = 'школы, регионы, среднее образование';
-        $regionColumn = 'id_region'; // Schools use id_region instead of region_id
-        $idColumn = 'id_school'; // Schools use id_school instead of id
+        $regionColumn = 'region_id'; // Standardized column name
+        $idColumn = 'id'; // Standardized column name
         break;
 }
 ?>
@@ -196,14 +196,30 @@ switch ($type) {
                     echo "<!-- Current database: $current_db -->\n";
                 }
                 
-                $sql = "SELECT id_region, region_name, region_name_en FROM regions WHERE id_country = 1 ORDER BY region_name ASC";
+                // Check which columns exist in regions table
+                $check_columns = $connection->query("SHOW COLUMNS FROM regions");
+                $id_column = 'id_region'; // default
+                $country_column = 'id_country'; // default
+                if ($check_columns) {
+                    while ($col = $check_columns->fetch_assoc()) {
+                        if ($col['Field'] === 'id') {
+                            $id_column = 'id';
+                        } elseif ($col['Field'] === 'region_id') {
+                            $id_column = 'region_id';
+                        } elseif ($col['Field'] === 'country_id') {
+                            $country_column = 'country_id';
+                        }
+                    }
+                }
+                
+                $sql = "SELECT $id_column as region_id, region_name, region_name_en FROM regions WHERE $country_column = 1 ORDER BY region_name ASC";
                 $result = $connection->query($sql);
                 
                 if ($result && $result->num_rows > 0):
                     $displayed_count = 0;
                     while ($row = $result->fetch_assoc()): 
                         // Count institutions in this region
-                        $count_sql = "SELECT COUNT(*) AS count FROM $table WHERE $regionColumn = {$row['id_region']}";
+                        $count_sql = "SELECT COUNT(*) AS count FROM $table WHERE $regionColumn = {$row['region_id']}";
                         $count_result = $connection->query($count_sql);
                         
                         if ($count_result) {
@@ -214,7 +230,7 @@ switch ($type) {
                                 $displayed_count++;
                 ?>
                     <div class="col-md-4">
-                        <div class="region" data-region-id="<?= $row['id_region'] ?>">
+                        <div class="region" data-region-id="<?= $row['region_id'] ?>">
                             <h6>
                                 <a href="<?= $linkPrefix ?>/<?= $row['region_name_en'] ?>">
                                     <?= htmlspecialchars($row['region_name']) ?>

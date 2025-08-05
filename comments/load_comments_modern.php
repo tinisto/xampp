@@ -51,7 +51,7 @@ $query = "SELECT
     users.email
 FROM comments 
 LEFT JOIN users ON comments.user_id = users.id 
-WHERE comments.id_entity = ? 
+WHERE comments.entity_id = ? 
   AND comments.entity_type = ? 
   AND comments.parent_id = 0 
 ORDER BY comments.date DESC 
@@ -84,7 +84,7 @@ while ($comment = $result->fetch_assoc()) {
     
     // Format date
     $timestamp = strtotime($comment['date']);
-    $timeAgo = getElapsedTime($comment['date'], 'Europe/Moscow');
+    $timeAgo = getElapsedTime($comment['date']); // Will use user's timezone automatically
     $fullDate = getFormattedDate($timestamp);
     
     // Clean comment text with XSS protection
@@ -181,7 +181,7 @@ while ($comment = $result->fetch_assoc()) {
                             }
                             
                             $replyTimestamp = strtotime($reply['date']);
-                            $replyTimeAgo = getElapsedTime($reply['date'], 'Europe/Moscow');
+                            $replyTimeAgo = getElapsedTime($reply['date']); // Will use user's timezone automatically
                             $replyFullDate = getFormattedDate($replyTimestamp);
                             
                             // Clean reply text
@@ -223,7 +223,7 @@ while ($comment = $result->fetch_assoc()) {
 }
 
 // Get total comments count for pagination
-$countQuery = "SELECT COUNT(*) as total FROM comments WHERE id_entity = ? AND entity_type = ? AND parent_id = 0";
+$countQuery = "SELECT COUNT(*) as total FROM comments WHERE entity_id = ? AND entity_type = ? AND parent_id = 0";
 $countStmt = $connection->prepare($countQuery);
 $countStmt->bind_param("is", $entity_id, $entity_type);
 $countStmt->execute();

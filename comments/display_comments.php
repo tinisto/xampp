@@ -5,7 +5,7 @@ $userId = isset($_SESSION['user_id']);
 include 'comment_functions.php'; ?>
 
 <script>
-    var id_entity = <?php echo json_encode(isset($id_entity) ? $id_entity : null); ?>;
+    var id_entity = <?php echo json_encode(isset($id_entity) ? $id_entity : (isset($entity_id) ? $entity_id : null)); ?>;
     var entity_type = <?php echo json_encode(isset($entity_type) ? $entity_type : null); ?>;
 </script>
 
@@ -21,14 +21,16 @@ include 'comment_functions.php'; ?>
     // Execute the query to check if comments exist
     $queryCommentsExist = "SELECT COUNT(*) AS commentCount
     FROM comments
-    WHERE id_entity=? AND entity_type=? AND parent_id=0";
+    WHERE entity_id=? AND entity_type=? AND parent_id=0";
     $stmtCommentsExist = mysqli_prepare($connection, $queryCommentsExist);
 
     if (!$stmtCommentsExist) {
         redirectToErrorPage($connection->error, __FILE__, __LINE__);
     }
 
-    mysqli_stmt_bind_param($stmtCommentsExist, "is", $id_entity, $entity_type);
+    // Use either $id_entity or $entity_id depending on what's available
+    $entity_id_value = isset($id_entity) ? $id_entity : (isset($entity_id) ? $entity_id : null);
+    mysqli_stmt_bind_param($stmtCommentsExist, "is", $entity_id_value, $entity_type);
     mysqli_stmt_execute($stmtCommentsExist);
 
     if ($stmtCommentsExist->errno) {

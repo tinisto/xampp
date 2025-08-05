@@ -9,8 +9,8 @@ USER = "franko"
 PASS = "JyvR!HK2E!N55Zt"
 PATH = "/11klassnikiru/"
 
-def upload_comment_fixes():
-    print("🚀 Uploading comment system fixes")
+def upload_post_comment_fixes():
+    print("🚀 Uploading post comment fixes")
     
     try:
         print("🔌 Connecting...")
@@ -20,14 +20,13 @@ def upload_comment_fixes():
         ftp.cwd(PATH)
         print("✅ Connected")
         
-        # Upload fixed files
+        # Files to upload
         files_to_upload = [
-            ('comments/process_comments.php', 'comments/process_comments.php'),
-            ('comments/comment_form.php', 'comments/comment_form.php'),
-            ('comments/load_comments.php', 'comments/load_comments.php'),
-            ('comments/display_comments.php', 'comments/display_comments.php'),
-            ('includes/functions/getEntityIdFromURL.php', 'includes/functions/getEntityIdFromURL.php'),
+            ('pages/post/post-content.php', 'pages/post/post-content.php'),
+            ('check-post-comments.php', 'check-post-comments.php'),
         ]
+        
+        uploaded_count = 0
         
         for local_file, remote_file in files_to_upload:
             local_path = f'/Applications/XAMPP/xamppfiles/htdocs/{local_file}'
@@ -42,8 +41,11 @@ def upload_comment_fixes():
                         try:
                             ftp.cwd(dir_part)
                         except:
-                            ftp.mkd(dir_part)
-                            ftp.cwd(dir_part)
+                            try:
+                                ftp.mkd(dir_part)
+                                ftp.cwd(dir_part)
+                            except:
+                                pass
                 
                 # Reset to base directory for upload
                 ftp.cwd('/')
@@ -55,6 +57,7 @@ def upload_comment_fixes():
                     filename = remote_file.split('/')[-1]
                     ftp.storbinary(f'STOR {filename}', f)
                 print(f"✅ {remote_file} uploaded")
+                uploaded_count += 1
                 
                 # Reset to base directory
                 ftp.cwd('/')
@@ -64,15 +67,16 @@ def upload_comment_fixes():
         
         ftp.quit()
         
-        print("\n🎉 Comment system fixes uploaded!")
+        print(f"\n🎉 Post comment fixes uploaded! ({uploaded_count} files)")
         print("\n🔧 Fixed Issues:")
-        print("- Updated all comment queries to use entity_id (was id_entity)")
-        print("- Fixed getEntityIdFromURL function for new field names")
-        print("- Updated comment form to properly calculate entity ID")
-        print("- Fixed comment loading and processing queries")
-        print("\n🌍 Test comments now:")
+        print("- Set required $entityType and $entityId variables")
+        print("- Updated to use modern comments component")
+        print("- Added compatibility for both 'id' and 'id_post' fields")
+        print("\n🔍 Diagnostic tool:")
+        print("https://11klassniki.ru/check-post-comments.php")
+        print("\n🧪 Test now:")
         print("https://11klassniki.ru/post/kogda-ege-ostalis-pozadi")
-        print("\n✅ Comment submission should now work!")
+        print("\n✅ Comments should now display!")
         
         return True
         
@@ -81,4 +85,4 @@ def upload_comment_fixes():
         return False
 
 if __name__ == "__main__":
-    upload_comment_fixes()
+    upload_post_comment_fixes()
