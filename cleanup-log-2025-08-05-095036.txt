@@ -1,0 +1,34 @@
+Website Cleanup Log - 2025-08-05 09:50:36
+==================================================
+Mode: DRY RUN
+Files found: 579
+Files deleted: 0
+Files moved: 0
+Space freed: 1.57 MB
+
+Files marked for review:
+  - ./config/config_under_construction.php
+  - ./check_under_construction_from_server.php
+  - ./common-components/check_under_construction_fixed.php
+  - ./common-components/check_under_construction.php
+  - ./complete-migration-fix.php
+  - ./migrations/complete_migration.php
+  - ./migrations/simple_migration.php
+  - ./migrations/prioritized_field_migration.php
+  - ./migrations/run_migration.php
+  - ./includes/database/migration_manager.php
+  - ./admin/run-migrations.php
+  - ./_cleanup/debug_files/fix_migration_simple.php
+  - ./dashboard/run-migrations.php
+  - ./debug-region-migration.php
+  - ./cleanup-review-interface.php
+  - ./admin/database-text-cleanup.php
+  - ./dashboard/database-text-cleanup.php
+  - ./website-cleanup-script.php
+  - ./safe-field-replacements.php
+  - ./_cleanup/migration_files/safe-migrate.php
+  - dashboard-professional.php
+  - dashboard/comments-simple.php
+  - dashboard/comments.php
+  - dashboard/database-text-cleanup.php
+  - admin/database-text-cleanup.php
