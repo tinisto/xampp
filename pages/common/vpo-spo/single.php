@@ -1,4 +1,4 @@
 <?php
-// Redirect to simplified version to avoid template engine issues
-include $_SERVER['DOCUMENT_ROOT'] . '/pages/common/vpo-spo/single-simplified.php';
+// Include the new single page with proper header/footer integration
+include $_SERVER['DOCUMENT_ROOT'] . '/pages/common/vpo-spo/single-new.php';
 ?>
