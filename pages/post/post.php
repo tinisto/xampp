@@ -7,18 +7,23 @@ if (session_status() === PHP_SESSION_NONE) {
 // Get database connection
 require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
 
-// Get URL parameter
-$url_slug = isset($_GET['url_post']) ? mysqli_real_escape_string($connection, $_GET['url_post']) : '';
+// Get URL parameter - support both url_post and url_slug parameters
+$url_param = '';
+if (isset($_GET['url_post'])) {
+    $url_param = mysqli_real_escape_string($connection, $_GET['url_post']);
+} elseif (isset($_GET['url_slug'])) {
+    $url_param = mysqli_real_escape_string($connection, $_GET['url_slug']);
+}
 
-if (empty($url_slug)) {
+if (empty($url_param)) {
     header("Location: /404");
     exit();
 }
 
-// Fetch post data - using url_slug field
-$query = "SELECT * FROM posts WHERE url_slug = ?";
+// Fetch post data - try both url_slug and url_post fields
+$query = "SELECT * FROM posts WHERE url_slug = ? OR url_post = ?";
 $stmt = mysqli_prepare($connection, $query);
-mysqli_stmt_bind_param($stmt, "s", $url_slug);
+mysqli_stmt_bind_param($stmt, "ss", $url_param, $url_param);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 
