@@ -43,13 +43,60 @@ function renderSearchBar($config = []) {
                     placeholder="<?php echo htmlspecialchars($config['placeholder']); ?>"
                     value="<?php echo htmlspecialchars($config['value']); ?>"
                     class="search-bar-input"
+                    id="search-input-<?php echo $instanceId; ?>"
                 >
-                <button type="submit" class="search-bar-button">
-                    <i class="fas fa-search"></i>
+                <button type="button" class="search-bar-clear" id="clear-btn-<?php echo $instanceId; ?>" style="display: none;" title="Очистить поиск">
+                    ✕
                 </button>
             </div>
         </form>
     </div>
+    
+    <script>
+    // Search bar functionality for instance <?php echo $instanceId; ?>
+    (function() {
+        const searchInput = document.getElementById('search-input-<?php echo $instanceId; ?>');
+        const clearBtn = document.getElementById('clear-btn-<?php echo $instanceId; ?>');
+        const form = searchInput ? searchInput.closest('form') : null;
+        
+        // Search bar initialized
+        
+        if (!searchInput || !clearBtn) {
+            return;
+        }
+        
+        function toggleClearButton() {
+            if (searchInput.value.length > 0) {
+                clearBtn.style.display = 'flex';
+            } else {
+                clearBtn.style.display = 'none';
+            }
+        }
+        
+        // Show/hide clear button on input
+        searchInput.addEventListener('input', toggleClearButton);
+        
+        // Clear input when X is clicked
+        clearBtn.addEventListener('click', function() {
+            searchInput.value = '';
+            clearBtn.style.display = 'none';
+            searchInput.focus();
+        });
+        
+        // Submit form on Enter key
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (searchInput.value.trim().length > 0) {
+                    form.submit();
+                }
+            }
+        });
+        
+        // Initialize clear button state
+        toggleClearButton();
+    })();
+    </script>
     
     <?php
 }
@@ -89,7 +136,7 @@ if (!defined('SEARCH_BAR_CSS_INCLUDED')) {
         .search-bar-input {
             flex: 1;
             border: none;
-            padding: 16px 24px;
+            padding: 16px 50px 16px 24px;
             font-size: 16px;
             background: transparent;
             color: #333;
@@ -100,29 +147,36 @@ if (!defined('SEARCH_BAR_CSS_INCLUDED')) {
             color: #6c757d;
         }
         
-        .search-bar-button {
-            background: #28a745;
-            border: none;
-            padding: 16px 24px;
+        .search-bar-clear {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 32px;
+            height: 32px;
+            background: #dc3545;
             color: white;
+            border: none;
+            border-radius: 50%;
             cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
+            font-size: 16px;
+            font-weight: bold;
+            display: none;
             align-items: center;
             justify-content: center;
+            z-index: 1000;
+            transition: all 0.3s ease;
         }
         
-        .search-bar-button:hover {
-            background: #218838;
-            transform: scale(1.05);
+        .search-bar-clear:hover {
+            background: #c82333;
+            transform: translateY(-50%) scale(1.1);
         }
         
-        .search-bar-button:active {
-            transform: scale(0.95);
-        }
-        
-        .search-bar-button i {
+        .search-bar-clear {
             font-size: 18px;
+            font-weight: bold;
+            line-height: 1;
         }
         
         /* Style Variations */
@@ -133,30 +187,34 @@ if (!defined('SEARCH_BAR_CSS_INCLUDED')) {
         }
         
         .search-style-compact .search-bar-input {
-            padding: 12px 20px;
+            padding: 12px 40px 12px 20px;
             font-size: 14px;
         }
         
-        .search-style-compact .search-bar-button {
-            padding: 12px 20px;
+        .search-style-compact .search-bar-clear {
+            right: 12px;
+            width: 28px;
+            height: 28px;
         }
         
-        .search-style-compact .search-bar-button i {
-            font-size: 16px;
+        .search-style-compact .search-bar-clear i {
+            font-size: 12px;
         }
         
         /* Large Style */
         .search-style-large .search-bar-input {
-            padding: 20px 30px;
+            padding: 20px 60px 20px 30px;
             font-size: 18px;
         }
         
-        .search-style-large .search-bar-button {
-            padding: 20px 30px;
+        .search-style-large .search-bar-clear {
+            right: 20px;
+            width: 36px;
+            height: 36px;
         }
         
-        .search-style-large .search-bar-button i {
-            font-size: 20px;
+        .search-style-large .search-bar-clear i {
+            font-size: 16px;
         }
         
         /* Background on green */
@@ -176,16 +234,18 @@ if (!defined('SEARCH_BAR_CSS_INCLUDED')) {
             }
             
             .search-bar-input {
-                padding: 12px 20px;
+                padding: 12px 40px 12px 20px;
                 font-size: 14px;
             }
             
-            .search-bar-button {
-                padding: 12px 20px;
+            .search-bar-clear {
+                right: 12px;
+                width: 28px;
+                height: 28px;
             }
             
-            .search-bar-button i {
-                font-size: 16px;
+            .search-bar-clear i {
+                font-size: 12px;
             }
         }
         
@@ -195,12 +255,14 @@ if (!defined('SEARCH_BAR_CSS_INCLUDED')) {
             }
             
             .search-bar-input {
-                padding: 10px 16px;
+                padding: 10px 35px 10px 16px;
                 font-size: 14px;
             }
             
-            .search-bar-button {
-                padding: 10px 16px;
+            .search-bar-clear {
+                right: 10px;
+                width: 24px;
+                height: 24px;
             }
         }
         
@@ -222,12 +284,16 @@ if (!defined('SEARCH_BAR_CSS_INCLUDED')) {
             color: #a0aec0;
         }
         
-        [data-theme="dark"] .search-bar-button {
-            background: #28a745;
+        [data-theme="dark"] .search-bar-clear {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: #e4e6eb;
         }
         
-        [data-theme="dark"] .search-bar-button:hover {
-            background: #22c55e;
+        [data-theme="dark"] .search-bar-clear:hover {
+            background: #dc3545;
+            border-color: #dc3545;
+            color: white;
         }
     </style>
     <?php

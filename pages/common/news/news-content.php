@@ -38,18 +38,20 @@ if (!empty($newsData) && !empty($urlNews)) {
 ?>
 
 <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 20px; background: var(--background, #ffffff); color: var(--text-primary, #333);">
-  <!-- News Type Navigation -->
-  <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 30px;">
-      <?php
-      $inactiveStyle = "padding: 8px 16px; border-radius: 20px; text-decoration: none; font-weight: 400; transition: all 0.3s ease; background: var(--surface, #ffffff); color: var(--text-primary, #333); border: 1px solid var(--border-color, #e2e8f0);";
-      ?>
-      
-      <a href="/news" style="<?= $inactiveStyle ?>">Все новости</a>
-      <a href="/news/novosti-vuzov" style="<?= $inactiveStyle ?>">Новости ВПО</a>
-      <a href="/news/novosti-spo" style="<?= $inactiveStyle ?>">Новости СПО</a>
-      <a href="/news/novosti-shkol" style="<?= $inactiveStyle ?>">Новости школ</a>
-      <a href="/news/novosti-obrazovaniya" style="<?= $inactiveStyle ?>">Новости образования</a>
-  </div>
+  <!-- News Type Navigation using reusable component -->
+  <?php 
+  include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/category-navigation.php';
+  
+  $newsNavItems = [
+      ['title' => 'Все новости', 'url' => '/news'],
+      ['title' => 'Новости ВПО', 'url' => '/news/novosti-vuzov'],
+      ['title' => 'Новости СПО', 'url' => '/news/novosti-spo'],
+      ['title' => 'Новости школ', 'url' => '/news/novosti-shkol'],
+      ['title' => 'Новости образования', 'url' => '/news/novosti-obrazovaniya']
+  ];
+  
+  renderCategoryNavigation($newsNavItems, $_SERVER['REQUEST_URI']);
+  ?>
 
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
     <div style="display: flex; align-items: center; gap: 15px;">

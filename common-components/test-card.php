@@ -248,13 +248,13 @@ if (!defined('TEST_CARD_CSS_INCLUDED')) {
             transform: translateY(-1px);
         }
         .btn-full {
-            background: #28a745;
-            color: white;
+            background: transparent;
+            color: #28a745;
             border: 1px solid #28a745;
         }
         .btn-full:hover {
-            background: #218838;
-            border-color: #218838;
+            background: #28a745;
+            color: white;
             transform: translateY(-1px);
         }
         .empty-state {
@@ -337,14 +337,14 @@ if (!defined('TEST_CARD_CSS_INCLUDED')) {
             color: #1a202c;
         }
         [data-bs-theme="dark"] .btn-full {
-            background: #4ade80;
-            color: #1a202c;
+            background: transparent;
+            color: #4ade80;
             border-color: #4ade80;
         }
         [data-bs-theme="dark"] .btn-full:hover {
-            background: #22c55e;
-            border-color: #22c55e;
+            background: #4ade80;
             color: #1a202c;
+            border-color: #4ade80;
         }
         
         @media (max-width: 600px) {

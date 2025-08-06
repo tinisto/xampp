@@ -387,10 +387,10 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
     </script>
 </head>
 <body>
-    <!-- YouTube-style Loading Placeholders -->
+    <!-- YouTube-style Loading Placeholders - Disabled for performance -->
     <?php 
-    include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/loading-spinner.php';
-    renderLoadingSpinner();
+    // include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/loading-spinner.php';
+    // renderLoadingSpinner();
     ?>
     
     <!-- Header -->
@@ -430,14 +430,35 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
         <?php if ($showSearch ?? false): ?>
             <div style="background: yellow; padding: 20px 0; margin: 0; flex: 0 0 auto;">
                 <?php 
-                include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/search-bar.php';
-                renderSearchBar([
-                    'placeholder' => $searchPlaceholder ?? 'Поиск...',
-                    'action' => $searchAction ?? '/search',
-                    'name' => $searchName ?? 'query',
-                    'style' => 'default'
-                ]);
+                // Use simple inline search bar to avoid JS conflicts
+                $searchInstanceId = 'search_' . time();
                 ?>
+                <div style="max-width: 600px; margin: 0 auto;">
+                    <form action="<?= htmlspecialchars($searchAction ?? '/search') ?>" method="get">
+                        <div style="position: relative;">
+                            <input 
+                                type="text" 
+                                name="<?= htmlspecialchars($searchName ?? 'query') ?>" 
+                                placeholder="<?= htmlspecialchars($searchPlaceholder ?? 'Поиск...') ?>"
+                                value="<?= htmlspecialchars($_GET[$searchName ?? 'query'] ?? '') ?>"
+                                style="width: 100%; padding: 16px 50px 16px 24px; border: 1px solid var(--border-color, #ddd); border-radius: 50px; font-size: 16px; outline: none; background: var(--surface, white); color: var(--text-primary, #333); transition: border-color 0.3s ease;"
+                                id="search-input-<?= $searchInstanceId ?>"
+                                oninput="document.getElementById('clear-<?= $searchInstanceId ?>').style.display = this.value.length > 0 ? 'flex' : 'none'"
+                                onfocus="this.style.borderColor = 'var(--primary-color, #28a745)'"
+                                onblur="this.style.borderColor = 'var(--border-color, #ddd)'"
+                            >
+                            <button 
+                                type="button" 
+                                id="clear-<?= $searchInstanceId ?>"
+                                style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; background: transparent; color: var(--text-secondary, #666); border: none; cursor: pointer; font-size: 18px; font-weight: normal; display: none; align-items: center; justify-content: center; z-index: 1000; transition: all 0.2s ease;"
+                                onmouseover="this.style.color = 'var(--text-primary, #333)'; this.style.background = 'var(--surface-variant, #f8f9fa)';"
+                                onmouseout="this.style.color = 'var(--text-secondary, #666)'; this.style.background = 'transparent';"
+                                onclick="document.getElementById('search-input-<?= $searchInstanceId ?>').value = ''; this.style.display = 'none'; document.getElementById('search-input-<?= $searchInstanceId ?>').focus();"
+                                title="Очистить поиск"
+                            >✕</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         <?php endif; ?>
         

@@ -527,11 +527,36 @@ function toggleMobileMenu() {
     }
 }
 
-// Close dropdowns when clicking outside
+// Close dropdowns when clicking outside - improved version
 document.addEventListener('click', function(event) {
-    if (!event.target.closest('.dropdown')) {
+    console.log('Document click detected', event.target);
+    
+    // Check if click is outside any dropdown
+    const clickedDropdown = event.target.closest('.dropdown');
+    if (!clickedDropdown) {
+        // Close all open dropdowns
+        const openDropdowns = document.querySelectorAll('.dropdown.show');
+        console.log('Closing dropdowns:', openDropdowns.length);
+        
+        openDropdowns.forEach(dropdown => {
+            dropdown.classList.remove('show');
+            const menu = dropdown.querySelector('.dropdown-menu');
+            if (menu) {
+                menu.style.cssText = '';
+            }
+        });
+    }
+});
+
+// Also handle escape key to close dropdowns
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
         document.querySelectorAll('.dropdown.show').forEach(dropdown => {
             dropdown.classList.remove('show');
+            const menu = dropdown.querySelector('.dropdown-menu');
+            if (menu) {
+                menu.style.cssText = '';
+            }
         });
     }
 });

@@ -231,18 +231,34 @@ if ($categoryFilter !== 'all') {
 }
 ?>
 
-<!-- Test Type Navigation -->
+<!-- Test Type Navigation using reusable component -->
+<?php 
+include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/category-navigation.php';
+
+$testNavItems = [
+    ['title' => 'Все тесты', 'url' => '#', 'data-category' => 'all'],
+    ['title' => 'Интеллект и психология', 'url' => '#', 'data-category' => 'intellectual'],
+    ['title' => 'Академические', 'url' => '#', 'data-category' => 'academic'],
+    ['title' => 'Естественные науки', 'url' => '#', 'data-category' => 'science'],
+    ['title' => 'Иностранные языки', 'url' => '#', 'data-category' => 'languages']
+];
+?>
+
 <div class="test-navigation" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 30px; padding: 0 20px;">
     <?php
     $activeStyle = "padding: 8px 16px; border-radius: 20px; text-decoration: none; font-weight: 500; transition: all 0.3s ease; background: #28a745; color: white; cursor: pointer;";
     $inactiveStyle = "padding: 8px 16px; border-radius: 20px; text-decoration: none; font-weight: 400; transition: all 0.3s ease; background: var(--surface, #ffffff); color: var(--text-primary, #333); border: 1px solid var(--border-color, #e2e8f0); cursor: pointer;";
-    ?>
     
-    <a href="#" data-category="all" class="category-btn <?= $categoryFilter === 'all' ? 'active' : '' ?>" style="<?= $categoryFilter === 'all' ? $activeStyle : $inactiveStyle ?>">Все тесты</a>
-    <a href="#" data-category="intellectual" class="category-btn <?= $categoryFilter === 'intellectual' ? 'active' : '' ?>" style="<?= $categoryFilter === 'intellectual' ? $activeStyle : $inactiveStyle ?>">Интеллект и психология</a>
-    <a href="#" data-category="academic" class="category-btn <?= $categoryFilter === 'academic' ? 'active' : '' ?>" style="<?= $categoryFilter === 'academic' ? $activeStyle : $inactiveStyle ?>">Академические</a>
-    <a href="#" data-category="science" class="category-btn <?= $categoryFilter === 'science' ? 'active' : '' ?>" style="<?= $categoryFilter === 'science' ? $activeStyle : $inactiveStyle ?>">Естественные науки</a>
-    <a href="#" data-category="languages" class="category-btn <?= $categoryFilter === 'languages' ? 'active' : '' ?>" style="<?= $categoryFilter === 'languages' ? $activeStyle : $inactiveStyle ?>">Иностранные языки</a>
+    foreach ($testNavItems as $item) {
+        $isActive = ($categoryFilter === $item['data-category']);
+        $class = 'category-btn' . ($isActive ? ' active' : '');
+        $style = $isActive ? $activeStyle : $inactiveStyle;
+        
+        echo '<a href="' . $item['url'] . '" data-category="' . $item['data-category'] . '" class="' . $class . '" style="' . $style . '">';
+        echo htmlspecialchars($item['title']);
+        echo '</a>';
+    }
+    ?>
 </div>
 
 <!-- Tests Grid -->

@@ -89,6 +89,7 @@
             </div>
             <nav class="footer-nav">
                 <a href="/about" class="footer-nav-link">О проекте</a>
+                <a href="/write" class="footer-nav-link">Связаться с нами</a>
             </nav>
         </div>
     </div>

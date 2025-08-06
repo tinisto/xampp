@@ -328,20 +328,21 @@ if (isset($_GET['direct_test'])) {
         ?>
         <div>
                 
-                <!-- News Type Navigation -->
-                <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 30px;">
-                    <?php
-                    $currentNewsType = $_GET['news_type'] ?? '';
-                    $activeStyle = "padding: 8px 16px; border-radius: 20px; text-decoration: none; font-weight: 500; transition: all 0.3s ease; background: var(--primary-color, #28a745); color: white; border: 2px solid var(--primary-color, #28a745);";
-                    $inactiveStyle = "padding: 8px 16px; border-radius: 20px; text-decoration: none; font-weight: 400; transition: all 0.3s ease; background: var(--surface, #ffffff); color: var(--text-primary, #333); border: 1px solid var(--border-color, #e2e8f0);";
-                    ?>
-                    
-                    <a href="/news" style="<?= empty($currentNewsType) ? $activeStyle : $inactiveStyle ?>">Все новости</a>
-                    <a href="/news/novosti-vuzov" style="<?= $currentNewsType === 'vpo' ? $activeStyle : $inactiveStyle ?>">Новости ВПО</a>
-                    <a href="/news/novosti-spo" style="<?= $currentNewsType === 'spo' ? $activeStyle : $inactiveStyle ?>">Новости СПО</a>
-                    <a href="/news/novosti-shkol" style="<?= $currentNewsType === 'school' ? $activeStyle : $inactiveStyle ?>">Новости школ</a>
-                    <a href="/news/novosti-obrazovaniya" style="<?= $currentNewsType === 'education' ? $activeStyle : $inactiveStyle ?>">Новости образования</a>
-                </div>
+                <!-- News Type Navigation using reusable component -->
+                <?php 
+                include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/category-navigation.php';
+                
+                $currentNewsType = $_GET['news_type'] ?? '';
+                $newsNavItems = [
+                    ['title' => 'Все новости', 'url' => '/news'],
+                    ['title' => 'Новости ВПО', 'url' => '/news/novosti-vuzov'],
+                    ['title' => 'Новости СПО', 'url' => '/news/novosti-spo'],
+                    ['title' => 'Новости школ', 'url' => '/news/novosti-shkol'],
+                    ['title' => 'Новости образования', 'url' => '/news/novosti-obrazovaniya']
+                ];
+                
+                renderCategoryNavigation($newsNavItems, $_SERVER['REQUEST_URI']);
+                ?>
                 
                 <?php
                 // Pagination setup

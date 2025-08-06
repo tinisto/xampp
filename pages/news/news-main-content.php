@@ -1,7 +1,7 @@
 <?php
-// Include the news card component and navigation component
+// Include the news card component and reusable navigation component
 include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/news-card.php';
-include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/news-category-navigation-simple.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/category-navigation.php';
 
 // Get latest news with pagination
 $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
@@ -37,8 +37,18 @@ $allNews = mysqli_fetch_all($newsResult, MYSQLI_ASSOC);
     }
 </style>
 
-<!-- Category Navigation -->
-<?php renderSimpleNewsCategoryNavigation(); ?>
+<!-- Category Navigation using reusable component -->
+<?php 
+$newsNavItems = [
+    ['title' => 'Все новости', 'url' => '/news'],
+    ['title' => 'Новости ВПО', 'url' => '/news/novosti-vuzov'],
+    ['title' => 'Новости СПО', 'url' => '/news/novosti-spo'],
+    ['title' => 'Новости школ', 'url' => '/news/novosti-shkol'],
+    ['title' => 'Новости образования', 'url' => '/news/novosti-obrazovaniya']
+];
+
+renderCategoryNavigation($newsNavItems, $_SERVER['REQUEST_URI']);
+?>
 
 <!-- News Grid -->
 <div class="news-grid">
