@@ -214,6 +214,29 @@ a:hover {
     .section-title {
         font-size: 1.5rem;
     }
+    
+    /* Mobile form optimizations */
+    .form-control, .form-select, input[type="text"], input[type="email"], input[type="password"] {
+        font-size: 16px !important; /* Prevents iOS zoom */
+        min-height: 44px; /* Touch target size */
+    }
+    
+    /* Mobile button optimizations */
+    .btn {
+        min-height: 44px;
+        padding: 12px 20px;
+    }
+    
+    /* Table responsiveness */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    table {
+        min-width: 100%;
+        white-space: nowrap;
+    }
 }
 
 /* Loading states */

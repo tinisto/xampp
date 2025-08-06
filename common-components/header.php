@@ -72,8 +72,8 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
     }
     
     .header-container {
-        max-width: 1200px;
-        margin: 0 auto;
+        max-width: none; /* Remove width limit */
+        margin: 0;
         padding: 0 20px;
         display: flex;
         align-items: center;

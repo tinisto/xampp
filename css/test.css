@@ -1,6 +1,0 @@
-    /* Custom hover effect */
-    .form-check-input:hover,
-    .form-check-label:hover {
-        background-color:rgb(195, 197, 199);
-        cursor: pointer;
-    }

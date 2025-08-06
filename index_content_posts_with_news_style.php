@@ -284,11 +284,6 @@ function renderPostCard($post, $categoryName, $categoryUrl, $badgeColor = 'green
         color: var(--text-secondary, #a0aec0);
     }
     
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 20px;
-    }
     
     .row {
         display: flex;
@@ -323,87 +318,75 @@ function renderPostCard($post, $categoryName, $categoryUrl, $badgeColor = 'green
     }
 </style>
 
-<!-- Green header now handled by template engine -->
-
-<div class="container">
+<!-- Featured Posts Section (Optimized Query) -->
+<div class="news-grid">
+    <?php
+    // Optimized query - combine both categories with only needed fields for better performance
+    $queryFeatured = "
+        (SELECT id, title_post, text_post, url_slug, date_post, '11-классники' as category_name, '/category/11-klassniki' as category_url, 'teal' as badge_color 
+         FROM posts WHERE category = 21 ORDER BY date_post DESC LIMIT 8)
+        UNION ALL
+        (SELECT id, title_post, text_post, url_slug, date_post, 'Абитуриентам' as category_name, '/category/abiturientam' as category_url, 'orange' as badge_color 
+         FROM posts WHERE category = 6 ORDER BY date_post DESC LIMIT 8)
+        ORDER BY date_post DESC
+    ";
     
-    <!-- 11-классники Posts Section -->
-    <div class="news-grid">
-        <?php
-        $query11 = "SELECT * FROM posts WHERE category = 21 ORDER BY date_post DESC LIMIT 8";
-        $result11 = mysqli_query($connection, $query11);
-        
-        if ($result11 && mysqli_num_rows($result11) > 0) {
-            while ($row11 = mysqli_fetch_assoc($result11)) {
-                renderPostCard($row11, '11-классники', '/category/11-klassniki', 'teal');
-            }
+    $resultFeatured = mysqli_query($connection, $queryFeatured);
+    
+    if ($resultFeatured && mysqli_num_rows($resultFeatured) > 0) {
+        while ($row = mysqli_fetch_assoc($resultFeatured)) {
+            renderPostCard($row, $row['category_name'], $row['category_url'], $row['badge_color']);
         }
-        ?>
-    </div>
-    
-    <!-- Абитуриентам Posts Section -->
-    <div class="news-grid">
-        <?php
-        $queryAbiturient = "SELECT * FROM posts WHERE category = 6 ORDER BY date_post DESC LIMIT 8";
-        $resultAbiturient = mysqli_query($connection, $queryAbiturient);
-        
-        if ($resultAbiturient && mysqli_num_rows($resultAbiturient) > 0) {
-            while ($rowAbiturient = mysqli_fetch_assoc($resultAbiturient)) {
-                renderPostCard($rowAbiturient, 'Абитуриентам', '/category/abiturientam', 'orange');
-            }
-        }
-        ?>
-    </div>
-    
+    }
+    ?>
 </div>
 
-<!-- Statistics Section -->
+<!-- Statistics Section (Optimized) -->
 <div class="stats-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <div class="stat-number">
-                        <?php
-                        $countSchools = mysqli_query($connection, "SELECT COUNT(*) as count FROM schools");
-                        echo number_format(mysqli_fetch_assoc($countSchools)['count']);
-                        ?>
-                    </div>
-                    <div class="stat-label">Школ в базе</div>
+    <div class="row">
+        <?php
+        // Optimized single query to get all counts at once
+        $statsQuery = "
+            SELECT 
+                (SELECT COUNT(*) FROM schools) as schools_count,
+                (SELECT COUNT(*) FROM vpo) as vpo_count,
+                (SELECT COUNT(*) FROM spo) as spo_count,
+                (SELECT COUNT(*) FROM posts) as posts_count
+        ";
+        
+        $statsResult = mysqli_query($connection, $statsQuery);
+        $stats = mysqli_fetch_assoc($statsResult);
+        ?>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-number">
+                    <?= number_format($stats['schools_count']) ?>
                 </div>
+                <div class="stat-label">Школ в базе</div>
             </div>
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <div class="stat-number">
-                        <?php
-                        $countVPO = mysqli_query($connection, "SELECT COUNT(*) as count FROM vpo");
-                        echo number_format(mysqli_fetch_assoc($countVPO)['count']);
-                        ?>
-                    </div>
-                    <div class="stat-label">ВУЗов</div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-number">
+                    <?= number_format($stats['vpo_count']) ?>
                 </div>
+                <div class="stat-label">ВУЗов</div>
             </div>
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <div class="stat-number">
-                        <?php
-                        $countSPO = mysqli_query($connection, "SELECT COUNT(*) as count FROM spo");
-                        echo number_format(mysqli_fetch_assoc($countSPO)['count']);
-                        ?>
-                    </div>
-                    <div class="stat-label">ССУЗов</div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-number">
+                    <?= number_format($stats['spo_count']) ?>
                 </div>
+                <div class="stat-label">ССУЗов</div>
             </div>
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <div class="stat-number">
-                        <?php
-                        $countPosts = mysqli_query($connection, "SELECT COUNT(*) as count FROM posts");
-                        echo number_format(mysqli_fetch_assoc($countPosts)['count']);
-                        ?>
-                    </div>
-                    <div class="stat-label">Статей</div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-number">
+                    <?= number_format($stats['posts_count']) ?>
                 </div>
+                <div class="stat-label">Статей</div>
             </div>
         </div>
     </div>

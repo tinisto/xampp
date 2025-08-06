@@ -44,8 +44,8 @@ if (isset($categoryData) && !empty($categoryData)) {
         $currentPage = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
         $offset = ($currentPage - 1) * $postsPerPage;
 
-        // Fetch posts for this category
-        $queryPosts = "SELECT * FROM posts WHERE category = ? ORDER BY date_post DESC LIMIT ? OFFSET ?";
+        // Fetch posts for this category - optimized query with specific fields
+        $queryPosts = "SELECT id, title_post, text_post, url_post, url_slug, date_post FROM posts WHERE category = ? ORDER BY date_post DESC LIMIT ? OFFSET ?";
         $postsStmt = mysqli_prepare($connection, $queryPosts);
         mysqli_stmt_bind_param($postsStmt, 'iii', $categoryData['id'], $postsPerPage, $offset);
         mysqli_stmt_execute($postsStmt);

@@ -272,22 +272,47 @@ if (!defined('SEARCH_BOX_CSS_INCLUDED')) {
         /* Responsive */
         @media (max-width: 768px) {
             .search-box-input {
-                font-size: 14px;
-                padding: 12px 45px 12px 20px;
+                font-size: 16px !important; /* Prevents iOS zoom */
+                padding: 14px 45px 14px 20px;
+                min-height: 44px; /* Touch target size */
             }
             
             .search-box-button {
-                padding: 12px 20px;
+                padding: 14px 20px;
                 font-size: 16px;
+                min-height: 44px; /* Touch target size */
+                min-width: 44px;
             }
             
             .search-box-clear {
                 right: 50px;
                 font-size: 16px;
+                min-height: 44px; /* Touch target size */
+                min-width: 44px;
+                padding: 10px;
             }
             
             .search-box-form:not(:has(.search-box-button)) .search-box-clear {
                 right: 15px;
+            }
+            
+            .search-box-container {
+                min-height: 48px; /* Container touch target */
+            }
+        }
+        
+        /* Extra small mobile optimization */
+        @media (max-width: 480px) {
+            .search-box-form {
+                margin: 0 10px;
+            }
+            
+            .search-box-input {
+                padding: 12px 40px 12px 18px;
+            }
+            
+            .search-box-button {
+                padding: 12px 18px;
             }
         }
     </style>

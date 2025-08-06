@@ -103,6 +103,50 @@ $tests = [
                 'questions' => '30 вопросов',
                 'category' => 'История',
                 'image' => null
+            ],
+            [
+                'slug' => 'literature-test',
+                'title' => 'Литература',
+                'description' => 'Проверьте знания русской и зарубежной литературы: классические произведения, авторы, литературные течения.',
+                'icon' => 'fas fa-book',
+                'color' => '#8b4513',
+                'duration' => '25 минут',
+                'questions' => '30 вопросов',
+                'category' => 'Литература',
+                'image' => null
+            ],
+            [
+                'slug' => 'computer-science-test',
+                'title' => 'Информатика',
+                'description' => 'Основы программирования, алгоритмы, компьютерная грамотность и информационные технологии.',
+                'icon' => 'fas fa-laptop-code',
+                'color' => '#4169e1',
+                'duration' => '20 минут',
+                'questions' => '25 вопросов',
+                'category' => 'Информатика',
+                'image' => null
+            ],
+            [
+                'slug' => 'social-studies-test',
+                'title' => 'Обществознание',
+                'description' => 'Основы права, экономики, социологии и политологии. Важные знания об обществе и государстве.',
+                'icon' => 'fas fa-users',
+                'color' => '#ff6347',
+                'duration' => '22 минут',
+                'questions' => '28 вопросов',
+                'category' => 'Обществознание',
+                'image' => null
+            ],
+            [
+                'slug' => 'economics-test',
+                'title' => 'Экономика',
+                'description' => 'Базовые экономические понятия, рыночная экономика, финансы и предпринимательство.',
+                'icon' => 'fas fa-chart-line',
+                'color' => '#32cd32',
+                'duration' => '18 минут',
+                'questions' => '25 вопросов',
+                'category' => 'Экономика',
+                'image' => null
             ]
         ]
     ],
@@ -205,6 +249,141 @@ $tests = [
                 'questions' => '25 вопросов',
                 'category' => 'Испанский',
                 'image' => null
+            ],
+            [
+                'slug' => 'chinese-test',
+                'title' => 'Китайский язык',
+                'description' => 'Базовые иероглифы, простые фразы и основы грамматики китайского языка для начинающих.',
+                'icon' => 'fas fa-yin-yang',
+                'color' => '#dc143c',
+                'duration' => '25 минут',
+                'questions' => '20 вопросов',
+                'category' => 'Китайский',
+                'image' => null
+            ],
+            [
+                'slug' => 'italian-test',
+                'title' => 'Итальянский язык',
+                'description' => 'Основы итальянского языка: произношение, базовая грамматика и повседневные фразы.',
+                'icon' => 'fas fa-pizza-slice',
+                'color' => '#008c45',
+                'duration' => '20 минут',
+                'questions' => '25 вопросов',
+                'category' => 'Итальянский',
+                'image' => null
+            ],
+            [
+                'slug' => 'japanese-test',
+                'title' => 'Японский язык',
+                'description' => 'Хирагана, катакана, базовые кандзи и простые фразы японского языка.',
+                'icon' => 'fas fa-torii-gate',
+                'color' => '#ff1493',
+                'duration' => '22 минут',
+                'questions' => '25 вопросов',
+                'category' => 'Японский',
+                'image' => null
+            ]
+        ]
+    ],
+    'practical' => [
+        'title' => 'Практические навыки',
+        'icon' => 'fas fa-tools',
+        'color' => '#667eea',
+        'tests' => [
+            [
+                'slug' => 'financial-literacy-test',
+                'title' => 'Финансовая грамотность',
+                'description' => 'Управление личными финансами, бюджетирование, инвестиции и основы финансовой безопасности.',
+                'icon' => 'fas fa-piggy-bank',
+                'color' => '#ffd700',
+                'duration' => '20 минут',
+                'questions' => '25 вопросов',
+                'category' => 'Финансы',
+                'image' => null
+            ],
+            [
+                'slug' => 'time-management-test',
+                'title' => 'Управление временем',
+                'description' => 'Оцените свои навыки планирования, приоритизации задач и эффективного использования времени.',
+                'icon' => 'fas fa-clock',
+                'color' => '#4682b4',
+                'duration' => '15 минут',
+                'questions' => '20 вопросов',
+                'category' => 'Продуктивность',
+                'image' => null
+            ],
+            [
+                'slug' => 'critical-thinking-test',
+                'title' => 'Критическое мышление',
+                'description' => 'Анализ информации, логические выводы, выявление манипуляций и принятие обоснованных решений.',
+                'icon' => 'fas fa-brain',
+                'color' => '#9370db',
+                'duration' => '25 минут',
+                'questions' => '30 вопросов',
+                'category' => 'Мышление',
+                'image' => null
+            ],
+            [
+                'slug' => 'study-skills-test',
+                'title' => 'Учебные навыки',
+                'description' => 'Эффективные методы обучения, запоминания информации и подготовки к экзаменам.',
+                'icon' => 'fas fa-graduation-cap',
+                'color' => '#20b2aa',
+                'duration' => '18 минут',
+                'questions' => '22 вопросов',
+                'category' => 'Обучение',
+                'image' => null
+            ]
+        ]
+    ],
+    'specialized' => [
+        'title' => 'Специализированные тесты',
+        'icon' => 'fas fa-microscope',
+        'color' => '#667eea',
+        'tests' => [
+            [
+                'slug' => 'logic-reasoning-test',
+                'title' => 'Логика и рассуждения',
+                'description' => 'Сложные логические задачи, абстрактное мышление и способность к дедуктивным выводам.',
+                'icon' => 'fas fa-project-diagram',
+                'color' => '#ff8c00',
+                'duration' => '30 минут',
+                'questions' => '25 вопросов',
+                'category' => 'Логика',
+                'image' => null
+            ],
+            [
+                'slug' => 'memory-test',
+                'title' => 'Тест памяти',
+                'description' => 'Проверьте различные виды памяти: кратковременную, долговременную, визуальную и ассоциативную.',
+                'icon' => 'fas fa-memory',
+                'color' => '#00ced1',
+                'duration' => '20 минут',
+                'questions' => '15 вопросов',
+                'category' => 'Память',
+                'image' => null
+            ],
+            [
+                'slug' => 'creativity-test',
+                'title' => 'Тест креативности',
+                'description' => 'Оцените творческие способности, нестандартное мышление и способность генерировать новые идеи.',
+                'icon' => 'fas fa-palette',
+                'color' => '#ff69b4',
+                'duration' => '15 минут',
+                'questions' => '20 вопросов',
+                'category' => 'Творчество',
+                'image' => null
+            ],
+            [
+                'slug' => 'leadership-test',
+                'title' => 'Лидерские качества',
+                'description' => 'Определите свой лидерский потенциал, стиль управления и способность вести за собой команду.',
+                'icon' => 'fas fa-crown',
+                'color' => '#b8860b',
+                'duration' => '20 минут',
+                'questions' => '25 вопросов',
+                'category' => 'Лидерство',
+                'image' => null
             ]
         ]
     ]
@@ -240,7 +419,9 @@ $testNavItems = [
     ['title' => 'Интеллект и психология', 'url' => '#', 'data-category' => 'intellectual'],
     ['title' => 'Академические', 'url' => '#', 'data-category' => 'academic'],
     ['title' => 'Естественные науки', 'url' => '#', 'data-category' => 'science'],
-    ['title' => 'Иностранные языки', 'url' => '#', 'data-category' => 'languages']
+    ['title' => 'Иностранные языки', 'url' => '#', 'data-category' => 'languages'],
+    ['title' => 'Практические навыки', 'url' => '#', 'data-category' => 'practical'],
+    ['title' => 'Специализированные', 'url' => '#', 'data-category' => 'specialized']
 ];
 ?>
 

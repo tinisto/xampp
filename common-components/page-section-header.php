@@ -75,13 +75,12 @@ if (!defined('PAGE_SECTION_HEADER_CSS_INCLUDED')) {
         /* Page Section Header Styles */
         .page-section-header {
             background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            padding: 30px 0; /* REDUCED: Smaller padding */
-            margin: 0; /* FIXED: Remove all margins */
+            padding: 20px 10px; /* Reduced left/right padding on mobile */
+            margin: 0 10px; /* Reduced left/right margins on mobile */
             position: relative;
-            z-index: 10; /* ABOVE RED CONTENT WRAPPER */
+            z-index: 10;
             overflow: hidden;
-            width: 100vw; /* FIXED: Force full viewport width */
-            margin-left: calc(-50vw + 50%); /* FIXED: Break out of container */
+            box-sizing: border-box;
         }
         
         .page-section-header::before {
@@ -97,9 +96,9 @@ if (!defined('PAGE_SECTION_HEADER_CSS_INCLUDED')) {
         }
         
         .page-section-header-container {
-            max-width: none; /* FIXED: Remove width constraint for full width */
+            max-width: none;
             margin: 0;
-            padding: 0 40px; /* Increased padding for better spacing */
+            padding: 0; /* Remove padding - it's on the parent */
             position: relative;
             z-index: 1;
         }
@@ -208,11 +207,18 @@ if (!defined('PAGE_SECTION_HEADER_CSS_INCLUDED')) {
             padding-bottom: 50px !important; /* REDUCED: Less padding when search present */
         }
         
+        /* Desktop - larger padding and margins */
+        @media (min-width: 769px) {
+            .page-section-header {
+                padding: 40px; /* Match other sections: 40px all sides on desktop */
+                margin: 0 40px; /* Match other sections: 40px left/right margins */
+            }
+        }
+        
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .page-section-header {
-                padding: 20px 0; /* REDUCED: Smaller mobile padding */
-                margin-bottom: 20px;
+                /* Mobile styles inherit from main definition above */
             }
             
             .page-section-title {
@@ -239,10 +245,6 @@ if (!defined('PAGE_SECTION_HEADER_CSS_INCLUDED')) {
         }
         
         @media (max-width: 480px) {
-            .page-section-header {
-                padding: 15px 0; /* REDUCED: Even smaller padding on very small screens */
-                margin-bottom: 15px;
-            }
             
             .page-section-title {
                 font-size: 1.5rem;

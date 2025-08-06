@@ -149,7 +149,7 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: var(--background, #ffffff);
+            background: #212529; /* Dark background for overscroll areas */
             line-height: 1.6;
             color: var(--text-primary, #333);
             <?php if ($fullHeight || $layoutType === 'auth'): ?>
@@ -157,12 +157,90 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            min-height: 100vh; /* BACK TO min-height for proper flexbox */
+            min-height: 100vh;
             <?php else: ?>
             display: flex;
             flex-direction: column;
-            min-height: 100vh; /* BACK TO min-height for proper flexbox */
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Prevent all scrolling */
+            position: relative;
             <?php endif; ?>
+        }
+        
+        /* New Layout Structure CSS */
+        
+        /* Wrapper for yellow background sections */
+        .yellow-bg-wrapper {
+            background: yellow;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header - flex-shrink: 0 so it keeps its size */
+        .main-header {
+            flex-shrink: 0;
+            margin: 0;
+            padding: 0;
+            background: white;
+        }
+        
+        /* Page header (green) - flex-shrink: 0 so it keeps its size */
+        .page-header {
+            flex-shrink: 0;
+        }
+        
+        /* Content - flex: 1 so it expands to fill space */
+        .content {
+            flex: 1 1 auto;
+            background: red; /* RED background for main content */
+            padding: 20px 10px; /* Reduced left/right padding on mobile */
+            margin: 0 10px; /* Reduced left/right margins on mobile */
+            box-sizing: border-box;
+            min-height: 0; /* Allow shrinking */
+            overflow: auto; /* Handle overflow internally */
+        }
+        
+        /* Comments section */
+        .comments-section {
+            background: blue;
+            color: white;
+            padding: 20px 10px; /* Reduced left/right padding on mobile */
+            margin: 0 10px; /* Reduced left/right margins on mobile */
+            box-sizing: border-box;
+            flex-shrink: 0; /* Don't shrink */
+        }
+        
+        /* Container - no padding, just for visualization */
+        .content .container,
+        .comments-section .container {
+            max-width: none;
+            margin: 0;
+            padding: 0; /* No padding on container - it's on the parent */
+            width: 100%;
+        }
+        
+        /* Desktop - larger padding on colored divs */
+        @media (min-width: 769px) {
+            .content {
+                padding: 40px; /* 40px padding on RED div */
+                margin: 0 40px; /* Larger margins on desktop */
+            }
+            
+            .comments-section {
+                padding: 40px; /* 40px padding on BLUE div */
+                margin: 0 40px; /* Larger margins on desktop */
+            }
+        }
+        
+        /* Footer - flex-shrink: 0 so it keeps its size */
+        .main-footer {
+            flex-shrink: 0;
+            margin: 0;
+            padding: 0;
+            background: #f8f9fa;
         }
         
         /* Main content area */
@@ -412,65 +490,31 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
         </div>
     <?php endif; ?>
     
-    <!-- Green Page Header (unified component) -->
-    <?php 
-    include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/page-section-header.php';
-    
-    // Use pageHeader config if provided, otherwise default to simple header
-    $headerConfig = $pageHeader ?? [
-        'title' => htmlspecialchars($pageTitle),
-        'showSearch' => false
-    ];
-    
-    renderPageSectionHeader($headerConfig);
-    ?>
-    
-    <!-- Search Bar (if needed, placed after green header) -->
-    <?php if ($showSearch ?? false): ?>
-        <div style="background: yellow; padding: 20px 0; margin: 0;">
+    <!-- Yellow background wrapper for middle sections -->
+    <div class="yellow-bg-wrapper">
+        <!-- Green Page Header -->
+        <div class="page-header">
             <?php 
-            // Use simple inline search bar to avoid JS conflicts
-            $searchInstanceId = 'search_' . time();
+            include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/page-section-header.php';
+            
+            // Use pageHeader config if provided, otherwise default to simple header
+            $headerConfig = $pageHeader ?? [
+                'title' => htmlspecialchars($pageTitle),
+                'showSearch' => $showSearch ?? false
+            ];
+            
+            renderPageSectionHeader($headerConfig);
             ?>
-            <div style="max-width: 600px; margin: 0 auto;">
-                <form action="<?= htmlspecialchars($searchAction ?? '/search') ?>" method="get">
-                    <div style="position: relative;">
-                        <input 
-                            type="text" 
-                            name="<?= htmlspecialchars($searchName ?? 'query') ?>" 
-                            placeholder="<?= htmlspecialchars($searchPlaceholder ?? 'Поиск...') ?>"
-                            value="<?= htmlspecialchars($_GET[$searchName ?? 'query'] ?? '') ?>"
-                            style="width: 100%; padding: 16px 50px 16px 24px; border: 1px solid var(--border-color, #ddd); border-radius: 50px; font-size: 16px; outline: none; background: var(--surface, white); color: var(--text-primary, #333); transition: border-color 0.3s ease;"
-                            id="search-input-<?= $searchInstanceId ?>"
-                            oninput="document.getElementById('clear-<?= $searchInstanceId ?>').style.display = this.value.length > 0 ? 'flex' : 'none'"
-                            onfocus="this.style.borderColor = 'var(--primary-color, #28a745)'"
-                            onblur="this.style.borderColor = 'var(--border-color, #ddd)'"
-                        >
-                        <button 
-                            type="button" 
-                            id="clear-<?= $searchInstanceId ?>"
-                            style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; background: transparent; color: var(--text-secondary, #666); border: none; cursor: pointer; font-size: 18px; font-weight: normal; display: none; align-items: center; justify-content: center; z-index: 1000; transition: all 0.2s ease;"
-                            onmouseover="this.style.color = 'var(--text-primary, #333)'; this.style.background = 'var(--surface-variant, #f8f9fa)';"
-                            onmouseout="this.style.color = 'var(--text-secondary, #666)'; this.style.background = 'transparent';"
-                            onclick="document.getElementById('search-input-<?= $searchInstanceId ?>').value = ''; this.style.display = 'none'; document.getElementById('search-input-<?= $searchInstanceId ?>').focus();"
-                            title="Очистить поиск"
-                        >✕</button>
-                    </div>
-                </form>
-            </div>
         </div>
-    <?php endif; ?>
-    
-    <!-- Main Content (wrapped in red for testing) -->
-    <?php 
-    include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/content-wrapper.php';
-    renderContentWrapper('full', $content);
-    ?>
-    
-    <!-- Comments Section (blue background for visualization) -->
-    <div style="background-color: blue; padding: 40px 20px; color: white;">
-        <div style="max-width: 1200px; margin: 0 auto;">
-            <h3 style="color: white;">Comments Section (Blue Area)</h3>
+        
+        <!-- Main Content (RED background) -->
+        <main class="content">
+            <?php echo $content; ?>
+        </main>
+        
+        <!-- Comments Section (BLUE background) -->
+        <div class="comments-section">
+            <h3>Comments Section (Blue Area)</h3>
             <p>This blue area is for comments - not shown on all pages</p>
         </div>
     </div>

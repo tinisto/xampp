@@ -1,25 +1,41 @@
 <?php
 /**
- * Reusable Content Wrapper Component
+ * Reusable Content Wrapper Component - New Layout Structure
  * 
- * Provides consistent padding, margins, fonts, and responsive design
- * across all pages between header and footer.
+ * Provides the new yellow-background layout structure with proper spacing
+ * and responsive design across all pages between header and footer.
  * 
  * Usage:
  * include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/content-wrapper.php';
- * renderContentWrapper('start'); // At the beginning of content
+ * renderContentWrapper('start', ['title' => 'Page Title', 'showSearch' => false]); 
  * // Your content here
- * renderContentWrapper('end'); // At the end of content
+ * renderContentWrapper('end'); 
  * 
  * Or use with content parameter:
- * renderContentWrapper('full', $content);
+ * renderContentWrapper('full', ['title' => 'Page Title'], $content);
  */
 
-function renderContentWrapper($mode = 'start', $content = '') {
+function renderContentWrapper($mode = 'start', $options = [], $content = '') {
     if ($mode === 'start' || $mode === 'full') {
         ?>
-        <div class="content-wrapper">
-            <div class="content-container">
+        <!-- Yellow background wrapper for middle sections -->
+        <div class="yellow-bg-wrapper">
+            <!-- Green Page Header -->
+            <div class="page-header">
+                <?php 
+                if (!empty($options['title'])) {
+                    include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/page-section-header.php';
+                    renderPageSectionHeader([
+                        'title' => $options['title'],
+                        'showSearch' => $options['showSearch'] ?? false
+                    ]);
+                }
+                ?>
+            </div>
+            
+            <!-- Main Content -->
+            <main class="content">
+                <div class="container">
         <?php
         if ($mode === 'full' && !empty($content)) {
             echo $content;
@@ -28,7 +44,8 @@ function renderContentWrapper($mode = 'start', $content = '') {
     
     if ($mode === 'end' || $mode === 'full') {
         ?>
-            </div>
+                </div>
+            </main>
         </div>
         <?php
     }
@@ -39,46 +56,49 @@ if (!defined('CONTENT_WRAPPER_CSS_INCLUDED')) {
     define('CONTENT_WRAPPER_CSS_INCLUDED', true);
     ?>
     <style>
-        /* Content Wrapper - Consistent spacing and typography */
-        .content-wrapper {
-            width: 100%;
-            padding: 0;
-            margin: 0;
-            position: relative;
-            z-index: 1;
+        /* New Layout Structure CSS */
+        
+        /* Wrapper for yellow background sections */
+        .yellow-bg-wrapper {
+            background: yellow;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Page header (green) - flex-shrink: 0 so it keeps its size */
+        .page-header {
+            flex-shrink: 0;
+        }
+        
+        /* Content - flex: 1 so it expands to fill space */
+        .content {
+            flex: 1 1 auto;
+            background: red; /* RED background for main content */
+            padding: 20px 10px; /* Reduced left/right padding on mobile */
+            margin: 0 10px; /* Reduced left/right margins on mobile */
+            box-sizing: border-box;
+            min-height: 0; /* Allow shrinking */
+            overflow: auto; /* Handle overflow internally */
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
             font-size: 16px;
             line-height: 1.6;
             color: var(--text-primary, #333);
-            background-color: var(--background, #ffffff); /* BACK TO normal background */
-            flex: 1; /* Take up remaining space to push footer to bottom */
         }
         
-        .content-container {
-            margin: 0 auto;
-            padding: 40px 20px;
-            padding-top: 40px; /* RESET TO NORMAL PADDING */
+        /* Container - no padding, just for visualization */
+        .content .container {
+            max-width: none;
+            margin: 0;
+            padding: 0; /* No padding on container - it's on the parent */
             width: 100%;
-            box-sizing: border-box;
         }
         
-        /* Mobile-first responsive design */
-        @media (max-width: 768px) {
-            .content-container {
-                padding: 20px 16px; /* Equal padding on all sides on mobile */
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .content-container {
-                padding: 16px 12px; /* Smaller padding on very small screens */
-            }
-        }
-        
-        /* Large screens */
-        @media (min-width: 1400px) {
-            .content-container {
-                padding: 60px 40px;
+        /* Desktop - larger padding on colored divs */
+        @media (min-width: 769px) {
+            .content {
+                padding: 40px; /* 40px padding on RED div */
+                margin: 0 40px; /* Larger margins on desktop */
             }
         }
         

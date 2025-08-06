@@ -1,8 +1,37 @@
 User-agent: *
+Allow: /
+
+# Disallow admin and sensitive areas
 Disallow: /dashboard/
-Disallow: /category/blog-redaktora
-Disallow: /error
-Disallow: /404
+Disallow: /admin/
+Disallow: /includes/
+Disallow: /config/
+Disallow: /database/
+Disallow: /_cleanup/
+Disallow: /cache/
+
+# Disallow user areas
 Disallow: /login
 Disallow: /registration 
 Disallow: /account
+Disallow: /error
+Disallow: /404
+
+# Disallow search and tracking parameters
+Disallow: /search?*
+Disallow: /*?*utm_*
+
+# Allow important resources
+Allow: /css/
+Allow: /js/
+Allow: /images/
+
+# Sitemaps
+Sitemap: https://11klassniki.ru/sitemap.xml
+
+# Crawl delays for better server performance
+User-agent: Yandex
+Crawl-delay: 1
+
+User-agent: Googlebot
+Crawl-delay: 1
