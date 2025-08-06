@@ -34,7 +34,7 @@ function renderPageSectionHeader($config = []) {
     $instanceId = 'psh_' . uniqid();
     ?>
     
-    <div class="page-section-header <?php echo $config['showSearch'] ? 'with-search' : 'no-search'; ?>" id="<?php echo $instanceId; ?>" style="<?php echo $config['showSearch'] ? 'padding-bottom: 120px !important;' : ''; ?>">
+    <div class="page-section-header <?php echo $config['showSearch'] ? 'with-search' : 'no-search'; ?>" id="<?php echo $instanceId; ?>" style="<?php echo $config['showSearch'] ? 'padding-bottom: 60px !important;' : ''; ?>">
         <div class="page-section-header-container">
             <?php if (!empty($config['title'])): ?>
                 <h1 class="page-section-title">
@@ -75,7 +75,7 @@ if (!defined('PAGE_SECTION_HEADER_CSS_INCLUDED')) {
         /* Page Section Header Styles */
         .page-section-header {
             background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            padding: 60px 0; /* INCREASED PADDING TO PUSH RED CONTENT DOWN */
+            padding: 30px 0; /* REDUCED: Smaller padding */
             margin: 0; /* FIXED: Remove all margins */
             position: relative;
             z-index: 10; /* ABOVE RED CONTENT WRAPPER */
@@ -205,14 +205,14 @@ if (!defined('PAGE_SECTION_HEADER_CSS_INCLUDED')) {
         
         /* When search IS shown, add extra bottom padding to push red content further down */
         .page-section-header.with-search {
-            padding-bottom: 100px !important; /* EXTRA PADDING WHEN SEARCH IS PRESENT */
+            padding-bottom: 50px !important; /* REDUCED: Less padding when search present */
         }
         
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .page-section-header {
-                padding: 30px 0;
-                margin-bottom: 30px;
+                padding: 20px 0; /* REDUCED: Smaller mobile padding */
+                margin-bottom: 20px;
             }
             
             .page-section-title {
@@ -240,8 +240,8 @@ if (!defined('PAGE_SECTION_HEADER_CSS_INCLUDED')) {
         
         @media (max-width: 480px) {
             .page-section-header {
-                padding: 20px 0;
-                margin-bottom: 20px;
+                padding: 15px 0; /* REDUCED: Even smaller padding on very small screens */
+                margin-bottom: 15px;
             }
             
             .page-section-title {

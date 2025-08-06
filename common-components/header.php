@@ -122,6 +122,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
     .dropdown {
         position: relative;
         display: inline-block;
+        z-index: 10;
     }
     
     .dropdown-toggle {
@@ -129,6 +130,33 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
         display: flex;
         align-items: center;
         gap: 5px;
+    }
+    
+    /* Make button dropdown toggles look like links */
+    button.dropdown-toggle,
+    button.nav-link {
+        background: none;
+        border: none;
+        padding: 8px 16px;
+        font: inherit;
+        color: var(--text-color);
+        text-decoration: none;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        position: relative;
+        z-index: 10;
+        pointer-events: auto !important;
+    }
+    
+    button.dropdown-toggle:hover,
+    button.nav-link:hover {
+        background: rgba(40, 167, 69, 0.1);
+        color: var(--primary-color);
     }
     
     /* Remove Bootstrap's dropdown arrow */
@@ -144,7 +172,8 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
         border: 1px solid var(--border-color);
         border-radius: 8px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        min-width: 160px;
+        min-width: 240px; /* INCREASED for longer names */
+        max-width: 320px; /* Max width for very long names */
         padding: 4px 0;
         opacity: 0;
         visibility: hidden;
@@ -154,8 +183,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
         pointer-events: none;
     }
     
-    .dropdown.show > .dropdown-menu,
-    .user-menu.dropdown.show .dropdown-menu {
+    .dropdown.show .dropdown-menu {
         opacity: 1 !important;
         visibility: visible !important;
         transform: translateY(0) !important;
@@ -165,7 +193,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
     
     .dropdown-item {
         display: block;
-        padding: 8px 16px;
+        padding: 10px 16px;
         color: var(--text-color);
         text-decoration: none;
         transition: all 0.2s ease;
@@ -175,6 +203,10 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
         position: relative;
         z-index: 10000;
         font-size: 14px;
+        white-space: normal; /* Allow text wrapping */
+        word-wrap: break-word; /* Break long words */
+        line-height: 1.5; /* Better spacing for wrapped text */
+        max-width: 100%; /* Ensure it doesn't overflow */
     }
     
     .dropdown-item:hover {
@@ -277,6 +309,11 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
         cursor: pointer;
     }
     
+    /* Hide mobile-only login on desktop */
+    .mobile-only-login {
+        display: none !important;
+    }
+    
     /* Mobile Styles */
     @media (max-width: 768px) {
         .header-nav {
@@ -287,20 +324,33 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
             right: 0;
             background: var(--surface);
             border-top: 1px solid var(--border-color);
-            flex-direction: column;
-            padding: 20px;
-            gap: 10px;
+            flex-direction: row; /* CHANGED: horizontal layout */
+            flex-wrap: wrap; /* Allow wrapping to next line */
+            padding: 15px; /* REDUCED padding */
+            gap: 8px; /* Gap between badges */
             max-height: calc(100vh - 70px);
             overflow-y: auto;
             z-index: 999;
         }
         
         .header-nav.mobile-open {
-            display: flex;
+            display: flex !important;
+            flex-direction: row !important; /* Change from column to row */
+            flex-wrap: wrap !important;
         }
         
         .mobile-menu-toggle {
             display: block;
+        }
+        
+        /* Show mobile login on mobile */
+        .mobile-only-login {
+            display: inline-block !important;
+        }
+        
+        /* Hide desktop login link on mobile */
+        .header-actions > .nav-link {
+            display: none !important;
         }
         
         .header-actions {
@@ -333,8 +383,19 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
             margin-top: 10px;
         }
         
-        /* Categories dropdown should expand inline on mobile */
-        .header-nav .dropdown-menu {
+        /* Hide dropdown menus on mobile by default */
+        .header-nav.mobile-open .dropdown-menu {
+            display: none !important;
+        }
+        
+        /* Only show user menu dropdown when clicked */
+        .user-menu.dropdown.show .dropdown-menu {
+            display: block !important;
+        }
+        
+        /* When categories dropdown is shown, display inline with other badges */
+        .header-nav.mobile-open .dropdown.show .dropdown-menu {
+            display: contents !important; /* Use contents to make items appear inline */
             position: static;
             opacity: 1;
             visibility: visible;
@@ -342,7 +403,103 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
             box-shadow: none;
             border: none;
             background: transparent;
-            margin-left: 20px;
+            margin: 0;
+            padding: 0;
+            min-width: auto;
+            max-width: 100%;
+        }
+        
+        /* Mobile dropdown items with less spacing */
+        .header-nav.mobile-open .dropdown-item {
+            padding: 8px 20px; /* REDUCED vertical padding */
+            font-size: 15px; /* Slightly smaller */
+            line-height: 1.3; /* Tighter line height */
+        }
+        
+        /* Style category items as badges on mobile with distinct color */
+        .header-nav.mobile-open .dropdown-item {
+            display: inline-block !important;
+            background: #17a2b8 !important; /* Teal/cyan color for categories */
+            color: white !important;
+            padding: 8px 16px !important; /* Same padding as main nav badges */
+            margin: 0 !important;
+            border-radius: 20px !important; /* Same radius as main nav badges */
+            font-size: 14px !important; /* Same size as main nav badges */
+            font-weight: 500 !important;
+            line-height: 1.2 !important;
+            white-space: nowrap;
+            width: auto !important;
+            text-align: center;
+            text-decoration: none !important;
+            transition: all 0.2s ease !important;
+            border: 1px solid #17a2b8 !important;
+            flex: 0 0 auto; /* Prevent flex stretching */
+            min-width: 60px !important; /* Ensure minimum width */
+            overflow: visible !important; /* Ensure text is visible */
+        }
+        
+        .header-nav.mobile-open .dropdown-item:hover {
+            background: #138496 !important; /* Darker teal on hover */
+            border-color: #138496 !important;
+            transform: scale(1.05);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        /* Dark mode support for category badges */
+        [data-theme="dark"] .header-nav.mobile-open .dropdown-item {
+            background: #5dd4e8 !important; /* Light teal for dark mode */
+            color: #1a202c !important;
+            border-color: #5dd4e8 !important;
+        }
+        
+        [data-theme="dark"] .header-nav.mobile-open .dropdown-item:hover {
+            background: #4bb7c9 !important;
+            border-color: #4bb7c9 !important;
+        }
+        
+        /* Remove duplicate - already defined above */
+        
+        /* Make dropdown display inline */
+        .header-nav.mobile-open .dropdown {
+            display: contents !important; /* This makes dropdown children appear as direct children of nav */
+        }
+        
+        /* Style ALL nav links as badges - both direct children and inside dropdowns */
+        .header-nav.mobile-open .nav-link {
+            display: inline-block !important;
+            background: var(--surface-variant, #f0f4f8) !important;
+            color: var(--text-primary, #333) !important;
+            padding: 8px 16px !important;
+            margin: 0 !important;
+            border-radius: 20px !important;
+            font-size: 14px !important;
+            font-weight: 500 !important;
+            text-decoration: none !important;
+            transition: all 0.2s ease !important;
+            border: 1px solid var(--border-color, #e0e0e0) !important;
+            white-space: nowrap;
+            width: auto !important;
+            flex: 0 0 auto;
+        }
+        
+        .header-nav.mobile-open .nav-link:hover {
+            background: var(--primary-color, #28a745) !important;
+            color: white !important;
+            border-color: var(--primary-color, #28a745) !important;
+            transform: scale(1.05);
+        }
+        
+        /* Dark mode for nav badges */
+        [data-theme="dark"] .header-nav.mobile-open .nav-link {
+            background: var(--surface-variant, #2d3748) !important;
+            color: var(--text-primary, #e4e6eb) !important;
+            border-color: var(--border-color, #4a5568) !important;
+        }
+        
+        [data-theme="dark"] .header-nav.mobile-open .nav-link:hover {
+            background: var(--primary-color, #28a745) !important;
+            color: white !important;
+            border-color: var(--primary-color, #28a745) !important;
         }
     }
 </style>
@@ -361,7 +518,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
             <!-- Categories Dropdown -->
             <?php if ($hasDatabase): ?>
                 <div class="dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" onclick="toggleDropdown(event, this)">
+                    <a href="javascript:void(0)" class="nav-link dropdown-toggle" onclick="toggleDropdown(event, this)">
                         Категории
                     </a>
                     <div class="dropdown-menu">
@@ -390,8 +547,29 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
                                             continue;
                                         }
                                         
-                                        echo '<a href="/category/' . htmlspecialchars($category['url_category']) . '" class="dropdown-item">' . 
-                                             htmlspecialchars($category['title_category']) . '</a>';
+                                        // Show shorter category name
+                                        $shortTitle = trim($category['title_category']);
+                                        
+                                        // For "А напоследок я скажу" - no colon, so just use it as-is
+                                        // Only truncate if it has a colon
+                                        if (strpos($shortTitle, ':') !== false) {
+                                            $parts = explode(':', $shortTitle);
+                                            $shortTitle = trim($parts[0]);
+                                        }
+                                        
+                                        // Truncate to 25 chars if needed
+                                        if (strlen($shortTitle) > 25) {
+                                            $shortTitle = mb_substr($shortTitle, 0, 25) . '...';
+                                        }
+                                        
+                                        // Final safety - should never be empty now
+                                        if (empty($shortTitle)) {
+                                            $shortTitle = mb_substr($category['title_category'], 0, 25);
+                                        }
+                                        
+                                        echo '<a href="/category/' . htmlspecialchars($category['url_category']) . '" class="dropdown-item" title="' . 
+                                             htmlspecialchars($category['title_category']) . '">' . 
+                                             htmlspecialchars($shortTitle) . '</a>';
                                         $hasCategories = true;
                                     }
                                 }
@@ -413,6 +591,11 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
             <a href="/schools-all-regions" class="nav-link">Школы</a>
             <a href="/news" class="nav-link">Новости</a>
             <a href="/tests" class="nav-link">Тесты</a>
+            
+            <!-- Login link for mobile (hidden on desktop) -->
+            <?php if (!SessionManager::isLoggedIn()): ?>
+                <a href="/login" class="nav-link mobile-only-login">Войти</a>
+            <?php endif; ?>
         </nav>
         
         <!-- Actions -->
@@ -467,9 +650,6 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
     </div>
 </header>
 
-<!-- Global dropdown fix script -->
-<script src="/js/dropdown-fix.js"></script>
-
 <script>
 // Dropdown functionality
 function toggleDropdown(event, element) {
@@ -478,37 +658,9 @@ function toggleDropdown(event, element) {
         event.stopPropagation();
     }
     
-    console.log('toggleDropdown called', element);
-    
-    // Close all other dropdowns
-    document.querySelectorAll('.dropdown.show').forEach(dropdown => {
-        if (dropdown !== element.closest('.dropdown')) {
-            dropdown.classList.remove('show');
-        }
-    });
-    
-    // Toggle current dropdown
-    const dropdownElement = element.closest('.dropdown');
-    console.log('Dropdown element:', dropdownElement);
-    
-    if (dropdownElement) {
-        const wasShown = dropdownElement.classList.contains('show');
-        dropdownElement.classList.toggle('show');
-        console.log('Dropdown toggled - was shown:', wasShown, 'now shown:', dropdownElement.classList.contains('show'));
-        
-        // Log the dropdown menu for debugging
-        const menu = dropdownElement.querySelector('.dropdown-menu');
-        if (menu) {
-            console.log('Dropdown menu found:', menu);
-            console.log('Menu computed styles:', window.getComputedStyle(menu).display, window.getComputedStyle(menu).visibility);
-            
-            // Force visibility as a fallback
-            if (dropdownElement.classList.contains('show')) {
-                menu.style.cssText = 'display: block !important; visibility: visible !important; opacity: 1 !important; pointer-events: auto !important; z-index: 9999 !important;';
-            } else {
-                menu.style.cssText = '';
-            }
-        }
+    const dropdown = element.closest('.dropdown');
+    if (dropdown) {
+        dropdown.classList.toggle('show');
     }
 }
 
@@ -527,24 +679,28 @@ function toggleMobileMenu() {
     }
 }
 
-// Close dropdowns when clicking outside - improved version
+// Simple click outside handler for both desktop and mobile
 document.addEventListener('click', function(event) {
-    console.log('Document click detected', event.target);
-    
-    // Check if click is outside any dropdown
-    const clickedDropdown = event.target.closest('.dropdown');
-    if (!clickedDropdown) {
-        // Close all open dropdowns
-        const openDropdowns = document.querySelectorAll('.dropdown.show');
-        console.log('Closing dropdowns:', openDropdowns.length);
-        
-        openDropdowns.forEach(dropdown => {
+    // Close dropdowns if clicking outside
+    if (!event.target.closest('.dropdown')) {
+        document.querySelectorAll('.dropdown.show').forEach(dropdown => {
             dropdown.classList.remove('show');
-            const menu = dropdown.querySelector('.dropdown-menu');
-            if (menu) {
-                menu.style.cssText = '';
-            }
         });
+    }
+    
+    // Close mobile menu if clicking outside (on mobile)
+    if (window.innerWidth <= 768) {
+        const nav = document.getElementById('headerNav');
+        const clickedInNav = event.target.closest('.header-nav');
+        const clickedToggle = event.target.closest('.mobile-menu-toggle');
+        
+        if (!clickedInNav && !clickedToggle && nav.classList.contains('mobile-open')) {
+            nav.classList.remove('mobile-open');
+            const toggleIcon = document.querySelector('.mobile-menu-toggle i');
+            if (toggleIcon) {
+                toggleIcon.className = 'fas fa-bars';
+            }
+        }
     }
 });
 

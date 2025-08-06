@@ -2,9 +2,10 @@
     .unified-footer {
         background-color: var(--surface, #f8f9fa);
         color: var(--text-secondary, #6c757d);
-        padding: 40px 0 20px;
-        margin-top: auto;
+        padding: 30px 0; /* SAME as reduced header height */
+        margin-top: auto; /* Push footer to bottom */
         border-top: 1px solid var(--border-color, #dee2e6);
+        flex-shrink: 0; /* Prevent footer from shrinking */
     }
     
     .footer-content {
@@ -19,7 +20,7 @@
         align-items: center;
         flex-wrap: wrap;
         gap: 20px;
-        padding: 20px 0;
+        padding: 0; /* Keep minimal internal padding */
     }
     
     .footer-brand {

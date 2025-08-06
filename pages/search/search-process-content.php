@@ -1,8 +1,13 @@
 <?php
 // Search process content (to be included in template)
 
-// Get search query
+// Get search query - ensure it's available
 $searchQuery = $_GET['query'] ?? '';
+$searchQuery = trim($searchQuery);
+
+// Debug output
+echo "<!-- DEBUG: searchQuery = '" . htmlspecialchars($searchQuery) . "' -->\n";
+
 $error = null;
 
 // Basic validation
@@ -30,16 +35,45 @@ if (!preg_match("/^[\p{L}0-9\s]+$/u", $searchQuery)) {
                 <div class="card-body">
                     <h1><i class="fas fa-search"></i> Результаты поиска</h1>
                     <p>По запросу: <strong>"<?php echo htmlspecialchars($searchQuery, ENT_QUOTES, 'UTF-8'); ?>"</strong></p>
+                    
+                    <!-- Search bar from homepage -->
+                    <div class="mt-3">
+                        <?php 
+                        $searchInstanceId = 'search_' . time();
+                        ?>
+                        <div style="max-width: 600px; margin: 0 auto;">
+                            <form action="/search-process" method="get">
+                                <div style="position: relative;">
+                                    <input 
+                                        type="text" 
+                                        name="query" 
+                                        placeholder="Попробуйте другой запрос..."
+                                        value=""
+                                        style="width: 100%; padding: 16px 50px 16px 24px; border: 1px solid var(--border-color, #ddd); border-radius: 50px; font-size: 16px; outline: none; background: var(--surface, white); color: var(--text-primary, #333); transition: border-color 0.3s ease;"
+                                        id="search-input-<?= $searchInstanceId ?>"
+                                        oninput="document.getElementById('clear-<?= $searchInstanceId ?>').style.display = this.value.length > 0 ? 'flex' : 'none'"
+                                        onfocus="this.style.borderColor = 'var(--primary-color, #28a745)'"
+                                        onblur="this.style.borderColor = 'var(--border-color, #ddd)'"
+                                    >
+                                    <button 
+                                        type="button" 
+                                        id="clear-<?= $searchInstanceId ?>"
+                                        style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; background: transparent; color: var(--text-secondary, #666); border: none; cursor: pointer; font-size: 18px; font-weight: normal; display: none; align-items: center; justify-content: center; z-index: 1000; transition: all 0.2s ease;"
+                                        onmouseover="this.style.color = 'var(--text-primary, #333)'; this.style.background = 'var(--surface-variant, #f8f9fa)';"
+                                        onmouseout="this.style.color = 'var(--text-secondary, #666)'; this.style.background = 'transparent';"
+                                        onclick="document.getElementById('search-input-<?= $searchInstanceId ?>').value = ''; this.style.display = 'none'; document.getElementById('search-input-<?= $searchInstanceId ?>').focus();"
+                                        title="Очистить поиск"
+                                    >✕</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
             
             <?php if (isset($error)): ?>
                 <div class="alert alert-warning">
                     <i class="fas fa-exclamation-triangle"></i> <?= $error ?>
-                </div>
-                <div class="text-center">
-                    <a href="/search" class="btn btn-primary"><i class="fas fa-search"></i> Новый поиск</a>
-                    <a href="/" class="btn btn-secondary"><i class="fas fa-home"></i> На главную</a>
                 </div>
             <?php else: ?>
                 <?php
@@ -101,8 +135,8 @@ if (!preg_match("/^[\p{L}0-9\s]+$/u", $searchQuery)) {
                 
                 if (empty($results)): ?>
                     <div class="alert alert-info">
-                        <i class="fas fa-info-circle"></i> 
-                        К сожалению, по вашему запросу ничего не найдено. Попробуйте изменить поисковую фразу.
+                        <i class="fas fa-search"></i> 
+                        По запросу <strong>"<?= htmlspecialchars($searchQuery) ?>"</strong> ничего не найдено.
                     </div>
                 <?php else: ?>
                     <div class="mb-3">
@@ -123,10 +157,6 @@ if (!preg_match("/^[\p{L}0-9\s]+$/u", $searchQuery)) {
                     <?php endforeach; ?>
                 <?php endif; ?>
                 
-                <div class="text-center mt-4">
-                    <a href="/search" class="btn btn-primary"><i class="fas fa-search"></i> Новый поиск</a>
-                    <a href="/" class="btn btn-secondary"><i class="fas fa-home"></i> На главную</a>
-                </div>
             <?php endif; ?>
         </div>
     </div>

@@ -141,17 +141,18 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
         <?php endif; ?>
         
         html, body {
-            height: 100%;
+            height: 100%; /* BACK TO 100% for proper flexbox */
             margin: 0;
             padding: 0;
+            overflow-x: hidden; /* Prevent horizontal overflow */
         }
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             <?php if ($cssFramework === 'bootstrap'): ?>
-            background-color: var(--background, #ffffff);
+            background-color: orange; /* DEBUG: Body background */
             <?php else: ?>
-            background: var(--background, #ffffff);
+            background: orange; /* DEBUG: Body background */
             <?php endif; ?>
             line-height: 1.6;
             color: var(--text-primary, #333);
@@ -160,12 +161,37 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            min-height: 100vh; /* BACK TO min-height for proper flexbox */
             <?php else: ?>
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
+            min-height: 100vh; /* BACK TO min-height for proper flexbox */
             <?php endif; ?>
+        }
+        
+        /* DEBUG: Show only header and footer, test proper flexbox */
+        body > * {
+            display: none !important;
+        }
+        
+        /* Show header */
+        body > header,
+        body > .header,
+        .page-section-header {
+            display: block !important;
+            background: green !important; /* DEBUG: Make header more visible */
+            min-height: 80px !important; /* Give it height */
+            flex-shrink: 0 !important; /* Don't shrink */
+        }
+        
+        /* Show footer */
+        body > footer,
+        body > .footer,
+        .unified-footer {
+            display: block !important;
+            /* Remove position: fixed, test proper flexbox */
+            margin-top: auto !important; /* Push to bottom with flexbox */
+            flex-shrink: 0 !important; /* Don't shrink */
         }
         
         
@@ -408,61 +434,54 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
         </div>
     <?php endif; ?>
     
-    <!-- Page sections container -->
-    <div style="display: flex; flex-direction: column; margin: 0; padding: 0;">
-        
-        <!-- Green Page Header (unified component) -->
-        <div style="flex: 0 0 auto;">
+    <!-- Green Page Header (unified component) -->
+    <?php 
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/page-section-header.php';
+    
+    // Use pageHeader config if provided, otherwise default to simple header
+    $headerConfig = $pageHeader ?? [
+        'title' => htmlspecialchars($pageTitle),
+        'showSearch' => false
+    ];
+    
+    renderPageSectionHeader($headerConfig);
+    ?>
+    
+    <!-- Search Bar (if needed, placed after green header) -->
+    <?php if ($showSearch ?? false): ?>
+        <div style="background: yellow; padding: 20px 0; margin: 0;">
             <?php 
-            include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/page-section-header.php';
-            
-            // Use pageHeader config if provided, otherwise default to simple header
-            $headerConfig = $pageHeader ?? [
-                'title' => htmlspecialchars($pageTitle),
-                'showSearch' => false
-            ];
-            
-            renderPageSectionHeader($headerConfig);
+            // Use simple inline search bar to avoid JS conflicts
+            $searchInstanceId = 'search_' . time();
             ?>
-        </div>
-        
-        <!-- Search Bar (if needed, placed after green header) -->
-        <?php if ($showSearch ?? false): ?>
-            <div style="background: yellow; padding: 20px 0; margin: 0; flex: 0 0 auto;">
-                <?php 
-                // Use simple inline search bar to avoid JS conflicts
-                $searchInstanceId = 'search_' . time();
-                ?>
-                <div style="max-width: 600px; margin: 0 auto;">
-                    <form action="<?= htmlspecialchars($searchAction ?? '/search') ?>" method="get">
-                        <div style="position: relative;">
-                            <input 
-                                type="text" 
-                                name="<?= htmlspecialchars($searchName ?? 'query') ?>" 
-                                placeholder="<?= htmlspecialchars($searchPlaceholder ?? 'Поиск...') ?>"
-                                value="<?= htmlspecialchars($_GET[$searchName ?? 'query'] ?? '') ?>"
-                                style="width: 100%; padding: 16px 50px 16px 24px; border: 1px solid var(--border-color, #ddd); border-radius: 50px; font-size: 16px; outline: none; background: var(--surface, white); color: var(--text-primary, #333); transition: border-color 0.3s ease;"
-                                id="search-input-<?= $searchInstanceId ?>"
-                                oninput="document.getElementById('clear-<?= $searchInstanceId ?>').style.display = this.value.length > 0 ? 'flex' : 'none'"
-                                onfocus="this.style.borderColor = 'var(--primary-color, #28a745)'"
-                                onblur="this.style.borderColor = 'var(--border-color, #ddd)'"
-                            >
-                            <button 
-                                type="button" 
-                                id="clear-<?= $searchInstanceId ?>"
-                                style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; background: transparent; color: var(--text-secondary, #666); border: none; cursor: pointer; font-size: 18px; font-weight: normal; display: none; align-items: center; justify-content: center; z-index: 1000; transition: all 0.2s ease;"
-                                onmouseover="this.style.color = 'var(--text-primary, #333)'; this.style.background = 'var(--surface-variant, #f8f9fa)';"
-                                onmouseout="this.style.color = 'var(--text-secondary, #666)'; this.style.background = 'transparent';"
-                                onclick="document.getElementById('search-input-<?= $searchInstanceId ?>').value = ''; this.style.display = 'none'; document.getElementById('search-input-<?= $searchInstanceId ?>').focus();"
-                                title="Очистить поиск"
-                            >✕</button>
-                        </div>
-                    </form>
-                </div>
+            <div style="max-width: 600px; margin: 0 auto;">
+                <form action="<?= htmlspecialchars($searchAction ?? '/search') ?>" method="get">
+                    <div style="position: relative;">
+                        <input 
+                            type="text" 
+                            name="<?= htmlspecialchars($searchName ?? 'query') ?>" 
+                            placeholder="<?= htmlspecialchars($searchPlaceholder ?? 'Поиск...') ?>"
+                            value="<?= htmlspecialchars($_GET[$searchName ?? 'query'] ?? '') ?>"
+                            style="width: 100%; padding: 16px 50px 16px 24px; border: 1px solid var(--border-color, #ddd); border-radius: 50px; font-size: 16px; outline: none; background: var(--surface, white); color: var(--text-primary, #333); transition: border-color 0.3s ease;"
+                            id="search-input-<?= $searchInstanceId ?>"
+                            oninput="document.getElementById('clear-<?= $searchInstanceId ?>').style.display = this.value.length > 0 ? 'flex' : 'none'"
+                            onfocus="this.style.borderColor = 'var(--primary-color, #28a745)'"
+                            onblur="this.style.borderColor = 'var(--border-color, #ddd)'"
+                        >
+                        <button 
+                            type="button" 
+                            id="clear-<?= $searchInstanceId ?>"
+                            style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; background: transparent; color: var(--text-secondary, #666); border: none; cursor: pointer; font-size: 18px; font-weight: normal; display: none; align-items: center; justify-content: center; z-index: 1000; transition: all 0.2s ease;"
+                            onmouseover="this.style.color = 'var(--text-primary, #333)'; this.style.background = 'var(--surface-variant, #f8f9fa)';"
+                            onmouseout="this.style.color = 'var(--text-secondary, #666)'; this.style.background = 'transparent';"
+                            onclick="document.getElementById('search-input-<?= $searchInstanceId ?>').value = ''; this.style.display = 'none'; document.getElementById('search-input-<?= $searchInstanceId ?>').focus();"
+                            title="Очистить поиск"
+                        >✕</button>
+                    </div>
+                </form>
             </div>
-        <?php endif; ?>
-        
-    </div>
+        </div>
+    <?php endif; ?>
     
     <!-- Main Content (wrapped in red for testing) -->
     <?php 

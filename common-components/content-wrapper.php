@@ -41,18 +41,17 @@ if (!defined('CONTENT_WRAPPER_CSS_INCLUDED')) {
     <style>
         /* Content Wrapper - Consistent spacing and typography */
         .content-wrapper {
-            /* min-height: calc(100vh - 120px); REMOVED FOR TESTING */
             width: 100%;
             padding: 0;
-            margin: 0; /* RESET MARGIN */
-            position: relative; /* ENSURE PROPER POSITIONING */
-            z-index: 1; /* BELOW GREEN HEADER */
+            margin: 0;
+            position: relative;
+            z-index: 1;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
             font-size: 16px;
             line-height: 1.6;
             color: var(--text-primary, #333);
-            background-color: var(--background, #ffffff); /* Normal background */
-            /* border: 5px solid darkred; REMOVED PER REQUEST */
+            background-color: var(--background, #ffffff); /* BACK TO normal background */
+            flex: 1; /* Take up remaining space to push footer to bottom */
         }
         
         .content-container {
