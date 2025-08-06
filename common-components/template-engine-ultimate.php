@@ -149,11 +149,7 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            <?php if ($cssFramework === 'bootstrap'): ?>
-            background-color: orange; /* DEBUG: Body background */
-            <?php else: ?>
-            background: orange; /* DEBUG: Body background */
-            <?php endif; ?>
+            background: var(--background, #ffffff);
             line-height: 1.6;
             color: var(--text-primary, #333);
             <?php if ($fullHeight || $layoutType === 'auth'): ?>
@@ -169,29 +165,11 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
             <?php endif; ?>
         }
         
-        /* DEBUG: Show only header and footer, test proper flexbox */
-        body > * {
-            display: none !important;
-        }
-        
-        /* Show header */
-        body > header,
-        body > .header,
-        .page-section-header {
-            display: block !important;
-            background: green !important; /* DEBUG: Make header more visible */
-            min-height: 80px !important; /* Give it height */
-            flex-shrink: 0 !important; /* Don't shrink */
-        }
-        
-        /* Show footer */
-        body > footer,
-        body > .footer,
-        .unified-footer {
-            display: block !important;
-            /* Remove position: fixed, test proper flexbox */
-            margin-top: auto !important; /* Push to bottom with flexbox */
-            flex-shrink: 0 !important; /* Don't shrink */
+        /* Main content area */
+        main, .main-content, .content-wrapper {
+            background: var(--background, #ffffff);
+            flex: 1; /* Take remaining space */
+            width: 100%;
         }
         
         
@@ -488,6 +466,14 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
     include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/content-wrapper.php';
     renderContentWrapper('full', $content);
     ?>
+    
+    <!-- Comments Section (blue background for visualization) -->
+    <div style="background-color: blue; padding: 40px 20px; color: white;">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <h3 style="color: white;">Comments Section (Blue Area)</h3>
+            <p>This blue area is for comments - not shown on all pages</p>
+        </div>
+    </div>
     
     <!-- Footer -->
     <?php if (!$noFooter): ?>

@@ -1,5 +1,5 @@
 body {
-  background: black;
+  background: var(--surface-primary, #ffffff);
 }
 
 /* Hide the dropdown indicator icon (caret) */
