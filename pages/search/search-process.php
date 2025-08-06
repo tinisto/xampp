@@ -1,6 +1,4 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/check_under_construction.php';
-
 // Get search query for page title
 $searchQuery = $_GET['query'] ?? '';
 $searchQuery = trim($searchQuery);

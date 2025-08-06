@@ -97,8 +97,8 @@ if (!preg_match("/^[\p{L}0-9\s]+$/u", $searchQuery)) {
                         $stmt->close();
                     }
                     
-                    // Search posts
-                    $stmt = $connection->prepare("SELECT url_post, title_post FROM posts WHERE (title_post LIKE ? OR text_post LIKE ?) AND status = 1 LIMIT 10");
+                    // Search posts - use url_slug (fixed for 404 compatibility)
+                    $stmt = $connection->prepare("SELECT COALESCE(url_slug, url_post) as post_url, title_post FROM posts WHERE (title_post LIKE ? OR text_post LIKE ?) AND status = 1 LIMIT 10");
                     if ($stmt) {
                         $stmt->bind_param("ss", $searchTerm, $searchTerm);
                         $stmt->execute();
@@ -106,7 +106,7 @@ if (!preg_match("/^[\p{L}0-9\s]+$/u", $searchQuery)) {
                         while ($row = $result->fetch_assoc()) {
                             $results[] = [
                                 'name' => $row['title_post'],
-                                'url' => '/post/' . $row['url_post'],
+                                'url' => '/post/' . $row['post_url'],
                                 'type' => 'Статья'
                             ];
                         }
