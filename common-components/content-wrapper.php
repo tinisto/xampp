@@ -41,20 +41,24 @@ if (!defined('CONTENT_WRAPPER_CSS_INCLUDED')) {
     <style>
         /* Content Wrapper - Consistent spacing and typography */
         .content-wrapper {
-            min-height: calc(100vh - 120px); /* Adjust based on header/footer height */
+            /* min-height: calc(100vh - 120px); REMOVED FOR TESTING */
             width: 100%;
             padding: 0;
-            margin: 0;
+            margin: 0; /* RESET MARGIN */
+            position: relative; /* ENSURE PROPER POSITIONING */
+            z-index: 1; /* BELOW GREEN HEADER */
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
             font-size: 16px;
             line-height: 1.6;
             color: var(--text-primary, #333);
-            background-color: var(--surface, #ffffff);
+            background-color: var(--background, #ffffff); /* Normal background */
+            /* border: 5px solid darkred; REMOVED PER REQUEST */
         }
         
         .content-container {
             margin: 0 auto;
             padding: 40px 20px;
+            padding-top: 40px; /* RESET TO NORMAL PADDING */
             width: 100%;
             box-sizing: border-box;
         }
@@ -160,7 +164,7 @@ if (!defined('CONTENT_WRAPPER_CSS_INCLUDED')) {
         
         /* Dark mode support */
         [data-theme="dark"] .content-wrapper {
-            background-color: var(--surface, #1e293b);
+            background-color: var(--background-dark, #1a1a1a); /* Dark mode background */
             color: var(--text-primary, #e4e6eb);
         }
         

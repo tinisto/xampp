@@ -58,10 +58,10 @@ if (isset($seoConfig['article_modified_time'])) $metaData['article_modified_time
     ?>
     
     <!-- Favicon and app icons -->
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <?php 
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/favicon.php';
+    renderAllFavicons();
+    ?>
     <link rel="manifest" href="/site.webmanifest">
     
     <!-- Preconnect to external domains for performance -->
@@ -72,6 +72,26 @@ if (isset($seoConfig['article_modified_time'])) $metaData['article_modified_time
     <?php if (isset($seoConfig['critical_css'])): ?>
         <style><?= $seoConfig['critical_css'] ?></style>
     <?php endif; ?>
+    
+    <!-- Critical inline CSS to prevent FOUC -->
+    <style>
+        /* Prevent flash of unstyled content - set initial backgrounds immediately */
+        html, body {
+            background-color: <?= (isset($_COOKIE['theme']) && $_COOKIE['theme'] === 'dark') ? '#1a1a1a' : '#ffffff' ?>;
+            color: <?= (isset($_COOKIE['theme']) && $_COOKIE['theme'] === 'dark') ? '#e4e6eb' : '#333' ?>;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        .content-wrapper {
+            background-color: <?= (isset($_COOKIE['theme']) && $_COOKIE['theme'] === 'dark') ? '#1a1a1a' : '#ffffff' ?>;
+            min-height: 100vh;
+        }
+        /* Ensure smooth transitions after initial load */
+        body, .content-wrapper {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+    </style>
     
     <!-- External stylesheets with versioning -->
     <?php if (isset($additionalData['cssFramework']) && $additionalData['cssFramework'] === 'bootstrap'): ?>

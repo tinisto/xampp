@@ -1,389 +1,357 @@
-<!-- Hero Section -->
-<div class="hero-section">
-    <div class="container">
-        <h1 class="hero-title">Онлайн тесты</h1>
-        <p class="hero-subtitle">Проверьте свои знания и навыки с помощью наших интерактивных тестов</p>
-        <a href="#tests" class="test-btn">Начать тестирование</a>
-    </div>
+<?php
+// Include the test card component
+include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/test-card.php';
+
+// Define test data
+$tests = [
+    'intellectual' => [
+        'title' => 'Тесты интеллекта и психологии',
+        'icon' => 'fas fa-brain',
+        'color' => '#667eea',
+        'tests' => [
+            [
+                'slug' => 'iq-test',
+                'title' => 'IQ Тест',
+                'description' => 'Классический тест на определение уровня интеллекта. Включает логические задачи, математические вопросы и задания на пространственное мышление.',
+                'icon' => 'fas fa-lightbulb',
+                'color' => '#e74c3c',
+                'duration' => '20 минут',
+                'questions' => '30 вопросов',
+                'category' => 'Интеллект',
+                'image' => null
+            ],
+            [
+                'slug' => 'career-test',
+                'title' => 'Профориентация',
+                'description' => 'Определите свои профессиональные склонности и найдите подходящую сферу деятельности на основе ваших интересов и способностей.',
+                'icon' => 'fas fa-user-tie',
+                'color' => '#9b59b6',
+                'duration' => '15 минут',
+                'questions' => '40 вопросов',
+                'category' => 'Карьера',
+                'image' => null
+            ],
+            [
+                'slug' => 'personality-test',
+                'title' => 'Тип личности',
+                'description' => 'Узнайте свой психологический тип личности по системе Майерс-Бриггс. Поймите свои сильные стороны и особенности характера.',
+                'icon' => 'fas fa-palette',
+                'color' => '#f39c12',
+                'duration' => '12 минут',
+                'questions' => '25 вопросов',
+                'category' => 'Психология',
+                'image' => null
+            ],
+            [
+                'slug' => 'emotional-intelligence-test',
+                'title' => 'Эмоциональный интеллект',
+                'description' => 'Оцените свою способность понимать эмоции, управлять ими и эффективно взаимодействовать с окружающими людьми.',
+                'icon' => 'fas fa-heart',
+                'color' => '#e91e63',
+                'duration' => '10 минут',
+                'questions' => '20 вопросов',
+                'category' => 'Психология',
+                'image' => null
+            ]
+        ]
+    ],
+    'academic' => [
+        'title' => 'Академические тесты',
+        'icon' => 'fas fa-graduation-cap',
+        'color' => '#667eea',
+        'tests' => [
+            [
+                'slug' => 'math-test',
+                'title' => 'Математика',
+                'description' => 'Проверьте свои знания по математике: алгебра, геометрия, арифметика. Подходит для учеников 9-11 классов.',
+                'icon' => 'fas fa-calculator',
+                'color' => '#3498db',
+                'duration' => '25 минут',
+                'questions' => '35 вопросов',
+                'category' => 'Математика',
+                'image' => null
+            ],
+            [
+                'slug' => 'russian-test',
+                'title' => 'Русский язык',
+                'description' => 'Тест по русской грамматике, орфографии и пунктуации. Проверьте свою грамотность и знание родного языка.',
+                'icon' => 'fas fa-spell-check',
+                'color' => '#e67e22',
+                'duration' => '20 минут',
+                'questions' => '30 вопросов',
+                'category' => 'Русский язык',
+                'image' => null
+            ],
+            [
+                'slug' => 'geography-test',
+                'title' => 'География',
+                'description' => 'Проверьте знания по географии России и мира: столицы, реки, горы, климат и природные зоны.',
+                'icon' => 'fas fa-globe',
+                'color' => '#27ae60',
+                'duration' => '18 минут',
+                'questions' => '25 вопросов',
+                'category' => 'География',
+                'image' => null
+            ],
+            [
+                'slug' => 'history-test',
+                'title' => 'История',
+                'description' => 'Проверьте свои знания по истории России и мира. Вопросы охватывают основные исторические периоды и события.',
+                'icon' => 'fas fa-landmark',
+                'color' => '#c0392b',
+                'duration' => '22 минут',
+                'questions' => '30 вопросов',
+                'category' => 'История',
+                'image' => null
+            ]
+        ]
+    ],
+    'science' => [
+        'title' => 'Естественные науки',
+        'icon' => 'fas fa-flask',
+        'color' => '#667eea',
+        'tests' => [
+            [
+                'slug' => 'physics-test',
+                'title' => 'Физика',
+                'description' => 'Тест по основам физики: механика, термодинамика, электричество и оптика для старшеклассников.',
+                'icon' => 'fas fa-atom',
+                'color' => '#8e44ad',
+                'duration' => '30 минут',
+                'questions' => '25 вопросов',
+                'category' => 'Физика',
+                'image' => null
+            ],
+            [
+                'slug' => 'chemistry-test',
+                'title' => 'Химия',
+                'description' => 'Проверьте знания по химии: органическая и неорганическая химия, периодическая система, реакции.',
+                'icon' => 'fas fa-flask',
+                'color' => '#16a085',
+                'duration' => '25 минут',
+                'questions' => '30 вопросов',
+                'category' => 'Химия',
+                'image' => null
+            ],
+            [
+                'slug' => 'biology-test',
+                'title' => 'Биология',
+                'description' => 'Тест по биологии: анатомия человека, ботаника, зоология и основы генетики.',
+                'icon' => 'fas fa-dna',
+                'color' => '#2ecc71',
+                'duration' => '22 минут',
+                'questions' => '28 вопросов',
+                'category' => 'Биология',
+                'image' => null
+            ],
+            [
+                'slug' => 'astronomy-test',
+                'title' => 'Астрономия',
+                'description' => 'Изучите космос: планеты, звезды, галактики. Проверьте свои знания о Вселенной и космических явлениях.',
+                'icon' => 'fas fa-meteor',
+                'color' => '#34495e',
+                'duration' => '15 минут',
+                'questions' => '20 вопросов',
+                'category' => 'Астрономия',
+                'image' => null
+            ]
+        ]
+    ],
+    'languages' => [
+        'title' => 'Иностранные языки',
+        'icon' => 'fas fa-language',
+        'color' => '#667eea',
+        'tests' => [
+            [
+                'slug' => 'english-test',
+                'title' => 'Английский язык',
+                'description' => 'Проверьте свой уровень владения английским языком: грамматика, лексика, понимание текстов.',
+                'icon' => 'fas fa-flag-usa',
+                'color' => '#3498db',
+                'duration' => '25 минут',
+                'questions' => '40 вопросов',
+                'category' => 'Английский',
+                'image' => null
+            ],
+            [
+                'slug' => 'german-test',
+                'title' => 'Немецкий язык',
+                'description' => 'Оцените знания немецкого языка: базовая грамматика, словарный запас и понимание простых текстов.',
+                'icon' => 'fas fa-beer',
+                'color' => '#f1c40f',
+                'duration' => '20 минут',
+                'questions' => '30 вопросов',
+                'category' => 'Немецкий',
+                'image' => null
+            ],
+            [
+                'slug' => 'french-test',
+                'title' => 'Французский язык',
+                'description' => 'Тест по французскому языку для начинающих и продолжающих. Проверьте грамматику и лексику.',
+                'icon' => 'fas fa-wine-glass',
+                'color' => '#e74c3c',
+                'duration' => '20 минут',
+                'questions' => '30 вопросов',
+                'category' => 'Французский',
+                'image' => null
+            ],
+            [
+                'slug' => 'spanish-test',
+                'title' => 'Испанский язык',
+                'description' => 'Проверьте базовые знания испанского языка: времена глаголов, лексика, простые фразы.',
+                'icon' => 'fas fa-guitar',
+                'color' => '#e67e22',
+                'duration' => '18 минут',
+                'questions' => '25 вопросов',
+                'category' => 'Испанский',
+                'image' => null
+            ]
+        ]
+    ]
+];
+
+// Get category filter from URL
+$categoryFilter = isset($_GET['category']) ? $_GET['category'] : 'all';
+
+// Collect all tests for display
+$allTests = [];
+foreach ($tests as $categoryKey => $category) {
+    foreach ($category['tests'] as $test) {
+        $test['category_key'] = $categoryKey;
+        $test['category_title'] = $category['title'];
+        $allTests[] = $test;
+    }
+}
+
+// Filter tests if category is selected
+if ($categoryFilter !== 'all') {
+    $allTests = array_filter($allTests, function($test) use ($categoryFilter) {
+        return $test['category_key'] === $categoryFilter;
+    });
+}
+?>
+
+<!-- Test Type Navigation -->
+<div class="test-navigation" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 30px; padding: 0 20px;">
+    <?php
+    $activeStyle = "padding: 8px 16px; border-radius: 20px; text-decoration: none; font-weight: 500; transition: all 0.3s ease; background: #28a745; color: white; cursor: pointer;";
+    $inactiveStyle = "padding: 8px 16px; border-radius: 20px; text-decoration: none; font-weight: 400; transition: all 0.3s ease; background: var(--surface, #ffffff); color: var(--text-primary, #333); border: 1px solid var(--border-color, #e2e8f0); cursor: pointer;";
+    ?>
+    
+    <a href="#" data-category="all" class="category-btn <?= $categoryFilter === 'all' ? 'active' : '' ?>" style="<?= $categoryFilter === 'all' ? $activeStyle : $inactiveStyle ?>">Все тесты</a>
+    <a href="#" data-category="intellectual" class="category-btn <?= $categoryFilter === 'intellectual' ? 'active' : '' ?>" style="<?= $categoryFilter === 'intellectual' ? $activeStyle : $inactiveStyle ?>">Интеллект и психология</a>
+    <a href="#" data-category="academic" class="category-btn <?= $categoryFilter === 'academic' ? 'active' : '' ?>" style="<?= $categoryFilter === 'academic' ? $activeStyle : $inactiveStyle ?>">Академические</a>
+    <a href="#" data-category="science" class="category-btn <?= $categoryFilter === 'science' ? 'active' : '' ?>" style="<?= $categoryFilter === 'science' ? $activeStyle : $inactiveStyle ?>">Естественные науки</a>
+    <a href="#" data-category="languages" class="category-btn <?= $categoryFilter === 'languages' ? 'active' : '' ?>" style="<?= $categoryFilter === 'languages' ? $activeStyle : $inactiveStyle ?>">Иностранные языки</a>
 </div>
 
-<!-- Tests Section -->
-<div class="container py-5" id="tests">
-    <!-- IQ and Psychology Tests -->
-    <div class="test-category">
-        <h2 class="category-title">
-            <i class="fas fa-brain me-3" style="color: #667eea;"></i>
-            Тесты интеллекта и психологии
-        </h2>
-        <div class="row">
-            <div class="col-lg-4 col-md-6">
-                <div class="test-card">
-                    <div class="test-icon" style="color: #e74c3c;">
-                        <i class="fas fa-lightbulb"></i>
-                    </div>
-                    <h3 class="test-title">IQ Тест</h3>
-                    <p class="test-description">Классический тест на определение уровня интеллекта. Включает логические задачи, математические вопросы и задания на пространственное мышление.</p>
-                    <div class="test-meta">
-                        <span><i class="fas fa-clock me-1"></i>20 минут</span>
-                        <span><i class="fas fa-question me-1"></i>30 вопросов</span>
-                    </div>
-                    <a href="/test/iq-test" class="test-btn">Пройти тест</a>
-                </div>
+<!-- Tests Grid -->
+<div class="tests-grid">
+    <?php if (!empty($allTests)): ?>
+        <?php 
+        // Show all tests, not filtered by PHP
+        $allTestsUnfiltered = [];
+        foreach ($tests as $categoryKey => $category) {
+            foreach ($category['tests'] as $test) {
+                $test['category_key'] = $categoryKey;
+                $test['category_title'] = $category['title'];
+                $allTestsUnfiltered[] = $test;
+            }
+        }
+        ?>
+        <?php foreach ($allTestsUnfiltered as $test): ?>
+            <div class="test-item" data-category="<?= htmlspecialchars($test['category_key']) ?>">
+                <?php renderTestCard($test); ?>
             </div>
-            
-            <div class="col-lg-4 col-md-6">
-                <div class="test-card">
-                    <div class="test-icon" style="color: #9b59b6;">
-                        <i class="fas fa-user-tie"></i>
-                    </div>
-                    <h3 class="test-title">Профориентация</h3>
-                    <p class="test-description">Определите свои профессиональные склонности и найдите подходящую сферу деятельности на основе ваших интересов и способностей.</p>
-                    <div class="test-meta">
-                        <span><i class="fas fa-clock me-1"></i>15 минут</span>
-                        <span><i class="fas fa-question me-1"></i>40 вопросов</span>
-                    </div>
-                    <a href="/test/career-test" class="test-btn">Пройти тест</a>
-                </div>
-            </div>
-            
-            <div class="col-lg-4 col-md-6">
-                <div class="test-card">
-                    <div class="test-icon" style="color: #f39c12;">
-                        <i class="fas fa-palette"></i>
-                    </div>
-                    <h3 class="test-title">Тип личности</h3>
-                    <p class="test-description">Узнайте свой психологический тип личности по системе Майерс-Бриггс. Поймите свои сильные стороны и особенности характера.</p>
-                    <div class="test-meta">
-                        <span><i class="fas fa-clock me-1"></i>12 минут</span>
-                        <span><i class="fas fa-question me-1"></i>25 вопросов</span>
-                    </div>
-                    <a href="/test/personality-test" class="test-btn">Пройти тест</a>
-                </div>
-            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <div class="empty-state">
+            <i class="fas fa-clipboard-list"></i>
+            <h3>Тесты не найдены</h3>
+            <p>В выбранной категории пока нет тестов.</p>
         </div>
-    </div>
-
-    <!-- Academic Tests -->
-    <div class="test-category">
-        <h2 class="category-title">
-            <i class="fas fa-graduation-cap me-3" style="color: #667eea;"></i>
-            Академические тесты
-        </h2>
-        <div class="row">
-            <div class="col-lg-4 col-md-6">
-                <div class="test-card">
-                    <div class="test-icon" style="color: #3498db;">
-                        <i class="fas fa-calculator"></i>
-                    </div>
-                    <h3 class="test-title">Математика</h3>
-                    <p class="test-description">Проверьте свои знания по математике: алгебра, геометрия, арифметика. Подходит для учеников 9-11 классов.</p>
-                    <div class="test-meta">
-                        <span><i class="fas fa-clock me-1"></i>25 минут</span>
-                        <span><i class="fas fa-question me-1"></i>35 вопросов</span>
-                    </div>
-                    <a href="/test/math-test" class="test-btn">Пройти тест</a>
-                </div>
-            </div>
-            
-            <div class="col-lg-4 col-md-6">
-                <div class="test-card">
-                    <div class="test-icon" style="color: #e67e22;">
-                        <i class="fas fa-spell-check"></i>
-                    </div>
-                    <h3 class="test-title">Русский язык</h3>
-                    <p class="test-description">Тест по русской грамматике, орфографии и пунктуации. Проверьте свою грамотность и знание родного языка.</p>
-                    <div class="test-meta">
-                        <span><i class="fas fa-clock me-1"></i>20 минут</span>
-                        <span><i class="fas fa-question me-1"></i>30 вопросов</span>
-                    </div>
-                    <a href="/test/russian-test" class="test-btn">Пройти тест</a>
-                </div>
-            </div>
-            
-            <div class="col-lg-4 col-md-6">
-                <div class="test-card">
-                    <div class="test-icon" style="color: #27ae60;">
-                        <i class="fas fa-globe"></i>
-                    </div>
-                    <h3 class="test-title">География</h3>
-                    <p class="test-description">Проверьте знания по географии России и мира: столицы, реки, горы, климат и природные зоны.</p>
-                    <div class="test-meta">
-                        <span><i class="fas fa-clock me-1"></i>18 минут</span>
-                        <span><i class="fas fa-question me-1"></i>25 вопросов</span>
-                    </div>
-                    <a href="/test/geography-test" class="test-btn">Пройти тест</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Science Tests -->
-    <div class="test-category">
-        <h2 class="category-title">
-            <i class="fas fa-flask me-3" style="color: #667eea;"></i>
-            Естественные науки
-        </h2>
-        <div class="row">
-            <div class="col-lg-4 col-md-6">
-                <div class="test-card">
-                    <div class="test-icon" style="color: #8e44ad;">
-                        <i class="fas fa-atom"></i>
-                    </div>
-                    <h3 class="test-title">Физика</h3>
-                    <p class="test-description">Тест по основам физики: механика, термодинамика, электричество и оптика для старшеклассников.</p>
-                    <div class="test-meta">
-                        <span><i class="fas fa-clock me-1"></i>30 минут</span>
-                        <span><i class="fas fa-question me-1"></i>25 вопросов</span>
-                    </div>
-                    <a href="/test/physics-test" class="test-btn">Пройти тест</a>
-                </div>
-            </div>
-            
-            <div class="col-lg-4 col-md-6">
-                <div class="test-card">
-                    <div class="test-icon" style="color: #16a085;">
-                        <i class="fas fa-flask"></i>
-                    </div>
-                    <h3 class="test-title">Химия</h3>
-                    <p class="test-description">Проверьте знания по химии: органическая и неорганическая химия, периодическая система, реакции.</p>
-                    <div class="test-meta">
-                        <span><i class="fas fa-clock me-1"></i>25 минут</span>
-                        <span><i class="fas fa-question me-1"></i>30 вопросов</span>
-                    </div>
-                    <a href="/test/chemistry-test" class="test-btn">Пройти тест</a>
-                </div>
-            </div>
-            
-            <div class="col-lg-4 col-md-6">
-                <div class="test-card">
-                    <div class="test-icon" style="color: #2ecc71;">
-                        <i class="fas fa-dna"></i>
-                    </div>
-                    <h3 class="test-title">Биология</h3>
-                    <p class="test-description">Тест по биологии: анатомия человека, ботаника, зоология и основы генетики.</p>
-                    <div class="test-meta">
-                        <span><i class="fas fa-clock me-1"></i>22 минут</span>
-                        <span><i class="fas fa-question me-1"></i>28 вопросов</span>
-                    </div>
-                    <a href="/test/biology-test" class="test-btn">Пройти тест</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Statistics Section -->
-<div class="stats-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-3">
-                <div class="stat-item">
-                    <div class="stat-number">50,000+</div>
-                    <div class="stat-label">Пройденных тестов</div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stat-item">
-                    <div class="stat-number">12</div>
-                    <div class="stat-label">Видов тестов</div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stat-item">
-                    <div class="stat-number">500+</div>
-                    <div class="stat-label">Уникальных вопросов</div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stat-item">
-                    <div class="stat-number">15,000+</div>
-                    <div class="stat-label">Активных пользователей</div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Features Section -->
-<div class="features-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4">
-                <div class="feature-item">
-                    <i class="fas fa-chart-line feature-icon"></i>
-                    <h3 class="feature-title">Детальная статистика</h3>
-                    <p class="feature-description">Получите подробный анализ ваших результатов с объяснениями правильных ответов</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-item">
-                    <i class="fas fa-mobile-alt feature-icon"></i>
-                    <h3 class="feature-title">Мобильная версия</h3>
-                    <p class="feature-description">Проходите тесты с любого устройства - компьютера, планшета или смартфона</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-item">
-                    <i class="fas fa-certificate feature-icon"></i>
-                    <h3 class="feature-title">Сертификаты</h3>
-                    <p class="feature-description">Получите цифровой сертификат по итогам успешного прохождения теста</p>
-                </div>
-            </div>
-        </div>
-    </div>
+    <?php endif; ?>
 </div>
 
 <style>
-.hero-section {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 80px 0;
-    text-align: center;
+/* Ensure proper background during page transitions */
+body {
+    background-color: var(--background, #ffffff);
+    transition: background-color 0.3s ease;
 }
-.hero-title {
-    font-size: 48px;
-    font-weight: 700;
-    margin-bottom: 20px;
-}
-.hero-subtitle {
-    font-size: 20px;
-    opacity: 0.9;
-    margin-bottom: 30px;
-}
-.test-category {
-    margin-bottom: 50px;
-}
-.category-title {
-    font-size: 28px;
-    font-weight: 600;
-    margin-bottom: 30px;
-    color: #333;
-    text-align: center;
-}
-.test-card {
-    background: white;
-    border-radius: 12px;
-    padding: 30px;
-    margin-bottom: 30px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    transition: all 0.3s ease;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
-.test-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
-}
-.test-icon {
-    font-size: 48px;
-    margin-bottom: 20px;
-    text-align: center;
-}
-.test-title {
-    font-size: 22px;
-    font-weight: 600;
-    margin-bottom: 15px;
-    color: #333;
-}
-.test-description {
-    color: #666;
-    margin-bottom: 20px;
-    flex: 1;
-}
-.test-meta {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    font-size: 14px;
-    color: #888;
-}
-.test-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border: none;
-    padding: 12px 30px;
-    border-radius: 25px;
-    font-weight: 500;
-    text-decoration: none;
-    text-align: center;
-    transition: all 0.3s ease;
-    display: inline-block;
-}
-.test-btn:hover {
-    color: white;
-    transform: scale(1.05);
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-}
-.stats-section {
-    background: #667eea;
-    color: white;
-    padding: 60px 0;
-    text-align: center;
-}
-.stat-item {
-    margin-bottom: 30px;
-}
-.stat-number {
-    font-size: 48px;
-    font-weight: 700;
-    margin-bottom: 10px;
-}
-.stat-label {
-    font-size: 18px;
-    opacity: 0.9;
-}
-.features-section {
-    padding: 80px 0;
-    background: white;
-}
-.feature-item {
-    text-align: center;
-    margin-bottom: 40px;
-}
-.feature-icon {
-    font-size: 64px;
-    color: #667eea;
-    margin-bottom: 20px;
-}
-.feature-title {
-    font-size: 24px;
-    font-weight: 600;
-    margin-bottom: 15px;
-}
-.feature-description {
-    color: #666;
-    font-size: 16px;
+[data-theme="dark"] body {
+    background-color: var(--background-dark, #1a1a1a);
 }
 
-/* Dark mode support */
-[data-theme="dark"] .test-card,
-[data-theme="dark"] .features-section {
-    background: #2d3748;
+/* Dark mode support for navigation */
+[data-theme="dark"] a[style*="background: var(--surface"] {
+    background: var(--surface-dark, #2d3748) !important;
+    border-color: var(--border-dark, #4a5568) !important;
 }
-[data-theme="dark"] .category-title,
-[data-theme="dark"] .test-title,
-[data-theme="dark"] .feature-title {
-    color: #e4e6eb;
-}
-[data-theme="dark"] .test-description,
-[data-theme="dark"] .feature-description {
-    color: #a0aec0;
-}
-[data-theme="dark"] .test-meta {
-    color: #718096;
+[data-theme="dark"] a[style*="background: var(--surface"]:hover {
+    background: var(--surface-hover-dark, #374151) !important;
 }
 
-@media (max-width: 768px) {
-    .hero-title {
-        font-size: 36px;
-    }
-    .hero-subtitle {
-        font-size: 18px;
-    }
-    .test-card {
-        padding: 20px;
-    }
+/* Prevent flash of unstyled content */
+.tests-grid {
+    min-height: 200px;
+    background-color: transparent;
+}
+
+/* Test item wrapper for filtering */
+.test-item {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.test-item.hidden {
+    display: none;
 }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const categoryButtons = document.querySelectorAll('.category-btn');
+    const testItems = document.querySelectorAll('.test-item');
+    
+    // Active button styles
+    const activeStyle = "padding: 8px 16px; border-radius: 20px; text-decoration: none; font-weight: 500; transition: all 0.3s ease; background: #28a745; color: white; cursor: pointer;";
+    const inactiveStyle = "padding: 8px 16px; border-radius: 20px; text-decoration: none; font-weight: 400; transition: all 0.3s ease; background: var(--surface, #ffffff); color: var(--text-primary, #333); border: 1px solid var(--border-color, #e2e8f0); cursor: pointer;";
+    
+    categoryButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const category = this.dataset.category;
+            
+            // Update active button
+            categoryButtons.forEach(btn => {
+                btn.classList.remove('active');
+                btn.setAttribute('style', inactiveStyle);
+            });
+            this.classList.add('active');
+            this.setAttribute('style', activeStyle);
+            
+            // Filter tests
+            testItems.forEach(item => {
+                if (category === 'all' || item.dataset.category === category) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+            
+            // Update URL without reload
+            const url = category === 'all' ? '/tests' : `/tests?category=${category}`;
+            window.history.pushState({category: category}, '', url);
+        });
+    });
+    
+    // Handle back/forward buttons
+    window.addEventListener('popstate', function(e) {
+        const category = e.state ? e.state.category : 'all';
+        const button = document.querySelector(`[data-category="${category}"]`);
+        if (button) {
+            button.click();
+        }
+    });
+});
+</script>
