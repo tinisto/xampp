@@ -90,6 +90,8 @@
             <nav class="footer-nav">
                 <a href="/about" class="footer-nav-link">О проекте</a>
                 <a href="/write" class="footer-nav-link">Связаться с нами</a>
+                <a href="/privacy" class="footer-nav-link">Конфиденциальность</a>
+                <a href="/terms" class="footer-nav-link">Условия использования</a>
             </nav>
         </div>
     </div>
