@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Generate Favicon</title>
+</head>
+<body>
+    <canvas id="canvas" width="32" height="32" style="border:1px solid #ccc;"></canvas>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Create gradient
+        const gradient = ctx.createLinearGradient(0, 0, 32, 32);
+        gradient.addColorStop(0, '#28a745');
+        gradient.addColorStop(1, '#20c997');
+        
+        // Draw rounded rectangle
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.roundRect(0, 0, 32, 32, 6);
+        ctx.fill();
+        
+        // Draw text
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 16px system-ui';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('11', 16, 18);
+        
+        // Convert to ICO format would require additional library
+        // For now, the SVG favicon in the PHP component will be used
+    </script>
+</body>
+</html>

@@ -2,9 +2,9 @@
   <div class="card">
     <div class="card-body" style="font-size: 14px;">
       <?php 
-      require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/components/site-logo.php';
+      include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/site-icon.php';
       echo '<div class="text-center mb-3">';
-      echo renderSiteLogo(['showText' => true]);
+      renderSiteIcon('medium', '/', 'reset-logo');
       echo '</div>';
       ?>
       <h4 class="card-title text-center fw-bold my-3">Подтверждение сброса пароля</h4>

@@ -1,71 +1,75 @@
 <?php
-// Enable error reporting for debugging
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-echo "Debug: Starting school page<br>";
+echo "<pre>DEBUG START\n";
 
-// Start session if not already started
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-    echo "Debug: Session started<br>";
-}
-
-echo "Debug: About to include database connection<br>";
-
-// Try to establish database connection
-$dbFile = $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
-if (file_exists($dbFile)) {
-    echo "Debug: Database file exists<br>";
-    require_once $dbFile;
-    echo "Debug: Database file included<br>";
-    
-    // Check if connection exists
-    if (isset($connection)) {
-        echo "Debug: Database connection exists<br>";
-    } else {
-        echo "Debug: ERROR - Database connection variable not set<br>";
-    }
-} else {
-    echo "Debug: ERROR - Database file not found at: " . $dbFile . "<br>";
-}
-
-echo "Debug: About to include extract-school-id.php<br>";
-
-// Include school ID extraction
-include $_SERVER['DOCUMENT_ROOT'] . '/pages/school/extract-school-id.php';
-
-echo "Debug: School ID extracted: " . (isset($id_school) ? $id_school : 'NOT SET') . "<br>";
-
-if (!isset($id_school) || !is_numeric($id_school)) {
-    echo "Debug: Invalid school ID, would redirect to 404<br>";
+// Check if db_connections exists
+if (!file_exists($_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php')) {
+    echo "ERROR: db_connections.php not found\n";
     exit();
 }
 
-echo "Debug: School ID is valid: " . $id_school . "<br>";
+require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
 
-// Test database query
-if (isset($connection)) {
-    echo "Debug: Testing database query<br>";
-    $testQuery = "SELECT COUNT(*) as count FROM schools WHERE id_school = ?";
-    $stmt = mysqli_prepare($connection, $testQuery);
-    
-    if ($stmt) {
-        mysqli_stmt_bind_param($stmt, "i", $id_school);
-        if (mysqli_stmt_execute($stmt)) {
-            $result = mysqli_stmt_get_result($stmt);
-            $count = mysqli_fetch_assoc($result)['count'];
-            echo "Debug: School found in database: " . ($count > 0 ? 'YES' : 'NO') . "<br>";
-        } else {
-            echo "Debug: ERROR executing query: " . mysqli_error($connection) . "<br>";
-        }
-        mysqli_stmt_close($stmt);
-    } else {
-        echo "Debug: ERROR preparing query: " . mysqli_error($connection) . "<br>";
-    }
-} else {
-    echo "Debug: ERROR - No database connection available<br>";
+echo "Connected to database\n";
+
+// Handle slug-based URLs only
+$url_slug = $_GET['url_slug'] ?? null;
+
+echo "URL slug: " . ($url_slug ?? 'NULL') . "\n";
+
+if (!$url_slug) {
+    echo "ERROR: No URL slug provided\n";
+    exit();
 }
 
-echo "<br>Debug completed. If you see this, the basic functionality is working.<br>";
+$query = "SELECT s.*, r.region_name, r.region_name_en, t.town_name, t.town_name_en 
+          FROM schools s
+          LEFT JOIN regions r ON s.region_id = r.region_id
+          LEFT JOIN towns t ON s.town_id = t.town_id
+          WHERE s.url_slug = ?";
+
+echo "Query: $query\n";
+echo "Looking for slug: $url_slug\n";
+
+$stmt = $connection->prepare($query);
+if (!$stmt) {
+    echo "ERROR preparing statement: " . $connection->error . "\n";
+    exit();
+}
+
+$stmt->bind_param("s", $url_slug);
+$stmt->execute();
+$result = $stmt->get_result();
+
+echo "Query executed, rows found: " . $result->num_rows . "\n";
+
+if ($result->num_rows === 0) {
+    // Try without joins to see if school exists
+    $query2 = "SELECT * FROM schools WHERE url_slug = ?";
+    $stmt2 = $connection->prepare($query2);
+    $stmt2->bind_param("s", $url_slug);
+    $stmt2->execute();
+    $result2 = $stmt2->get_result();
+    
+    echo "Simple query rows: " . $result2->num_rows . "\n";
+    
+    if ($result2->num_rows > 0) {
+        $row = $result2->fetch_assoc();
+        echo "School found but JOIN failed\n";
+        echo "School data:\n";
+        print_r($row);
+    } else {
+        echo "School not found in database\n";
+    }
+    exit();
+}
+
+$row = $result->fetch_assoc();
+echo "School found: " . $row['name'] . "\n";
+echo "Full data:\n";
+print_r($row);
+
+echo "\nDEBUG END</pre>";
 ?>

@@ -98,7 +98,9 @@
 
     # Tests System
     RewriteRule ^tests/?$ pages/tests/tests-main.php [QSA,NC,L]
-    RewriteRule ^test/([^/]+)/?$ pages/tests/test-improved.php?test=$1 [QSA,NC,L]
+    RewriteRule ^test/?$ pages/tests/tests-intro.php [QSA,NC,L]
+    RewriteRule ^test/([^/]+)/?$ pages/tests/test-simple.php?test=$1&q=0 [QSA,NC,L]
+    RewriteRule ^test-full/([^/]+)/?$ pages/tests/test-full-single.php?test=$1&q=0 [QSA,NC,L]
     RewriteRule ^test-result/([^/]+)/?$ pages/tests/test-result.php?test=$1 [QSA,NC,L]
 
     # User System

@@ -5,12 +5,7 @@ include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/typography.php';
 
 renderContentWrapper('start');
 
-// Use the reusable page header component (much smaller than the old hero section)
-renderPageHeader(
-    'Онлайн тесты', 
-    'Проверьте свои знания и навыки с помощью наших интерактивных тестов',
-    ['centered' => true, 'background' => true, 'showSubtitle' => false]
-);
+// Page header removed - using main template title instead
 
 // Test categories array
 $testCategories = [

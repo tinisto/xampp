@@ -1,7 +1,6 @@
 <?php
 // Fixed version - direct rendering
-// Temporarily comment out this include to avoid conflicts
-// require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/check_under_construction.php';
+// require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/check_under_construction.php'; // File removed
 
 // Use the standard database connection
 require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
@@ -182,10 +181,18 @@ switch ($type) {
     <!-- Header -->
     <?php include $_SERVER['DOCUMENT_ROOT'] . '/common-components/header.php'; ?>
     
+    <!-- Green Page Header -->
+    <?php 
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/page-section-header.php';
+    renderPageSectionHeader([
+        'title' => htmlspecialchars($pageTitle),
+        'showSearch' => false
+    ]);
+    ?>
+    
     <!-- Main Content -->
     <main>
         <div class="container">
-            <h5><?= htmlspecialchars($pageTitle) ?></h5>
             
             <div class="row">
                 <?php 

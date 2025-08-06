@@ -196,28 +196,16 @@ include $_SERVER['DOCUMENT_ROOT'] . '/common-components/card-badge.php';
     }
 </style>
 
-<!-- Hero Section -->
-<div class="hero-section">
-    <div class="container text-center">
-        <h1 class="hero-title">Поиск школ, вузов, статей</h1>
-        <p class="hero-subtitle">Образовательный портал для школьников и абитуриентов</p>
-        <div class="hero-search">
-            <?php 
-            include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/search-box.php';
-            renderSearchBox([
-                'id' => 'homeSearch',
-                'placeholder' => 'Поиск школ, вузов, статей...',
-                'action' => '/search-process',
-                'method' => 'GET',
-                'inputName' => 'query',
-                'size' => 'large',
-                'showButton' => false,
-                'autofocus' => false
-            ]);
-            ?>
-        </div>
-    </div>
-</div>
+<?php 
+include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/page-section-header.php';
+renderPageSectionHeader([
+    'title' => 'Поиск школ, вузов, статей',
+    'showSearch' => true,
+    'searchPlaceholder' => 'Поиск школ, вузов, статей...',
+    'searchAction' => '/search-process',
+    'searchName' => 'query'
+]);
+?>
 
 <div class="container">
     

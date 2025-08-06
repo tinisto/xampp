@@ -1,9 +1,8 @@
 <?php
 // Include the new reusable components
 require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/content-wrapper.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/page-header-compact.php';
+// Remove page-header.php as it doesn't exist - will use page-section-header-simple.php instead
 require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/card-badge.php';
-// Typography is included after page-header to avoid conflicts
 require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/typography.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/image-lazy-load.php';
 require_once $_SERVER["DOCUMENT_ROOT"] . "/includes/functions/pagination.php";
@@ -18,8 +17,6 @@ $categoryColors = [
     'olimpiady' => 'red'
 ];
 
-renderContentWrapper('start');
-
 // Check if categoryData is already set from category-data-fetch.php
 if (isset($categoryData) && !empty($categoryData)) {
     // Category data is already loaded, use it directly
@@ -27,7 +24,7 @@ if (isset($categoryData) && !empty($categoryData)) {
         // Count posts in this category
         $countQuery = "SELECT COUNT(*) as count FROM posts WHERE category = ?";
         $countStmt = mysqli_prepare($connection, $countQuery);
-        mysqli_stmt_bind_param($countStmt, 'i', $categoryData['id_category']);
+        mysqli_stmt_bind_param($countStmt, 'i', $categoryData['id']);
         mysqli_stmt_execute($countStmt);
         $countResult = mysqli_stmt_get_result($countStmt);
         $postCount = mysqli_fetch_assoc($countResult)['count'];
@@ -39,12 +36,8 @@ if (isset($categoryData) && !empty($categoryData)) {
         // Get category color
         $categoryColor = $categoryColors[$categoryData['url_category']] ?? 'green';
 
-        // Use the compact page header component
-        renderPageHeaderCompact(
-            $categoryData['title_category'],
-            $subtitle,
-            ['showSubtitle' => true]
-        );
+        // The green header is already rendered by the template engine
+        // Subtitle with count will be shown in the header badge
 
         // Pagination setup
         $postsPerPage = 12;
@@ -54,7 +47,7 @@ if (isset($categoryData) && !empty($categoryData)) {
         // Fetch posts for this category
         $queryPosts = "SELECT * FROM posts WHERE category = ? ORDER BY date_post DESC LIMIT ? OFFSET ?";
         $postsStmt = mysqli_prepare($connection, $queryPosts);
-        mysqli_stmt_bind_param($postsStmt, 'iii', $categoryData['id_category'], $postsPerPage, $offset);
+        mysqli_stmt_bind_param($postsStmt, 'iii', $categoryData['id'], $postsPerPage, $offset);
         mysqli_stmt_execute($postsStmt);
         $postsResult = mysqli_stmt_get_result($postsStmt);
         
@@ -186,10 +179,11 @@ if (isset($categoryData) && !empty($categoryData)) {
                         // Add category badge with dynamic color
                         renderCardBadge($categoryData['title_category'], '', 'overlay', $categoryColor);
                         
-                        $imagePath = $_SERVER['DOCUMENT_ROOT'] . "/images/posts-images/{$post['id_post']}_1.jpg";
-                        if (file_exists($imagePath)):
+                        $postId = $post['id'] ?? $post['id_post'] ?? null;
+                        $imagePath = $_SERVER['DOCUMENT_ROOT'] . "/images/posts-images/{$postId}_1.jpg";
+                        if ($postId && file_exists($imagePath)):
                             renderLazyImage([
-                                'src' => "/images/posts-images/" . htmlspecialchars($post['id_post']) . "_1.jpg",
+                                'src' => "/images/posts-images/" . htmlspecialchars($postId) . "_1.jpg",
                                 'alt' => htmlspecialchars($post['title_post']),
                                 'class' => 'post-image',
                                 'aspectRatio' => '16:9'
@@ -230,5 +224,5 @@ if (isset($categoryData) && !empty($categoryData)) {
     renderCallout('Категория не найдена или не содержит статей.', 'error', 'Ошибка');
 }
 
-renderContentWrapper('end');
+// Content wrapper is handled by template engine
 ?>

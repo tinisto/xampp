@@ -39,7 +39,12 @@ if ($rateLimited) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= SecurityBootstrap::out($formConfig['title']) ?> - 11-классники</title>
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    
+    <!-- Favicon -->
+    <?php 
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/favicon.php';
+    renderFavicon();
+    ?>
     
     <!-- CSRF token for AJAX requests -->
     <?= CSRFProtection::getMetaTag() ?>

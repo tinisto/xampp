@@ -194,8 +194,8 @@ $email = filter_input(INPUT_GET, 'email', FILTER_SANITIZE_EMAIL);
     <div class="reset-container">
         <div class="logo-section">
             <?php 
-            require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/components/site-logo.php';
-            echo renderSiteLogo(['showText' => true]);
+            include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/site-icon.php';
+            renderSiteIcon('medium', '/', 'reset-logo');
             ?>
         </div>
         

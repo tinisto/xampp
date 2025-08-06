@@ -33,7 +33,7 @@ switch ($type) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/common-components/header-modern.php'; ?>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/common-components/header.php'; ?>
     
     <main class="container py-4">
         <h5 class="text-center fw-bold mb-3"><?= $pageTitle ?></h5>
@@ -88,7 +88,7 @@ switch ($type) {
         <?php endif; ?>
     </main>
     
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/common-components/footer-modern.php'; ?>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/common-components/footer.php'; ?>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>

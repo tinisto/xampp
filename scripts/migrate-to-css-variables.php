@@ -147,7 +147,7 @@ echo "- Backups created with .backup extension\n";
 
 // Create a simple test page
 $testPage = '<?php
-require_once $_SERVER["DOCUMENT_ROOT"] . "/common-components/template-engine-modern.php";
+require_once $_SERVER["DOCUMENT_ROOT"] . "/common-components/template-engine-ultimate.php";
 
 $mainContent = "test-theme-content.php";
 $templateConfig = [

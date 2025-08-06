@@ -67,8 +67,8 @@ if (!empty($newsData) && !empty($urlNews)) {
       // Check if the user is an admin
       if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
         echo '<div style="display: flex; gap: 10px;">';
-        echo '<a href="/edit/news/' . (int)$newsData['id_news'] . '" style="padding: 6px 12px; background: #3b82f6; color: white; text-decoration: none; border-radius: 6px; font-size: 14px; display: inline-flex; align-items: center; gap: 5px; transition: background 0.2s;"><i class="fas fa-edit"></i> Редактировать</a>';
-        echo '<a href="/delete-news.php?id=' . (int)$newsData['id_news'] . '" onclick="return confirm(\'Вы уверены, что хотите удалить эту новость?\')" style="padding: 6px 12px; background: #ef4444; color: white; text-decoration: none; border-radius: 6px; font-size: 14px; display: inline-flex; align-items: center; gap: 5px; transition: background 0.2s;"><i class="fas fa-trash"></i> Удалить</a>';
+        echo '<a href="/edit/news/' . (int)$newsData['id'] . '" style="padding: 6px 12px; background: #3b82f6; color: white; text-decoration: none; border-radius: 6px; font-size: 14px; display: inline-flex; align-items: center; gap: 5px; transition: background 0.2s;"><i class="fas fa-edit"></i> Редактировать</a>';
+        echo '<a href="/delete-news.php?id=' . (int)$newsData['id'] . '" onclick="return confirm(\'Вы уверены, что хотите удалить эту новость?\')" style="padding: 6px 12px; background: #ef4444; color: white; text-decoration: none; border-radius: 6px; font-size: 14px; display: inline-flex; align-items: center; gap: 5px; transition: background 0.2s;"><i class="fas fa-trash"></i> Удалить</a>';
         echo '</div>';
       }
       ?>
@@ -108,7 +108,7 @@ if (!empty($newsData) && !empty($urlNews)) {
   // If no image_news, check for old image fields
   elseif (!empty($newsData['image_news_1'])) {
       // Check if old format image exists on server
-      $oldImagePath = "/images/news-images/{$newsData['id_news']}_1.jpg";
+      $oldImagePath = "/images/news-images/{$newsData['id']}_1.jpg";
       if (file_exists($_SERVER['DOCUMENT_ROOT'] . $oldImagePath)) {
           $imageToShow = $oldImagePath;
       }
@@ -127,10 +127,10 @@ if (!empty($newsData) && !empty($urlNews)) {
     <?php 
     // Check for image 1
     if (!empty($newsData['image_news_1'])) {
-        $imagePath = $_SERVER['DOCUMENT_ROOT'] . "/images/news-images/{$newsData['id_news']}_1.jpg";
+        $imagePath = $_SERVER['DOCUMENT_ROOT'] . "/images/news-images/{$newsData['id']}_1.jpg";
         if (file_exists($imagePath)) : ?>
           <div class="col-md-4 mb-3">
-            <img src="/images/news-images/<?= htmlspecialchars($newsData['id_news']) ?>_1.jpg"
+            <img src="/images/news-images/<?= htmlspecialchars($newsData['id']) ?>_1.jpg"
               class="img-fluid img-thumbnail" alt="Image 1" style="border-radius: 8px;">
           </div>
         <?php endif;
@@ -139,10 +139,10 @@ if (!empty($newsData) && !empty($urlNews)) {
     <?php 
     // Check for image 2
     if (!empty($newsData['image_news_2'])) {
-        $imagePath = $_SERVER['DOCUMENT_ROOT'] . "/images/news-images/{$newsData['id_news']}_2.jpg";
+        $imagePath = $_SERVER['DOCUMENT_ROOT'] . "/images/news-images/{$newsData['id']}_2.jpg";
         if (file_exists($imagePath)) : ?>
           <div class="col-md-4 mb-3">
-            <img src="/images/news-images/<?= htmlspecialchars($newsData['id_news']) ?>_2.jpg"
+            <img src="/images/news-images/<?= htmlspecialchars($newsData['id']) ?>_2.jpg"
               class="img-fluid img-thumbnail" alt="Image 2" style="border-radius: 8px;">
           </div>
         <?php endif;
@@ -151,10 +151,10 @@ if (!empty($newsData) && !empty($urlNews)) {
     <?php 
     // Check for image 3
     if (!empty($newsData['image_news_3'])) {
-        $imagePath = $_SERVER['DOCUMENT_ROOT'] . "/images/news-images/{$newsData['id_news']}_3.jpg";
+        $imagePath = $_SERVER['DOCUMENT_ROOT'] . "/images/news-images/{$newsData['id']}_3.jpg";
         if (file_exists($imagePath)) : ?>
           <div class="col-md-4 mb-3">
-            <img src="/images/news-images/<?= htmlspecialchars($newsData['id_news']) ?>_3.jpg"
+            <img src="/images/news-images/<?= htmlspecialchars($newsData['id']) ?>_3.jpg"
               class="img-fluid img-thumbnail" alt="Image 3" style="border-radius: 8px;">
           </div>
         <?php endif;

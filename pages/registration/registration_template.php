@@ -7,11 +7,15 @@
   <meta name="robots" content="noindex, nofollow">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <link rel='stylesheet' type='text/css' href='/css/authorization.css'>
-  <link rel='icon' href='/favicon.ico' type='image/x-icon'>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <script src="https://www.google.com/recaptcha/api.js"></script>
   <title>Регистрация - 11-классники</title>
-  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  
+  <!-- Favicon -->
+  <?php 
+  include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/favicon.php';
+  renderFavicon();
+  ?>
 </head>
 
 <body class="d-flex flex-column min-vh-100">

@@ -323,29 +323,14 @@ function renderPostCard($post, $categoryName, $categoryUrl, $badgeColor = 'green
     }
 </style>
 
-<!-- Hero Section -->
-<div class="hero-section text-center">
-    <h1 class="hero-title">Поиск школ, вузов, статей</h1>
-    <?php 
-    renderSearchBox([
-        'id' => 'homeSearch',
-        'placeholder' => 'Поиск школ, вузов, статей...',
-        'action' => '/search-process',
-        'method' => 'GET',
-        'inputName' => 'query',
-        'size' => 'large',
-        'showButton' => false,
-        'autofocus' => false
-    ]);
-    ?>
-</div>
+<!-- Green header now handled by template engine -->
 
 <div class="container">
     
     <!-- 11-классники Posts Section -->
     <div class="news-grid">
         <?php
-        $query11 = "SELECT * FROM posts WHERE category = 1 ORDER BY date_post DESC LIMIT 8";
+        $query11 = "SELECT * FROM posts WHERE category = 21 ORDER BY date_post DESC LIMIT 8";
         $result11 = mysqli_query($connection, $query11);
         
         if ($result11 && mysqli_num_rows($result11) > 0) {

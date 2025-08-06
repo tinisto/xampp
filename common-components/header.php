@@ -4,6 +4,13 @@
  * Replaces all other header files
  */
 
+// Add favicon to head if not already added
+if (!defined('FAVICON_LOADED')) {
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/favicon.php';
+    renderFavicon();
+    define('FAVICON_LOADED', true);
+}
+
 // Load session manager if not already loaded
 if (!class_exists('SessionManager')) {
     require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/SessionManager.php';
@@ -75,16 +82,13 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
     }
     
     .header-brand {
-        font-size: 22px;
-        font-weight: 700;
-        color: var(--primary-color) !important;
         text-decoration: none;
         flex-shrink: 0;
         transition: all 0.3s ease;
     }
     
     .header-brand:hover {
-        opacity: 0.8;
+        text-decoration: none;
         transform: scale(1.02);
     }
     
@@ -100,6 +104,8 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
         color: var(--text-color);
         text-decoration: none;
         font-weight: 500;
+        font-size: 14px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
         padding: 8px 15px;
         border-radius: 8px;
         transition: all 0.3s ease;
@@ -224,8 +230,8 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
         width: 40px;
         height: 40px;
         border-radius: 50%;
-        background: var(--primary-color);
-        color: white;
+        background: var(--primary-color) !important;
+        color: white !important;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -236,6 +242,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
         position: relative;
         z-index: 1;
         user-select: none;
+        border: 2px solid var(--border-color);
     }
     
     .user-avatar.dropdown-toggle {
@@ -343,13 +350,13 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
 <header class="header">
     <div class="header-container">
         <!-- Brand -->
-        <a href="/" class="header-brand">
-            11-классники
-        </a>
+        <?php 
+        include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/site-icon.php';
+        renderSiteIcon('small', '/', 'header-brand-icon');
+        ?>
         
         <!-- Navigation -->
         <nav class="header-nav" id="headerNav">
-            <a href="/" class="nav-link">Главная</a>
             
             <!-- Categories Dropdown -->
             <?php if ($hasDatabase): ?>
@@ -362,13 +369,27 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
                         try {
                             $hasCategories = false;
                             
-                            // Show general categories only
+                            // Get current page to exclude current category
+                            $currentPath = $_SERVER['REQUEST_URI'];
+                            $currentCategory = null;
+                            
+                            // Extract category from URL like /category/11-klassniki
+                            if (preg_match('/\/category\/(.+?)(?:\/|$)/', $currentPath, $matches)) {
+                                $currentCategory = $matches[1];
+                            }
+                            
+                            // Show general categories only, excluding current category
                             $queryCategories = "SELECT url_category, title_category FROM categories ORDER BY title_category";
                             if ($connection && !$connection->connect_error) {
                                 $resultCategories = mysqli_query($connection, $queryCategories);
                                 
                                 if ($resultCategories && mysqli_num_rows($resultCategories) > 0) {
                                     while ($category = mysqli_fetch_assoc($resultCategories)) {
+                                        // Skip current category
+                                        if ($currentCategory && $category['url_category'] === $currentCategory) {
+                                            continue;
+                                        }
+                                        
                                         echo '<a href="/category/' . htmlspecialchars($category['url_category']) . '" class="dropdown-item">' . 
                                              htmlspecialchars($category['title_category']) . '</a>';
                                         $hasCategories = true;

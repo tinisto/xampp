@@ -34,6 +34,12 @@ if ($row = mysqli_fetch_assoc($result)) {
 
 mysqli_stmt_close($stmt);
 
+// Format author, date and views for header badge
+$date = new DateTime($postData['date_post']);
+$formattedDate = $date->format('d.m.Y');
+$viewCount = number_format((int)$postData['view_post']);
+$badgeText = htmlspecialchars($postData['author_post']) . ' • ' . $formattedDate . ' • ' . $viewCount . ' просмотров';
+
 // Template configuration
 $templateConfig = [
     'layoutType' => 'default',
@@ -44,23 +50,14 @@ $templateConfig = [
     'postData' => $postData,
     'metaD' => $metaD,
     'metaK' => $metaK,
+    'pageHeader' => [
+        'title' => $pageTitle,
+        'showSearch' => false,
+        'badge' => $badgeText
+    ]
 ];
 
 // Render template
-$templateFile = $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine-ultimate.php';
-if (file_exists($templateFile)) {
-    include $templateFile;
-    renderTemplate($pageTitle, 'pages/post/post-content-professional.php', $templateConfig);
-} else {
-    // Fallback to modern template
-    $mainContent = 'pages/post/post-content-professional.php';
-    $templateFile2 = $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine-modern.php';
-    if (file_exists($templateFile2)) {
-        include $templateFile2;
-    } else {
-        // Direct include fallback
-        include $_SERVER['DOCUMENT_ROOT'] . '/common-components/header.php';
-        include $_SERVER['DOCUMENT_ROOT'] . '/' . $mainContent;
-        include $_SERVER['DOCUMENT_ROOT'] . '/common-components/footer-unified.php';
-    }
-}
+// Use ultimate template engine (simplified - no fallbacks needed)
+include $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine-ultimate.php';
+renderTemplate($pageTitle, 'pages/post/post-content-professional.php', $templateConfig);

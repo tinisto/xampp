@@ -1,12 +1,16 @@
 <?php
-// Direct include approach since template-engine.php is missing
+$mainContent = 'pages/write/write-content.php';
 $pageTitle = 'Напишите нам';
-
-// Include header
-include $_SERVER['DOCUMENT_ROOT'] . '/common-components/header.php';
-
-// Include the write form
-include $_SERVER['DOCUMENT_ROOT'] . '/pages/write/write-form-modern.php';
-
-// Include footer
-include $_SERVER['DOCUMENT_ROOT'] . '/common-components/footer-unified.php';
+$templateConfig = [
+    'layoutType' => 'default',
+    'cssFramework' => 'custom',  // Use unified CSS framework
+    'headerType' => 'modern',
+    'footerType' => 'modern',
+    'darkMode' => true,
+    'pageHeader' => [
+        'title' => 'Напишите нам',
+        'showSearch' => false
+    ]
+];
+include $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine-ultimate.php';
+renderTemplate($pageTitle, $mainContent, $templateConfig);

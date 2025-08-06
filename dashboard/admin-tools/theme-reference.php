@@ -1,5 +1,5 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine-modern.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine-ultimate.php';
 
 // Create comprehensive theme reference content
 $testContent = '

@@ -304,8 +304,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($error)) {
     <div class="reset-container">
         <div class="logo-section">
             <?php 
-            require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/components/site-logo.php';
-            echo renderSiteLogo(['showText' => true]);
+            include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/site-icon.php';
+            renderSiteIcon('medium', '/', 'reset-logo');
             ?>
         </div>
         

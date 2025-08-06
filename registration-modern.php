@@ -413,8 +413,8 @@ unset($_SESSION['oldData']);
     <div class="registration-container">
         <div class="logo-section">
             <?php 
-            require_once __DIR__ . '/includes/components/site-logo.php';
-            echo renderSiteLogo(['showText' => false]);
+            include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/site-icon.php';
+            renderSiteIcon('medium', '/', 'registration-logo');
             ?>
         </div>
         <div class="registration-header">

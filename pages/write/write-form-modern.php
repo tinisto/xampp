@@ -1,151 +1,208 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/check_under_construction.php';
-
-// Check if user is logged in
+// Check if user is logged in (session already started in write.php)
 $isLoggedIn = isset($_SESSION['user_id']);
 $userEmail = $_SESSION['email'] ?? '';
 ?>
 
-<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 60px 0; text-align: center; margin-bottom: 40px;">
-    <h1 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 15px;">Напишите нам</h1>
-    <p style="font-size: 1.125rem; opacity: 0.9; max-width: 600px; margin: 0 auto;">Мы всегда рады обратной связи</p>
+<?php 
+include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/page-section-header.php';
+renderPageSectionHeader([
+    'title' => 'Напишите нам',
+    'showSearch' => false
+]);
+?>
+
+<div style="text-align: center; padding: 20px 0;">
+    <p style="font-size: 1.1rem; color: var(--text-primary, #666);">Мы всегда рады обратной связи. Задайте вопрос, поделитесь историей или предложите сотрудничество.</p>
 </div>
 
-<div style="max-width: 800px; margin: 0 auto; padding: 40px 20px;">
-            
-            <!-- Contact Form -->
-            <div class="contact-form-section">
-                <h2 class="form-title">Отправить сообщение</h2>
-                
-                <?php if (!$isLoggedIn): ?>
-                    <div class="alert alert-info" role="alert">
-                        <i class="fas fa-info-circle me-2"></i>
-                        Чтобы отправить сообщение, пожалуйста, <a href="/login">войдите</a> или <a href="/registration">зарегистрируйтесь</a>.
-                    </div>
-                <?php else: ?>
-                    <form id="messageForm" action="/pages/write/write-process-form.php" method="post" class="modern-form">
-                        <?php include $_SERVER['DOCUMENT_ROOT'] . '/includes/functions/csrf.php'; ?>
-                        <?php echo csrf_field(); ?>
-                        
-                        <div class="mb-4">
-                            <label for="subject" class="form-label">Тема сообщения</label>
-                            <select class="form-select" id="subject" name="subject" required>
-                                <option value="">Выберите тему...</option>
-                                <option value="question">Общий вопрос</option>
-                                <option value="story">Хочу рассказать свою историю</option>
-                                <option value="feedback">Отзыв о сайте</option>
-                                <option value="partnership">Сотрудничество</option>
-                                <option value="technical">Техническая проблема</option>
-                                <option value="other">Другое</option>
-                            </select>
-                        </div>
-                        
-                        <div class="mb-4">
-                            <label for="message" class="form-label">Ваше сообщение</label>
-                            <textarea class="form-control" id="message" name="message" rows="6" placeholder="Расскажите подробнее..." required></textarea>
-                        </div>
-                        
-                        <input type="hidden" name="userEmail" value="<?php echo htmlspecialchars($userEmail); ?>">
-                        
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary btn-lg" id="submitButton">
-                                <i class="fas fa-paper-plane me-2"></i> Отправить сообщение
-                            </button>
-                        </div>
-                    </form>
-                <?php endif; ?>
+<div class="container" style="max-width: 1200px; margin: 0 auto; padding: 20px; background: var(--background, #ffffff); color: var(--text-primary, #333);">
+    
+    <!-- Contact Form -->
+    <div class="contact-form-section">
+        <h2 class="form-title">Отправить сообщение</h2>
+        
+        <?php if (!$isLoggedIn): ?>
+            <div class="alert alert-info" role="alert">
+                <i class="fas fa-info-circle me-2"></i>
+                Чтобы отправить сообщение, пожалуйста, <a href="/login">войдите</a> или <a href="/registration">зарегистрируйтесь</a>.
             </div>
-
-
-</div>
-
-<?php include \$_SERVER['DOCUMENT_ROOT'] . '/common-components/footer-unified.php'; ?>
+        <?php else: ?>
+            <form id="messageForm" action="/pages/write/write-process-form.php" method="post" class="modern-form">
+                <?php include $_SERVER['DOCUMENT_ROOT'] . '/includes/functions/csrf.php'; ?>
+                <?php echo csrf_field(); ?>
+                
+                <div class="mb-4">
+                    <label for="subject" class="form-label">Тема сообщения</label>
+                    <select class="form-select" id="subject" name="subject" required>
+                        <option value="">Выберите тему...</option>
+                        <option value="question">Общий вопрос</option>
+                        <option value="story">Хочу рассказать свою историю</option>
+                        <option value="feedback">Отзыв о сайте</option>
+                        <option value="partnership">Сотрудничество</option>
+                        <option value="technical">Техническая проблема</option>
+                        <option value="other">Другое</option>
+                    </select>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="message" class="form-label">Ваше сообщение</label>
+                    <textarea class="form-control" id="message" name="message" rows="6" placeholder="Расскажите подробнее..." required></textarea>
+                </div>
+                
+                <input type="hidden" name="userEmail" value="<?php echo htmlspecialchars($userEmail); ?>">
+                
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-lg" id="submitButton">
+                        <i class="fas fa-paper-plane me-2"></i> Отправить сообщение
+                    </button>
+                </div>
+            </form>
+        <?php endif; ?>
+    </div>
+</div> <!-- Close container -->
 
 <style>
+    /* Alert styles matching news page */
+    .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+    }
+    
+    .alert-info {
+        color: #31708f;
+        background-color: #d9edf7;
+        border-color: #bce8f1;
+    }
+    
+    [data-theme="dark"] .alert-info {
+        color: #9dd5f3;
+        background-color: #1e3a5f;
+        border-color: #2c5282;
+    }
+    
+    /* Form section matching news content area */
     .contact-form-section {
-        background: var(--color-surface-primary, #ffffff);
-        border: 1px solid var(--color-border, #e0e0e0);
-        padding: 40px;
-        border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        margin-bottom: 40px;
-    }
-    .form-title {
-        font-size: 28px;
-        font-weight: 600;
+        background: var(--surface, #ffffff);
+        border: 1px solid var(--border-color, #e2e8f0);
+        padding: 30px;
+        border-radius: 8px;
         margin-bottom: 30px;
-        text-align: center;
-        color: var(--color-text-primary, #333);
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
     }
+    
+    .form-title {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 25px;
+        text-align: center;
+        color: var(--text-primary, #333);
+    }
+    
     .modern-form .form-label {
         font-weight: 500;
-        color: var(--color-text-primary, #333);
+        color: var(--text-primary, #333);
         margin-bottom: 8px;
         display: block;
     }
+    
     .modern-form .form-control,
     .modern-form .form-select {
-        border: 2px solid #ddd !important;
+        border: 1px solid var(--border-color, #e2e8f0);
         border-radius: 8px;
         padding: 12px 16px;
         font-size: 16px;
         transition: all 0.3s ease;
-        background-color: #ffffff !important;
-        color: #333 !important;
+        background-color: var(--background, #ffffff);
+        color: var(--text-primary, #333);
         width: 100%;
         box-sizing: border-box;
-        display: block !important;
-        visibility: visible !important;
+        display: block;
     }
+    
     .modern-form .form-control:focus,
     .modern-form .form-select:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        border-color: var(--primary-color, #28a745);
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+        outline: none;
     }
+    
+    .mb-4 {
+        margin-bottom: 1.5rem;
+    }
+    
+    .d-grid {
+        display: grid;
+    }
+    
+    .btn {
+        transition: all 0.3s ease;
+        border-radius: 8px;
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+    
     .btn-primary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background-color: var(--primary-color, #28a745);
         border: none;
         padding: 12px 30px;
-        font-weight: 500;
-        transition: all 0.3s ease;
+        color: white;
     }
+    
     .btn-primary:hover {
-        transform: scale(1.02);
-        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        background-color: var(--primary-hover, #218838);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    }
+    
+    .btn-lg {
+        font-size: 1.125rem;
+    }
+    
+    .me-2 {
+        margin-right: 0.5rem;
     }
     
     /* Dark mode specific */
     [data-theme="dark"] .contact-form-section,
     [data-bs-theme="dark"] .contact-form-section {
-        background: var(--color-surface-primary, #1f2937);
-        border-color: var(--color-border, #374151);
+        background: var(--surface, #1e293b);
+        border-color: var(--border-color, #4a5568);
     }
+    
     [data-theme="dark"] .form-title,
     [data-bs-theme="dark"] .form-title {
-        color: var(--color-text-primary, #f9fafb);
+        color: var(--text-primary, #f7fafc);
     }
+    
     [data-theme="dark"] .modern-form .form-label,
     [data-bs-theme="dark"] .modern-form .form-label {
-        color: var(--color-text-primary, #f9fafb);
+        color: var(--text-primary, #f7fafc);
     }
+    
     [data-theme="dark"] .modern-form .form-control,
     [data-theme="dark"] .modern-form .form-select,
     [data-bs-theme="dark"] .modern-form .form-control,
     [data-bs-theme="dark"] .modern-form .form-select {
-        background-color: var(--color-surface-primary, #1f2937);
-        border-color: var(--color-border, #374151);
-        color: var(--color-text-primary, #f9fafb);
+        background-color: var(--surface, #1e293b);
+        border-color: var(--border-color, #4a5568);
+        color: var(--text-primary, #f7fafc);
     }
     
     /* Mobile styles */
     @media (max-width: 768px) {
         .contact-form-section {
             padding: 20px;
-            box-shadow: none;
-            border-radius: 0;
         }
         .form-title {
-            font-size: 24px;
+            font-size: 20px;
         }
     }
 </style>

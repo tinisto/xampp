@@ -35,6 +35,9 @@ $currentTheme = $_COOKIE['preferred-theme'] ?? 'light';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($title) ?> - 11-классники</title>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     
     <!-- Theme Variables -->
     <link rel="stylesheet" href="/css/theme-variables.css">
@@ -151,22 +154,6 @@ $currentTheme = $_COOKIE['preferred-theme'] ?? 'light';
             text-align: center;
             margin-bottom: 20px;
         }
-        
-        .logo-link {
-            display: inline-block;
-            text-decoration: none;
-            transition: transform 0.2s ease;
-        }
-        
-        .logo-link:hover {
-            transform: scale(1.05);
-        }
-        
-        .logo-placeholder {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
     </style>
     
     <!-- Theme initialization -->
@@ -182,14 +169,10 @@ $currentTheme = $_COOKIE['preferred-theme'] ?? 'light';
     <div class="form-container">
         <div class="form-wrapper">
             <div class="logo-section">
-                <a href="/" class="logo-link">
-                    <div class="logo-placeholder">
-                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="20" cy="20" r="18" stroke="#28a745" stroke-width="2"/>
-                            <text x="20" y="26" text-anchor="middle" fill="#28a745" font-size="18" font-weight="bold">11</text>
-                        </svg>
-                    </div>
-                </a>
+                <?php 
+                include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/site-icon.php';
+                renderSiteIcon('medium', '/');
+                ?>
             </div>
             <div class="form-card">
                 <?php if ($title): ?>

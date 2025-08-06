@@ -167,9 +167,16 @@ $pageTitle = 'Напишите нам';
 <body>
     <?php include $_SERVER['DOCUMENT_ROOT'] . '/common-components/header.php'; ?>
     
-    <div class="write-hero">
-        <h1>Напишите нам</h1>
-        <p>Мы всегда рады обратной связи</p>
+    <?php 
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/page-section-header.php';
+    renderPageSectionHeader([
+        'title' => 'Напишите нам',
+        'showSearch' => false
+    ]);
+    ?>
+    
+    <div style="text-align: center; padding: 20px 0;">
+        <p style="font-size: 1.1rem; color: var(--text-primary, #666);">Мы всегда рады обратной связи</p>
     </div>
     
     <div class="form-container">

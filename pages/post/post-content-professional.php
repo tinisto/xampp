@@ -16,56 +16,17 @@ if (isset($postData)) {
 ?>
 
 <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 20px; background: var(--background, #ffffff); color: var(--text-primary, #333);">
-  <!-- Post Type Navigation -->
-  <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 30px;">
-      <?php
-      $inactiveStyle = "padding: 8px 16px; border-radius: 20px; text-decoration: none; font-weight: 400; transition: all 0.3s ease; background: var(--surface, #ffffff); color: var(--text-primary, #333); border: 1px solid var(--border-color, #e2e8f0);";
-      ?>
-      
-      <a href="/posts" style="<?= $inactiveStyle ?>">Все посты</a>
-      <a href="/posts/category/1" style="<?= $inactiveStyle ?>">Образование</a>
-      <a href="/posts/category/2" style="<?= $inactiveStyle ?>">Карьера</a>
-      <a href="/posts/category/3" style="<?= $inactiveStyle ?>">Студенческая жизнь</a>
-  </div>
 
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-    <h1 style="color: var(--text-primary, #333); margin: 0;">
-      <?php echo htmlspecialchars($rowPost['title_post']); ?>
-    </h1>
-    <div>
-      <?php
-      // Check if the user is an admin
-      if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
-        echo '<div style="display: flex; gap: 10px;">';
-        echo '<a href="/edit/post/' . (int)$rowPost['id'] . '" style="padding: 6px 12px; background: #3b82f6; color: white; text-decoration: none; border-radius: 6px; font-size: 14px; display: inline-flex; align-items: center; gap: 5px; transition: background 0.2s;"><i class="fas fa-edit"></i> Редактировать</a>';
-        echo '<a href="/delete-post.php?id=' . (int)$rowPost['id'] . '" onclick="return confirm(\'Вы уверены, что хотите удалить этот пост?\')" style="padding: 6px 12px; background: #ef4444; color: white; text-decoration: none; border-radius: 6px; font-size: 14px; display: inline-flex; align-items: center; gap: 5px; transition: background 0.2s;"><i class="fas fa-trash"></i> Удалить</a>';
-        echo '</div>';
-      }
-      ?>
-    </div>
-  </div>
-
-  <!-- Date, Author and View Count -->
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color, #e2e8f0);">
-    <div style="color: var(--text-secondary, #666); font-size: 14px;">
-      <span style="margin-right: 20px;">
-        <i class="fas fa-user" style="margin-right: 5px;"></i>
-        <?php echo htmlspecialchars($rowPost['author_post']); ?>
-      </span>
-      <span>
-        <i class="fas fa-calendar-alt" style="margin-right: 5px;"></i>
-        <?php 
-        // Format the date
-        $date = new DateTime($rowPost['date_post']);
-        echo $date->format('d.m.Y');
-        ?>
-      </span>
-    </div>
-    <div style="color: var(--text-secondary, #666); font-size: 14px;">
-      <i class="fas fa-eye" style="margin-right: 5px;"></i>
-      <?php echo number_format((int)$rowPost['view_post']); ?> просмотров
-    </div>
-  </div>
+  <!-- Admin buttons (moved to after navigation) -->
+  <?php
+  // Check if the user is an admin
+  if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+    echo '<div style="display: flex; gap: 10px; margin-bottom: 20px;">';
+    echo '<a href="/edit/post/' . (int)$rowPost['id'] . '" style="padding: 6px 12px; background: #3b82f6; color: white; text-decoration: none; border-radius: 6px; font-size: 14px; display: inline-flex; align-items: center; gap: 5px; transition: background 0.2s;"><i class="fas fa-edit"></i> Редактировать</a>';
+    echo '<a href="/delete-post.php?id=' . (int)$rowPost['id'] . '" onclick="return confirm(\'Вы уверены, что хотите удалить этот пост?\')" style="padding: 6px 12px; background: #ef4444; color: white; text-decoration: none; border-radius: 6px; font-size: 14px; display: inline-flex; align-items: center; gap: 5px; transition: background 0.2s;"><i class="fas fa-trash"></i> Удалить</a>';
+    echo '</div>';
+  }
+  ?>
 
   <?php if (!empty($rowPost['description_post'])): ?>
   <p class="lead fw-medium" style="color: var(--text-secondary, #666); font-size: 1.1em; margin-bottom: 20px;">

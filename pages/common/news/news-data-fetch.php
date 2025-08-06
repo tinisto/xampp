@@ -11,8 +11,8 @@ if (isset($_GET['url_news'])) {
   if ($resultNews && mysqli_num_rows($resultNews) > 0) {
     $newsData = mysqli_fetch_assoc($resultNews);
     $pageTitle = $newsData['title_news'];
-    $metaD = $newsData['meta_d_news'];
-    $metaK = $newsData['meta_k_news'];
+    $metaD = isset($newsData['meta_d_news']) ? $newsData['meta_d_news'] : $newsData['title_news'];
+    $metaK = isset($newsData['meta_k_news']) ? $newsData['meta_k_news'] : '';
 
     // Free the result set for news
     mysqli_free_result($resultNews);

@@ -15,8 +15,7 @@ if (isset($_GET['category_en']) || isset($_GET['url_category'])) {
   if ($resultCategory && mysqli_num_rows($resultCategory) > 0) {
     $categoryData = mysqli_fetch_assoc($resultCategory);
     $pageTitle = $categoryData['title_category'];
-    $metaD = $categoryData['meta_d_category'];
-    $metaK = $categoryData['meta_k_category'];
+    $metaD = $categoryData['meta_description'] ?? '';
 
     // Free the result set for categories
     mysqli_free_result($resultCategory);

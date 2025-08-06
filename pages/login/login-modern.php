@@ -4,8 +4,8 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Include the modern template engine
-require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine-modern.php';
+// Include the ultimate template engine
+require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine-ultimate.php';
 
 // Create login form content
 $loginContent = '

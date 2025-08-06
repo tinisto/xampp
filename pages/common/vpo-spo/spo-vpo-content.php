@@ -2,6 +2,8 @@
 // SPO/VPO Content Template
 // This file contains the main content for SPO/VPO pages
 
+require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/page-header.php';
+
 // Get institution data from URL slug
 $url = $additionalData['url_slug'] ?? $_GET['url_slug'] ?? basename($_SERVER['REQUEST_URI']);
 $url = preg_replace('/\?.*/', '', $url); // Remove query string
@@ -34,12 +36,14 @@ $addressParts = array_filter([
     $row['street'] ?? ''
 ]);
 $address = implode(', ', $addressParts);
-?>
 
-<div class="institution-header">
-    <h1><?= htmlspecialchars($row['name'] ?? 'Учебное заведение') ?></h1>
-    <p><strong>Тип:</strong> <?= htmlspecialchars($institutionType) ?></p>
-</div>
+// Render the green header
+renderPageHeader(
+    $row['name'] ?? 'Учебное заведение',
+    $institutionType,
+    ['showSubtitle' => true]
+);
+?>
 
 <div class="institution-info">
     <div class="info-section">

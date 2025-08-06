@@ -14,7 +14,12 @@ if (!isset($_SESSION['csrf_token'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Восстановление пароля - 11-классники</title>
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    
+    <!-- Favicon -->
+    <?php 
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/favicon.php';
+    renderFavicon();
+    ?>
     <link rel="stylesheet" href="/css/site-logo.css">
     <style>
         * {
@@ -212,8 +217,8 @@ if (!isset($_SESSION['csrf_token'])) {
     <div class="reset-container">
         <div class="logo-section">
             <?php 
-            require_once __DIR__ . '/includes/components/site-logo.php';
-            echo renderSiteLogo(['showText' => false]);
+            include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/site-icon.php';
+            renderSiteIcon('medium', '/', 'login-logo');
             ?>
         </div>
         <div class="reset-header">

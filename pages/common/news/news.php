@@ -299,18 +299,34 @@ if (isset($_GET['direct_test'])) {
     <?php include $_SERVER['DOCUMENT_ROOT'] . '/common-components/header.php'; ?>
     
     <!-- Main Content -->
-    <main style="flex: 1;">
-        <?php
-        if (isset($_GET['url_news']) && !empty($_GET['url_news'])) {
-            // Show specific news article
-            include $_SERVER['DOCUMENT_ROOT'] . '/pages/common/news/news-content.php';
-        } else {
-            // Show news listing
-            ?>
-            <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 20px; background: var(--background, #ffffff); color: var(--text-primary, #333);">
-                <?php if (empty($newsType)): ?>
-                <h1 style="color: var(--text-primary, #333); margin-bottom: 20px;"><?= htmlspecialchars($pageTitle) ?></h1>
-                <?php endif; ?>
+    <?php 
+    // Add green header for news pages
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/page-section-header.php';
+    
+    if (isset($_GET['url_news']) && !empty($_GET['url_news'])) {
+        // For individual news articles - get title from database or use generic
+        renderPageSectionHeader([
+            'title' => 'Новости',
+            'showSearch' => false
+        ]);
+    } else {
+        // For news listing - show appropriate title
+        renderPageSectionHeader([
+            'title' => htmlspecialchars($pageTitle),
+            'showSearch' => false
+        ]);
+    }
+    
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/content-wrapper.php';
+    renderContentWrapper('start');
+    
+    if (isset($_GET['url_news']) && !empty($_GET['url_news'])) {
+        // Show specific news article
+        include $_SERVER['DOCUMENT_ROOT'] . '/pages/common/news/news-content.php';
+    } else {
+        // Show news listing
+        ?>
+        <div>
                 
                 <!-- News Type Navigation -->
                 <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 30px;">
@@ -432,7 +448,7 @@ if (isset($_GET['direct_test'])) {
                             <?php endif; ?>
                             
                             <h2 style="margin: 0 0 10px 0; font-size: 18px; line-height: 1.3;">
-                                <a href="/news/<?= htmlspecialchars($row['url_news']) ?>" style="color: var(--text-primary, #333); text-decoration: none;">
+                                <a href="/news/<?= htmlspecialchars($row['url_slug']) ?>" style="color: var(--text-primary, #333); text-decoration: none;">
                                     <?= htmlspecialchars($row['title_news']) ?>
                                 </a>
                             </h2>
@@ -522,11 +538,11 @@ if (isset($_GET['direct_test'])) {
                     echo '</div>';
                 }
                 ?>
-            </div>
-            <?php
-        }
-        ?>
-    </main>
+        </div>
+        <?php
+    }
+    renderContentWrapper('end');
+    ?>
     
     <!-- Footer -->
     <?php include $_SERVER['DOCUMENT_ROOT'] . '/common-components/footer-unified.php'; ?>

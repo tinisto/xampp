@@ -16,13 +16,11 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
         return renderAuthLayout($pageTitle, $mainContent, $additionalData);
     }
     
-    // Handle backward compatibility for meta tags passed as separate parameters
+    // Handle backward compatibility for meta description passed as separate parameter
     if ($metaD !== null) {
         $additionalData['metaD'] = $metaD;
     }
-    if ($metaK !== null) {
-        $additionalData['metaK'] = $metaK;
-    }
+    // Remove meta keywords - no longer used for SEO
     
     // Enhanced configuration options with defaults
     $config = array_merge([
@@ -39,8 +37,7 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
         'customJS' => '',
         'breadcrumbs' => [],
         'canonicalUrl' => '',
-        'metaD' => 'Образовательный портал 11-классники - все для успешной сдачи ЕГЭ, ОГЭ и поступления в вуз.',
-        'metaK' => '11 классников, образование, школа, вуз, егэ, огэ, тесты, новости образования'
+        'metaD' => 'Образовательный портал 11-классники - все для успешной сдачи ЕГЭ, ОГЭ и поступления в вуз.'
     ], $additionalData);
     
     // Extract config for easier access
@@ -87,10 +84,6 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
     
     <?php if (isset($metaD) && !empty($metaD)): ?>
         <meta name="description" content="<?php echo htmlspecialchars($metaD); ?>">
-    <?php endif; ?>
-    
-    <?php if (isset($metaK) && !empty($metaK)): ?>
-        <meta name="keywords" content="<?php echo htmlspecialchars($metaK); ?>">
     <?php endif; ?>
     
     <!-- CSS Framework -->
@@ -408,8 +401,53 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
         ?>
     <?php endif; ?>
     
-    <!-- Main Content -->
-    <?php echo $content; ?>
+    <!-- Debug info -->
+    <?php if (isset($_GET['debug'])): ?>
+        <div style="background: orange; padding: 10px; color: black;">
+            DEBUG: showSearch = <?php echo ($showSearch ?? false) ? 'true' : 'false'; ?>
+        </div>
+    <?php endif; ?>
+    
+    <!-- Page sections container -->
+    <div style="display: flex; flex-direction: column; margin: 0; padding: 0;">
+        
+        <!-- Green Page Header (unified component) -->
+        <div style="flex: 0 0 auto;">
+            <?php 
+            include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/page-section-header.php';
+            
+            // Use pageHeader config if provided, otherwise default to simple header
+            $headerConfig = $pageHeader ?? [
+                'title' => htmlspecialchars($pageTitle),
+                'showSearch' => false
+            ];
+            
+            renderPageSectionHeader($headerConfig);
+            ?>
+        </div>
+        
+        <!-- Search Bar (if needed, placed after green header) -->
+        <?php if ($showSearch ?? false): ?>
+            <div style="background: yellow; padding: 20px 0; margin: 0; flex: 0 0 auto;">
+                <?php 
+                include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/search-bar.php';
+                renderSearchBar([
+                    'placeholder' => $searchPlaceholder ?? 'Поиск...',
+                    'action' => $searchAction ?? '/search',
+                    'name' => $searchName ?? 'query',
+                    'style' => 'default'
+                ]);
+                ?>
+            </div>
+        <?php endif; ?>
+        
+    </div>
+    
+    <!-- Main Content (wrapped in red for testing) -->
+    <?php 
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/content-wrapper.php';
+    renderContentWrapper('full', $content);
+    ?>
     
     <!-- Footer -->
     <?php if (!$noFooter): ?>
@@ -555,7 +593,6 @@ function renderAuthLayout($pageTitle, $mainContent, $config = []) {
         
         <!-- Custom CSS -->
         <link rel="stylesheet" href="/css/unified-styles.css">
-        <link rel="stylesheet" href="/css/site-logo.css">
         <?php if (!empty($authConfig['customCSS'])): ?>
             <link rel="stylesheet" href="<?php echo $authConfig['customCSS']; ?>">
         <?php endif; ?>
@@ -564,7 +601,10 @@ function renderAuthLayout($pageTitle, $mainContent, $config = []) {
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
         
         <!-- Favicon -->
-        <link rel="icon" href="/favicon.ico" type="image/x-icon">
+        <?php 
+        include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/favicon.php';
+        renderFavicon();
+        ?>
     </head>
     <body class="full-height-flex">
         <main class="container">

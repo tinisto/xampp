@@ -53,10 +53,37 @@ $pageTitle = 'ВПО по регионам';
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
-        h1 {
+        .page-hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 0;
+            margin: -30px -30px 30px -30px;
             text-align: center;
-            color: #28a745;
-            margin-bottom: 30px;
+        }
+        
+        .page-hero-title {
+            font-size: 40px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .page-hero-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        @media (max-width: 768px) {
+            .page-hero-title {
+                font-size: 28px;
+            }
+            .page-hero-subtitle {
+                font-size: 14px;
+            }
+            .page-hero-section {
+                padding: 20px 0;
+            }
         }
         
         .regions-grid {
@@ -133,7 +160,10 @@ $pageTitle = 'ВПО по регионам';
 </head>
 <body>
     <div class="container">
-        <h1><?= htmlspecialchars($pageTitle) ?></h1>
+        <section class="page-hero-section">
+            <h1 class="page-hero-title"><?= htmlspecialchars($pageTitle) ?></h1>
+            <p class="page-hero-subtitle">Найдите высшие учебные заведения в вашем регионе</p>
+        </section>
         
         <div class="debug">
             <strong>Debug Info:</strong><br>

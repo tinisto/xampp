@@ -1,5 +1,4 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/check_under_construction.php';
 $mainContent = 'pages/about/about_content.php';
 $pageTitle = 'О сайте 11-классники';
 $templateConfig = [

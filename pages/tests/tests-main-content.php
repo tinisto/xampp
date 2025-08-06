@@ -283,13 +283,46 @@ body {
     background-color: var(--background-dark, #1a1a1a);
 }
 
+/* Navigation button hover effects */
+.category-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.category-btn:not(.active):hover {
+    color: #28a745 !important;
+    border-color: #28a745 !important;
+    background: #f8f9fa !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.15);
+}
+
+.category-btn.active:hover {
+    background: #218838 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
 /* Dark mode support for navigation */
-[data-theme="dark"] a[style*="background: var(--surface"] {
+[data-theme="dark"] .category-btn:not(.active) {
     background: var(--surface-dark, #2d3748) !important;
     border-color: var(--border-dark, #4a5568) !important;
+    color: var(--text-primary, #e4e6eb) !important;
 }
-[data-theme="dark"] a[style*="background: var(--surface"]:hover {
+
+[data-theme="dark"] .category-btn:not(.active):hover {
     background: var(--surface-hover-dark, #374151) !important;
+    border-color: #28a745 !important;
+    color: #28a745 !important;
+}
+
+[data-theme="dark"] .category-btn.active {
+    background: #28a745 !important;
+    color: white !important;
+}
+
+[data-theme="dark"] .category-btn.active:hover {
+    background: #218838 !important;
 }
 
 /* Prevent flash of unstyled content */

@@ -159,14 +159,10 @@ if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
 <body>
     <div class="auth-container">
         <div class="logo-section">
-            <a href="/" class="logo-link">
-                <div class="logo-placeholder">
-                    <svg width="60" height="60" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2"/>
-                        <text x="20" y="26" text-anchor="middle" fill="currentColor" font-size="18" font-weight="bold">11</text>
-                    </svg>
-                </div>
-            </a>
+            <?php 
+            include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/site-icon.php';
+            renderSiteIcon('large', '/', 'login-logo');
+            ?>
         </div>
         
         <h1>Вход</h1>
@@ -221,7 +217,7 @@ if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
         </div>
         
         <div class="form-footer">
-            <p>Нет аккаунта? <a href="/registration">Зарегистрироваться</a></p>
+            <p>Нет аккаунта? <a href="/registration" style="color: red;">Зарегистрироваться</a></p>
         </div>
     </div>
 </body>

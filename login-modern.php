@@ -1,5 +1,11 @@
 <?php
 session_start();
+
+// Force cache refresh for updated icons  
+header('Cache-Control: no-cache, no-store, must-revalidate');
+header('Pragma: no-cache');
+header('Expires: 0');
+
 require_once "config/loadEnv.php";
 require_once "database/db_connections.php";
 
@@ -367,8 +373,8 @@ if (!isset($_SESSION['csrf_token'])) {
     <div class="login-container">
         <div class="logo-section">
             <?php 
-            require_once __DIR__ . '/includes/components/site-logo.php';
-            echo renderSiteLogo(['showText' => true]);
+            include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/site-icon.php';
+            renderSiteIcon('medium', '/', 'login-logo');
             ?>
         </div>
         <div class="login-header">

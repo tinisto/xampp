@@ -15,7 +15,7 @@ function getInstitutions($connection, $region_id, $type, $offset, $limit)
             break;
         case 'vpo':
             $tableName = 'vpo';  // Use old table since new is empty
-            $regionColumn = 'id_region';
+            $regionColumn = 'region_id';  // VPO table uses region_id not id_region
             $sortColumn = 'vpo_name';
             break;
         default:

@@ -1,9 +1,17 @@
 <?php 
 require_once __DIR__ . '/../../includes/Database.php';
 require_once __DIR__ . '/../../includes/Security.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/page-header.php';
 
 // Include loading placeholders
 include $_SERVER['DOCUMENT_ROOT'] . '/common-components/loading-placeholders.php';
+
+// Render the green header
+renderPageHeader(
+    'Поиск',
+    'Найдите школы, ВУЗы, ССУЗы и статьи',
+    ['showSubtitle' => true]
+);
 
 include 'search-form.php'; 
 ?>

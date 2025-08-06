@@ -105,7 +105,7 @@ ob_start();
     </script>
 </head>
 <body>
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/common-components/header-modern.php'; ?>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/common-components/header.php'; ?>
     
     <main class="main-content">
         <div class="container py-4">
@@ -166,7 +166,7 @@ ob_start();
         </div>
     </main>
     
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/common-components/footer-modern.php'; ?>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/common-components/footer.php'; ?>
     
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
