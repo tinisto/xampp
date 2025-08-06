@@ -330,3 +330,10 @@ a:hover {
     border-color: #3e1a1a;
     color: #e88888;
 }
+
+/* Form Check Hover Effects - merged from test.css */
+.form-check-input:hover,
+.form-check-label:hover {
+    background-color: rgb(195, 197, 199);
+    cursor: pointer;
+}
