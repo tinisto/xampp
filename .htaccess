@@ -51,11 +51,15 @@
     # ============================================================================
 
     # Educational Institutions - All Regions
-    RewriteRule ^(schools|spo|vpo)-all-regions/?$ pages/common/educational-institutions-all-regions/educational-institutions-all-regions.php?type=$1 [QSA,NC,L]
+    RewriteRule ^schools-all-regions/?$ schools-all-regions-real.php [QSA,NC,L]
+    RewriteRule ^vpo-all-regions/?$ vpo-all-regions-real.php [QSA,NC,L]
+    RewriteRule ^spo-all-regions/?$ spo-all-regions-new.php [QSA,NC,L]
     RewriteRule ^educational-institutions-all-regions/?$ pages/common/educational-institutions-all-regions/educational-institutions-all-regions.php [QSA,NC,L]
     
     # Educational Institutions - By Region
-    RewriteRule ^(schools|spo|vpo)-in-region/([a-zA-Z0-9-]+)/?$ pages/common/educational-institutions-in-region/educational-institutions-in-region.php?region_name_en=$2&type=$1 [QSA,NC,L]
+    RewriteRule ^schools-in-region/([a-zA-Z0-9-]+)/?$ schools-in-region-real.php?region_url=$1 [QSA,NC,L]
+    RewriteRule ^vpo-in-region/([a-zA-Z0-9-]+)/?$ vpo-in-region-new.php?region_url=$1 [QSA,NC,L]
+    RewriteRule ^spo-in-region/([a-zA-Z0-9-]+)/?$ spo-in-region-new.php?region_url=$1 [QSA,NC,L]
     
     # Educational Institutions - By Town  
     RewriteRule ^(schools|spo|vpo)/([^/]+)/([^/]+)/?$ pages/common/educational-institutions-in-town/educational-institutions-in-town.php?type=$1&region_name_en=$2&url_slug_town=$3 [L,QSA]
@@ -64,27 +68,27 @@
     RewriteRule ^school/(\d+)/?$ pages/school/school-redirect.php?id_school=$1 [QSA,NC,L]
     
     # School Pages - slug-based URLs (canonical URLs)
-    RewriteRule ^school/([a-zA-Z0-9-]+)/?$ pages/school/school-single.php?url_slug=$1 [QSA,NC,L]
+    RewriteRule ^school/([a-zA-Z0-9-]+)/?$ school-single-new.php?url_slug=$1 [QSA,NC,L]
     
     # VPO (Universities) - URL-based routing
-    RewriteRule ^vpo/([^/]+)/?$ pages/common/vpo-spo/single.php?url_slug=$1&type=vpo [QSA,NC,L]
+    RewriteRule ^vpo/([^/]+)/?$ vpo-single-new.php?url_slug=$1 [QSA,NC,L]
     RewriteRule ^vpo/(\d+)/?$ pages/common/vpo-spo/redirect.php?id_university=$1 [L,QSA]
     RewriteRule ^high-edu/(.*)$ /vpo/$1 [R=301,L]
     
     # SPO (Colleges) - URL-based routing  
-    RewriteRule ^spo/([^/]+)/?$ pages/common/vpo-spo/single.php?url_slug=$1&type=spo [QSA,NC,L]
+    RewriteRule ^spo/([^/]+)/?$ spo-single-new.php?url_slug=$1 [QSA,NC,L]
     RewriteRule ^spo/(\d+)/?$ pages/common/vpo-spo/redirect.php?id_college=$1 [L,QSA]
     RewriteRule ^middle-edu/(.*)$ /spo/$1 [R=301,L]
 
     # News System - slug-based
-    RewriteRule ^news/?$ pages/common/news/news.php [QSA,NC,L]
-    RewriteRule ^news/novosti-vuzov/?$ pages/common/news/news.php?news_type=vpo [QSA,NC,L]
-    RewriteRule ^news/novosti-spo/?$ pages/common/news/news.php?news_type=spo [QSA,NC,L]
-    RewriteRule ^news/novosti-shkol/?$ pages/common/news/news.php?news_type=school [QSA,NC,L]
-    RewriteRule ^news/novosti-obrazovaniya/?$ pages/common/news/news.php?news_type=education [QSA,NC,L]
-    RewriteRule ^news/category/([^/]+)/?$ pages/category-news/category-news.php?category_en=$1 [QSA,NC,L]
-    RewriteRule ^news/([^/]+)/?$ pages/common/news/news.php?url_news=$1 [QSA,NC,L]
-    RewriteRule ^post/([^/]+)/?$ pages/post/post.php?url_post=$1 [QSA,NC,L]
+    RewriteRule ^news/?$ news-new.php [QSA,NC,L]
+    RewriteRule ^news/novosti-vuzov/?$ news-new.php?news_type=vpo [QSA,NC,L]
+    RewriteRule ^news/novosti-spo/?$ news-new.php?news_type=spo [QSA,NC,L]
+    RewriteRule ^news/novosti-shkol/?$ news-new.php?news_type=school [QSA,NC,L]
+    RewriteRule ^news/novosti-obrazovaniya/?$ news-new.php?news_type=education [QSA,NC,L]
+    RewriteRule ^news/category/([^/]+)/?$ news-new.php?category_en=$1 [QSA,NC,L]
+    RewriteRule ^news/([^/]+)/?$ news-new.php?url_news=$1 [QSA,NC,L]
+    RewriteRule ^post/([^/]+)/?$ post-new.php?url_post=$1 [QSA,NC,L]
     
     # Edit routes
     RewriteRule ^edit/news/(\d+)/?$ dashboard-edit-content.php?type=news&id=$1 [QSA,NC,L]
@@ -94,12 +98,12 @@
     RewriteRule ^posts/?$ / [R=301,L]
     
     # Categories
-    RewriteRule ^category/([^/]+)/?$ pages/category/category.php?category_en=$1 [QSA,NC,L]
+    RewriteRule ^category/([^/]+)/?$ pages/category/category-new.php?category_en=$1 [QSA,NC,L]
 
     # Tests System
-    RewriteRule ^tests/?$ pages/tests/tests-main.php [QSA,NC,L]
-    RewriteRule ^test/?$ pages/tests/tests-intro.php [QSA,NC,L]
-    RewriteRule ^test/([^/]+)/?$ pages/tests/test-simple.php?test=$1&q=0 [QSA,NC,L]
+    RewriteRule ^tests/?$ tests-new.php [QSA,NC,L]
+    RewriteRule ^test/?$ test-single-new.php [QSA,NC,L]
+    RewriteRule ^test/([^/]+)/?$ test-single-new.php?url_test=$1 [QSA,NC,L]
     RewriteRule ^test-full/([^/]+)/?$ pages/tests/test-full-single.php?test=$1&q=0 [QSA,NC,L]
     RewriteRule ^test-result/([^/]+)/?$ pages/tests/test-result.php?test=$1 [QSA,NC,L]
 
@@ -123,12 +127,12 @@
     RewriteRule ^logout/?$ simple_logout.php [QSA,NC,L]
 
     # Search
-    RewriteRule ^search/?$ pages/search/search.php [QSA,NC,L]
+    RewriteRule ^search/?$ search-results-new.php [QSA,NC,L]
     RewriteRule ^search-process/?$ pages/search/search-process.php [QSA,NC,L]
 
     # Static Pages
-    RewriteRule ^about/?$ pages/about/about.php [QSA,NC,L]
-    RewriteRule ^write/?$ pages/write/write-simple.php [QSA,NC,L]
+    RewriteRule ^about/?$ about-new.php [QSA,NC,L]
+    RewriteRule ^write/?$ write-new.php [QSA,NC,L]
     RewriteRule ^thank-you/?$ pages/thank-you/thank-you.php [QSA,NC,L]
     RewriteRule ^privacy/?$ pages/privacy/privacy.php [QSA,NC,L]
     RewriteRule ^terms/?$ pages/terms/terms.php [QSA,NC,L]

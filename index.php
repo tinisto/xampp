@@ -89,11 +89,9 @@ $blueContent = '';
 
 // Set page title
 $pageTitle = 'Главная';
+$metaD = '11-классники - образовательный портал для школьников, абитуриентов и студентов. Школы, ВУЗы, колледжи, тесты ЕГЭ и полезные статьи.';
+$metaK = '11-классники, образование, школы, ВУЗы, СПО, абитуриенты, ЕГЭ, тесты';
 
 // Include the template
 include $_SERVER['DOCUMENT_ROOT'] . '/real_template.php';
-include $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine-ultimate.php';
-
-// Render the template with dynamic content
-renderTemplate($pageTitle, $mainContent, $templateConfig);
 ?>
