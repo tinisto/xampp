@@ -6,30 +6,41 @@ FTP_HOST = "ftp.ipage.com"
 FTP_USER = "franko"
 FTP_PASS = "JyvR!HK2E!N55Zt"
 
-print("Downloading current news.php from server...")
+print("Downloading template files from server...")
 
 try:
     ftp = ftplib.FTP(FTP_HOST)
     ftp.login(FTP_USER, FTP_PASS)
     ftp.set_pasv(True)
     
-    # Change to the correct directory
-    ftp.cwd('/11klassnikiru/pages/common/news')
+    # Change to root directory
+    ftp.cwd('/11klassnikiru/')
     
-    # Download the current file
-    with open('news_from_server.php', 'wb') as f:
-        ftp.retrbinary('RETR news.php', f.write)
+    files_to_download = [
+        ('real_template.php', 'real_template.php'),
+        ('real_components.php', 'real_components.php'),
+        ('template-debug-colors.php', 'template-debug-colors.php'),
+        ('common-components/real_header.php', 'common-components/real_header.php'),
+        ('common-components/real_footer.php', 'common-components/real_footer.php'),
+        ('common-components/real_title.php', 'common-components/real_title.php')
+    ]
     
-    print("✓ Downloaded current news.php")
+    downloaded = 0
+    for server_file, local_file in files_to_download:
+        try:
+            # Ensure local directory exists
+            local_dir = os.path.dirname(local_file)
+            if local_dir and not os.path.exists(local_dir):
+                os.makedirs(local_dir)
+            
+            with open(local_file, 'wb') as f:
+                ftp.retrbinary(f'RETR {server_file}', f.write)
+            print(f"✓ Downloaded {server_file} -> {local_file}")
+            downloaded += 1
+        except Exception as e:
+            print(f"❌ Error downloading {server_file}: {e}")
     
-    # Check lines 25-50
-    with open('news_from_server.php', 'r') as f:
-        lines = f.readlines()
-        print("\nLines 25-50 of current server file:")
-        for i in range(24, min(50, len(lines))):
-            if 'categoryFilter' in lines[i] or 'case' in lines[i]:
-                print(f"{i+1}: {lines[i].rstrip()}")
-    
+    print(f"\n✅ Downloaded {downloaded}/{len(files_to_download)} files")
     ftp.quit()
     
 except Exception as e:
