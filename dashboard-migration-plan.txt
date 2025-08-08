@@ -1,0 +1,55 @@
+Dashboard Migration Plan
+============================================================
+
+Comments Management (2 pages)
+----------------------------------------
+  - comments-dashboard/comments-view/edit-comment/admin-comments-edit.php
+  - comments-dashboard/comments-view/comments-view.php
+
+News Management (4 pages)
+----------------------------------------
+  - news-dashboard/admin-view-news/1111111111admin-view-news-edit-form.php
+  - news-dashboard/admin-view-news/admin-view-news.php
+  - news-dashboard/news-approve/news-approve-edit-form.php
+  - news-dashboard/news-approve/news-approve.php
+
+Other (3 pages)
+----------------------------------------
+  - admin-index/dashboard.php
+  - messages-dashboard/messages-view/messages-view.php
+  - search-dashboard/search-view/search-view.php
+
+Posts Management (3 pages)
+----------------------------------------
+  - posts-dashboard/posts-create/posts-create.php
+  - posts-dashboard/posts-view/posts-view-edit-form.php
+  - posts-dashboard/posts-view/posts-view.php
+
+SPO Management (5 pages)
+----------------------------------------
+  - spo-dashboard/spo-edit/spo-edit-form.php
+  - spo-dashboard/spo-edit/spo-edit.php
+  - spo-dashboard/spo-new/spo-new-edit-form.php
+  - spo-dashboard/spo-new/spo-new.php
+  - spo-dashboard/spo-view/spo-view.php
+
+Schools Management (5 pages)
+----------------------------------------
+  - schools-dashboard/schools-approve-edit/schools-approve-edit-form.php
+  - schools-dashboard/schools-approve-edit/schools-approve-edit.php
+  - schools-dashboard/schools-approve-new/schools-approve-new-edit-form.php
+  - schools-dashboard/schools-approve-new/schools-approve-new.php
+  - schools-dashboard/schools-view/schools-view.php
+
+User Management (1 pages)
+----------------------------------------
+  - users-dashboard/user.php
+
+VPO Management (5 pages)
+----------------------------------------
+  - vpo-dashboard/vpo-edit/vpo-edit-form.php
+  - vpo-dashboard/vpo-edit/vpo-edit.php
+  - vpo-dashboard/vpo-new/vpo-new-edit-form.php
+  - vpo-dashboard/vpo-new/vpo-new.php
+  - vpo-dashboard/vpo-view/vpo-view.php
+
