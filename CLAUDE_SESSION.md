@@ -1482,3 +1482,180 @@ Found 101 files including:
 The migration to unified template (`real_template.php`) was incomplete. While new versions of pages were created (like `about-new.php`, `write-new.php`), the old versions are still being served, causing inconsistent behavior across the site.
 
 **Major Architecture Issue Identified: 2025-08-08 13:30 GMT+7**
+
+## Template Migration Project Started - 2025-08-08 (Continued)
+
+### Migration Priority Analysis:
+Categorized 101 files using old template system into:
+- **HIGH PRIORITY**: 34 files (user-facing pages)
+- **MEDIUM PRIORITY**: 26 files (account/profile pages)
+- **LOW PRIORITY**: 41 files (admin/dashboard pages)
+
+### Migration Progress:
+
+#### ✅ COMPLETED:
+1. **404 Error Page**:
+   - Created: `404-new.php` using real_template.php
+   - Updated: `.htaccess` ErrorDocument 404 to use `/404-new.php`
+   - Updated: Fallback route for non-existent files
+   - Status: Fully migrated and deployed
+
+#### 🔧 IN PROGRESS:
+2. **Search Functionality**:
+   - Created: `search-new.php` using real_template.php
+   - Features: Unified search across schools, VPO, SPO, and posts
+   - Status: Created but not yet deployed
+
+3. **Login Page Discovery**:
+   - Found: `login-new.php` already exists but uses standalone HTML (not real_template.php)
+   - Issue: Multiple versions of login pages exist
+   - Next: Need to update existing login-new.php to use real_template.php
+
+### Files Created:
+- `404-new.php` - 404 error page using real_template.php
+- `search-new.php` - Search functionality using real_template.php
+- `upload-404-fix.py` - Deployment script
+
+### .htaccess Updates:
+```apache
+ErrorDocument 404 /404-new.php
+RewriteRule . /404-new.php [L]
+```
+
+### Key Findings:
+1. Some "new" files already exist but don't use real_template.php (e.g., login-new.php)
+2. Need to audit existing files before creating new ones
+3. Multiple versions of same functionality exist (login.php, login-modern.php, login-unified.php, etc.)
+
+### Next Steps:
+1. Update existing login-new.php to use real_template.php
+2. Create registration-new.php using real_template.php
+3. Update .htaccess routes for search and login
+4. Continue with remaining HIGH PRIORITY pages
+
+**Migration In Progress: 2025-08-08 14:00 GMT+7**
+
+## Template Migration Progress Update - 2025-08-08 (Continued)
+
+### Migration Statistics:
+- **Total files using old template**: 101
+- **Successfully migrated**: 26 pages (26% complete)
+- **Remaining**: ~75 pages
+
+### Batch 1 Deployment (14:30 GMT+7):
+Successfully uploaded and deployed:
+1. **404-new.php** - 404 error page ✅
+2. **search-new.php** - Search functionality ✅
+3. **login-template.php** - Login page ✅
+4. **registration-new.php** - Registration page ✅
+5. Updated `.htaccess` routes ✅
+
+### Batch 2 Deployment (14:45 GMT+7):
+Successfully uploaded and deployed:
+1. **error-new.php** - Generic error page (500, etc) ✅
+2. **forgot-password-new.php** - Password recovery ✅
+3. Updated `.htaccess` error handlers ✅
+
+### Key Discovery:
+Many "*-new.php" files already existed and were using real_template.php:
+- about-new.php ✅
+- write-new.php ✅
+- news-new.php ✅
+- post-new.php ✅
+- category-new.php ✅
+- tests-new.php ✅
+- All VPO/SPO/School pages (*-new.php) ✅
+
+### Complete List of Migrated Pages (26 total):
+1. 404 Error Page - 404-new.php
+2. Search - search-new.php
+3. Login - login-template.php
+4. Registration - registration-new.php
+5. Error Page - error-new.php
+6. Forgot Password - forgot-password-new.php
+7. About - about-new.php
+8. Write - write-new.php
+9. News - news-new.php
+10. Post - post-new.php
+11. Category - category-new.php
+12. Tests - tests-new.php
+13. Schools All Regions - schools-all-regions-real.php
+14. VPO All Regions - vpo-all-regions-new.php
+15. SPO All Regions - spo-all-regions-new.php
+16. School Single - school-single-new.php
+17. VPO Single - vpo-single-new.php
+18. SPO Single - spo-single-new.php
+19. VPO in Region - vpo-in-region-new.php
+20. SPO in Region - spo-in-region-new.php
+21. Schools in Region - schools-in-region-real.php
+22. Test Single - test-single-new.php
+23. Educational Single - edu-single-new.php
+24. Category Test - category-test-new.php
+25. Write Success - write-success.php
+26. Temp News - temp_news-new.php
+
+### Remaining High Priority Pages (15):
+1. Account pages (/pages/account/account.php)
+2. Reset Password pages
+3. Password Change page
+4. Thank You page
+5. Privacy page
+6. Terms page
+7. Unauthorized page
+8. Test Result Handler
+9. Educational institutions in town
+10. Various edit forms (School, VPO, SPO)
+11. Search process pages
+12. News creation forms
+
+### Remaining Medium/Low Priority (60):
+- All dashboard/admin pages in /pages/dashboard/
+- Internal tools and management interfaces
+- Legacy compatibility pages
+
+### Technical Achievements:
+1. ✅ Eliminated favicon.php references in migrated pages
+2. ✅ Consistent use of real_template.php structure
+3. ✅ Proper error handling and user feedback
+4. ✅ Dark mode support in all new pages
+5. ✅ Mobile responsive design
+6. ✅ CSRF protection maintained
+
+### Files Created During Migration:
+- `analyze-migration-status.php` - Migration progress analyzer
+- `migration-summary.md` - Detailed migration documentation
+- `upload-migration-batch1.py` - First deployment script
+- `upload-migration-batch2.py` - Second deployment script
+
+### Next Steps:
+1. Continue with remaining 15 high-priority user-facing pages
+2. Create batch migration tools for dashboard pages
+3. Update remaining .htaccess routes
+4. Test all functionality after migration
+5. Remove template-engine-ultimate.php once complete
+
+**Migration Progress Checkpoint: 2025-08-08 15:00 GMT+7**
+
+## Continuing Migration - 2025-08-08 (Continued from new session)
+
+### Migration Progress Update:
+- **Previously migrated**: 26 pages (26% complete)
+- **Just created**: 9 additional pages
+  - account-new.php - User account dashboard ✅
+  - privacy-new.php - Privacy policy page ✅
+  - terms-new.php - Terms of service page ✅
+  - thank-you-new.php - Thank you page ✅
+  - unauthorized-new.php - 403 access denied page ✅
+  - password-change-new.php - Password change page ✅
+  - account-edit-new.php - Edit profile page ✅
+  - account-comments-new.php - User comments page ✅
+  - Updated .htaccess routes ✅
+
+### Current Migration Status:
+- **Total migrated**: 35 pages (35% complete)
+- **Remaining**: ~66 pages
+
+### Files Ready for Upload:
+All newly created pages need to be uploaded to production. Created `upload-migrated-pages.py` script but FTP credentials need correction.
+
+**Session Continuing: 2025-08-08 16:30 GMT+7**

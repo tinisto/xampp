@@ -111,13 +111,16 @@ DirectoryIndex index.php index.html
     RewriteRule ^test-result/([^/]+)/?$ pages/tests/test-result.php?test=$1 [QSA,NC,L]
 
     # User System
-    RewriteRule ^login/?$ login-modern.php [QSA,NC,L]
-    RewriteRule ^registration/?$ registration-modern.php [QSA,NC,L]
-    RewriteRule ^forgot-password/?$ forgot-password.php [QSA,NC,L]
+    RewriteRule ^login/?$ login-template.php [QSA,NC,L]
+    RewriteRule ^registration/?$ registration-new.php [QSA,NC,L]
+    RewriteRule ^forgot-password/?$ forgot-password-new.php [QSA,NC,L]
     RewriteRule ^forgot-password-process/?$ forgot-password-process.php [QSA,NC,L]
     RewriteRule ^reset-password/?$ pages/account/reset-password/reset-password-confirm-standalone.php [QSA,NC,L]
     RewriteRule ^reset-password-confirm-process/?$ pages/account/reset-password/reset-password-confirm-process.php [QSA,NC,L]
-    RewriteRule ^account/?$ pages/account/account.php [QSA,NC,L]
+    RewriteRule ^account/?$ account-new.php [QSA,NC,L]
+    RewriteRule ^account/edit/?$ account-edit-new.php [QSA,NC,L]
+    RewriteRule ^account/comments/?$ account-comments-new.php [QSA,NC,L]
+    RewriteRule ^account/password-change/?$ password-change-new.php [QSA,NC,L]
     RewriteRule ^dashboard/?$ dashboard-professional.php [QSA,NC,L]
     RewriteRule ^dashboard/users/?$ dashboard-users-professional.php [QSA,NC,L]
     RewriteRule ^dashboard/news/?$ dashboard-news-management.php [QSA,NC,L]
@@ -130,16 +133,16 @@ DirectoryIndex index.php index.html
     RewriteRule ^logout/?$ simple_logout.php [QSA,NC,L]
 
     # Search
-    RewriteRule ^search/?$ search-results-new.php [QSA,NC,L]
+    RewriteRule ^search/?$ search-new.php [QSA,NC,L]
     RewriteRule ^search-process/?$ pages/search/search-process.php [QSA,NC,L]
 
     # Static Pages
     RewriteRule ^about/?$ about-new.php [QSA,NC,L]
     RewriteRule ^write/?$ write-new.php [QSA,NC,L]
     RewriteRule ^write-success/?$ write-success.php [QSA,NC,L]
-    RewriteRule ^thank-you/?$ pages/thank-you/thank-you.php [QSA,NC,L]
-    RewriteRule ^privacy/?$ pages/privacy/privacy.php [QSA,NC,L]
-    RewriteRule ^terms/?$ pages/terms/terms.php [QSA,NC,L]
+    RewriteRule ^thank-you/?$ thank-you-new.php [QSA,NC,L]
+    RewriteRule ^privacy/?$ privacy-new.php [QSA,NC,L]
+    RewriteRule ^terms/?$ terms-new.php [QSA,NC,L]
     RewriteRule ^cookie-consent/?$ cookie-consent-process.php [QSA,NC,L]
 
     # API Routes (if needed)
@@ -170,11 +173,11 @@ DirectoryIndex index.php index.html
     # ============================================================================
     
     # Custom error pages
-    ErrorDocument 404 /pages/404/404.php
-    ErrorDocument 500 /pages/error/error.php
+    ErrorDocument 404 /404-new.php
+    ErrorDocument 500 /error-new.php
     
     # Direct error page route
-    RewriteRule ^error/?$ /pages/error/error.php [L]
+    RewriteRule ^error/?$ /error-new.php [L]
 
     # ============================================================================
     # FALLBACK - Must be last
@@ -183,7 +186,7 @@ DirectoryIndex index.php index.html
     # If nothing else matches and file doesn't exist, go to 404
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule . /pages/404/404.php [L]
+    RewriteRule . /404-new.php [L]
 
 </IfModule>
 
