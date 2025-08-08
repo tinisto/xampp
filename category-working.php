@@ -1,5 +1,5 @@
 <?php
-// Working category page - direct implementation
+// Working category page - direct implementation with pagination
 require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
 
 // Get category
@@ -17,13 +17,28 @@ if (!$category) {
 
 $categoryId = isset($category['id_category']) ? $category['id_category'] : $category['id'];
 
-// Get posts
+// Pagination setup
+$page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+$postsPerPage = 12; // Show 12 posts per page
+$offset = ($page - 1) * $postsPerPage;
+
+// Get total posts count
+$countQuery = "SELECT COUNT(*) as total FROM posts WHERE category = ?";
+$stmt = $connection->prepare($countQuery);
+$stmt->bind_param("i", $categoryId);
+$stmt->execute();
+$countResult = $stmt->get_result();
+$totalPosts = $countResult->fetch_assoc()['total'];
+$totalPages = ceil($totalPosts / $postsPerPage);
+
+// Get posts with pagination
 $postsQuery = "SELECT id, title_post, text_post, url_slug, date_post 
                FROM posts 
                WHERE category = ? 
-               ORDER BY date_post DESC";
+               ORDER BY date_post DESC
+               LIMIT ? OFFSET ?";
 $stmt = $connection->prepare($postsQuery);
-$stmt->bind_param("i", $categoryId);
+$stmt->bind_param("iii", $categoryId, $postsPerPage, $offset);
 $stmt->execute();
 $postsResult = $stmt->get_result();
 
@@ -89,7 +104,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     </style>
     <h1 class="category-title-heading">' . htmlspecialchars($category['title_category']) . '</h1>
-    <p class="category-subtitle">' . count($posts) . ' статей</p>
+    <p class="category-subtitle">' . $totalPosts . ' статей</p>
 </div>';
 
 $greyContent2 = '';
@@ -134,7 +149,15 @@ if (!empty($posts)) {
 
 $greyContent5 .= '</div>';
 
+// Section 6: Pagination
 $greyContent6 = '';
+if ($totalPages > 1) {
+    ob_start();
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/pagination-modern.php';
+    renderPaginationModern($page, $totalPages, '/category/' . $categorySlug . '?page=');
+    $greyContent6 = ob_get_clean();
+}
+
 $blueContent = '';
 $pageTitle = $category['title_category'] . ' - 11-классники';
 
