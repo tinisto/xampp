@@ -7,7 +7,8 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // Check admin access
-if (!isset($_SESSION['occupation']) || $_SESSION['occupation'] !== 'admin') {
+if ((!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') && 
+    (!isset($_SESSION['occupation']) || $_SESSION['occupation'] !== 'admin')) {
     header('Location: /unauthorized');
     exit();
 }
@@ -56,15 +57,13 @@ $query = "SELECT COUNT(*) as count FROM users";
 $result = $connection->query($query);
 $stats['users_total'] = $result->fetch_assoc()['count'];
 
-// Count comments
-$query = "SELECT status, COUNT(*) as count FROM comments GROUP BY status";
+// Count comments (simplified - no status column exists)
+$query = "SELECT COUNT(*) as count FROM comments";
 $result = $connection->query($query);
-while ($row = $result->fetch_assoc()) {
-    if ($row['status'] === 'approved') {
-        $stats['comments_approved'] = $row['count'];
-    } else {
-        $stats['comments_pending'] = $row['count'];
-    }
+if ($result) {
+    $stats['comments_total'] = $result->fetch_assoc()['count'];
+} else {
+    $stats['comments_total'] = 0;
 }
 
 // Get recent activities
@@ -175,9 +174,8 @@ ob_start();
         
         <div class="stat-card">
             <i class="fas fa-comments" style="color: #28a745;"></i>
-            <h4><?= $stats['comments_approved'] ?? 0 ?></h4>
-            <p>Одобренных комментариев</p>
-            <small><?= $stats['comments_pending'] ?? 0 ?> на модерации</small>
+            <h4><?= $stats['comments_total'] ?? 0 ?></h4>
+            <p>Всего комментариев</p>
         </div>
         
     </div>

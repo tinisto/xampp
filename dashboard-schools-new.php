@@ -7,7 +7,8 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // Check admin access
-if (!isset($_SESSION['occupation']) || $_SESSION['occupation'] !== 'admin') {
+if ((!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') && 
+    (!isset($_SESSION['occupation']) || $_SESSION['occupation'] !== 'admin')) {
     header('Location: /unauthorized');
     exit();
 }
