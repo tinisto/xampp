@@ -328,9 +328,33 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
     }
     
     .user-menu .dropdown-menu {
-        right: 0;
-        left: auto;
-        top: calc(100% + 5px);
+        position: absolute !important;
+        right: 0 !important;
+        left: auto !important;
+        top: calc(100% + 5px) !important;
+        transform: translateX(0) !important;
+        margin: 0 !important;
+        /* Force dropdown to stay within viewport */
+        max-width: 180px;
+        min-width: 160px;
+        /* Prevent going off right edge */
+        margin-right: 0 !important;
+    }
+    
+    /* Additional positioning fixes */
+    .user-menu.dropdown .dropdown-menu {
+        position: absolute !important;
+        right: 0 !important;
+        left: auto !important;
+        transform: translateX(0) !important;
+        inset: auto 0px auto auto !important; /* Override Bootstrap inset */
+    }
+    
+    /* Override Bootstrap's auto positioning */
+    .user-menu .dropdown-menu[data-popper-placement] {
+        right: 0 !important;
+        left: auto !important;
+        transform: translateX(0) !important;
     }
     
     .dropdown-divider {
@@ -362,34 +386,33 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
     }
     
     /* Mobile Styles */
-    @media (max-width: 768px) {
+    @media screen and (max-width: 768px) {
         .header-container {
-            padding: 0 12px;
+            padding: 0 15px;
             height: 60px;
         }
         
         .header-nav {
-            display: none;
+            display: none !important;
             position: absolute;
             top: 100%;
             left: 0;
             right: 0;
             background: var(--surface);
             border-top: 1px solid var(--border-color);
-            flex-direction: row;
-            flex-wrap: wrap;
-            padding: 10px;
-            gap: 6px;
+            flex-direction: column;
+            padding: 15px;
+            gap: 15px;
             max-height: calc(100vh - 60px);
             overflow-y: auto;
-            z-index: 999;
+            z-index: 1000;
             box-shadow: var(--shadow-sm);
+            width: 100%;
         }
         
         .header-nav.mobile-open {
             display: flex !important;
-            flex-direction: row !important; /* Change from column to row */
-            flex-wrap: wrap !important;
+            flex-direction: column !important;
         }
         
         .mobile-menu-toggle {
@@ -442,143 +465,66 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
             display: block !important;
         }
         
-        /* Keep dropdown menu absolute positioned on mobile for user avatar */
+        /* Keep user dropdown menu absolute positioned on mobile */
         .user-menu .dropdown-menu {
-            position: absolute;
-            right: 0;
-            left: auto;
+            position: absolute !important;
+            right: 0 !important;
+            left: auto !important;
             min-width: 160px;
-            margin-top: 10px;
+            margin-top: 5px !important;
+            transform: translateX(0) !important;
         }
         
-        /* Let Bootstrap handle dropdown visibility on mobile too */
+        /* Simple mobile nav links */
+        .header-nav.mobile-open .nav-link,
+        .header-nav.mobile-open .dropdown-toggle {
+            display: block !important;
+            padding: 15px 0 !important;
+            color: var(--text-color) !important;
+            text-decoration: none !important;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 16px !important;
+            background: transparent !important;
+            border-left: none !important;
+            border-right: none !important;
+            border-top: none !important;
+            text-align: left !important;
+            width: 100% !important;
+            font-weight: 500 !important;
+        }
         
-        /* Make categories dropdown display inline on mobile */
+        .header-nav.mobile-open .nav-link:hover,
+        .header-nav.mobile-open .dropdown-toggle:hover {
+            color: #007bff !important;
+            background: rgba(0, 123, 255, 0.05) !important;
+            padding-left: 20px !important;
+        }
+        
+        /* Mobile categories dropdown - keep it simple */
         .header-nav.mobile-open .dropdown .dropdown-menu {
             position: static !important;
             border: none !important;
             box-shadow: none !important;
-            padding: 0 !important;
-            margin: 0 !important;
             background: transparent !important;
+            padding: 0 !important;
+            margin-left: 20px !important;
             display: none;
-            width: auto !important;
         }
         
-        /* Show categories dropdown when parent is open */
         .header-nav.mobile-open .dropdown.show .dropdown-menu {
-            display: inline-flex !important;
-            flex-direction: row !important;
-            flex-wrap: wrap !important;
-            gap: 6px !important;
+            display: block !important;
         }
         
-        /* Make dropdown list items inline */
-        .header-nav.mobile-open .dropdown.show .dropdown-menu li {
-            display: inline-block !important;
-            margin: 0 !important;
-        }
-        
-        /* Mobile dropdown items with less spacing */
         .header-nav.mobile-open .dropdown-item {
-            padding: 8px 20px; /* REDUCED vertical padding */
-            font-size: 15px; /* Slightly smaller */
-            line-height: 1.3; /* Tighter line height */
-        }
-        
-        /* Style category items as badges on mobile with distinct color */
-        .header-nav.mobile-open .dropdown.show .dropdown-item {
-            display: inline-block !important;
-            background: #17a2b8 !important; /* Teal/cyan color for categories */
-            color: white !important;
-            padding: 8px 16px !important; /* Same padding as main nav badges */
-            margin: 0 !important;
-            border-radius: 20px !important; /* Same radius as main nav badges */
-            font-size: 14px !important; /* Same size as main nav badges */
-            font-weight: 500 !important;
-            line-height: 1.2 !important;
-            white-space: nowrap;
-            width: auto !important;
-            text-align: center;
-            text-decoration: none !important;
-            transition: all 0.2s ease !important;
-            border: 1px solid #17a2b8 !important;
-            flex: 0 0 auto; /* Prevent flex stretching */
-            min-width: auto !important; /* Auto width */
-            overflow: visible !important; /* Ensure text is visible */
+            padding: 10px 0 !important;
+            color: #666 !important;
+            font-size: 14px !important;
+            display: block !important;
         }
         
         .header-nav.mobile-open .dropdown-item:hover {
-            background: #138496 !important; /* Darker teal on hover */
-            border-color: #138496 !important;
-            transform: scale(1.05);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-        
-        /* Dark mode support for category badges */
-        [data-theme="dark"] .header-nav.mobile-open .dropdown-item {
-            background: #5dd4e8 !important; /* Light teal for dark mode */
-            color: #1a202c !important;
-            border-color: #5dd4e8 !important;
-        }
-        
-        [data-theme="dark"] .header-nav.mobile-open .dropdown-item:hover {
-            background: #4bb7c9 !important;
-            border-color: #4bb7c9 !important;
-        }
-        
-        /* Remove duplicate - already defined above */
-        
-        /* Keep dropdown as normal element on mobile */
-        .header-nav.mobile-open .dropdown {
-            display: inline-block !important;
-            position: relative;
-        }
-        
-        /* Make categories toggle clickable on mobile */
-        .header-nav.mobile-open #categoriesToggle {
-            pointer-events: auto !important;
-            cursor: pointer !important;
-            z-index: 10 !important;
-            position: relative !important;
-        }
-        
-        /* Style ALL nav links as badges - both direct children and inside dropdowns */
-        .header-nav.mobile-open .nav-link {
-            display: inline-block !important;
-            background: var(--surface-variant, #f0f4f8) !important;
-            color: var(--text-primary, #333) !important;
-            padding: 8px 16px !important;
-            margin: 0 !important;
-            border-radius: 20px !important;
-            font-size: 14px !important;
-            font-weight: 500 !important;
-            text-decoration: none !important;
-            transition: all 0.2s ease !important;
-            border: 1px solid var(--border-color, #e0e0e0) !important;
-            white-space: nowrap;
-            width: auto !important;
-            flex: 0 0 auto;
-        }
-        
-        .header-nav.mobile-open .nav-link:hover {
-            background: var(--primary-color, #28a745) !important;
-            color: white !important;
-            border-color: var(--primary-color, #28a745) !important;
-            transform: scale(1.05);
-        }
-        
-        /* Dark mode for nav badges */
-        [data-theme="dark"] .header-nav.mobile-open .nav-link {
-            background: var(--surface-variant, #2d3748) !important;
-            color: var(--text-primary, #e4e6eb) !important;
-            border-color: var(--border-color, #4a5568) !important;
-        }
-        
-        [data-theme="dark"] .header-nav.mobile-open .nav-link:hover {
-            background: var(--primary-color, #28a745) !important;
-            color: white !important;
-            border-color: var(--primary-color, #28a745) !important;
+            color: #007bff !important;
+            background: transparent !important;
         }
     }
 </style>
@@ -686,10 +632,10 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
             
             <!-- User Menu -->
             <?php if (SessionManager::isLoggedIn()): ?>
-                <div class="btn-group dropstart user-menu">
+                <div class="btn-group dropdown user-menu">
                     <button type="button" class="btn user-avatar dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                         <span class="user-initial-desktop"><?php echo strtoupper(mb_substr(SessionManager::get('email', 'U'), 0, 1)); ?></span>
-                        <i class="fas fa-user user-icon-mobile"></i>
+                        <span class="user-icon-mobile"><?php echo strtoupper(mb_substr(SessionManager::get('email', 'U'), 0, 1)); ?></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <?php 
@@ -699,12 +645,12 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
                         if ($current_url !== '/account' && $current_url !== '/account/'): 
                         ?>
                         <li><a href="/account" class="dropdown-item">
-                            <i class="fas fa-user" style="margin-right: 10px; width: 16px;"></i>Мой аккаунт
+                            Мой аккаунт
                         </a></li>
                         <?php endif; ?>
                         <?php if (SessionManager::get('role') === 'admin'): ?>
                         <li><a href="/dashboard" class="dropdown-item">
-                            <i class="fas fa-tachometer-alt" style="margin-right: 10px; width: 16px;"></i>Dashboard
+                            Dashboard
                         </a></li>
                         <?php endif; ?>
                         <?php 
@@ -714,7 +660,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
                         <li><hr class="dropdown-divider"></li>
                         <?php endif; ?>
                         <li><a href="/logout" class="dropdown-item">
-                            <i class="fas fa-sign-out-alt" style="margin-right: 10px; width: 16px;"></i>Выйти
+                            Выйти
                         </a></li>
                     </ul>
                 </div>
@@ -778,6 +724,24 @@ function initializeDropdowns() {
     // Force Bootstrap dropdown initialization
     const dropdownElementList = document.querySelectorAll('[data-bs-toggle="dropdown"]');
     const dropdownList = [...dropdownElementList].map(dropdownToggleEl => new bootstrap.Dropdown(dropdownToggleEl));
+    
+    // Fix user dropdown positioning
+    const userDropdown = document.querySelector('.user-menu .dropdown-toggle');
+    if (userDropdown) {
+        userDropdown.addEventListener('shown.bs.dropdown', function() {
+            const dropdownMenu = this.parentElement.querySelector('.dropdown-menu');
+            if (dropdownMenu) {
+                // Force positioning
+                dropdownMenu.style.position = 'absolute';
+                dropdownMenu.style.right = '0px';
+                dropdownMenu.style.left = 'auto';
+                dropdownMenu.style.transform = 'translateX(0)';
+                dropdownMenu.style.inset = 'auto 0px auto auto';
+                
+                console.log('Fixed user dropdown positioning');
+            }
+        });
+    }
     
     // Debug dropdown functionality
     const categoriesToggle = document.getElementById('categoriesToggle');
