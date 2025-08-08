@@ -36,7 +36,7 @@ if (isset($_GET['url_news']) && !empty($_GET['url_news']) && !in_array($_GET['ur
             <script>
                 (function() {
                     try {
-                        const savedTheme = localStorage.getItem('preferred-theme') || 'light';
+                        const savedTheme = localStorage.getItem('theme') || 'light';
                         document.documentElement.setAttribute('data-bs-theme', savedTheme);
                         document.documentElement.setAttribute('data-theme', savedTheme);
                     } catch(e) {
@@ -118,7 +118,7 @@ if (isset($_GET['url_news']) && !empty($_GET['url_news']) && !in_array($_GET['ur
                     
                     html.setAttribute('data-bs-theme', newTheme);
                     html.setAttribute('data-theme', newTheme);
-                    localStorage.setItem('preferred-theme', newTheme);
+                    localStorage.setItem('theme', newTheme);
                     
                     const themeIcon = document.getElementById('theme-icon');
                     const themeIconUser = document.getElementById('theme-icon-user');
@@ -131,7 +131,7 @@ if (isset($_GET['url_news']) && !empty($_GET['url_news']) && !in_array($_GET['ur
                 window.toggleTheme = toggleTheme;
                 
                 document.addEventListener('DOMContentLoaded', function() {
-                    const savedTheme = localStorage.getItem('preferred-theme') || 'light';
+                    const savedTheme = localStorage.getItem('theme') || 'light';
                     const html = document.documentElement;
                     
                     html.setAttribute('data-bs-theme', savedTheme);
@@ -236,7 +236,7 @@ if (isset($_GET['url_news']) && !empty($_GET['url_news']) && !in_array($_GET['ur
     <script>
         (function() {
             try {
-                const savedTheme = localStorage.getItem('preferred-theme') || 'light';
+                const savedTheme = localStorage.getItem('theme') || 'light';
                 document.documentElement.setAttribute('data-bs-theme', savedTheme);
                 document.documentElement.setAttribute('data-theme', savedTheme);
             } catch(e) {
@@ -404,7 +404,7 @@ if (isset($_GET['url_news']) && !empty($_GET['url_news']) && !in_array($_GET['ur
             
             html.setAttribute('data-bs-theme', newTheme);
             html.setAttribute('data-theme', newTheme);
-            localStorage.setItem('preferred-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
             
             const themeIcon = document.getElementById('theme-icon');
             const themeIconUser = document.getElementById('theme-icon-user');
@@ -417,7 +417,7 @@ if (isset($_GET['url_news']) && !empty($_GET['url_news']) && !in_array($_GET['ur
         window.toggleTheme = toggleTheme;
         
         document.addEventListener('DOMContentLoaded', function() {
-            const savedTheme = localStorage.getItem('preferred-theme') || 'light';
+            const savedTheme = localStorage.getItem('theme') || 'light';
             const html = document.documentElement;
             
             html.setAttribute('data-bs-theme', savedTheme);

@@ -42,7 +42,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
 <style>
     /* Unified Header Styles - Modern, Clean, Responsive */
     :root {
-        --primary-color: #28a745;
+        --primary-color: #007bff;
         --surface: white;
         --text-color: #333;
         --shadow-sm: 0 2px 10px rgba(0,0,0,0.08);
@@ -113,7 +113,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
     }
     
     .nav-link:hover {
-        color: #28a745;
+        color: #007bff;
     }
     
     /* Dropdown Styles */
@@ -153,7 +153,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
     
     button.dropdown-toggle:hover,
     button.nav-link:hover {
-        color: #28a745;
+        color: #007bff;
     }
     
     /* Remove Bootstrap's dropdown arrow */
@@ -225,7 +225,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
     }
     
     .dropdown-item:hover {
-        background: rgba(40, 167, 69, 0.1);
+        background: rgba(0, 123, 255, 0.1);
         color: var(--primary-color);
         padding-left: 25px;
     }
@@ -947,7 +947,7 @@ if (typeof toggleTheme === 'undefined') {
         
         html.setAttribute('data-bs-theme', newTheme);
         html.setAttribute('data-theme', newTheme);
-        localStorage.setItem('preferred-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
         
         // Update theme icon
         const themeIcon = document.getElementById('theme-icon');
@@ -958,7 +958,7 @@ if (typeof toggleTheme === 'undefined') {
     
     // Initialize theme on page load
     document.addEventListener('DOMContentLoaded', function() {
-        const savedTheme = localStorage.getItem('preferred-theme') || 'light';
+        const savedTheme = localStorage.getItem('theme') || 'light';
         const html = document.documentElement;
         const themeIcon = document.getElementById('theme-icon');
         

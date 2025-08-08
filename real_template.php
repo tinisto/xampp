@@ -243,7 +243,8 @@ if (strpos($requestUri, '/test/news') !== false) {
     <title><?php echo htmlspecialchars($pageTitle ?? 'Страница'); ?> - 11-классники</title>
     
     <!-- Favicon -->
-    <link rel="icon" href="data:image/svg+xml,%3Csvg+xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22+viewBox%3D%220+0+32+32%22%3E%0A++++++++%3Cdefs%3E%0A++++++++++++%3ClinearGradient+id%3D%22favicon-gradient-v2%22+x1%3D%220%25%22+y1%3D%220%25%22+x2%3D%22100%25%22+y2%3D%22100%25%22%3E%0A++++++++++++++++%3Cstop+offset%3D%220%25%22+style%3D%22stop-color%3A%2328a745%22+%2F%3E%0A++++++++++++++++%3Cstop+offset%3D%22100%25%22+style%3D%22stop-color%3A%2320c997%22+%2F%3E%0A++++++++++++%3C%2FlinearGradient%3E%0A++++++++%3C%2Fdefs%3E%0A++++++++%3Crect+width%3D%2232%22+height%3D%2232%22+rx%3D%226%22+fill%3D%22url%28%23favicon-gradient-v2%29%22%2F%3E%0A++++++++%3Ctext+x%3D%2216%22+y%3D%2222%22+text-anchor%3D%22middle%22+fill%3D%22white%22+font-size%3D%2216%22+font-weight%3D%22bold%22+font-family%3D%22system-ui%22%3E11%3C%2Ftext%3E%0A++++%3C%2Fsvg%3E" type="image/svg+xml">
+    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiBmaWxsPSIjMDA3YmZmIi8+Cjx0ZXh0IHg9IjE2IiB5PSIyMCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPjExPC90ZXh0Pgo8L3N2Zz4K" type="image/svg+xml">
+    <link rel="shortcut icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiBmaWxsPSIjMDA3YmZmIi8+Cjx0ZXh0IHg9IjE2IiB5PSIyMCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPjExPC90ZXh0Pgo8L3N2Zz4K" type="image/x-icon">
 
     <!-- Adsense Meta tag -->
     <meta name="google-adsense-account" content="ca-pub-2363662533799826">
@@ -514,7 +515,23 @@ if (strpos($requestUri, '/test/news') !== false) {
             padding: 0; /* No padding */
             background: #f8f9fa; /* Ensure footer has its light background */
         }
+        
+        /* Site theme - NO GREEN, only white/dark toggle */
+        :root {
+            --primary-color: #007bff !important; /* Blue instead of green */
+            --color-primary: #007bff !important;
+            --color-success: #28a745 !important; /* Keep success green for system messages only */
+        }
+        
+        /* Override any green elements to use blue theme */
+        .site-icon,
+        [class*="site-icon"] {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
+        }
+        
     </style>
+    
+    <!-- Clean loading script - no special loading handling needed -->
 </head>
 <body>
     <!-- Website Header -->
@@ -584,5 +601,60 @@ if (strpos($requestUri, '/test/news') !== false) {
     
     <!-- Bootstrap JS Bundle (includes Popper) - Required for dropdowns -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Dark mode toggle functionality -->
+    <script>
+        // Dark mode toggle function
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-bs-theme') || 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-bs-theme', newTheme);
+            html.setAttribute('data-theme', newTheme);
+            document.body.setAttribute('data-bs-theme', newTheme);
+            
+            // Save preference
+            localStorage.setItem('theme', newTheme);
+            
+            // Update icon
+            const icon = document.querySelector('.theme-toggle i');
+            if (icon) {
+                icon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            }
+        }
+
+        // Load saved theme on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-bs-theme', savedTheme);
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.body.setAttribute('data-bs-theme', savedTheme);
+            
+            const icon = document.querySelector('.theme-toggle i');
+            if (icon) {
+                icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            }
+        });
+    </script>
+    
+    <!-- Prevent green background flash during loading -->
+    <script>
+        // Add loading class to prevent any green colors during initial load
+        document.body.classList.add('loading');
+        
+        // Remove loading class once page is fully loaded
+        window.addEventListener('load', function() {
+            // Small delay to ensure everything is rendered
+            setTimeout(function() {
+                document.body.classList.remove('loading');
+            }, 100);
+        });
+        
+        // Fallback: remove loading class after 2 seconds max
+        setTimeout(function() {
+            document.body.classList.remove('loading');
+        }, 2000);
+    </script>
 </body>
 </html>

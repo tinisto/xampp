@@ -837,7 +837,7 @@ if (typeof toggleTheme === 'undefined') {
         
         html.setAttribute('data-bs-theme', newTheme);
         html.setAttribute('data-theme', newTheme);
-        localStorage.setItem('preferred-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
         
         // Update theme icon
         const themeIcon = document.getElementById('theme-icon');
@@ -848,7 +848,7 @@ if (typeof toggleTheme === 'undefined') {
     
     // Initialize theme on page load
     document.addEventListener('DOMContentLoaded', function() {
-        const savedTheme = localStorage.getItem('preferred-theme') || 'light';
+        const savedTheme = localStorage.getItem('theme') || 'light';
         const html = document.documentElement;
         const themeIcon = document.getElementById('theme-icon');
         
