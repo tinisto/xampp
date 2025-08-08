@@ -47,9 +47,9 @@ function renderSiteIcon($size = 'medium', $linkUrl = '/', $additionalClasses = '
             font-size: <?php echo $config['fontSize']; ?>;
             padding: <?php echo $config['padding']; ?>;
             border-radius: <?php echo $config['borderRadius']; ?>;
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
             color: white !important;
-            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.2);
+            box-shadow: 0 2px 8px rgba(108, 117, 125, 0.2);
             transition: all 0.3s ease;
             border: none;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
@@ -58,7 +58,7 @@ function renderSiteIcon($size = 'medium', $linkUrl = '/', $additionalClasses = '
         
         #<?php echo $instanceId; ?>:hover {
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
             text-decoration: none;
             color: white !important;
         }
@@ -76,6 +76,7 @@ function renderSiteIcon($size = 'medium', $linkUrl = '/', $additionalClasses = '
         [data-theme="dark"] #<?php echo $instanceId; ?> {
             /* Icon stays the same in dark mode for consistency */
         }
+        
         
         /* Mobile responsive */
         @media (max-width: 768px) {
@@ -167,9 +168,9 @@ function renderSiteIconStatic($size = 'medium') {
             font-size: <?php echo $config['fontSize']; ?>;
             padding: <?php echo $config['padding']; ?>;
             border-radius: 10px;
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
             color: white;
-            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.2);
+            box-shadow: 0 2px 8px rgba(108, 117, 125, 0.2);
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
             line-height: 1;
         }
@@ -178,6 +179,7 @@ function renderSiteIconStatic($size = 'medium') {
             color: white;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
+        
     </style>
     
     <?php

@@ -4,8 +4,7 @@
  * Replaces all other header files
  */
 
-// Favicon is now handled in the template head section
-// No need to include favicon.php as it has been removed
+// Favicon will be handled directly in template head section
 
 // Load session manager if not already loaded
 if (!class_exists('SessionManager')) {
@@ -43,7 +42,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
 <style>
     /* Unified Header Styles - Modern, Clean, Responsive */
     :root {
-        --primary-color: #28a745;
+        --primary-color: #007bff;
         --surface: white;
         --text-color: #333;
         --shadow-sm: 0 2px 10px rgba(0,0,0,0.08);
@@ -62,9 +61,15 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
         box-shadow: var(--shadow-sm);
         position: sticky;
         top: 0;
-        z-index: 1000;
+        z-index: 1050;
         width: 100%;
         transition: all 0.3s ease;
+    }
+    
+    /* Prevent any duplicate logos from appearing */
+    body > .site-icon,
+    body > a.site-icon {
+        display: none !important;
     }
     
     .header-container {
@@ -100,18 +105,15 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
         color: var(--text-color);
         text-decoration: none;
         font-weight: 500;
-        font-size: 14px;
+        font-size: 16px;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-        padding: 8px 15px;
-        border-radius: 8px;
+        padding: 0 15px;
         transition: all 0.3s ease;
         position: relative;
     }
     
     .nav-link:hover {
-        background: rgba(40, 167, 69, 0.1);
-        color: var(--primary-color);
-        transform: translateY(-1px);
+        color: #007bff;
     }
     
     /* Dropdown Styles */
@@ -133,14 +135,14 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
     button.nav-link {
         background: none;
         border: none;
-        padding: 8px 16px;
+        padding: 0 15px;
         font: inherit;
+        font-size: 16px;
         color: var(--text-color);
         text-decoration: none;
         cursor: pointer;
         font-weight: 500;
         transition: all 0.3s ease;
-        border-radius: 8px;
         display: inline-flex;
         align-items: center;
         gap: 5px;
@@ -151,8 +153,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
     
     button.dropdown-toggle:hover,
     button.nav-link:hover {
-        background: rgba(40, 167, 69, 0.1);
-        color: var(--primary-color);
+        color: #007bff;
     }
     
     /* Remove Bootstrap's dropdown arrow */
@@ -160,31 +161,49 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
         display: none !important;
     }
     
+    /* Let Bootstrap handle dropdown visibility - just style appearance */
     .dropdown-menu {
-        position: absolute;
-        top: 100%;
-        left: 0;
         background: var(--surface);
         border: 1px solid var(--border-color);
         border-radius: 8px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        min-width: 240px; /* INCREASED for longer names */
-        max-width: 320px; /* Max width for very long names */
+        min-width: 240px;
+        max-width: 320px;
         padding: 4px 0;
-        opacity: 0;
-        visibility: hidden;
-        transform: translateY(-10px);
-        transition: all 0.3s ease;
-        z-index: 1001;
-        pointer-events: none;
+        z-index: 1050;
     }
     
-    .dropdown.show .dropdown-menu {
+    /* Force dropdown menu to be visible when shown */
+    .dropdown.show .dropdown-menu,
+    .dropdown-menu.show {
+        display: block !important;
         opacity: 1 !important;
         visibility: visible !important;
-        transform: translateY(0) !important;
-        display: block !important;
-        pointer-events: auto !important;
+        transform: none !important;
+        position: absolute !important;
+        top: 100% !important;
+        left: 0 !important;
+        margin-top: 0.125rem !important;
+        z-index: 1050 !important;
+    }
+    
+    /* Override any conflicting styles */
+    .header-nav .dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        margin-top: 0.125rem;
+        z-index: 1050;
+    }
+    
+    /* Ensure categories dropdown menu is properly positioned */
+    #categoriesDropdown .dropdown-menu {
+        position: absolute !important;
+        top: 100% !important;
+        left: 0 !important;
+        margin-top: 0.125rem !important;
+        z-index: 1050 !important;
     }
     
     .dropdown-item {
@@ -206,7 +225,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
     }
     
     .dropdown-item:hover {
-        background: rgba(40, 167, 69, 0.1);
+        background: rgba(0, 123, 255, 0.1);
         color: var(--primary-color);
         padding-left: 25px;
     }
@@ -271,6 +290,32 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
         z-index: 1;
         user-select: none;
         border: 2px solid var(--border-color);
+        padding: 0;
+    }
+    
+    /* Desktop: show only letter */
+    .user-initial-desktop {
+        display: block;
+        font-size: 18px;
+        font-weight: 600;
+    }
+    
+    .user-icon-mobile {
+        display: none;
+    }
+    
+    /* Bootstrap button reset for avatar */
+    .btn.user-avatar {
+        border: 2px solid var(--border-color);
+        padding: 0;
+    }
+    
+    .btn.user-avatar:hover,
+    .btn.user-avatar:focus {
+        background: var(--primary-color) !important;
+        color: white !important;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2);
     }
     
     .user-avatar.dropdown-toggle {
@@ -305,13 +350,24 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
         cursor: pointer;
     }
     
-    /* Hide mobile-only login on desktop */
-    .mobile-only-login {
+    /* Hide mobile-only elements on desktop */
+    .mobile-only-login,
+    .mobile-only {
         display: none !important;
+    }
+    
+    /* Show desktop-only elements on desktop */
+    .desktop-only {
+        display: inline-block !important;
     }
     
     /* Mobile Styles */
     @media (max-width: 768px) {
+        .header-container {
+            padding: 0 12px;
+            height: 60px;
+        }
+        
         .header-nav {
             display: none;
             position: absolute;
@@ -320,13 +376,14 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
             right: 0;
             background: var(--surface);
             border-top: 1px solid var(--border-color);
-            flex-direction: row; /* CHANGED: horizontal layout */
-            flex-wrap: wrap; /* Allow wrapping to next line */
-            padding: 15px; /* REDUCED padding */
-            gap: 8px; /* Gap between badges */
-            max-height: calc(100vh - 70px);
+            flex-direction: row;
+            flex-wrap: wrap;
+            padding: 10px;
+            gap: 6px;
+            max-height: calc(100vh - 60px);
             overflow-y: auto;
             z-index: 999;
+            box-shadow: var(--shadow-sm);
         }
         
         .header-nav.mobile-open {
@@ -339,9 +396,15 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
             display: block;
         }
         
-        /* Show mobile login on mobile */
-        .mobile-only-login {
+        /* Show mobile elements on mobile */
+        .mobile-only-login,
+        .mobile-only {
             display: inline-block !important;
+        }
+        
+        /* Hide desktop elements on mobile */
+        .desktop-only {
+            display: none !important;
         }
         
         /* Hide desktop login link on mobile */
@@ -354,9 +417,9 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
         }
         
         .theme-toggle-btn {
-            width: 40px;
-            height: 40px;
-            font-size: 16px;
+            width: 36px;
+            height: 36px;
+            font-size: 14px;
         }
         
         /* User avatar should be visible on mobile */
@@ -365,9 +428,18 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
         }
         
         .user-avatar {
-            width: 35px;
-            height: 35px;
-            font-size: 16px;
+            width: 32px;
+            height: 32px;
+            font-size: 14px;
+        }
+        
+        /* Mobile: show only icon */
+        .user-initial-desktop {
+            display: none !important;
+        }
+        
+        .user-icon-mobile {
+            display: block !important;
         }
         
         /* Keep dropdown menu absolute positioned on mobile for user avatar */
@@ -379,30 +451,32 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
             margin-top: 10px;
         }
         
-        /* Hide dropdown menus on mobile by default */
-        .header-nav.mobile-open .dropdown-menu {
-            display: none !important;
+        /* Let Bootstrap handle dropdown visibility on mobile too */
+        
+        /* Make categories dropdown display inline on mobile */
+        .header-nav.mobile-open .dropdown .dropdown-menu {
+            position: static !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            background: transparent !important;
+            display: none;
+            width: auto !important;
         }
         
-        /* Only show user menu dropdown when clicked */
-        .user-menu.dropdown.show .dropdown-menu {
-            display: block !important;
-        }
-        
-        /* When categories dropdown is shown, display inline with other badges */
+        /* Show categories dropdown when parent is open */
         .header-nav.mobile-open .dropdown.show .dropdown-menu {
-            display: contents !important; /* Use contents to make items appear inline */
-            position: static;
-            opacity: 1;
-            visibility: visible;
-            transform: none;
-            box-shadow: none;
-            border: none;
-            background: transparent;
-            margin: 0;
-            padding: 0;
-            min-width: auto;
-            max-width: 100%;
+            display: inline-flex !important;
+            flex-direction: row !important;
+            flex-wrap: wrap !important;
+            gap: 6px !important;
+        }
+        
+        /* Make dropdown list items inline */
+        .header-nav.mobile-open .dropdown.show .dropdown-menu li {
+            display: inline-block !important;
+            margin: 0 !important;
         }
         
         /* Mobile dropdown items with less spacing */
@@ -413,7 +487,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
         }
         
         /* Style category items as badges on mobile with distinct color */
-        .header-nav.mobile-open .dropdown-item {
+        .header-nav.mobile-open .dropdown.show .dropdown-item {
             display: inline-block !important;
             background: #17a2b8 !important; /* Teal/cyan color for categories */
             color: white !important;
@@ -430,7 +504,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
             transition: all 0.2s ease !important;
             border: 1px solid #17a2b8 !important;
             flex: 0 0 auto; /* Prevent flex stretching */
-            min-width: 60px !important; /* Ensure minimum width */
+            min-width: auto !important; /* Auto width */
             overflow: visible !important; /* Ensure text is visible */
         }
         
@@ -455,9 +529,18 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
         
         /* Remove duplicate - already defined above */
         
-        /* Make dropdown display inline */
+        /* Keep dropdown as normal element on mobile */
         .header-nav.mobile-open .dropdown {
-            display: contents !important; /* This makes dropdown children appear as direct children of nav */
+            display: inline-block !important;
+            position: relative;
+        }
+        
+        /* Make categories toggle clickable on mobile */
+        .header-nav.mobile-open #categoriesToggle {
+            pointer-events: auto !important;
+            cursor: pointer !important;
+            z-index: 10 !important;
+            position: relative !important;
         }
         
         /* Style ALL nav links as badges - both direct children and inside dropdowns */
@@ -513,11 +596,11 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
             
             <!-- Categories Dropdown -->
             <?php if ($hasDatabase): ?>
-                <div class="dropdown">
-                    <a href="javascript:void(0)" class="nav-link dropdown-toggle" onclick="toggleDropdown(event, this)">
+                <div class="dropdown" id="categoriesDropdown">
+                    <button type="button" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false" id="categoriesToggle">
                         Категории
-                    </a>
-                    <div class="dropdown-menu">
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="categoriesToggle">
                         <?php
                         try {
                             $hasCategories = false;
@@ -563,22 +646,22 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
                                             $shortTitle = mb_substr($category['title_category'], 0, 25);
                                         }
                                         
-                                        echo '<a href="/category/' . htmlspecialchars($category['url_category']) . '" class="dropdown-item" title="' . 
+                                        echo '<li><a href="/category/' . htmlspecialchars($category['url_category']) . '" class="dropdown-item" title="' . 
                                              htmlspecialchars($category['title_category']) . '">' . 
-                                             htmlspecialchars($shortTitle) . '</a>';
+                                             htmlspecialchars($shortTitle) . '</a></li>';
                                         $hasCategories = true;
                                     }
                                 }
                             }
                             
                             if (!$hasCategories) {
-                                echo '<a href="#" class="dropdown-item disabled">Категории не найдены</a>';
+                                echo '<li><a href="#" class="dropdown-item disabled">Категории не найдены</a></li>';
                             }
                         } catch (Exception $e) {
-                            echo '<a href="#" class="dropdown-item">Ошибка загрузки категорий</a>';
+                            echo '<li><a href="#" class="dropdown-item">Ошибка загрузки категорий</a></li>';
                         }
                         ?>
-                    </div>
+                    </ul>
                 </div>
             <?php endif; ?>
             
@@ -603,36 +686,37 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
             
             <!-- User Menu -->
             <?php if (SessionManager::isLoggedIn()): ?>
-                <div class="dropdown user-menu">
-                    <div class="user-avatar dropdown-toggle" onclick="toggleDropdown(event, this)">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div class="dropdown-menu">
+                <div class="btn-group dropstart user-menu">
+                    <button type="button" class="btn user-avatar dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="user-initial-desktop"><?php echo strtoupper(mb_substr(SessionManager::get('email', 'U'), 0, 1)); ?></span>
+                        <i class="fas fa-user user-icon-mobile"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
                         <?php 
                         // Get current page URL
                         $current_url = $_SERVER['REQUEST_URI'];
                         // Only show My Account link if not already on account page
                         if ($current_url !== '/account' && $current_url !== '/account/'): 
                         ?>
-                        <a href="/account" class="dropdown-item">
+                        <li><a href="/account" class="dropdown-item">
                             <i class="fas fa-user" style="margin-right: 10px; width: 16px;"></i>Мой аккаунт
-                        </a>
+                        </a></li>
                         <?php endif; ?>
                         <?php if (SessionManager::get('role') === 'admin'): ?>
-                        <a href="/dashboard" class="dropdown-item">
+                        <li><a href="/dashboard" class="dropdown-item">
                             <i class="fas fa-tachometer-alt" style="margin-right: 10px; width: 16px;"></i>Dashboard
-                        </a>
+                        </a></li>
                         <?php endif; ?>
                         <?php 
                         // Only show divider if we have items above it
                         if (($current_url !== '/account' && $current_url !== '/account/') || SessionManager::get('role') === 'admin'): 
                         ?>
-                        <hr class="dropdown-divider">
+                        <li><hr class="dropdown-divider"></li>
                         <?php endif; ?>
-                        <a href="/logout" class="dropdown-item">
+                        <li><a href="/logout" class="dropdown-item">
                             <i class="fas fa-sign-out-alt" style="margin-right: 10px; width: 16px;"></i>Выйти
-                        </a>
-                    </div>
+                        </a></li>
+                    </ul>
                 </div>
             <?php else: ?>
                 <a href="/login" class="nav-link">Войти</a>
@@ -647,18 +731,28 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
 </header>
 
 <script>
-// Dropdown functionality
-function toggleDropdown(event, element) {
-    if (event) {
-        event.preventDefault();
-        event.stopPropagation();
+// Bootstrap handles dropdowns automatically via data-bs-toggle
+// No manual intervention needed - Bootstrap will handle both desktop and mobile
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Header JS: DOM loaded');
+    
+    // Clean up hash from URL if it appears
+    if (window.location.hash === '#') {
+        history.replaceState(null, null, window.location.pathname + window.location.search);
     }
     
-    const dropdown = element.closest('.dropdown');
-    if (dropdown) {
-        dropdown.classList.toggle('show');
+    // Check for duplicate logos (debugging)
+    const logos = document.querySelectorAll('.site-icon');
+    if (logos.length > 1) {
+        console.warn('Multiple site logos detected:', logos.length);
+        // Remove any duplicates except the first one
+        for (let i = 1; i < logos.length; i++) {
+            console.log('Removing duplicate logo:', logos[i]);
+            logos[i].remove();
+        }
     }
-}
+});
 
 // Mobile menu functionality
 function toggleMobileMenu() {
@@ -675,16 +769,145 @@ function toggleMobileMenu() {
     }
 }
 
-// Simple click outside handler for both desktop and mobile
-document.addEventListener('click', function(event) {
-    // Close dropdowns if clicking outside
-    if (!event.target.closest('.dropdown')) {
-        document.querySelectorAll('.dropdown.show').forEach(dropdown => {
-            dropdown.classList.remove('show');
+// Bootstrap handles dropdown clicks and escape key automatically
+
+// Function to initialize dropdowns when Bootstrap is ready
+function initializeDropdowns() {
+    console.log('Initializing dropdowns, Bootstrap version:', bootstrap.Dropdown.VERSION);
+    
+    // Force Bootstrap dropdown initialization
+    const dropdownElementList = document.querySelectorAll('[data-bs-toggle="dropdown"]');
+    const dropdownList = [...dropdownElementList].map(dropdownToggleEl => new bootstrap.Dropdown(dropdownToggleEl));
+    
+    // Debug dropdown functionality
+    const categoriesToggle = document.getElementById('categoriesToggle');
+    const categoriesDropdown = document.getElementById('categoriesDropdown');
+    
+    if (categoriesToggle && categoriesDropdown) {
+        console.log('Categories toggle found, Bootstrap dropdown attached');
+        
+        // Get the dropdown menu element
+        const dropdownMenu = categoriesDropdown.querySelector('.dropdown-menu');
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!categoriesDropdown.contains(event.target)) {
+                categoriesDropdown.classList.remove('show');
+                dropdownMenu.classList.remove('show');
+            }
+        });
+        
+        // Force manual dropdown toggle (Bootstrap is having conflicts)
+        categoriesToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            console.log('Categories clicked - using manual toggle');
+            
+            // Toggle dropdown manually
+            const isOpen = categoriesDropdown.classList.contains('show');
+            
+            if (isOpen) {
+                categoriesDropdown.classList.remove('show');
+                dropdownMenu.classList.remove('show');
+                console.log('Manually closed dropdown');
+            } else {
+                categoriesDropdown.classList.add('show');
+                dropdownMenu.classList.add('show');
+                console.log('Manually opened dropdown');
+            }
+            
+            console.log('Menu visibility after toggle:', window.getComputedStyle(dropdownMenu).display);
+        });
+        
+        // Monitor Bootstrap dropdown events
+        categoriesDropdown.addEventListener('show.bs.dropdown', function () {
+            console.log('Bootstrap dropdown show event fired');
+        });
+        
+        categoriesDropdown.addEventListener('shown.bs.dropdown', function () {
+            console.log('Bootstrap dropdown shown event fired');
+            console.log('Menu should be visible now');
+        });
+        
+        categoriesDropdown.addEventListener('hide.bs.dropdown', function () {
+            console.log('Bootstrap dropdown hide event fired');
+        });
+        
+        // Manual fallback if Bootstrap fails
+        let dropdownInstance = bootstrap.Dropdown.getOrCreateInstance(categoriesToggle);
+        
+        // Add manual toggle as absolute fallback
+        categoriesToggle.addEventListener('click', function(e) {
+            setTimeout(() => {
+                // Check if Bootstrap handled it
+                if (!categoriesDropdown.classList.contains('show')) {
+                    console.log('Bootstrap failed, using manual toggle');
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Manual toggle
+                    const isOpen = dropdownMenu.classList.contains('show');
+                    
+                    if (isOpen) {
+                        // Close
+                        dropdownMenu.classList.remove('show');
+                        categoriesToggle.setAttribute('aria-expanded', 'false');
+                    } else {
+                        // Open
+                        dropdownMenu.classList.add('show');
+                        categoriesToggle.setAttribute('aria-expanded', 'true');
+                        
+                        // Close on outside click
+                        document.addEventListener('click', function closeDropdown(event) {
+                            if (!categoriesDropdown.contains(event.target)) {
+                                dropdownMenu.classList.remove('show');
+                                categoriesToggle.setAttribute('aria-expanded', 'false');
+                                document.removeEventListener('click', closeDropdown);
+                            }
+                        });
+                    }
+                }
+            }, 100); // Small delay to let Bootstrap try first
         });
     }
-    
-    // Close mobile menu if clicking outside (on mobile)
+}
+
+// Wait for both DOM and Bootstrap to be ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if Bootstrap is already loaded
+        if (typeof bootstrap !== 'undefined') {
+            initializeDropdowns();
+        } else {
+            // Wait for Bootstrap to load
+            window.addEventListener('load', function() {
+                if (typeof bootstrap !== 'undefined') {
+                    initializeDropdowns();
+                } else {
+                    console.error('Bootstrap failed to load!');
+                }
+            });
+        }
+    });
+} else {
+    // DOM is already loaded, check for Bootstrap
+    if (typeof bootstrap !== 'undefined') {
+        initializeDropdowns();
+    } else {
+        // Wait for Bootstrap to load
+        window.addEventListener('load', function() {
+            if (typeof bootstrap !== 'undefined') {
+                initializeDropdowns();
+            } else {
+                console.error('Bootstrap failed to load!');
+            }
+        });
+    }
+}
+
+// Handle mobile menu outside clicks
+document.addEventListener('click', function(event) {
     if (window.innerWidth <= 768) {
         const nav = document.getElementById('headerNav');
         const clickedInNav = event.target.closest('.header-nav');
@@ -697,19 +920,6 @@ document.addEventListener('click', function(event) {
                 toggleIcon.className = 'fas fa-bars';
             }
         }
-    }
-});
-
-// Also handle escape key to close dropdowns
-document.addEventListener('keydown', function(event) {
-    if (event.key === 'Escape') {
-        document.querySelectorAll('.dropdown.show').forEach(dropdown => {
-            dropdown.classList.remove('show');
-            const menu = dropdown.querySelector('.dropdown-menu');
-            if (menu) {
-                menu.style.cssText = '';
-            }
-        });
     }
 });
 
@@ -737,7 +947,7 @@ if (typeof toggleTheme === 'undefined') {
         
         html.setAttribute('data-bs-theme', newTheme);
         html.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
+        localStorage.setItem('preferred-theme', newTheme);
         
         // Update theme icon
         const themeIcon = document.getElementById('theme-icon');
@@ -748,7 +958,7 @@ if (typeof toggleTheme === 'undefined') {
     
     // Initialize theme on page load
     document.addEventListener('DOMContentLoaded', function() {
-        const savedTheme = localStorage.getItem('theme') || 'light';
+        const savedTheme = localStorage.getItem('preferred-theme') || 'light';
         const html = document.documentElement;
         const themeIcon = document.getElementById('theme-icon');
         
@@ -759,14 +969,7 @@ if (typeof toggleTheme === 'undefined') {
             themeIcon.className = savedTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
         }
         
-        // Add click handler to user avatar as fallback
-        const userAvatar = document.querySelector('.user-avatar.dropdown-toggle');
-        if (userAvatar && !userAvatar.hasAttribute('data-listener-added')) {
-            userAvatar.setAttribute('data-listener-added', 'true');
-            userAvatar.addEventListener('click', function(e) {
-                toggleDropdown(e, this);
-            });
-        }
+        // Bootstrap handles dropdowns automatically
     });
 }
 </script>

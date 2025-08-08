@@ -16,28 +16,63 @@ if (isset($_GET['url_post'])) {
 }
 
 if (empty($url_param)) {
-    header("Location: /404");
-    exit();
+    // Show debug info instead of redirect
+    $greyContent1 = '<div style="padding: 30px;"><h1 style="color: #333;">DEBUG: No URL Parameter</h1></div>';
+    $greyContent2 = '<div style="padding: 20px;"><p><strong>GET Parameters:</strong><br>' . htmlspecialchars(print_r($_GET, true)) . '</p></div>';
+    $greyContent3 = '<div style="padding: 20px;"><p><strong>REQUEST_URI:</strong><br>' . htmlspecialchars($_SERVER['REQUEST_URI']) . '</p></div>';
+    $greyContent4 = '';
+    $greyContent5 = '<div style="padding: 20px;"><p><strong>Script Name:</strong><br>' . htmlspecialchars($_SERVER['SCRIPT_NAME']) . '</p></div>';
+    $greyContent6 = '';
+    $blueContent = '';
+    $pageTitle = 'Debug: No URL Parameter';
+    $metaD = '';
+    $metaK = '';
+    return; // Don't continue processing
 }
 
-// Fetch post data - try both url_slug and url_post fields
-$query = "SELECT p.*, c.title_category, c.url_category, 
-                 u.username as author_name,
-                 (SELECT COUNT(*) FROM comments WHERE entity_type = 'post' AND entity_id = p.id) as comment_count
-          FROM posts p
-          LEFT JOIN categories c ON p.category = c.id_category
-          LEFT JOIN users u ON p.author_id = u.id
-          WHERE p.url_slug = ? OR p.url_post = ?";
-$stmt = mysqli_prepare($connection, $query);
-mysqli_stmt_bind_param($stmt, "ss", $url_param, $url_param);
+// Try simple query first - just the posts table
+$simpleQuery = "SELECT * FROM posts WHERE url_slug = ?";
+$stmt = mysqli_prepare($connection, $simpleQuery);
+mysqli_stmt_bind_param($stmt, "s", $url_param);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 
 if ($row = mysqli_fetch_assoc($result)) {
+    // Found the post! Set basic data
     $postData = $row;
+    $postData['title_category'] = 'Unknown Category'; // Default
+    $postData['url_category'] = '';
+    $postData['comment_count'] = 0; // Default
+    $postData['author_name'] = $postData['author_post'] ?? 'Unknown';
 } else {
-    header("Location: /404");
-    exit();
+    // Show debug info
+    $greyContent1 = '<div style="padding: 30px;"><h1 style="color: #333;">DEBUG: Post Not Found</h1></div>';
+    $greyContent2 = '<div style="padding: 20px;"><p><strong>URL Parameter:</strong><br>' . htmlspecialchars($url_param) . '</p></div>';
+    
+    // Check what posts actually exist
+    $firstPostsQuery = "SELECT url_slug, title_post FROM posts ORDER BY id LIMIT 5";
+    $firstPostsResult = mysqli_query($connection, $firstPostsQuery);
+    $firstPosts = [];
+    while ($firstRow = mysqli_fetch_assoc($firstPostsResult)) {
+        $firstPosts[] = $firstRow['url_slug'] . ' (' . $firstRow['title_post'] . ')';
+    }
+    
+    $greyContent3 = '<div style="padding: 20px;"><p><strong>First 5 posts in posts table:</strong><br>' . htmlspecialchars(implode('<br>', $firstPosts)) . '</p></div>';
+    $greyContent4 = '<div style="padding: 20px;"><p><strong>Total posts:</strong><br>' . mysqli_num_rows(mysqli_query($connection, "SELECT id FROM posts")) . ' posts</p></div>';
+    
+    // Check if MySQL error occurred
+    if (mysqli_error($connection)) {
+        $greyContent5 = '<div style="padding: 20px;"><p><strong>MySQL Error:</strong><br>' . htmlspecialchars(mysqli_error($connection)) . '</p></div>';
+    } else {
+        $greyContent5 = '<div style="padding: 20px;"><p><strong>No MySQL errors</strong></p></div>';
+    }
+    
+    $greyContent6 = '';
+    $blueContent = '';
+    $pageTitle = 'Debug: Post Not Found';
+    $metaD = '';
+    $metaK = '';
+    return; // Don't continue processing
 }
 
 mysqli_stmt_close($stmt);
@@ -189,7 +224,7 @@ $greyContent5 = ob_get_clean();
 ob_start();
 // Get related posts from same category
 if ($postData['category']) {
-    $relatedQuery = "SELECT id, title_post, url_slug, url_post, date_post, view_post
+    $relatedQuery = "SELECT id, title_post, url_slug, date_post, view_post
                      FROM posts 
                      WHERE category = ? AND id != ? 
                      ORDER BY date_post DESC 
@@ -203,7 +238,7 @@ if ($postData['category']) {
         $relatedPosts[] = [
             'id_news' => $row['id'],
             'title_news' => $row['title_post'],
-            'url_news' => $row['url_slug'] ?: $row['url_post'],
+            'url_news' => $row['url_slug'],
             'image_news' => file_exists($_SERVER['DOCUMENT_ROOT'] . "/images/posts-images/{$row['id']}_1.jpg") 
                 ? "/images/posts-images/{$row['id']}_1.jpg" 
                 : '/images/default-news.jpg',
@@ -244,6 +279,5 @@ $pageTitle = $postData['title_post'];
 $metaD = $postData['meta_d_post'] ?? '';
 $metaK = $postData['meta_k_post'] ?? '';
 
-// Include the template
-include $_SERVER['DOCUMENT_ROOT'] . '/real_template.php';
+// Template is included by post-new.php router - don't include again
 ?>

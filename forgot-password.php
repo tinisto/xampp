@@ -16,10 +16,7 @@ if (!isset($_SESSION['csrf_token'])) {
     <title>Восстановление пароля - 11-классники</title>
     
     <!-- Favicon -->
-    <?php 
-    include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/favicon.php';
-    renderFavicon();
-    ?>
+    <?php include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/favicon.php'; ?>
     <link rel="stylesheet" href="/css/site-logo.css">
     <style>
         * {

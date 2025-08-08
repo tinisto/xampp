@@ -11,7 +11,7 @@ $error = '';
 $success = false;
 
 // Get current theme
-$currentTheme = $_COOKIE['preferred-theme'] ?? 'light';
+$currentTheme = $_COOKIE['theme'] ?? 'light';
 
 // Validate token
 if (empty($token) || empty($email)) {
@@ -90,7 +90,7 @@ if (!isset($_SESSION['csrf_token'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Сброс пароля - 11-классники</title>
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <?php include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/favicon.php'; ?>
     
     <!-- Theme Variables -->
     <link rel="stylesheet" href="/css/theme-variables.css">

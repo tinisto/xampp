@@ -21,7 +21,7 @@ $formConfig = [
 ];
 
 // Get current theme
-$currentTheme = $_COOKIE['theme'] ?? 'light';
+$currentTheme = $_COOKIE['preferred-theme'] ?? 'light';
 
 // Check for rate limiting
 $rateLimited = RateLimiter::isRateLimited('login_page_view', 20, 300); // 20 views per 5 minutes

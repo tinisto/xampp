@@ -330,7 +330,7 @@ $categoryColor = $categoryColors[$urlCategory] ?? '#22c55e';
     
     <script>
         // Simple theme toggle
-        const savedTheme = localStorage.getItem('preferred-theme') || 'light';
+        const savedTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
     </script>
 </body>

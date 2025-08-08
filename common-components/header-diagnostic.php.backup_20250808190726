@@ -542,7 +542,7 @@ document.addEventListener('DOMContentLoaded', function() {
     updateDiagnostic('Page loaded - ready for testing');
     
     // Update icons based on saved theme
-    const savedTheme = localStorage.getItem('theme') || 'light';
+    const savedTheme = localStorage.getItem('preferred-theme') || 'light';
     const themeIcon = document.getElementById('theme-icon');
     const themeIconUser = document.getElementById('theme-icon-user');
     const iconClass = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';

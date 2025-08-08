@@ -98,7 +98,7 @@ ob_start();
     <script>
         // Theme initialization
         (function() {
-            const savedTheme = localStorage.getItem('theme') || 'light';
+            const savedTheme = localStorage.getItem('preferred-theme') || 'light';
             document.documentElement.setAttribute('data-theme', savedTheme);
             document.documentElement.setAttribute('data-bs-theme', savedTheme);
         })();
@@ -181,7 +181,7 @@ ob_start();
                 
                 html.setAttribute('data-theme', newTheme);
                 html.setAttribute('data-bs-theme', newTheme);
-                localStorage.setItem('theme', newTheme);
+                localStorage.setItem('preferred-theme', newTheme);
                 
                 // Update theme icons
                 const themeIcon = document.getElementById('theme-icon');

@@ -24,7 +24,7 @@ $greyContent4 = '';
 ob_start();
 ?>
 <div style="text-align: center; padding: 40px 20px;">
-    <div style="font-size: 120px; color: #28a745; opacity: 0.3; margin-bottom: 20px;">
+    <div style="font-size: 120px; color: #007bff !important; opacity: 1.0 !important; margin-bottom: 20px; font-weight: bold;">
         404
     </div>
     <p style="font-size: 18px; color: #666; margin-bottom: 30px;">
@@ -34,7 +34,7 @@ ob_start();
         Возможно, страница была перемещена или удалена.
     </p>
     <div style="margin-top: 40px;">
-        <a href="/" class="btn btn-success" style="padding: 12px 30px; font-size: 16px; text-decoration: none; background: #28a745; color: white; border-radius: 25px; display: inline-block;">
+        <a href="/" class="btn btn-primary" style="padding: 12px 30px; font-size: 16px; text-decoration: none; background: #007bff; color: white; border-radius: 25px; display: inline-block;">
             Вернуться на главную
         </a>
     </div>

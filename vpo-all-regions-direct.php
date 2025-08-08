@@ -151,7 +151,7 @@ $metaK = 'ВПО, университеты, институты, регионы, 
     
     <script>
         (function() {
-            const savedTheme = localStorage.getItem('preferred-theme') || 'light';
+            const savedTheme = localStorage.getItem('theme') || 'light';
             document.documentElement.setAttribute('data-bs-theme', savedTheme);
             document.documentElement.setAttribute('data-theme', savedTheme);
         })();

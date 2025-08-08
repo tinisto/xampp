@@ -425,7 +425,7 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
     <script>
         (function() {
             try {
-                const savedTheme = localStorage.getItem('theme') || 'light';
+                const savedTheme = localStorage.getItem('preferred-theme') || 'light';
                 document.documentElement.setAttribute('data-bs-theme', savedTheme);
                 document.documentElement.setAttribute('data-theme', savedTheme);
             } catch(e) {
@@ -445,11 +445,11 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
             
             html.setAttribute('data-bs-theme', newTheme);
             html.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
+            localStorage.setItem('preferred-theme', newTheme);
             
             // Set secure cookie
             const isSecure = window.location.protocol === 'https:';
-            document.cookie = `theme=${newTheme};path=/;max-age=31536000;${isSecure ? 'secure;' : ''}samesite=lax`;
+            document.cookie = `preferred-theme=${newTheme};path=/;max-age=31536000;${isSecure ? 'secure;' : ''}samesite=lax`;
             
             // Update theme icons
             const themeIcon = document.getElementById('theme-icon');
@@ -545,11 +545,11 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
                 
                 html.setAttribute('data-bs-theme', newTheme);
                 html.setAttribute('data-theme', newTheme);  
-                localStorage.setItem('theme', newTheme);
+                localStorage.setItem('preferred-theme', newTheme);
                 
                 // Set secure cookie
                 const isSecure = window.location.protocol === 'https:';
-                document.cookie = `theme=${newTheme};path=/;max-age=31536000;${isSecure ? 'secure;' : ''}samesite=lax`;
+                document.cookie = `preferred-theme=${newTheme};path=/;max-age=31536000;${isSecure ? 'secure;' : ''}samesite=lax`;
                 
                 // Update theme icons (handle multiple icons for different user states)
                 const themeIcon = document.getElementById('theme-icon');
@@ -567,7 +567,7 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
         
         // Initialize theme on page load
         document.addEventListener('DOMContentLoaded', function() {
-            const savedTheme = localStorage.getItem('theme') || 'light';
+            const savedTheme = localStorage.getItem('preferred-theme') || 'light';
             const html = document.documentElement;
             
             html.setAttribute('data-bs-theme', savedTheme);
@@ -575,7 +575,7 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
             
             // Set secure cookie on page load
             const isSecure = window.location.protocol === 'https:';
-            document.cookie = `theme=${savedTheme};path=/;max-age=31536000;${isSecure ? 'secure;' : ''}samesite=lax`;
+            document.cookie = `preferred-theme=${savedTheme};path=/;max-age=31536000;${isSecure ? 'secure;' : ''}samesite=lax`;
             
             const themeIcon = document.getElementById('theme-icon');
             const themeIconUser = document.getElementById('theme-icon-user');

@@ -163,7 +163,7 @@ if (isset($_GET['direct_test'])) {
     <script>
         (function() {
             try {
-                const savedTheme = localStorage.getItem('preferred-theme') || 'light';
+                const savedTheme = localStorage.getItem('theme') || 'light';
                 document.documentElement.setAttribute('data-bs-theme', savedTheme);
                 document.documentElement.setAttribute('data-theme', savedTheme);
             } catch(e) {
@@ -524,7 +524,7 @@ if (isset($_GET['direct_test'])) {
             
             html.setAttribute('data-bs-theme', newTheme);
             html.setAttribute('data-theme', newTheme);
-            localStorage.setItem('preferred-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
             
             // Update theme icons
             const themeIcon = document.getElementById('theme-icon');
@@ -539,7 +539,7 @@ if (isset($_GET['direct_test'])) {
         
         // Initialize theme on page load
         document.addEventListener('DOMContentLoaded', function() {
-            const savedTheme = localStorage.getItem('preferred-theme') || 'light';
+            const savedTheme = localStorage.getItem('theme') || 'light';
             const html = document.documentElement;
             
             html.setAttribute('data-bs-theme', savedTheme);

@@ -23,7 +23,7 @@ unset($_SESSION['activation_link']);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Регистрация успешна - 11-классники</title>
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <?php include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/favicon.php'; ?>
     <style>
         * {
             margin: 0;

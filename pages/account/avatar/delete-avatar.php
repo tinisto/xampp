@@ -1,37 +1,70 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/check_under_construction.php';
-include $_SERVER["DOCUMENT_ROOT"] . "/includes/functions/check_user.php";
+// Delete Avatar Process
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/auth.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
 
-// Check if the user has an avatar
-$email = $_SESSION['email'];
-$query = "SELECT avatar FROM users WHERE email = ?";
-$stmt = $connection->prepare($query);
-$stmt->bind_param("s", $email);
-$stmt->execute();
-$result = $stmt->get_result();
-$userData = $result->fetch_assoc();
-$stmt->close();
+// Ensure user is logged in
+requireLogin();
 
-if (empty($userData['avatar'])) {
-  header("Location: /account"); // Redirect to profile if no avatar
-  exit();
+header('Content-Type: application/json');
+
+try {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        throw new Exception('Only POST method allowed');
+    }
+
+    // Get current user
+    $userId = getCurrentUserId();
+    if (!$userId) {
+        throw new Exception('User not found');
+    }
+
+    // Get current avatar info
+    $userQuery = "SELECT avatar FROM users WHERE id = ?";
+    $stmt = mysqli_prepare($connection, $userQuery);
+    mysqli_stmt_bind_param($stmt, "i", $userId);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $user = mysqli_fetch_assoc($result);
+
+    if (!$user) {
+        throw new Exception('Пользователь не найден');
+    }
+
+    $currentAvatar = $user['avatar'];
+
+    // Delete avatar file if it exists and is not default
+    if (!empty($currentAvatar) && $currentAvatar !== 'default.png') {
+        $avatarPath = $_SERVER['DOCUMENT_ROOT'] . '/uploads/avatars/' . $currentAvatar;
+        if (file_exists($avatarPath)) {
+            unlink($avatarPath);
+        }
+
+        // Also delete thumbnail if exists
+        $thumbnailPath = $_SERVER['DOCUMENT_ROOT'] . '/uploads/avatars/thumbnails/' . $currentAvatar;
+        if (file_exists($thumbnailPath)) {
+            unlink($thumbnailPath);
+        }
+    }
+
+    // Update user record to remove avatar
+    $updateQuery = "UPDATE users SET avatar = NULL, updated_at = NOW() WHERE id = ?";
+    $updateStmt = mysqli_prepare($connection, $updateQuery);
+    mysqli_stmt_bind_param($updateStmt, "i", $userId);
+    
+    if (!mysqli_stmt_execute($updateStmt)) {
+        throw new Exception('Ошибка при удалении аватара');
+    }
+
+    echo json_encode([
+        'success' => true,
+        'message' => 'Аватар успешно удален'
+    ]);
+
+} catch (Exception $e) {
+    echo json_encode([
+        'success' => false,
+        'message' => $e->getMessage()
+    ]);
 }
-
-// Delete the avatar file
-$avatarFile = $_SERVER['DOCUMENT_ROOT'] . '/images/avatars/' . $userData['avatar'];
-if (file_exists($avatarFile)) {
-  unlink($avatarFile);
-}
-
-// Remove the avatar reference from the database
-$updateQuery = "UPDATE users SET avatar = NULL WHERE email = ?";
-$stmt = $connection->prepare($updateQuery);
-$stmt->bind_param("s", $email);
-$stmt->execute();
-$stmt->close();
-
-$_SESSION['avatar'] = NULL; // Clear the session avatar
-header("Location: /account"); // Redirect back to the profile page
-
-$connection->close();
-exit();
+?>

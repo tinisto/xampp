@@ -134,6 +134,7 @@ DirectoryIndex index.php index.html
     RewriteRule ^create/process/?$ create-process.php [QSA,NC,L]
     RewriteRule ^edit/process/?$ edit-process.php [QSA,NC,L]
     RewriteRule ^logout/?$ simple_logout.php [QSA,NC,L]
+    RewriteRule ^unauthorized/?$ unauthorized-new.php [QSA,NC,L]
 
     # Search
     RewriteRule ^search/?$ search-new.php [QSA,NC,L]
