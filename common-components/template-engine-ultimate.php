@@ -671,10 +671,7 @@ function renderAuthLayout($pageTitle, $mainContent, $config = []) {
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
         
         <!-- Favicon -->
-        <?php 
-        include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/favicon.php';
-        renderFavicon();
-        ?>
+        <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='favicon-gradient-v2' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%2328a745' /%3E%3Cstop offset='100%25' style='stop-color:%2320c997' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='6' fill='url(%23favicon-gradient-v2)'/%3E%3Ctext x='16' y='22' text-anchor='middle' fill='white' font-size='16' font-weight='bold' font-family='system-ui'%3E11%3C/text%3E%3C/svg%3E" type="image/svg+xml">
     </head>
     <body class="full-height-flex">
         <main class="container">

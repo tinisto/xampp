@@ -42,24 +42,25 @@ $pageTitle = 'Новости';
 $subtitle = 'Актуальные новости образования';
 
 if ($newsType) {
+    // Map news_type parameter to category_news values in database
     switch ($newsType) {
         case 'vpo':
-            $whereClause = "WHERE news_type = 'vpo'";
+            $whereClause = "WHERE category_news = '1'"; // VPO news
             $pageTitle = 'Новости ВУЗов';
             $subtitle = 'Новости высших учебных заведений';
             break;
         case 'spo':
-            $whereClause = "WHERE news_type = 'spo'";
+            $whereClause = "WHERE category_news = '2'"; // SPO news  
             $pageTitle = 'Новости СПО';
             $subtitle = 'Новости средних профессиональных учреждений';
             break;
         case 'school':
-            $whereClause = "WHERE news_type = 'school'";
+            $whereClause = "WHERE category_news = '3'"; // School news
             $pageTitle = 'Новости школ';
             $subtitle = 'Новости общеобразовательных учреждений';
             break;
         case 'education':
-            $whereClause = "WHERE news_type = 'education'";
+            $whereClause = "WHERE category_news IN ('4', 'education')"; // Both numeric and string education values
             $pageTitle = 'Новости образования';
             $subtitle = 'Общие новости системы образования';
             break;
@@ -86,7 +87,27 @@ $newsNavItems = [
     ['title' => 'Новости школ', 'url' => '/news/novosti-shkol'],
     ['title' => 'Новости образования', 'url' => '/news/novosti-obrazovaniya']
 ];
-renderCategoryNavigation($newsNavItems, $_SERVER['REQUEST_URI']);
+// Determine the correct current path for navigation  
+$currentNavPath = '/news';
+if (isset($_GET['news_type']) && !empty($_GET['news_type'])) {
+    // Map news_type back to URL paths
+    $newsTypeToPath = [
+        'vpo' => '/news/novosti-vuzov',
+        'spo' => '/news/novosti-spo', 
+        'school' => '/news/novosti-shkol',
+        'education' => '/news/novosti-obrazovaniya'
+    ];
+    
+    if (isset($newsTypeToPath[$_GET['news_type']])) {
+        $currentNavPath = $newsTypeToPath[$_GET['news_type']];
+    }
+}
+// Fallback: also check for url_news parameter (if called via query)
+elseif (isset($_GET['url_news']) && !empty($_GET['url_news'])) {
+    $currentNavPath = '/news/' . $_GET['url_news'];
+}
+
+renderCategoryNavigation($newsNavItems, $currentNavPath);
 $greyContent2 = ob_get_clean();
 
 // Section 3: Empty for listing
@@ -117,34 +138,67 @@ $greyContent4 = ob_get_clean();
 // Section 5: News Grid
 ob_start();
 
-// Get total count
-$countQuery = "SELECT COUNT(*) as total FROM news WHERE status = 'published' $whereClause";
+// Get total count (no status field, no JOIN needed)
+$baseWhere = $whereClause ? $whereClause : "WHERE 1=1";
+$countQuery = "SELECT COUNT(*) as total FROM news {$baseWhere}";
 $countResult = mysqli_query($connection, $countQuery);
 $totalNews = mysqli_fetch_assoc($countResult)['total'];
 $totalPages = ceil($totalNews / $perPage);
 
-// Get news
-$query = "SELECT id_news, title_news, url_news, image_news, created_at, 
-                 categories.title_category as category_title, 
-                 categories.url_category as category_url 
+// Get news (use actual database fields)
+$query = "SELECT id, title_news, url_slug, image_news, date_news, category_news 
           FROM news 
-          LEFT JOIN categories ON news.category_id = categories.id_category 
-          WHERE news.status = 'published' $whereClause 
-          ORDER BY created_at DESC 
+          {$baseWhere}
+          ORDER BY date_news DESC 
           LIMIT $perPage OFFSET $offset";
 
 $result = mysqli_query($connection, $query);
 $newsItems = [];
-while ($row = mysqli_fetch_assoc($result)) {
-    $newsItems[] = $row;
+if ($result) {
+    while ($row = mysqli_fetch_assoc($result)) {
+        // Map category_news values to proper badge names
+        $categoryTitle = 'Новости';
+        switch ($row['category_news']) {
+            case '1':
+                $categoryTitle = 'Новости ВПО';
+                break;
+            case '2':
+                $categoryTitle = 'Новости СПО';
+                break;
+            case '3':
+                $categoryTitle = 'Новости школ';
+                break;
+            case '4':
+                $categoryTitle = 'Новости образования';
+                break;
+            case 'education':
+                $categoryTitle = 'Новости образования';
+                break;
+        }
+        
+        // Map database fields to expected format for cards grid
+        $newsItems[] = [
+            'id_news' => $row['id'],
+            'title_news' => $row['title_news'],
+            'url_news' => $row['url_slug'], 
+            'image_news' => $row['image_news'],
+            'created_at' => $row['date_news'],
+            'category_title' => $categoryTitle,
+            'category_url' => 'news'
+        ];
+    }
 }
 
 if (count($newsItems) > 0) {
     include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/cards-grid.php';
+    
+    // Show badges only on main /news page (when no specific category is selected)
+    $showBadges = empty($newsType);
+    
     renderCardsGrid($newsItems, 'news', [
         'columns' => 4,
         'gap' => 20,
-        'showBadge' => true
+        'showBadge' => $showBadges
     ]);
 } else {
     echo '<div style="text-align: center; padding: 40px; color: #666;">

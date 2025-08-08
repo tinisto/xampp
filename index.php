@@ -4,6 +4,14 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
 
 // Prepare content for template sections
 ob_start();
+?>
+<script>
+// Remove hash from URL on homepage
+if (window.location.hash) {
+    history.replaceState(null, null, window.location.pathname + window.location.search);
+}
+</script>
+<?php
 include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/real_title.php';
 renderRealTitle('11-классники', [
     'fontSize' => '36px',

@@ -4,12 +4,8 @@
  * Replaces all other header files
  */
 
-// Add favicon to head if not already added
-if (!defined('FAVICON_LOADED')) {
-    include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/favicon.php';
-    renderFavicon();
-    define('FAVICON_LOADED', true);
-}
+// Favicon is now handled in the template head section
+// No need to include favicon.php as it has been removed
 
 // Load session manager if not already loaded
 if (!class_exists('SessionManager')) {

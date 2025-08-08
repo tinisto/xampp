@@ -4,12 +4,7 @@
  * Replaces all other header files
  */
 
-// Add favicon to head if not already added
-if (!defined('FAVICON_LOADED')) {
-    include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/favicon.php';
-    renderFavicon();
-    define('FAVICON_LOADED', true);
-}
+// Favicon will be handled directly in template head section
 
 // Load session manager if not already loaded
 if (!class_exists('SessionManager')) {
@@ -69,6 +64,12 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
         z-index: 1050;
         width: 100%;
         transition: all 0.3s ease;
+    }
+    
+    /* Prevent any duplicate logos from appearing */
+    body > .site-icon,
+    body > a.site-icon {
+        display: none !important;
     }
     
     .header-container {
@@ -170,6 +171,39 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
         max-width: 320px;
         padding: 4px 0;
         z-index: 1050;
+    }
+    
+    /* Force dropdown menu to be visible when shown */
+    .dropdown.show .dropdown-menu,
+    .dropdown-menu.show {
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: none !important;
+        position: absolute !important;
+        top: 100% !important;
+        left: 0 !important;
+        margin-top: 0.125rem !important;
+        z-index: 1050 !important;
+    }
+    
+    /* Override any conflicting styles */
+    .header-nav .dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        margin-top: 0.125rem;
+        z-index: 1050;
+    }
+    
+    /* Ensure categories dropdown menu is properly positioned */
+    #categoriesDropdown .dropdown-menu {
+        position: absolute !important;
+        top: 100% !important;
+        left: 0 !important;
+        margin-top: 0.125rem !important;
+        z-index: 1050 !important;
     }
     
     .dropdown-item {
@@ -563,10 +597,10 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
             <!-- Categories Dropdown -->
             <?php if ($hasDatabase): ?>
                 <div class="dropdown" id="categoriesDropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" id="categoriesToggle">
+                    <button type="button" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false" id="categoriesToggle">
                         Категории
-                    </a>
-                    <ul class="dropdown-menu">
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="categoriesToggle">
                         <?php
                         try {
                             $hasCategories = false;
@@ -698,25 +732,25 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
 
 <script>
 // Bootstrap handles dropdowns automatically via data-bs-toggle
+// No manual intervention needed - Bootstrap will handle both desktop and mobile
 
-// Override Bootstrap dropdown behavior on mobile
 document.addEventListener('DOMContentLoaded', function() {
-    const categoriesToggle = document.getElementById('categoriesToggle');
-    if (categoriesToggle) {
-        categoriesToggle.addEventListener('click', function(e) {
-            if (window.innerWidth <= 768) {
-                e.preventDefault();
-                e.stopPropagation();
-                const dropdown = document.getElementById('categoriesDropdown');
-                if (dropdown) {
-                    dropdown.classList.toggle('show');
-                    const menu = dropdown.querySelector('.dropdown-menu');
-                    if (menu) {
-                        menu.classList.toggle('show');
-                    }
-                }
-            }
-        });
+    console.log('Header JS: DOM loaded');
+    
+    // Clean up hash from URL if it appears
+    if (window.location.hash === '#') {
+        history.replaceState(null, null, window.location.pathname + window.location.search);
+    }
+    
+    // Check for duplicate logos (debugging)
+    const logos = document.querySelectorAll('.site-icon');
+    if (logos.length > 1) {
+        console.warn('Multiple site logos detected:', logos.length);
+        // Remove any duplicates except the first one
+        for (let i = 1; i < logos.length; i++) {
+            console.log('Removing duplicate logo:', logos[i]);
+            logos[i].remove();
+        }
     }
 });
 
@@ -736,6 +770,141 @@ function toggleMobileMenu() {
 }
 
 // Bootstrap handles dropdown clicks and escape key automatically
+
+// Function to initialize dropdowns when Bootstrap is ready
+function initializeDropdowns() {
+    console.log('Initializing dropdowns, Bootstrap version:', bootstrap.Dropdown.VERSION);
+    
+    // Force Bootstrap dropdown initialization
+    const dropdownElementList = document.querySelectorAll('[data-bs-toggle="dropdown"]');
+    const dropdownList = [...dropdownElementList].map(dropdownToggleEl => new bootstrap.Dropdown(dropdownToggleEl));
+    
+    // Debug dropdown functionality
+    const categoriesToggle = document.getElementById('categoriesToggle');
+    const categoriesDropdown = document.getElementById('categoriesDropdown');
+    
+    if (categoriesToggle && categoriesDropdown) {
+        console.log('Categories toggle found, Bootstrap dropdown attached');
+        
+        // Get the dropdown menu element
+        const dropdownMenu = categoriesDropdown.querySelector('.dropdown-menu');
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!categoriesDropdown.contains(event.target)) {
+                categoriesDropdown.classList.remove('show');
+                dropdownMenu.classList.remove('show');
+            }
+        });
+        
+        // Force manual dropdown toggle (Bootstrap is having conflicts)
+        categoriesToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            console.log('Categories clicked - using manual toggle');
+            
+            // Toggle dropdown manually
+            const isOpen = categoriesDropdown.classList.contains('show');
+            
+            if (isOpen) {
+                categoriesDropdown.classList.remove('show');
+                dropdownMenu.classList.remove('show');
+                console.log('Manually closed dropdown');
+            } else {
+                categoriesDropdown.classList.add('show');
+                dropdownMenu.classList.add('show');
+                console.log('Manually opened dropdown');
+            }
+            
+            console.log('Menu visibility after toggle:', window.getComputedStyle(dropdownMenu).display);
+        });
+        
+        // Monitor Bootstrap dropdown events
+        categoriesDropdown.addEventListener('show.bs.dropdown', function () {
+            console.log('Bootstrap dropdown show event fired');
+        });
+        
+        categoriesDropdown.addEventListener('shown.bs.dropdown', function () {
+            console.log('Bootstrap dropdown shown event fired');
+            console.log('Menu should be visible now');
+        });
+        
+        categoriesDropdown.addEventListener('hide.bs.dropdown', function () {
+            console.log('Bootstrap dropdown hide event fired');
+        });
+        
+        // Manual fallback if Bootstrap fails
+        let dropdownInstance = bootstrap.Dropdown.getOrCreateInstance(categoriesToggle);
+        
+        // Add manual toggle as absolute fallback
+        categoriesToggle.addEventListener('click', function(e) {
+            setTimeout(() => {
+                // Check if Bootstrap handled it
+                if (!categoriesDropdown.classList.contains('show')) {
+                    console.log('Bootstrap failed, using manual toggle');
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Manual toggle
+                    const isOpen = dropdownMenu.classList.contains('show');
+                    
+                    if (isOpen) {
+                        // Close
+                        dropdownMenu.classList.remove('show');
+                        categoriesToggle.setAttribute('aria-expanded', 'false');
+                    } else {
+                        // Open
+                        dropdownMenu.classList.add('show');
+                        categoriesToggle.setAttribute('aria-expanded', 'true');
+                        
+                        // Close on outside click
+                        document.addEventListener('click', function closeDropdown(event) {
+                            if (!categoriesDropdown.contains(event.target)) {
+                                dropdownMenu.classList.remove('show');
+                                categoriesToggle.setAttribute('aria-expanded', 'false');
+                                document.removeEventListener('click', closeDropdown);
+                            }
+                        });
+                    }
+                }
+            }, 100); // Small delay to let Bootstrap try first
+        });
+    }
+}
+
+// Wait for both DOM and Bootstrap to be ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if Bootstrap is already loaded
+        if (typeof bootstrap !== 'undefined') {
+            initializeDropdowns();
+        } else {
+            // Wait for Bootstrap to load
+            window.addEventListener('load', function() {
+                if (typeof bootstrap !== 'undefined') {
+                    initializeDropdowns();
+                } else {
+                    console.error('Bootstrap failed to load!');
+                }
+            });
+        }
+    });
+} else {
+    // DOM is already loaded, check for Bootstrap
+    if (typeof bootstrap !== 'undefined') {
+        initializeDropdowns();
+    } else {
+        // Wait for Bootstrap to load
+        window.addEventListener('load', function() {
+            if (typeof bootstrap !== 'undefined') {
+                initializeDropdowns();
+            } else {
+                console.error('Bootstrap failed to load!');
+            }
+        });
+    }
+}
 
 // Handle mobile menu outside clicks
 document.addEventListener('click', function(event) {

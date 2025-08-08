@@ -1,4 +1,6 @@
 # Enhanced .htaccess - Simplified and Optimized
+DirectoryIndex index.php index.html
+
 # Security and environment protection
 <Files .env>
     Order allow,deny
@@ -52,7 +54,7 @@
 
     # Educational Institutions - All Regions
     RewriteRule ^schools-all-regions/?$ schools-all-regions-real.php [QSA,NC,L]
-    RewriteRule ^vpo-all-regions/?$ vpo-all-regions-real.php [QSA,NC,L]
+    RewriteRule ^vpo-all-regions/?$ vpo-all-regions-new.php [QSA,NC,L]
     RewriteRule ^spo-all-regions/?$ spo-all-regions-new.php [QSA,NC,L]
     RewriteRule ^educational-institutions-all-regions/?$ pages/common/educational-institutions-all-regions/educational-institutions-all-regions.php [QSA,NC,L]
     
@@ -97,8 +99,9 @@
     # Redirect /posts to homepage (posts are shown there)
     RewriteRule ^posts/?$ / [R=301,L]
     
-    # Categories
-    RewriteRule ^category/([^/]+)/?$ pages/category/category-new.php?category_en=$1 [QSA,NC,L]
+    # Categories - specific redirects first
+    RewriteRule ^category/education-news/?$ /news [R=301,L]
+    RewriteRule ^category/([^/]+)/?$ category-new.php?category_en=$1 [QSA,NC,L]
 
     # Tests System
     RewriteRule ^tests/?$ tests-new.php [QSA,NC,L]
@@ -133,6 +136,7 @@
     # Static Pages
     RewriteRule ^about/?$ about-new.php [QSA,NC,L]
     RewriteRule ^write/?$ write-new.php [QSA,NC,L]
+    RewriteRule ^write-success/?$ write-success.php [QSA,NC,L]
     RewriteRule ^thank-you/?$ pages/thank-you/thank-you.php [QSA,NC,L]
     RewriteRule ^privacy/?$ pages/privacy/privacy.php [QSA,NC,L]
     RewriteRule ^terms/?$ pages/terms/terms.php [QSA,NC,L]

@@ -242,8 +242,14 @@ if (strpos($requestUri, '/test/news') !== false) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($pageTitle ?? 'Страница'); ?> - 11-классники</title>
     
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg+xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22+viewBox%3D%220+0+32+32%22%3E%0A++++++++%3Cdefs%3E%0A++++++++++++%3ClinearGradient+id%3D%22favicon-gradient-v2%22+x1%3D%220%25%22+y1%3D%220%25%22+x2%3D%22100%25%22+y2%3D%22100%25%22%3E%0A++++++++++++++++%3Cstop+offset%3D%220%25%22+style%3D%22stop-color%3A%2328a745%22+%2F%3E%0A++++++++++++++++%3Cstop+offset%3D%22100%25%22+style%3D%22stop-color%3A%2320c997%22+%2F%3E%0A++++++++++++%3C%2FlinearGradient%3E%0A++++++++%3C%2Fdefs%3E%0A++++++++%3Crect+width%3D%2232%22+height%3D%2232%22+rx%3D%226%22+fill%3D%22url%28%23favicon-gradient-v2%29%22%2F%3E%0A++++++++%3Ctext+x%3D%2216%22+y%3D%2222%22+text-anchor%3D%22middle%22+fill%3D%22white%22+font-size%3D%2216%22+font-weight%3D%22bold%22+font-family%3D%22system-ui%22%3E11%3C%2Ftext%3E%0A++++%3C%2Fsvg%3E" type="image/svg+xml">
+
     <!-- Adsense Meta tag -->
     <meta name="google-adsense-account" content="ca-pub-2363662533799826">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -260,6 +266,12 @@ if (strpos($requestUri, '/test/news') !== false) {
         })(window, document, "clarity", "script", "pmqwtsrnfg");
     </script>
     <style>
+        /* Reset Bootstrap's aggressive resets */
+        .dropdown-toggle::after {
+            display: none !important;
+        }
+        
+        /* Preserve our custom styles */
         * {
             margin: 0;
             padding: 0;
@@ -277,8 +289,18 @@ if (strpos($requestUri, '/test/news') !== false) {
             margin: 0;
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-            background: #212529; /* Dark background for overscroll areas */
+            background: #f8f9fa; /* Light background for overscroll areas */
             position: relative;
+        }
+        
+        /* Fix auto-placed ads appearing with dark backgrounds */
+        .google-auto-placed {
+            background: transparent !important;
+        }
+        
+        /* Ensure ads don't create dark spaces above header */
+        body > .google-auto-placed:first-child {
+            display: none !important;
         }
         
         /* Wrapper for yellow background sections */
@@ -287,6 +309,71 @@ if (strpos($requestUri, '/test/news') !== false) {
             flex: 1;
             display: flex;
             flex-direction: column;
+            color: #333; /* Ensure dark text in light mode */
+        }
+        
+        /* Ensure all text in light mode is dark */
+        .yellow-bg-wrapper h1,
+        .yellow-bg-wrapper h2,
+        .yellow-bg-wrapper h3,
+        .yellow-bg-wrapper p,
+        .yellow-bg-wrapper div,
+        .yellow-bg-wrapper span {
+            color: #333 !important;
+        }
+        
+        /* Specific fix for category titles */
+        .yellow-bg-wrapper .real-title h1,
+        .yellow-bg-wrapper .real-title h2,
+        .yellow-bg-wrapper [class*="real-title"],
+        .yellow-bg-wrapper [id*="real-title"],
+        .content [class*="real-title"],
+        .content [id*="real-title"],
+        main [class*="real-title"],
+        main [id*="real-title"] {
+            color: #333 !important;
+        }
+        
+        /* Dark mode text colors and backgrounds */
+        [data-theme="dark"] .yellow-bg-wrapper,
+        [data-bs-theme="dark"] .yellow-bg-wrapper {
+            background: #1a1a1a !important;
+            color: #f8f9fa;
+        }
+        
+        [data-theme="dark"] .yellow-bg-wrapper h1,
+        [data-theme="dark"] .yellow-bg-wrapper h2,
+        [data-theme="dark"] .yellow-bg-wrapper h3,
+        [data-theme="dark"] .yellow-bg-wrapper p,
+        [data-theme="dark"] .yellow-bg-wrapper div,
+        [data-theme="dark"] .yellow-bg-wrapper span,
+        [data-bs-theme="dark"] .yellow-bg-wrapper h1,
+        [data-bs-theme="dark"] .yellow-bg-wrapper h2,
+        [data-bs-theme="dark"] .yellow-bg-wrapper h3,
+        [data-bs-theme="dark"] .yellow-bg-wrapper p,
+        [data-bs-theme="dark"] .yellow-bg-wrapper div,
+        [data-bs-theme="dark"] .yellow-bg-wrapper span {
+            color: #f8f9fa !important;
+        }
+        
+        /* Dark mode for category titles */
+        [data-theme="dark"] .yellow-bg-wrapper .real-title h1,
+        [data-theme="dark"] .yellow-bg-wrapper .real-title h2,
+        [data-theme="dark"] .yellow-bg-wrapper [class*="real-title"],
+        [data-theme="dark"] .yellow-bg-wrapper [id*="real-title"],
+        [data-theme="dark"] .content [class*="real-title"],
+        [data-theme="dark"] .content [id*="real-title"],
+        [data-theme="dark"] main [class*="real-title"],
+        [data-theme="dark"] main [id*="real-title"],
+        [data-bs-theme="dark"] .yellow-bg-wrapper .real-title h1,
+        [data-bs-theme="dark"] .yellow-bg-wrapper .real-title h2,
+        [data-bs-theme="dark"] .yellow-bg-wrapper [class*="real-title"],
+        [data-bs-theme="dark"] .yellow-bg-wrapper [id*="real-title"],
+        [data-bs-theme="dark"] .content [class*="real-title"],
+        [data-bs-theme="dark"] .content [id*="real-title"],
+        [data-bs-theme="dark"] main [class*="real-title"],
+        [data-bs-theme="dark"] main [id*="real-title"] {
+            color: #f8f9fa !important;
         }
         
         /* Header - flex-shrink: 0 so it keeps its size */
@@ -439,13 +526,19 @@ if (strpos($requestUri, '/test/news') !== false) {
     <div class="yellow-bg-wrapper">
         <!-- Main Content (RED background) -->
         <main class="content" style="background: transparent; display: flex; flex-direction: column;">
-            <!-- First section -->
+            <!-- First section (Title/Subtitle) -->
+            <?php if (empty($greyContent2) || strpos($greyContent2, 'category-navigation') === false): ?>
             <div style="flex: 1; margin: 0;">
                 <?php echo $greyContent1; ?>
             </div>
+            <?php endif; ?>
             
-            <!-- Second section -->
-            <div style="flex: 1; margin: 0;">
+            <!-- Second section (Navigation) -->
+            <?php 
+            $hasNavigation = !empty($greyContent2) && strpos($greyContent2, 'category-navigation') !== false;
+            $navMarginTop = ($hasNavigation && (empty($greyContent1) || strpos($greyContent2, 'category-navigation') !== false)) ? '30px' : '0';
+            ?>
+            <div style="flex: 1; margin: 0; margin-top: <?php echo $navMarginTop; ?>;">
                 <?php echo $greyContent2; ?>
             </div>
             
@@ -488,5 +581,8 @@ if (strpos($requestUri, '/test/news') !== false) {
     require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/components/cookie-consent.php';
     echo renderCookieConsent();
     ?>
+    
+    <!-- Bootstrap JS Bundle (includes Popper) - Required for dropdowns -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -4,12 +4,7 @@
  * Replaces all other footer files
  */
 
-// Add favicon to head if not already added
-if (!defined('FAVICON_LOADED')) {
-    include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/favicon.php';
-    renderFavicon();
-    define('FAVICON_LOADED', true);
-}
+// Favicon is now handled directly in template head section - no longer needed here
 
 // Load session manager if not already loaded
 if (!class_exists('SessionManager')) {
@@ -415,11 +410,9 @@ function toggleMobileMenu() {
 
 // Simple click outside handler for both desktop and mobile
 document.addEventListener('click', function(event) {
-    // Close dropdowns if clicking outside
-    if (!event.target.closest('.dropdown')) {
-        document.querySelectorAll('.dropdown.show').forEach(dropdown => {
-            dropdown.classList.remove('show');
-        });
+    // Close dropdowns if clicking outside - but don't interfere with Bootstrap
+    if (!event.target.closest('.dropdown') && !event.target.closest('[data-bs-toggle="dropdown"]')) {
+        // Let Bootstrap handle its own dropdowns
     }
     
     // Close mobile menu if clicking outside (on mobile)
@@ -451,20 +444,7 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
-// Close mobile menu when clicking outside
-document.addEventListener('click', function(event) {
-    const nav = document.getElementById('headerNav');
-    const toggle = document.querySelector('.mobile-menu-toggle');
-    const toggleIcon = document.querySelector('.mobile-menu-toggle i');
-    
-    if (!nav.contains(event.target) && !toggle.contains(event.target)) {
-        nav.classList.remove('mobile-open');
-        // Reset icon to hamburger when closing
-        if (toggleIcon) {
-            toggleIcon.className = 'fas fa-bars';
-        }
-    }
-});
+// Removed duplicate click handler - handled above
 
 // Theme toggle functionality (if not already defined)
 if (typeof toggleTheme === 'undefined') {

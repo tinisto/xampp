@@ -35,13 +35,20 @@ function renderBreadcrumb($items = []) {
     ?>
     <nav aria-label="breadcrumb" class="breadcrumb-nav">
         <ol class="breadcrumb" itemscope itemtype="https://schema.org/BreadcrumbList">
-            <?php foreach ($items as $index => $item): ?>
-                <?php $position = $index + 1; ?>
-                <li class="breadcrumb-item<?= $index === count($items) - 1 ? ' active' : '' ?>" 
+            <?php 
+            $validItems = array_filter($items, function($item) {
+                return !empty($item['text']);
+            });
+            $position = 0;
+            foreach ($validItems as $index => $item): 
+                $position++;
+                $isLast = ($index === array_key_last($validItems));
+            ?>
+                <li class="breadcrumb-item<?= $isLast ? ' active' : '' ?>" 
                     itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"
-                    <?= $index === count($items) - 1 ? 'aria-current="page"' : '' ?>>
+                    <?= $isLast ? 'aria-current="page"' : '' ?>>
                     
-                    <?php if ($index < count($items) - 1 && isset($item['url'])): ?>
+                    <?php if (!$isLast && isset($item['url'])): ?>
                         <a href="<?= htmlspecialchars($item['url']) ?>" itemprop="item">
                             <span itemprop="name"><?= htmlspecialchars($item['text']) ?></span>
                         </a>
