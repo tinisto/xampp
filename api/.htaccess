@@ -1,0 +1,18 @@
+# API Routing for Dashboard Actions
+RewriteEngine On
+
+# News API endpoints
+RewriteRule ^news/delete/([0-9]+)/?$ news/delete.php [QSA,NC,L]
+RewriteRule ^news/approve/([0-9]+)/?$ news/approve.php [QSA,NC,L]
+RewriteRule ^news/unapprove/([0-9]+)/?$ news/unapprove.php [QSA,NC,L]
+
+# Posts API endpoints
+RewriteRule ^posts/delete/([0-9]+)/?$ posts/delete.php [QSA,NC,L]
+
+# Comments API endpoints
+RewriteRule ^comments/delete/([0-9]+)/?$ comments/delete.php [QSA,NC,L]
+
+# Default error for unmatched API routes
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule .* - [R=404,L]

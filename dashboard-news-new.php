@@ -1,5 +1,5 @@
 <?php
-// News management dashboard - migrated to use real_template.php
+// News management dashboard - Functional version
 
 // Start session
 if (session_status() === PHP_SESSION_NONE) {
@@ -16,21 +16,18 @@ if ((!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') &&
 // Database connection
 require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
 
-// Get filter and pagination
-$filter = $_GET['filter'] ?? 'all';
+// Pagination
 $page = max(1, (int)($_GET['page'] ?? 1));
 $limit = 20;
 $offset = ($page - 1) * $limit;
 
-// Build filter condition
-$filterCondition = '';
-switch ($filter) {
-    case 'published':
-        $filterCondition = 'WHERE approved = 1';
-        break;
-    case 'drafts':
-        $filterCondition = 'WHERE approved = 0';
-        break;
+// Filter by approval status
+$statusFilter = $_GET['status'] ?? '';
+$statusCondition = '';
+if ($statusFilter === 'approved') {
+    $statusCondition = "WHERE approved = 1";
+} elseif ($statusFilter === 'pending') {
+    $statusCondition = "WHERE approved = 0";
 }
 
 // Search
@@ -38,297 +35,493 @@ $search = $_GET['search'] ?? '';
 $searchCondition = '';
 if (!empty($search)) {
     $searchLike = '%' . $connection->real_escape_string($search) . '%';
-    $searchCondition = $filterCondition ? ' AND ' : 'WHERE ';
-    $searchCondition .= "title_news LIKE '$searchLike'";
+    $searchCondition = ($statusCondition ? ' AND ' : 'WHERE ') . "(title_news LIKE '$searchLike' OR text_news LIKE '$searchLike' OR author_news LIKE '$searchLike')";
 }
 
-// Get total count
-$countQuery = "SELECT COUNT(*) as total FROM news $filterCondition $searchCondition";
+// Get total news count
+$countQuery = "SELECT COUNT(*) as total FROM news $statusCondition $searchCondition";
 $countResult = $connection->query($countQuery);
-$totalNews = $countResult->fetch_assoc()['total'];
+$totalNews = $countResult ? $countResult->fetch_assoc()['total'] : 0;
 $totalPages = ceil($totalNews / $limit);
 
 // Get news
-$query = "SELECT n.*, c.title_category 
-          FROM news n
-          LEFT JOIN categories c ON n.category_news = c.id_category
-          $filterCondition $searchCondition
-          ORDER BY n.date_news DESC 
+$query = "SELECT id, title_news, author_news, date_news, approved, url_slug 
+          FROM news 
+          $statusCondition $searchCondition
+          ORDER BY date_news DESC 
           LIMIT $limit OFFSET $offset";
 $result = $connection->query($query);
-$newsItems = [];
-while ($row = $result->fetch_assoc()) {
-    $newsItems[] = $row;
+$news = [];
+if ($result) {
+    while ($row = $result->fetch_assoc()) {
+        $news[] = $row;
+    }
 }
 
 // Get statistics
 $stats = [];
-$query = "SELECT approved, COUNT(*) as count FROM news GROUP BY approved";
-$result = $connection->query($query);
-while ($row = $result->fetch_assoc()) {
-    if ($row['approved'] == 1) {
-        $stats['published'] = $row['count'];
-    } else {
-        $stats['drafts'] = $row['count'];
+$stats['total'] = $totalNews;
+
+// Count by approval status
+$approvalQuery = "SELECT approved, COUNT(*) as count FROM news GROUP BY approved";
+$approvalResult = $connection->query($approvalQuery);
+$stats['approved'] = 0;
+$stats['pending'] = 0;
+if ($approvalResult) {
+    while ($row = $approvalResult->fetch_assoc()) {
+        if ($row['approved'] == 1) {
+            $stats['approved'] = $row['count'];
+        } else {
+            $stats['pending'] = $row['count'];
+        }
     }
 }
-$stats['total'] = ($stats['published'] ?? 0) + ($stats['drafts'] ?? 0);
 
-// Section 1: Title
-ob_start();
-include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/real_title.php';
-renderRealTitle('Управление новостями', [
-    'fontSize' => '28px',
-    'margin' => '30px 0',
-    'subtitle' => 'Всего новостей: ' . $stats['total']
-]);
-$greyContent1 = ob_get_clean();
+// Recent news (last 30 days)
+$recentQuery = "SELECT COUNT(*) as count FROM news WHERE date_news >= DATE_SUB(NOW(), INTERVAL 30 DAY)";
+$recentResult = $connection->query($recentQuery);
+$stats['recent'] = $recentResult ? $recentResult->fetch_assoc()['count'] : 0;
 
-// Section 2: Filters and actions
+// Get user info
+$username = $_SESSION['first_name'] ?? $_SESSION['email'] ?? 'Admin';
+$userInitial = strtoupper(mb_substr($username, 0, 1));
+
+// Handle success/error messages from API operations
+$message = '';
+$messageType = '';
+if (isset($_GET['action'], $_GET['status'], $_GET['message'])) {
+    $message = urldecode($_GET['message']);
+    $messageType = $_GET['status'] === 'success' ? 'success' : 'error';
+}
+
+// Set dashboard title
+$dashboardTitle = 'Управление новостями';
+
+// Build dashboard content
 ob_start();
 ?>
-<div style="padding: 20px;">
-    <div style="max-width: 1200px; margin: 0 auto;">
-        <!-- Filter tabs -->
-        <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
-            <a href="/dashboard/news" class="filter-tab <?= $filter === 'all' ? 'active' : '' ?>">
-                Все (<?= $stats['total'] ?>)
-            </a>
-            <a href="/dashboard/news?filter=published" class="filter-tab <?= $filter === 'published' ? 'active' : '' ?>">
-                Опубликованные (<?= $stats['published'] ?? 0 ?>)
-            </a>
-            <a href="/dashboard/news?filter=drafts" class="filter-tab <?= $filter === 'drafts' ? 'active' : '' ?>">
-                Черновики (<?= $stats['drafts'] ?? 0 ?>)
-            </a>
-        </div>
-        
-        <!-- Search and actions -->
-        <div style="display: flex; gap: 20px; align-items: center; justify-content: space-between; flex-wrap: wrap;">
-            <form method="GET" style="flex: 1; max-width: 400px;">
-                <input type="hidden" name="filter" value="<?= htmlspecialchars($filter) ?>">
-                <div style="display: flex; gap: 10px;">
-                    <input type="text" name="search" value="<?= htmlspecialchars($search) ?>" 
-                           placeholder="Поиск новостей..." 
-                           style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
-                    <button type="submit" style="padding: 10px 20px; background: #007bff; color: white; 
-                                                 border: none; border-radius: 8px; cursor: pointer;">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-            </form>
-            
-            <div style="display: flex; gap: 10px;">
-                <a href="/create/news" class="action-btn primary">
-                    <i class="fas fa-plus"></i> Создать новость
-                </a>
-                <a href="/dashboard" class="action-btn secondary">
-                    <i class="fas fa-arrow-left"></i> К панели
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-
 <style>
-.filter-tab {
-    padding: 8px 16px;
-    background: var(--surface, #f8f9fa);
-    color: var(--text-primary, #333);
-    text-decoration: none;
-    border-radius: 20px;
-    transition: all 0.3s;
+.news-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
 }
 
-.filter-tab:hover {
-    background: #e9ecef;
+.filters-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
 }
 
-.filter-tab.active {
-    background: #007bff;
+.search-input, .filter-select {
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 14px;
+    background: var(--surface);
+    color: var(--text-primary);
+}
+
+.search-input {
+    flex: 1;
+    min-width: 250px;
+}
+
+.filter-select {
+    min-width: 150px;
+}
+
+.btn-primary {
+    padding: 12px 20px;
+    background: var(--primary-color);
     color: white;
-}
-
-.action-btn {
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 10px 20px;
-    text-decoration: none;
-    border-radius: 8px;
     transition: all 0.3s;
 }
 
-.action-btn.primary {
+.btn-primary:hover {
+    background: #0056b3;
+    transform: translateY(-2px);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: var(--surface);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 8px;
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.news-table {
+    background: var(--surface);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    margin-bottom: 30px;
+}
+
+.news-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.news-table th {
+    background: var(--bg-light);
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.news-table td {
+    padding: 15px;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: top;
+}
+
+.news-table tr:last-child td {
+    border-bottom: none;
+}
+
+.news-table tr:hover {
+    background: var(--bg-light);
+}
+
+.news-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.news-title a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.news-title a:hover {
+    text-decoration: underline;
+}
+
+.news-meta {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-approved {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    text-decoration: none;
+    transition: all 0.3s;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-edit {
+    background: #17a2b8;
+    color: white;
+}
+
+.btn-edit:hover {
+    background: #138496;
+}
+
+.btn-approve {
     background: #28a745;
     color: white;
 }
 
-.action-btn.primary:hover {
+.btn-approve:hover {
     background: #218838;
 }
 
-.action-btn.secondary {
+.btn-reject {
+    background: #ffc107;
+    color: #856404;
+}
+
+.btn-reject:hover {
+    background: #e0a800;
+}
+
+.btn-delete {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-delete:hover {
+    background: #c82333;
+}
+
+.btn-view {
     background: #6c757d;
     color: white;
 }
 
-.action-btn.secondary:hover {
+.btn-view:hover {
     background: #5a6268;
 }
 
-[data-theme="dark"] .filter-tab {
-    background: var(--surface-dark, #2d3748);
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-secondary);
+}
+
+.empty-state i {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+/* Success/Error Message */
+.message-alert {
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+}
+
+.message-alert.success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.message-alert.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.message-alert i {
+    font-size: 18px;
+}
+
+@media (max-width: 768px) {
+    .filters-row {
+        flex-direction: column;
+    }
+    
+    .search-input {
+        min-width: auto;
+    }
+    
+    .news-table {
+        overflow-x: auto;
+    }
+    
+    .news-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
 }
 </style>
-<?php
-$greyContent2 = ob_get_clean();
 
-// Section 3: Empty
-$greyContent3 = '';
+<div class="news-header">
+    <h2>Управление новостями</h2>
+    <a href="/create/news" class="btn-primary">
+        <i class="fas fa-plus"></i> Создать новость
+    </a>
+</div>
 
-// Section 4: Empty
-$greyContent4 = '';
+<!-- Success/Error Message Display -->
+<?php if ($message): ?>
+<div class="message-alert <?= $messageType ?>">
+    <i class="fas <?= $messageType === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle' ?>"></i>
+    <?= htmlspecialchars($message) ?>
+</div>
+<?php endif; ?>
 
-// Section 5: News table
-ob_start();
-?>
-<div style="padding: 20px; max-width: 1200px; margin: 0 auto;">
-    <div style="background: var(--surface, #ffffff); border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden;">
-        <table style="width: 100%; border-collapse: collapse;">
-            <thead>
-                <tr style="background: #f8f9fa;">
-                    <th style="padding: 15px; text-align: left; color: #666;">ID</th>
-                    <th style="padding: 15px; text-align: left; color: #666;">Заголовок</th>
-                    <th style="padding: 15px; text-align: left; color: #666;">Категория</th>
-                    <th style="padding: 15px; text-align: left; color: #666;">Дата</th>
-                    <th style="padding: 15px; text-align: left; color: #666;">Просмотры</th>
-                    <th style="padding: 15px; text-align: left; color: #666;">Статус</th>
-                    <th style="padding: 15px; text-align: center; color: #666;">Действия</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($newsItems as $news): ?>
-                <tr style="border-bottom: 1px solid #dee2e6;">
-                    <td style="padding: 15px;"><?= $news['id'] ?></td>
-                    <td style="padding: 15px;">
-                        <a href="/news/<?= htmlspecialchars($news['url_slug']) ?>" target="_blank"
-                           style="color: #007bff; text-decoration: none;">
-                            <?= htmlspecialchars($news['title_news']) ?>
-                        </a>
+<!-- Filters and Search -->
+<form method="GET" class="filters-row">
+    <input type="text" name="search" placeholder="Поиск по заголовку, автору или тексту..." 
+           value="<?= htmlspecialchars($search) ?>" class="search-input">
+    
+    <select name="status" class="filter-select">
+        <option value="">Все новости</option>
+        <option value="approved" <?= $statusFilter === 'approved' ? 'selected' : '' ?>>Опубликованные</option>
+        <option value="pending" <?= $statusFilter === 'pending' ? 'selected' : '' ?>>На модерации</option>
+    </select>
+    
+    <button type="submit" class="btn-primary">
+        <i class="fas fa-search"></i> Поиск
+    </button>
+    
+    <?php if ($search || $statusFilter): ?>
+        <a href="/dashboard/news" class="btn-primary" style="background: #6c757d;">
+            <i class="fas fa-times"></i> Сбросить
+        </a>
+    <?php endif; ?>
+</form>
+
+<!-- Statistics -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-value"><?= number_format($stats['approved']) ?></div>
+        <div class="stat-label">Опубликованных</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value"><?= number_format($stats['pending']) ?></div>
+        <div class="stat-label">На модерации</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value"><?= $stats['recent'] ?? 0 ?></div>
+        <div class="stat-label">Новых за 30 дней</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value"><?= $totalPages ?></div>
+        <div class="stat-label">Страниц</div>
+    </div>
+</div>
+
+<!-- News Table -->
+<div class="news-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Новость</th>
+                <th>Автор</th>
+                <th>Дата</th>
+                <th>Статус</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if (!empty($news)): ?>
+                <?php foreach ($news as $newsItem): ?>
+                <tr>
+                    <td>
+                        <div class="news-title">
+                            <a href="/news/<?= htmlspecialchars($newsItem['url_slug'] ?? $newsItem['id']) ?>" target="_blank">
+                                <?= htmlspecialchars($newsItem['title_news']) ?>
+                            </a>
+                        </div>
+                        <div class="news-meta">
+                            ID: <?= $newsItem['id'] ?>
+                        </div>
                     </td>
-                    <td style="padding: 15px; color: #666;">
-                        <?= htmlspecialchars($news['title_category'] ?? 'Без категории') ?>
+                    <td><?= htmlspecialchars($newsItem['author_news'] ?? 'Не указан') ?></td>
+                    <td><?= date('d.m.Y', strtotime($newsItem['date_news'])) ?></td>
+                    <td>
+                        <span class="status-badge <?= $newsItem['approved'] ? 'status-approved' : 'status-pending' ?>">
+                            <?= $newsItem['approved'] ? 'Опубликовано' : 'На модерации' ?>
+                        </span>
                     </td>
-                    <td style="padding: 15px; color: #666;">
-                        <?= date('d.m.Y H:i', strtotime($news['date_news'])) ?>
-                    </td>
-                    <td style="padding: 15px; color: #666;">
-                        <?= $news['view_news'] ?>
-                    </td>
-                    <td style="padding: 15px;">
-                        <?php if ($news['approved'] == 1): ?>
-                            <span style="color: #28a745;">
-                                <i class="fas fa-check-circle"></i> Опубликовано
-                            </span>
-                        <?php else: ?>
-                            <span style="color: #ffc107;">
-                                <i class="fas fa-clock"></i> Черновик
-                            </span>
-                        <?php endif; ?>
-                    </td>
-                    <td style="padding: 15px;">
-                        <div style="display: flex; gap: 10px; justify-content: center;">
-                            <a href="/edit/news/<?= $news['id'] ?>" style="color: #007bff; text-decoration: none;"
-                               title="Редактировать">
+                    <td>
+                        <div class="action-buttons">
+                            <a href="/news/<?= htmlspecialchars($newsItem['url_slug'] ?? $newsItem['id']) ?>" 
+                               class="btn-sm btn-view" target="_blank" title="Просмотр">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="/edit/news/<?= $newsItem['id'] ?>" 
+                               class="btn-sm btn-edit" title="Редактировать">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <?php if ($news['approved'] == 0): ?>
-                            <a href="#" onclick="publishNews(<?= $news['id'] ?>); return false;" 
-                               style="color: #28a745; text-decoration: none;" title="Опубликовать">
-                                <i class="fas fa-check"></i>
-                            </a>
+                            <?php if (!$newsItem['approved']): ?>
+                                <button onclick="approveNews(<?= $newsItem['id'] ?>)" 
+                                        class="btn-sm btn-approve" title="Одобрить">
+                                    <i class="fas fa-check"></i>
+                                </button>
                             <?php else: ?>
-                            <a href="#" onclick="unpublishNews(<?= $news['id'] ?>); return false;" 
-                               style="color: #ffc107; text-decoration: none;" title="В черновики">
-                                <i class="fas fa-times"></i>
-                            </a>
+                                <button onclick="unapproveNews(<?= $newsItem['id'] ?>)" 
+                                        class="btn-sm btn-reject" title="Снять с публикации">
+                                    <i class="fas fa-times"></i>
+                                </button>
                             <?php endif; ?>
-                            <a href="#" onclick="deleteNews(<?= $news['id'] ?>); return false;" 
-                               style="color: #dc3545; text-decoration: none;" title="Удалить">
+                            <button onclick="deleteNews(<?= $newsItem['id'] ?>)" 
+                                    class="btn-sm btn-delete" title="Удалить">
                                 <i class="fas fa-trash"></i>
-                            </a>
+                            </button>
                         </div>
                     </td>
                 </tr>
                 <?php endforeach; ?>
-            </tbody>
-        </table>
-        
-        <?php if (empty($newsItems)): ?>
-        <div style="padding: 60px; text-align: center;">
-            <i class="fas fa-newspaper" style="font-size: 48px; color: #ddd; margin-bottom: 20px;"></i>
-            <p style="color: #666;">Новости не найдены</p>
-        </div>
-        <?php endif; ?>
-    </div>
+            <?php else: ?>
+                <tr>
+                    <td colspan="5">
+                        <div class="empty-state">
+                            <i class="fas fa-newspaper"></i>
+                            <div>Новости не найдены</div>
+                            <?php if ($search || $statusFilter): ?>
+                                <p>Попробуйте изменить условия поиска</p>
+                            <?php endif; ?>
+                        </div>
+                    </td>
+                </tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
 </div>
 
-<script>
-function publishNews(newsId) {
-    if (confirm('Опубликовать эту новость?')) {
-        // TODO: Implement publish functionality
-        window.location.href = '/dashboard/news/publish/' + newsId;
-    }
-}
-
-function unpublishNews(newsId) {
-    if (confirm('Перевести в черновики?')) {
-        // TODO: Implement unpublish functionality
-        window.location.href = '/dashboard/news/unpublish/' + newsId;
-    }
-}
-
-function deleteNews(newsId) {
-    if (confirm('Вы уверены, что хотите удалить эту новость?')) {
-        // TODO: Implement delete functionality
-        window.location.href = '/dashboard/news/delete/' + newsId;
-    }
-}
-</script>
-
-<style>
-[data-theme="dark"] table {
-    background: var(--surface-dark, #2d3748);
-}
-
-[data-theme="dark"] tr[style*="background: #f8f9fa"] {
-    background: var(--surface-darker, #1a202c) !important;
-}
-
-[data-theme="dark"] td,
-[data-theme="dark"] th {
-    color: var(--text-primary, #e4e6eb);
-    border-color: #4a5568 !important;
-}
-</style>
-<?php
-$greyContent5 = ob_get_clean();
-
-// Section 6: Pagination
-ob_start();
-if ($totalPages > 1) {
+<!-- Pagination -->
+<?php if ($totalPages > 1): ?>
+<div>
+    <?php 
     include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/pagination-modern.php';
-    $baseUrl = '/dashboard/news?filter=' . urlencode($filter) . '&search=' . urlencode($search) . '&page=';
-    renderPaginationModern($page, $totalPages, $baseUrl);
-}
-$greyContent6 = ob_get_clean();
+    renderPaginationModern($page, $totalPages, '/dashboard/news');
+    ?>
+</div>
+<?php endif; ?>
 
-// Blue section: Empty
-$blueContent = '';
 
-// Page title
-$pageTitle = 'Управление новостями - 11-классники';
+<?php
+$dashboardContent = ob_get_clean();
 
-// Include the template
-include $_SERVER['DOCUMENT_ROOT'] . '/real_template.php';
+// Include the dashboard template
+include $_SERVER['DOCUMENT_ROOT'] . '/dashboard-template.php';
 ?>
