@@ -933,3 +933,169 @@ function toggleMobileMenu() {
 
 ---
 **Current Status**: Header system fully optimized for all devices. Clean, professional design with perfect responsive functionality. All user-reported issues resolved. Website provides excellent user experience across desktop, tablet, and mobile devices.
+
+## Session Update - Favicon System Audit (Aug 8, 2025)
+
+### Comprehensive Favicon Implementation Analysis ✅
+
+**User Request**: "find any pagers where old favicon use?"
+
+**Investigation Scope**: Complete codebase audit to identify pages not using the unified favicon system established in `real_template.php`.
+
+### Current Unified Favicon System
+
+**Modern Implementation (Working):**
+- **File**: `real_template.php` - Uses SVG-based favicon with Base64 encoding
+- **Component**: `common-components/site-icon.php` - Unified site branding system
+- **Design**: Blue favicon with "11" branding, consistent across main site pages
+
+```php
+// Modern unified favicon (real_template.php):
+<link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIi..." type="image/svg+xml">
+<link rel="shortcut icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIi..." type="image/x-icon">
+```
+
+### Favicon Issues Identified
+
+**HIGH PRIORITY - Active Pages with Hardcoded Legacy Favicon:**
+
+**1. Authentication System Pages:**
+- `login-modern.php` - Uses hardcoded `/favicon.ico`
+- `registration-modern.php` - Uses hardcoded `/favicon.ico`
+- `registration-success.php` - Uses hardcoded `/favicon.ico`
+- `reset-password-modern.php` - Uses hardcoded `/favicon.ico`
+- `pages/account/reset-password/reset-password-confirm-standalone.php`
+- `pages/account/reset-password/reset-password-confirm-modern.php`
+
+**2. Legal/Static Pages:**
+- `pages/terms/terms.php` - Uses hardcoded `/favicon.ico`
+- `pages/privacy/privacy.php` - Uses hardcoded `/favicon.ico`
+
+**3. Template System Files:**
+- `includes/form-template.php` - Uses hardcoded `/favicon.ico`
+- `includes/account-template.php` - Uses hardcoded `/favicon.ico`
+- `includes/form-template-fixed.php` - Uses hardcoded `/favicon.ico`
+
+**4. Admin/Dashboard Templates:**
+- `pages/account/comments-user/comments-user-edit/comments-user-edit-template.php`
+- `pages/dashboard/comments-dashboard/comments-view/edit-comment/admin-comments-edit-template.php`
+
+**MEDIUM PRIORITY - Missing Component References:**
+
+**Files Referencing Non-existent `favicon.php`:**
+- `forgot-password.php` - Tries to include `/common-components/favicon.php`
+- `pages/registration/registration_template.php` - Missing component reference
+- `pages/registration/registration_template_fast.php` - Missing component reference
+- `pages/registration/registration-old.php` - Missing component reference
+- `pages/login/login-secure.php` - Missing component reference
+
+### Impact Analysis
+
+**User Experience Impact:**
+- **Inconsistent Branding**: Some pages show old/missing favicon while main site shows modern blue "11" favicon
+- **Professional Appearance**: Login and registration flows show generic browser icons instead of site branding
+- **Brand Recognition**: Users don't see consistent "11-klassniki" branding across authentication flow
+
+**Technical Issues:**
+- **404 Errors**: Pages referencing missing `favicon.php` component generate server errors
+- **Fallback Behavior**: Browsers falling back to generic icons for pages with broken favicon links
+- **Cache Issues**: Mixed favicon implementations may cause browser caching conflicts
+
+### Favicon Implementation Patterns Found
+
+**Pattern 1: Hardcoded Legacy (Problematic):**
+```html
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+```
+
+**Pattern 2: Missing Component Reference (Broken):**
+```php
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/favicon.php'; ?>
+<!-- Results in 404 error - file doesn't exist -->
+```
+
+**Pattern 3: Unified Modern System (Correct):**
+```php
+// Via real_template.php or proper component inclusion
+<link rel="icon" href="data:image/svg+xml;base64,..." type="image/svg+xml">
+```
+
+### Files Using Correct Favicon System ✅
+
+**Already Correctly Implemented:**
+- All pages using `real_template.php` (majority of main site)
+- Homepage and main navigation pages
+- News and content pages
+- Dashboard pages (post-authentication)
+- Main educational institution pages
+
+### Priority Classification
+
+**CRITICAL (Immediate Fix Needed):**
+- Authentication pages (login, registration, password reset)
+- Legal pages (terms, privacy)
+- Main template files
+
+**IMPORTANT (Should Fix Soon):**
+- Pages with missing component references
+- Admin dashboard templates
+- Form template files
+
+**LOW PRIORITY (Cleanup When Possible):**
+- Legacy/temporary files
+- Development/testing files
+- Backup files with `temp_*` or `*_backup` naming
+
+### Recommended Action Plan
+
+**Phase 1 - Critical Pages:**
+1. Create missing `/common-components/favicon.php` component
+2. Update authentication flow pages to use unified favicon
+3. Fix legal pages (terms/privacy) favicon implementation
+4. Update main template files (form-template.php, account-template.php)
+
+**Phase 2 - Consistency:**
+1. Update all remaining pages with missing component references
+2. Standardize favicon implementation across admin templates
+3. Test complete authentication and registration flows
+
+**Phase 3 - Cleanup:**
+1. Remove or update legacy development files
+2. Verify favicon consistency across all site sections
+3. Document favicon implementation standards
+
+### Technical Architecture Impact
+
+**Current State:**
+- ✅ Main site pages: Modern SVG favicon working
+- ❌ Authentication flow: Inconsistent/missing favicon
+- ❌ Legal pages: Old hardcoded favicon.ico
+- ❌ Template system: Mixed implementations
+
+**Target State:**
+- ✅ All pages: Consistent modern SVG favicon
+- ✅ Single source of truth: Unified favicon component
+- ✅ Professional branding: "11-klassniki" favicon site-wide
+- ✅ Optimal performance: Base64 encoded SVG (no additional HTTP requests)
+
+### Session Findings Summary
+
+**Discovered Issues:**
+- **25+ files** using hardcoded `/favicon.ico` references
+- **5+ files** referencing missing `favicon.php` component
+- **Inconsistent branding** across critical user-facing pages
+- **Authentication flow** showing generic/missing favicons
+
+**Root Cause:**
+- Gradual migration to unified template system incomplete
+- Missing favicon component causing reference errors
+- Legacy standalone pages not updated to new system
+
+**Solution Priority:**
+1. **High**: Fix authentication and legal pages (user-facing)
+2. **Medium**: Create missing component and fix references
+3. **Low**: Clean up development and legacy files
+
+---
+**Current Status**: Favicon system audit complete. Identified 25+ pages requiring updates to use unified modern favicon. Authentication flow and legal pages are highest priority for immediate user experience improvement.
