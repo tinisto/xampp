@@ -64,7 +64,7 @@ DirectoryIndex index.php index.html
     RewriteRule ^spo-in-region/([a-zA-Z0-9-]+)/?$ spo-in-region-new.php?region_url=$1 [QSA,NC,L]
     
     # Educational Institutions - By Town  
-    RewriteRule ^(schools|spo|vpo)/([^/]+)/([^/]+)/?$ pages/common/educational-institutions-in-town/educational-institutions-in-town.php?type=$1&region_name_en=$2&url_slug_town=$3 [L,QSA]
+    RewriteRule ^(schools|spo|vpo)/([^/]+)/([^/]+)/?$ educational-institutions-in-town-new.php?type=$1&region_name_en=$2&url_slug_town=$3 [L,QSA]
 
     # School Pages - ID-based URLs (301 redirect to slug URLs for SEO)
     RewriteRule ^school/(\d+)/?$ pages/school/school-redirect.php?id_school=$1 [QSA,NC,L]
@@ -107,8 +107,8 @@ DirectoryIndex index.php index.html
     RewriteRule ^tests/?$ tests-new.php [QSA,NC,L]
     RewriteRule ^test/?$ test-single-new.php [QSA,NC,L]
     RewriteRule ^test/([^/]+)/?$ test-single-new.php?url_test=$1 [QSA,NC,L]
-    RewriteRule ^test-full/([^/]+)/?$ pages/tests/test-full-single.php?test=$1&q=0 [QSA,NC,L]
-    RewriteRule ^test-result/([^/]+)/?$ pages/tests/test-result.php?test=$1 [QSA,NC,L]
+    RewriteRule ^test-full/([^/]+)/?$ test-full-new.php?test=$1 [QSA,NC,L]
+    RewriteRule ^test-result/([^/]+)/?$ test-result-new.php?test=$1 [QSA,NC,L]
 
     # User System
     RewriteRule ^login/?$ login-template.php [QSA,NC,L]
@@ -134,7 +134,7 @@ DirectoryIndex index.php index.html
 
     # Search
     RewriteRule ^search/?$ search-new.php [QSA,NC,L]
-    RewriteRule ^search-process/?$ pages/search/search-process.php [QSA,NC,L]
+    RewriteRule ^search-process/?$ search-process-new.php [QSA,NC,L]
 
     # Static Pages
     RewriteRule ^about/?$ about-new.php [QSA,NC,L]
