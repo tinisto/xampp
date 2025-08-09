@@ -264,14 +264,17 @@ if ($postData['category']) {
 }
 $greyContent6 = ob_get_clean();
 
-// Section 7: Comments (prepared but not implemented per user request)
+// Section 7: Beautiful Threaded Comments
 ob_start();
-?>
-<div style="padding: 30px 20px; color: white;">
-    <h3 style="margin: 0 0 20px 0;">Комментарии (<?= $postData['comment_count'] ?>)</h3>
-    <!-- Comments will be added later per user request -->
-</div>
-<?php
+// Include the new threaded comments component
+include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/threaded-comments.php';
+renderThreadedComments('posts', $postData['id'], [
+    'title' => 'Обсуждение',
+    'loadLimit' => 10,
+    'allowNewComments' => true,
+    'allowReplies' => true,
+    'maxDepth' => 5
+]);
 $blueContent = ob_get_clean();
 
 // Set page title and metadata
