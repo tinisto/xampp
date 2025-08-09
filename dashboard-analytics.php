@@ -433,6 +433,9 @@ new Chart(hourlyCtx, {
 <?php
 $dashboardContent = ob_get_clean();
 
+// Set active menu
+$activeMenu = 'analytics';
+
 // Include the dashboard template
 include $_SERVER['DOCUMENT_ROOT'] . '/dashboard-template.php';
 ?>

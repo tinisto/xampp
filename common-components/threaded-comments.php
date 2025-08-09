@@ -25,10 +25,16 @@ function renderThreadedComments($entityType, $entityId, $options = []) {
         'allowNewComments' => true,
         'allowReplies' => true,
         'showStats' => true,
-        'maxDepth' => 5
+        'maxDepth' => 5,
+        'useRichTextEditor' => true
     ];
     
     $options = array_merge($defaults, $options);
+    
+    // Include rich text editor if enabled
+    if ($options['useRichTextEditor'] && $options['allowNewComments']) {
+        require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/rich-text-editor.php';
+    }
     
     // Get comments count (only parent comments)
     $countQuery = "SELECT COUNT(*) as total FROM comments WHERE entity_type = ? AND entity_id = ? AND (parent_id IS NULL OR parent_id = 0)";
@@ -290,6 +296,16 @@ function renderThreadedComments($entityType, $entityId, $options = []) {
             margin-bottom: 4px;
         }
         
+        .author-link {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .author-link:hover {
+            color: var(--primary-color, #007bff);
+        }
+        
         .comment-date {
             font-size: 13px;
             color: var(--text-secondary, #6c757d);
@@ -315,6 +331,63 @@ function renderThreadedComments($entityType, $entityId, $options = []) {
             font-size: 15px;
             margin-bottom: 16px;
             word-wrap: break-word;
+        }
+        
+        /* Rich text content styles */
+        .comment-text b,
+        .comment-text strong {
+            font-weight: 700;
+        }
+        
+        .comment-text i,
+        .comment-text em {
+            font-style: italic;
+        }
+        
+        .comment-text u {
+            text-decoration: underline;
+        }
+        
+        .comment-text a {
+            color: var(--primary-color, #007bff);
+            text-decoration: underline;
+        }
+        
+        .comment-text a:hover {
+            text-decoration: none;
+        }
+        
+        .comment-text ul,
+        .comment-text ol {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+        
+        .comment-text li {
+            margin: 5px 0;
+        }
+        
+        .comment-text blockquote {
+            border-left: 4px solid var(--border-color, #e1e5e9);
+            margin: 15px 0;
+            padding: 10px 20px;
+            background: var(--bg-light, #f8f9fa);
+            color: var(--text-secondary, #6c757d);
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .comment-text img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .comment-text img:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
         
         .comment-footer {
@@ -597,12 +670,22 @@ function renderThreadedComments($entityType, $entityId, $options = []) {
                         </div>
                     </div>
                     <div class="form-group full-width">
-                        <label class="form-label" for="comment-text-<?= htmlspecialchars($commentsId) ?>">Ваш комментарий *</label>
-                        <textarea id="comment-text-<?= htmlspecialchars($commentsId) ?>" 
-                                  name="comment" 
-                                  required 
-                                  placeholder="Поделитесь своими мыслями..."
-                                  class="form-control comment-textarea"></textarea>
+                        <label class="form-label">Ваш комментарий *</label>
+                        <?php if ($options['useRichTextEditor']): ?>
+                            <?php renderRichTextEditor([
+                                'id' => 'comment-text-' . htmlspecialchars($commentsId),
+                                'placeholder' => 'Поделитесь своими мыслями...',
+                                'maxLength' => 2000,
+                                'showCounter' => true,
+                                'allowedFormats' => ['bold', 'italic', 'underline', 'link', 'list', 'quote', 'image']
+                            ]); ?>
+                        <?php else: ?>
+                            <textarea id="comment-text-<?= htmlspecialchars($commentsId) ?>" 
+                                      name="comment" 
+                                      required 
+                                      placeholder="Поделитесь своими мыслями..."
+                                      class="form-control comment-textarea"></textarea>
+                        <?php endif; ?>
                     </div>
                     <div class="form-actions">
                         <div class="comment-tips">
@@ -794,7 +877,12 @@ function renderThreadedComments($entityType, $entityId, $options = []) {
                 <div class="comment-header">
                     <div class="comment-avatar">${authorInitial}</div>
                     <div class="comment-meta">
-                        <div class="comment-author">${escapeHtml(comment.author_of_comment || 'Аноним')}</div>
+                        <div class="comment-author">
+                            ${comment.user_id ? 
+                                `<a href="/user/${comment.user_id}" class="author-link">${escapeHtml(comment.author_of_comment || 'Аноним')}</a>` : 
+                                escapeHtml(comment.author_of_comment || 'Аноним')
+                            }
+                        </div>
                         <div class="comment-date">
                             <i class="fas fa-clock"></i>
                             ${formatDate(comment.date)}
@@ -888,6 +976,15 @@ function renderThreadedComments($entityType, $entityId, $options = []) {
             formData.append('entity_type', entityType);
             formData.append('entity_id', entityId);
             
+            // Get rich text editor content if available
+            <?php if ($options['useRichTextEditor']): ?>
+            const editorId = 'comment-text-' + commentsId;
+            if (window.RichTextEditor && window.RichTextEditor[editorId]) {
+                const richContent = window.RichTextEditor[editorId].getValue();
+                formData.set('comment', richContent);
+            }
+            <?php endif; ?>
+            
             try {
                 const response = await fetch('/api/comments/add', {
                     method: 'POST',
@@ -898,6 +995,12 @@ function renderThreadedComments($entityType, $entityId, $options = []) {
                 
                 if (data.success) {
                     e.target.reset();
+                    <?php if ($options['useRichTextEditor']): ?>
+                    // Clear rich text editor
+                    if (window.RichTextEditor && window.RichTextEditor[editorId]) {
+                        window.RichTextEditor[editorId].clear();
+                    }
+                    <?php endif; ?>
                     loadComments(1); // Reload comments
                     showMessage('Комментарий успешно добавлен!', 'success');
                 } else {
@@ -1209,13 +1312,23 @@ function renderThreadedComments($entityType, $entityId, $options = []) {
         }
         
         function formatCommentText(text) {
-            // First escape HTML
+            <?php if ($options['useRichTextEditor']): ?>
+            // For rich text content, don't escape HTML but still process mentions
+            let formatted = text;
+            
+            // Convert @mentions to links (but preserve existing HTML)
+            formatted = formatted.replace(/(@\w+)(?![^<]*>|[^<>]*<\/)/g, '<span class="mention">$1</span>');
+            
+            return formatted;
+            <?php else: ?>
+            // For plain text, escape HTML first
             let formatted = escapeHtml(text);
             
             // Then convert @mentions to links
             formatted = formatted.replace(/@(\w+)/g, '<span class="mention">@$1</span>');
             
             return formatted;
+            <?php endif; ?>
         }
         
         function formatDate(dateString) {

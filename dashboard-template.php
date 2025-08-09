@@ -357,6 +357,15 @@ if (strpos($currentPath, '/dashboard/news') !== false) {
                 <a href="/dashboard/comments" class="nav-item <?= $activeMenu === 'comments' ? 'active' : '' ?>">
                     <i class="fas fa-comments"></i> Комментарии
                 </a>
+                <a href="/dashboard-moderation.php" class="nav-item <?= $activeMenu === 'moderation' ? 'active' : '' ?>">
+                    <i class="fas fa-shield-alt"></i> Модерация
+                </a>
+                <a href="/dashboard-analytics.php" class="nav-item <?= $activeMenu === 'analytics' ? 'active' : '' ?>">
+                    <i class="fas fa-chart-line"></i> Аналитика
+                </a>
+                <a href="/dashboard-monitoring.php" class="nav-item <?= $activeMenu === 'monitoring' ? 'active' : '' ?>">
+                    <i class="fas fa-tachometer-alt"></i> Мониторинг
+                </a>
                 <a href="/dashboard/schools" class="nav-item <?= $activeMenu === 'schools' ? 'active' : '' ?>">
                     <i class="fas fa-school"></i> Школы
                 </a>

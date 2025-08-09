@@ -126,6 +126,8 @@ DirectoryIndex index.php index.html
     RewriteRule ^account/edit/?$ account-edit-new.php [QSA,NC,L]
     RewriteRule ^account/comments/?$ account-comments-new.php [QSA,NC,L]
     RewriteRule ^account/password-change/?$ password-change-new.php [QSA,NC,L]
+    RewriteRule ^user/([0-9]+)/?$ user-profile.php?id=$1 [QSA,NC,L]
+    RewriteRule ^profile/?$ user-profile.php [QSA,NC,L]
     RewriteRule ^dashboard/?$ dashboard-professional-new.php [QSA,NC,L]
     RewriteRule ^dashboard/users/?$ dashboard-users-new.php [QSA,NC,L]
     RewriteRule ^dashboard/news/?$ dashboard-news-new.php [QSA,NC,L]

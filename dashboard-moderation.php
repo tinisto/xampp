@@ -622,6 +622,9 @@ document.getElementById('searchInput').addEventListener('input', function() {
 <?php
 $dashboardContent = ob_get_clean();
 
+// Set active menu
+$activeMenu = 'moderation';
+
 // Include the dashboard template
 include $_SERVER['DOCUMENT_ROOT'] . '/dashboard-template.php';
 ?>

@@ -17,6 +17,9 @@ if (session_status() === PHP_SESSION_NONE) {
 // Database connection
 require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
 
+// Load dynamic configuration
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/comment-config.php';
+
 // Check if it's a POST request
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -32,68 +35,21 @@ $email = trim($_POST['email'] ?? '');
 $comment = trim($_POST['comment'] ?? '');
 $parentId = isset($_POST['parent_id']) ? (int)$_POST['parent_id'] : null;
 
-// Validate required fields
-if (empty($entityType) || $entityId <= 0 || empty($author) || empty($comment)) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'error' => 'Все обязательные поля должны быть заполнены']);
-    exit;
-}
-
-// Validate comment length
-if (strlen($comment) < 3) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'error' => 'Комментарий слишком короткий (минимум 3 символа)']);
-    exit;
-}
-
-if (strlen($comment) > 2000) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'error' => 'Комментарий слишком длинный (максимум 2000 символов)']);
-    exit;
-}
-
-// Validate author name
-if (strlen($author) < 2) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'error' => 'Имя слишком короткое (минимум 2 символа)']);
-    exit;
-}
-
-if (strlen($author) > 100) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'error' => 'Имя слишком длинное (максимум 100 символов)']);
-    exit;
-}
-
-// Validate email if provided
-if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'error' => 'Некорректный email адрес']);
-    exit;
-}
-
-// Basic spam protection
-$spamWords = ['spam', 'casino', 'viagra', 'porn', 'xxx', 'sex', 'bet', 'loan'];
-$commentLower = mb_strtolower($comment);
-foreach ($spamWords as $spamWord) {
-    if (strpos($commentLower, $spamWord) !== false) {
-        http_response_code(400);
-        echo json_encode(['success' => false, 'error' => 'Комментарий содержит недопустимый контент']);
-        exit;
-    }
-}
-
-// Rate limiting - max 3 comments per minute per IP
+// Get client IP
 $clientIP = $_SERVER['HTTP_CF_CONNECTING_IP'] ?? $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
-$rateLimitQuery = "SELECT COUNT(*) as recent_comments FROM comments WHERE author_ip = ? AND date >= DATE_SUB(NOW(), INTERVAL 1 MINUTE)";
-$stmt = $connection->prepare($rateLimitQuery);
-$stmt->bind_param("s", $clientIP);
-$stmt->execute();
-$recentComments = $stmt->get_result()->fetch_assoc()['recent_comments'];
 
-if ($recentComments >= 3) {
-    http_response_code(429);
-    echo json_encode(['success' => false, 'error' => 'Слишком много комментариев. Подождите минуту перед добавлением следующего.']);
+// Validate required fields
+if (empty($entityType) || $entityId <= 0) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'error' => 'Неверные параметры запроса']);
+    exit;
+}
+
+// Use dynamic validation
+$validation = validateComment($connection, $comment, $author, $email, $clientIP);
+if (!$validation['success']) {
+    http_response_code(400);
+    echo json_encode($validation);
     exit;
 }
 
