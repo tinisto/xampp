@@ -134,6 +134,48 @@ try {
     if ($stmt->execute()) {
         $newCommentId = $connection->insert_id;
         
+        // If this is a reply, create notification
+        if ($parentId) {
+            // Get parent comment details
+            $parentQuery = "SELECT user_id, email, author_of_comment FROM comments WHERE id = ?";
+            $stmt = $connection->prepare($parentQuery);
+            $stmt->bind_param("i", $parentId);
+            $stmt->execute();
+            $parentComment = $stmt->get_result()->fetch_assoc();
+            
+            // Create notification if parent has email
+            if ($parentComment && !empty($parentComment['email'])) {
+                $notifyQuery = "INSERT INTO comment_notifications (user_id, email, comment_id, parent_comment_id, type) 
+                               VALUES (?, ?, ?, ?, 'reply')";
+                $stmt = $connection->prepare($notifyQuery);
+                $parentUserId = $parentComment['user_id'] ?: null;
+                $stmt->bind_param("isii", $parentUserId, $parentComment['email'], $newCommentId, $parentId);
+                $stmt->execute(); // Ignore errors - notifications are not critical
+            }
+        }
+        
+        // Check for @mentions and create notifications
+        if (preg_match_all('/@(\w+)/', $comment, $matches)) {
+            $mentionedUsers = array_unique($matches[1]);
+            foreach ($mentionedUsers as $username) {
+                // Find users by username (assuming first_name is used as username)
+                $userQuery = "SELECT id, email FROM users WHERE first_name = ? AND email IS NOT NULL LIMIT 1";
+                $stmt = $connection->prepare($userQuery);
+                $stmt->bind_param("s", $username);
+                $stmt->execute();
+                $mentionedUser = $stmt->get_result()->fetch_assoc();
+                
+                if ($mentionedUser) {
+                    $notifyQuery = "INSERT INTO comment_notifications (user_id, email, comment_id, parent_comment_id, type) 
+                                   VALUES (?, ?, ?, ?, 'mention')";
+                    $stmt = $connection->prepare($notifyQuery);
+                    $mentionParentId = $parentId ?: $newCommentId;
+                    $stmt->bind_param("isii", $mentionedUser['id'], $mentionedUser['email'], $newCommentId, $mentionParentId);
+                    $stmt->execute(); // Ignore errors
+                }
+            }
+        }
+        
         // Get the newly created comment for response
         $selectQuery = "SELECT id, author_of_comment, comment_text, date, parent_id FROM comments WHERE id = ?";
         $stmt = $connection->prepare($selectQuery);

@@ -355,6 +355,17 @@ function renderThreadedComments($entityType, $entityId, $options = []) {
             font-style: italic;
         }
         
+        .mention {
+            color: #007bff;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .mention:hover {
+            text-decoration: underline;
+        }
+        
         .edit-form {
             margin-top: 15px;
             padding: 15px;
@@ -800,7 +811,7 @@ function renderThreadedComments($entityType, $entityId, $options = []) {
                         </button>
                     </div>
                 </div>
-                <div class="comment-text" id="comment-text-${comment.id}">${escapeHtml(comment.comment_text)}</div>
+                <div class="comment-text" id="comment-text-${comment.id}">${formatCommentText(comment.comment_text)}</div>
                 ${comment.edited_at ? `<div class="comment-edited"><small><i class="fas fa-edit"></i> Отредактировано ${formatDate(comment.edited_at)}</small></div>` : ''}
                 <div class="comment-footer">
                     ${<?= $options['allowReplies'] ? 'true' : 'false' ?> ? `
@@ -973,7 +984,7 @@ function renderThreadedComments($entityType, $entityId, $options = []) {
                     // Update comment text in UI
                     const commentTextEl = document.getElementById(`comment-text-${commentId}`);
                     if (commentTextEl) {
-                        commentTextEl.innerHTML = escapeHtml(data.comment.comment_text);
+                        commentTextEl.innerHTML = formatCommentText(data.comment.comment_text);
                     }
                     
                     // Add/update edited indicator
@@ -1195,6 +1206,16 @@ function renderThreadedComments($entityType, $entityId, $options = []) {
             const div = document.createElement('div');
             div.textContent = text || '';
             return div.innerHTML;
+        }
+        
+        function formatCommentText(text) {
+            // First escape HTML
+            let formatted = escapeHtml(text);
+            
+            // Then convert @mentions to links
+            formatted = formatted.replace(/@(\w+)/g, '<span class="mention">@$1</span>');
+            
+            return formatted;
         }
         
         function formatDate(dateString) {
