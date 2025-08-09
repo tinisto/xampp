@@ -47,11 +47,13 @@ $greyContent3 = ob_get_clean();
 // Section 4: Search
 ob_start();
 echo '<div style="text-align: center; padding: 20px;">';
-include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/search-inline.php';
-renderSearchInline([
+include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/unified-search.php';
+renderUnifiedSearch([
     'placeholder' => 'Поиск по сайту...',
     'buttonText' => 'Найти',
-    'width' => '500px'
+    'style' => 'large',
+    'name' => 'search',
+    'maxWidth' => '500px'
 ]);
 echo '</div>';
 $greyContent4 = ob_get_clean();

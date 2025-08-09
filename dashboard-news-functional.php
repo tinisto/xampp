@@ -86,14 +86,6 @@ $stats['recent'] = $recentResult ? $recentResult->fetch_assoc()['count'] : 0;
 $username = $_SESSION['first_name'] ?? $_SESSION['email'] ?? 'Admin';
 $userInitial = strtoupper(mb_substr($username, 0, 1));
 
-// Handle success/error messages from API operations
-$message = '';
-$messageType = '';
-if (isset($_GET['action'], $_GET['status'], $_GET['message'])) {
-    $message = urldecode($_GET['message']);
-    $messageType = $_GET['status'] === 'success' ? 'success' : 'error';
-}
-
 // Set dashboard title
 $dashboardTitle = 'Управление новостями';
 
@@ -115,7 +107,7 @@ ob_start();
     flex-wrap: wrap;
 }
 
-.filter-select {
+.search-input, .filter-select {
     padding: 12px;
     border: 1px solid var(--border-color);
     border-radius: 8px;
@@ -124,7 +116,10 @@ ob_start();
     color: var(--text-primary);
 }
 
-
+.search-input {
+    flex: 1;
+    min-width: 250px;
+}
 
 .filter-select {
     min-width: 150px;
@@ -321,33 +316,6 @@ ob_start();
     opacity: 0.5;
 }
 
-/* Success/Error Message */
-.message-alert {
-    padding: 15px 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-weight: 500;
-}
-
-.message-alert.success {
-    background: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-
-.message-alert.error {
-    background: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
-
-.message-alert i {
-    font-size: 18px;
-}
-
 @media (max-width: 768px) {
     .filters-row {
         flex-direction: column;
@@ -376,31 +344,10 @@ ob_start();
     </a>
 </div>
 
-<!-- Success/Error Message Display -->
-<?php if ($message): ?>
-<div class="message-alert <?= $messageType ?>">
-    <i class="fas <?= $messageType === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle' ?>"></i>
-    <?= htmlspecialchars($message) ?>
-</div>
-<?php endif; ?>
-
 <!-- Filters and Search -->
 <form method="GET" class="filters-row">
-    <!-- Unified Search -->
-                    <div style="flex: 1; min-width: 250px;">
-                        <?php
-                        include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/unified-search.php';
-                        renderUnifiedSearch([
-                            'placeholder' => 'Поиск...',
-                            'name' => 'search',
-                            'value' => htmlspecialchars($search),
-                            'style' => 'dashboard',
-                            'showButton' => false,
-                            'clearButton' => true,
-                            'width' => '100%'
-                        ]);
-                        ?>
-                    </div>
+    <input type="text" name="search" placeholder="Поиск по заголовку, автору или тексту..." 
+           value="<?= htmlspecialchars($search) ?>" class="search-input">
     
     <select name="status" class="filter-select">
         <option value="">Все новости</option>
@@ -528,6 +475,25 @@ ob_start();
 </div>
 <?php endif; ?>
 
+<script>
+function approveNews(newsId) {
+    ModalManager.confirm('Одобрение новости', 'Одобрить эту новость для публикации?', () => {
+        window.location.href = `/api/news/approve/${newsId}?redirect=/dashboard/news`;
+    }, 'info');
+}
+
+function unapproveNews(newsId) {
+    ModalManager.confirm('Отмена публикации', 'Снять эту новость с публикации?', () => {
+        window.location.href = `/api/news/unapprove/${newsId}?redirect=/dashboard/news`;
+    }, 'warning');
+}
+
+function deleteNews(newsId) {
+    ModalManager.confirm('Удаление новости', 'Вы уверены, что хотите удалить эту новость? Это действие нельзя отменить.', () => {
+        window.location.href = `/api/news/delete/${newsId}?redirect=/dashboard/news`;
+    }, 'danger');
+}
+</script>
 
 <?php
 $dashboardContent = ob_get_clean();

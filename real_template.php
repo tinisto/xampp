@@ -11,7 +11,7 @@ $greyContent3 = $greyContent3 ?? '<div style="text-align: center; padding: 20px;
 $greyContent4 = $greyContent4 ?? '<div style="text-align: center; padding: 20px; margin: 0;"><p>Filters/Sorting</p></div>';
 $greyContent5 = $greyContent5 ?? '<div style="text-align: center; padding: 20px; margin: 0;"><p>Main Content (Posts/Schools/Tests)</p></div>';
 $greyContent6 = $greyContent6 ?? '<div style="text-align: center; padding: 20px; margin: 0;"><p>Pagination</p></div>';
-$blueContent = $blueContent ?? '<div style="text-align: center; padding: 20px; margin: 0; color: white;"><p>Comments Section (for Posts, Schools, VPO, SPO)</p></div>';
+$blueContent = $blueContent ?? ''; // Comments section - only show when explicitly set by pages that need it
 
 // Check if this is /test/news and set content accordingly
 $requestUri = $_SERVER['REQUEST_URI'];
@@ -56,11 +56,13 @@ if (strpos($requestUri, '/test/news') !== false) {
         ]
     ]);
     
-    // Search inline
-    include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/search-inline.php';
-    renderSearchInline([
+    // Unified search component
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/unified-search.php';
+    renderUnifiedSearch([
         'placeholder' => 'Поиск новостей...',
-        'buttonText' => 'Найти'
+        'buttonText' => 'Найти',
+        'style' => 'default',
+        'name' => 'search'
     ]);
     
     echo '</div>';
@@ -231,8 +233,8 @@ if (strpos($requestUri, '/test/news') !== false) {
     renderPaginationModern(1, 5, '/test/news');
     $greyContent6 = ob_get_clean();
     
-    // Blue section: Show placeholder for news listing
-    $blueContent = '<div style="text-align: center; padding: 20px; margin: 0; color: white;"><p style="opacity: 0.7; font-size: 14px;">Comments section (not used on news listing)</p></div>';
+    // Blue section: Not needed for news listing pages
+    $blueContent = '';
 }
 ?>
 <!DOCTYPE html>
@@ -243,8 +245,8 @@ if (strpos($requestUri, '/test/news') !== false) {
     <title><?php echo htmlspecialchars($pageTitle ?? 'Страница'); ?> - 11-классники</title>
     
     <!-- Favicon -->
-    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiBmaWxsPSIjMDA3YmZmIi8+Cjx0ZXh0IHg9IjE2IiB5PSIyMCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPjExPC90ZXh0Pgo8L3N2Zz4K" type="image/svg+xml">
-    <link rel="shortcut icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiBmaWxsPSIjMDA3YmZmIi8+Cjx0ZXh0IHg9IjE2IiB5PSIyMCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPjExPC90ZXh0Pgo8L3N2Zz4K" type="image/x-icon">
+    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiMwMDdiZmYiLz4KPHRleHQgeD0iMTYiIHk9IjIwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+MTE8L3RleHQ+Cjwvc3ZnPgo=" type="image/svg+xml">
+    <link rel="shortcut icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiMwMDdiZmYiLz4KPHRleHQgeD0iMTYiIHk9IjIwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+MTE8L3RleHQ+Cjwvc3ZnPgo=" type="image/x-icon">
 
     <!-- Adsense Meta tag -->
     <meta name="google-adsense-account" content="ca-pub-2363662533799826">
@@ -580,12 +582,14 @@ if (strpos($requestUri, '/test/news') !== false) {
             </div>
         </main>
         
-        <!-- Comments Section (BLUE background) -->
+        <!-- Comments Section (BLUE background) - Only show if content is provided -->
+        <?php if (!empty($blueContent)): ?>
         <div class="comments-section" style="background: blue;">
             <?php 
             echo $blueContent;
             ?>
         </div>
+        <?php endif; ?>
     </div>
     
     <!-- Website Footer -->

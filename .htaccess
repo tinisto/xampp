@@ -58,7 +58,12 @@ DirectoryIndex index.php index.html
     RewriteRule ^spo-all-regions/?$ spo-all-regions-new.php [QSA,NC,L]
     RewriteRule ^educational-institutions-all-regions/?$ pages/common/educational-institutions-all-regions/educational-institutions-all-regions.php [QSA,NC,L]
     
-    # Educational Institutions - By Region
+    # Educational Institutions - By Region (directory listings)
+    RewriteRule ^schools-in-region/?$ schools-in-region-real.php [QSA,NC,L]
+    RewriteRule ^vpo-in-region/?$ vpo-in-region-new.php [QSA,NC,L]
+    RewriteRule ^spo-in-region/?$ spo-in-region-new.php [QSA,NC,L]
+    
+    # Educational Institutions - By Region (specific region)
     RewriteRule ^schools-in-region/([a-zA-Z0-9-]+)/?$ schools-in-region-real.php?region_url=$1 [QSA,NC,L]
     RewriteRule ^vpo-in-region/([a-zA-Z0-9-]+)/?$ vpo-in-region-new.php?region_url=$1 [QSA,NC,L]
     RewriteRule ^spo-in-region/([a-zA-Z0-9-]+)/?$ spo-in-region-new.php?region_url=$1 [QSA,NC,L]
