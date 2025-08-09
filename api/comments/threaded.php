@@ -57,8 +57,8 @@ try {
     // Calculate total pages based on parent comments only
     $totalPages = ceil($totalComments / $limit);
     
-    // Get parent comments for this page
-    $parentQuery = "SELECT id, user_id, author_of_comment, comment_text, date, entity_type, entity_id, parent_id, email
+    // Get parent comments for this page with likes/dislikes and edit info
+    $parentQuery = "SELECT id, user_id, author_of_comment, comment_text, date, edited_at, edit_count, entity_type, entity_id, parent_id, email, likes, dislikes
                     FROM comments 
                     WHERE entity_type = ? AND entity_id = ? AND (parent_id IS NULL OR parent_id = 0)
                     ORDER BY date DESC 
@@ -83,15 +83,15 @@ try {
     if (!empty($parentIds)) {
         $parentIdsStr = implode(',', array_map('intval', $parentIds));
         
-        // Get all nested replies using recursive approach
+        // Get all nested replies using recursive approach with likes/dislikes and edit info
         $repliesQuery = "WITH RECURSIVE comment_tree AS (
-                            SELECT id, user_id, author_of_comment, comment_text, date, entity_type, entity_id, parent_id, email, 1 as depth
+                            SELECT id, user_id, author_of_comment, comment_text, date, edited_at, edit_count, entity_type, entity_id, parent_id, email, likes, dislikes, 1 as depth
                             FROM comments 
                             WHERE entity_type = ? AND entity_id = ? AND parent_id IN ($parentIdsStr)
                             
                             UNION ALL
                             
-                            SELECT c.id, c.user_id, c.author_of_comment, c.comment_text, c.date, c.entity_type, c.entity_id, c.parent_id, c.email, ct.depth + 1
+                            SELECT c.id, c.user_id, c.author_of_comment, c.comment_text, c.date, c.edited_at, c.edit_count, c.entity_type, c.entity_id, c.parent_id, c.email, c.likes, c.dislikes, ct.depth + 1
                             FROM comments c
                             INNER JOIN comment_tree ct ON c.parent_id = ct.id
                             WHERE c.entity_type = ? AND c.entity_id = ? AND ct.depth < 10
@@ -134,7 +134,11 @@ try {
             'entity_type' => $comment['entity_type'],
             'entity_id' => (int)$comment['entity_id'],
             'parent_id' => $comment['parent_id'] ? (int)$comment['parent_id'] : null,
-            'user_id' => $comment['user_id'] ? (int)$comment['user_id'] : null
+            'user_id' => $comment['user_id'] ? (int)$comment['user_id'] : null,
+            'likes' => (int)($comment['likes'] ?? 0),
+            'dislikes' => (int)($comment['dislikes'] ?? 0),
+            'edited_at' => $comment['edited_at'],
+            'edit_count' => (int)($comment['edit_count'] ?? 0)
         ];
     }
     

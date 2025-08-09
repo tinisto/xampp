@@ -2,8 +2,8 @@
 // VPO in region page - migrated to use real_template.php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
 
-// Get region from URL
-$regionUrlName = $_GET['region_name_en'] ?? '';
+// Get region from URL - check both possible parameter names
+$regionUrlName = $_GET['region_url'] ?? $_GET['region_name_en'] ?? '';
 if (empty($regionUrlName)) {
     header("Location: /vpo-all-regions");
     exit();

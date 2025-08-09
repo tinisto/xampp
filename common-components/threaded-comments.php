@@ -324,7 +324,7 @@ function renderThreadedComments($entityType, $entityId, $options = []) {
             flex-wrap: wrap;
         }
         
-        .btn-reply, .btn-like {
+        .btn-reply, .btn-like, .btn-edit, .btn-report {
             background: none;
             border: none;
             color: var(--text-secondary, #6c757d);
@@ -338,9 +338,35 @@ function renderThreadedComments($entityType, $entityId, $options = []) {
             gap: 6px;
         }
         
-        .btn-reply:hover {
+        .btn-reply:hover, .btn-edit:hover {
             background: rgba(0, 123, 255, 0.1);
             color: var(--primary-color, #007bff);
+        }
+        
+        .btn-report:hover {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+        
+        .comment-edited {
+            font-size: 12px;
+            color: var(--text-secondary, #6c757d);
+            margin-top: 8px;
+            font-style: italic;
+        }
+        
+        .edit-form {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(0, 123, 255, 0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 123, 255, 0.1);
+            display: none;
+        }
+        
+        .edit-form.show {
+            display: block;
+            animation: slideDown 0.3s ease;
         }
         
         .btn-like:hover {
@@ -349,6 +375,15 @@ function renderThreadedComments($entityType, $entityId, $options = []) {
         }
         
         .btn-like.liked {
+            color: #28a745;
+            background: rgba(40, 167, 69, 0.1);
+        }
+        
+        .btn-dislike {
+            margin-left: 10px;
+        }
+        
+        .btn-dislike.liked {
             color: #dc3545;
             background: rgba(220, 53, 69, 0.1);
         }
@@ -608,6 +643,8 @@ function renderThreadedComments($entityType, $entityId, $options = []) {
         const entityId = <?= (int)$entityId ?>;
         const loadLimit = <?= (int)$options['loadLimit'] ?>;
         const maxDepth = <?= (int)$options['maxDepth'] ?>;
+        const currentUserId = <?= isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 'null' ?>;
+        const isAdmin = <?= (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') || (isset($_SESSION['occupation']) && $_SESSION['occupation'] === 'admin') ? 'true' : 'false' ?>;
         let currentPage = 1;
         let totalPages = 1;
         let isLoading = false;
@@ -753,13 +790,18 @@ function renderThreadedComments($entityType, $entityId, $options = []) {
                         </div>
                     </div>
                     <div class="comment-actions">
-                        <button class="btn-like" onclick="likeComment(${comment.id})" title="Нравится">
-                            <i class="fas fa-heart"></i>
-                            <span class="like-count">0</span>
+                        <button class="btn-like ${comment.user_liked ? 'liked' : ''}" onclick="likeComment(${comment.id}, 'like')" title="Нравится">
+                            <i class="fas fa-thumbs-up"></i>
+                            <span class="like-count">${comment.likes || 0}</span>
+                        </button>
+                        <button class="btn-like btn-dislike ${comment.user_disliked ? 'liked' : ''}" onclick="likeComment(${comment.id}, 'dislike')" title="Не нравится">
+                            <i class="fas fa-thumbs-down"></i>
+                            <span class="dislike-count">${comment.dislikes || 0}</span>
                         </button>
                     </div>
                 </div>
-                <div class="comment-text">${escapeHtml(comment.comment_text)}</div>
+                <div class="comment-text" id="comment-text-${comment.id}">${escapeHtml(comment.comment_text)}</div>
+                ${comment.edited_at ? `<div class="comment-edited"><small><i class="fas fa-edit"></i> Отредактировано ${formatDate(comment.edited_at)}</small></div>` : ''}
                 <div class="comment-footer">
                     ${<?= $options['allowReplies'] ? 'true' : 'false' ?> ? `
                         <button class="btn-reply" onclick="showReplyForm(${comment.id})" title="Ответить">
@@ -767,6 +809,16 @@ function renderThreadedComments($entityType, $entityId, $options = []) {
                             Ответить
                         </button>
                     ` : ''}
+                    ${canEditComment(comment) ? `
+                        <button class="btn-edit" onclick="showEditForm(${comment.id})" title="Редактировать">
+                            <i class="fas fa-edit"></i>
+                            Редактировать
+                        </button>
+                    ` : ''}
+                    <button class="btn-report" onclick="reportComment(${comment.id})" title="Пожаловаться">
+                        <i class="fas fa-flag"></i>
+                        Жалоба
+                    </button>
                     <div class="comment-info">
                         <small>ID: ${comment.id}</small>
                     </div>
@@ -794,6 +846,24 @@ function renderThreadedComments($entityType, $entityId, $options = []) {
                         </form>
                     </div>
                 ` : ''}
+                <div class="edit-form" id="edit-form-${comment.id}">
+                    <form onsubmit="handleEditSubmit(event, ${comment.id})">
+                        <div class="form-group">
+                            <label class="form-label">Редактировать комментарий</label>
+                            <textarea name="comment_text" required class="form-control" rows="4">${escapeHtml(comment.comment_text)}</textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="hideEditForm(${comment.id})">
+                                <i class="fas fa-times"></i>
+                                Отмена
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i>
+                                Сохранить
+                            </button>
+                        </div>
+                    </form>
+                </div>
             `;
             
             return div;
@@ -850,6 +920,85 @@ function renderThreadedComments($entityType, $entityId, $options = []) {
             }
         };
         
+        window.showEditForm = function(commentId) {
+            const editForm = document.getElementById(`edit-form-${commentId}`);
+            const commentText = document.getElementById(`comment-text-${commentId}`);
+            
+            if (editForm) {
+                // Hide comment text and show edit form
+                if (commentText) commentText.style.display = 'none';
+                editForm.classList.add('show');
+                
+                // Focus on textarea
+                const textarea = editForm.querySelector('textarea');
+                if (textarea) {
+                    textarea.focus();
+                    textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+                }
+            }
+        };
+        
+        window.hideEditForm = function(commentId) {
+            const editForm = document.getElementById(`edit-form-${commentId}`);
+            const commentText = document.getElementById(`comment-text-${commentId}`);
+            
+            if (editForm) {
+                editForm.classList.remove('show');
+                if (commentText) commentText.style.display = 'block';
+            }
+        };
+        
+        window.handleEditSubmit = async function(e, commentId) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const newText = formData.get('comment_text');
+            
+            try {
+                const response = await fetch('/api/comments/edit.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        comment_id: commentId,
+                        new_text: newText,
+                        edit_reason: ''
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Update comment text in UI
+                    const commentTextEl = document.getElementById(`comment-text-${commentId}`);
+                    if (commentTextEl) {
+                        commentTextEl.innerHTML = escapeHtml(data.comment.comment_text);
+                    }
+                    
+                    // Add/update edited indicator
+                    const commentEl = document.querySelector(`[data-comment-id="${commentId}"]`);
+                    if (commentEl) {
+                        let editedEl = commentEl.querySelector('.comment-edited');
+                        if (!editedEl) {
+                            editedEl = document.createElement('div');
+                            editedEl.className = 'comment-edited';
+                            commentTextEl.after(editedEl);
+                        }
+                        editedEl.innerHTML = `<small><i class="fas fa-edit"></i> Отредактировано ${formatDate(data.comment.edited_at)}</small>`;
+                    }
+                    
+                    hideEditForm(commentId);
+                    showToast('success', 'Комментарий успешно отредактирован');
+                } else {
+                    showToast('error', data.error || 'Ошибка при редактировании');
+                }
+            } catch (error) {
+                console.error('Error editing comment:', error);
+                showToast('error', 'Ошибка при редактировании комментария');
+            }
+        };
+        
         window.handleReplySubmit = async function(e, parentId) {
             e.preventDefault();
             
@@ -879,9 +1028,102 @@ function renderThreadedComments($entityType, $entityId, $options = []) {
             }
         };
         
-        window.likeComment = function(commentId) {
-            // TODO: Implement like functionality
-            console.log('Like comment:', commentId);
+        window.likeComment = async function(commentId, action) {
+            try {
+                const response = await fetch('/api/comments/like.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        comment_id: commentId,
+                        action: action
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Update UI
+                    const commentEl = document.querySelector(`[data-comment-id="${commentId}"]`);
+                    if (commentEl) {
+                        const likeBtn = commentEl.querySelector('.btn-like:not(.btn-dislike)');
+                        const dislikeBtn = commentEl.querySelector('.btn-dislike');
+                        const likeCount = likeBtn.querySelector('.like-count');
+                        const dislikeCount = dislikeBtn.querySelector('.dislike-count');
+                        
+                        // Update counts
+                        likeCount.textContent = data.likes;
+                        dislikeCount.textContent = data.dislikes;
+                        
+                        // Update button states
+                        if (action === 'like') {
+                            if (data.action_type === 'removed') {
+                                likeBtn.classList.remove('liked');
+                            } else {
+                                likeBtn.classList.add('liked');
+                                dislikeBtn.classList.remove('liked');
+                            }
+                        } else {
+                            if (data.action_type === 'removed') {
+                                dislikeBtn.classList.remove('liked');
+                            } else {
+                                dislikeBtn.classList.add('liked');
+                                likeBtn.classList.remove('liked');
+                            }
+                        }
+                    }
+                } else {
+                    showToast('error', data.error || 'Ошибка при голосовании');
+                }
+            } catch (error) {
+                console.error('Error liking comment:', error);
+                showToast('error', 'Ошибка при голосовании');
+            }
+        };
+        
+        window.reportComment = async function(commentId) {
+            const reason = prompt('Выберите причину жалобы:\n1. Спам\n2. Оскорбление\n3. Другое\n\nВведите номер (1-3):');
+            
+            let reasonCode;
+            switch(reason) {
+                case '1': reasonCode = 'spam'; break;
+                case '2': reasonCode = 'offensive'; break;
+                case '3': reasonCode = 'other'; break;
+                default:
+                    showToast('error', 'Неверная причина жалобы');
+                    return;
+            }
+            
+            let description = '';
+            if (reasonCode === 'other') {
+                description = prompt('Опишите причину жалобы:') || '';
+            }
+            
+            try {
+                const response = await fetch('/api/comments/report.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        comment_id: commentId,
+                        reason: reasonCode,
+                        description: description
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast('success', data.message || 'Жалоба отправлена');
+                } else {
+                    showToast('error', data.error || 'Ошибка при отправке жалобы');
+                }
+            } catch (error) {
+                console.error('Error reporting comment:', error);
+                showToast('error', 'Ошибка при отправке жалобы');
+            }
         };
         
         // UI helper functions
@@ -936,6 +1178,19 @@ function renderThreadedComments($entityType, $entityId, $options = []) {
         }
         
         // Utility functions
+        function canEditComment(comment) {
+            if (!currentUserId) return false;
+            if (isAdmin) return true;
+            if (comment.user_id !== currentUserId) return false;
+            
+            // Check if within 15 minutes
+            const commentDate = new Date(comment.date);
+            const now = new Date();
+            const diffMinutes = (now - commentDate) / (1000 * 60);
+            
+            return diffMinutes <= 15 && (!comment.edit_count || comment.edit_count < 3);
+        }
+        
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text || '';
