@@ -1,0 +1,13 @@
+# Recommended .htaccess additions:
+
+RewriteRule ^login/?$ login-template.php [QSA,NC,L]
+RewriteRule ^registration/?$ registration-template.php [QSA,NC,L]
+RewriteRule ^logout/?$ logout-template.php [QSA,NC,L]
+RewriteRule ^account/?$ account-template.php [QSA,NC,L]
+RewriteRule ^forgot-password/?$ forgot-password-template.php [QSA,NC,L]
+RewriteRule ^reset-password/?$ reset-password-template.php [QSA,NC,L]
+
+# Catch-all rules for common variations:
+RewriteRule ^signin/?$ /login [R=301,L]
+RewriteRule ^signup/?$ /registration [R=301,L]
+RewriteRule ^register/?$ /registration [R=301,L]
