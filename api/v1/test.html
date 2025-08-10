@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile API Tester</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #007bff;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button.secondary {
+            background: #6c757d;
+        }
+        button.secondary:hover {
+            background: #545b62;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .response.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .response.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .auth-status {
+            background: #e2e3e5;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .auth-status.logged-in {
+            background: #d4edda;
+            color: #155724;
+        }
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 Mobile API v1 Tester</h1>
+        
+        <div id="authStatus" class="auth-status">
+            🔓 Not authenticated
+        </div>
+        
+        <div class="quick-actions">
+            <button onclick="quickLogin()">🔑 Quick Login</button>
+            <button onclick="quickRegister()">📝 Register Test User</button>
+            <button onclick="getProfile()">👤 Get Profile</button>
+            <button onclick="getNews()">📰 Get News</button>
+            <button onclick="getEvents()">📅 Get Events</button>
+            <button onclick="getStats()">📊 Get Stats</button>
+            <button class="secondary" onclick="logout()">🚪 Logout</button>
+            <button class="secondary" onclick="clearResponse()">🗑️ Clear</button>
+        </div>
+        
+        <div class="form-group">
+            <label>API Endpoint:</label>
+            <select id="endpoint" onchange="updateEndpoint()">
+                <option value="">Select endpoint...</option>
+                <optgroup label="🔐 Authentication">
+                    <option value="POST /api/v1/auth/login">POST /auth/login</option>
+                    <option value="POST /api/v1/auth/register">POST /auth/register</option>
+                    <option value="POST /api/v1/auth/refresh">POST /auth/refresh</option>
+                    <option value="POST /api/v1/auth/logout">POST /auth/logout</option>
+                </optgroup>
+                <optgroup label="👤 User">
+                    <option value="GET /api/v1/user/profile">GET /user/profile</option>
+                    <option value="PUT /api/v1/user/profile">PUT /user/profile</option>
+                    <option value="GET /api/v1/user/stats">GET /user/stats</option>
+                </optgroup>
+                <optgroup label="📰 Content">
+                    <option value="GET /api/v1/news">GET /news</option>
+                    <option value="GET /api/v1/posts">GET /posts</option>
+                    <option value="GET /api/v1/events">GET /events</option>
+                </optgroup>
+                <optgroup label="⭐ Interactions">
+                    <option value="GET /api/v1/favorites">GET /favorites</option>
+                    <option value="POST /api/v1/favorites">POST /favorites</option>
+                    <option value="GET /api/v1/notifications">GET /notifications</option>
+                    <option value="GET /api/v1/recommendations">GET /recommendations</option>
+                </optgroup>
+                <optgroup label="ℹ️ Info">
+                    <option value="GET /api/v1/info/stats">GET /info/stats</option>
+                    <option value="GET /api/v1/info/version">GET /info/version</option>
+                </optgroup>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label>Method & URL:</label>
+            <input type="text" id="url" placeholder="/api/v1/auth/login" value="">
+        </div>
+        
+        <div class="form-group">
+            <label>Method:</label>
+            <select id="method">
+                <option value="GET">GET</option>
+                <option value="POST">POST</option>
+                <option value="PUT">PUT</option>
+                <option value="DELETE">DELETE</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label>Request Body (JSON):</label>
+            <textarea id="body" rows="6" placeholder='{"email": "test@example.com", "password": "password123"}'></textarea>
+        </div>
+        
+        <button onclick="sendRequest()">🚀 Send Request</button>
+        <button class="secondary" onclick="copyRequest()">📋 Copy cURL</button>
+        
+        <div id="response" class="response" style="display: none;"></div>
+    </div>
+
+    <script>
+        let authToken = localStorage.getItem('api_token');
+        let currentUser = null;
+
+        // Update auth status display
+        function updateAuthStatus() {
+            const statusEl = document.getElementById('authStatus');
+            if (authToken) {
+                statusEl.textContent = `🔓 Authenticated ${currentUser ? `as ${currentUser.name}` : ''}`;
+                statusEl.className = 'auth-status logged-in';
+            } else {
+                statusEl.textContent = '🔓 Not authenticated';
+                statusEl.className = 'auth-status';
+            }
+        }
+
+        // Update endpoint form based on selection
+        function updateEndpoint() {
+            const endpointSelect = document.getElementById('endpoint');
+            const selected = endpointSelect.value;
+            
+            if (selected) {
+                const [method, url] = selected.split(' ');
+                document.getElementById('method').value = method;
+                document.getElementById('url').value = url;
+                
+                // Set example body based on endpoint
+                const bodyEl = document.getElementById('body');
+                if (url.includes('/auth/login')) {
+                    bodyEl.value = JSON.stringify({
+                        email: "admin@11klassniki.ru",
+                        password: "admin123"
+                    }, null, 2);
+                } else if (url.includes('/auth/register')) {
+                    bodyEl.value = JSON.stringify({
+                        name: "Test User",
+                        email: "testuser@example.com",
+                        password: "password123"
+                    }, null, 2);
+                } else if (url.includes('/favorites') && method === 'POST') {
+                    bodyEl.value = JSON.stringify({
+                        item_type: "news",
+                        item_id: 1
+                    }, null, 2);
+                } else if (method === 'GET') {
+                    bodyEl.value = '';
+                }
+            }
+        }
+
+        // Send API request
+        async function sendRequest() {
+            const method = document.getElementById('method').value;
+            const url = document.getElementById('url').value;
+            const body = document.getElementById('body').value;
+            
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+            
+            if (authToken) {
+                headers['Authorization'] = `Bearer ${authToken}`;
+            }
+            
+            const options = {
+                method: method,
+                headers: headers
+            };
+            
+            if (body && method !== 'GET') {
+                try {
+                    JSON.parse(body); // Validate JSON
+                    options.body = body;
+                } catch (e) {
+                    showResponse('Invalid JSON in request body', false);
+                    return;
+                }
+            }
+            
+            try {
+                const response = await fetch(url, options);
+                const data = await response.json();
+                
+                // Store token if login successful
+                if (url.includes('/auth/login') && data.success && data.token) {
+                    authToken = data.token;
+                    currentUser = data.user;
+                    localStorage.setItem('api_token', authToken);
+                    updateAuthStatus();
+                }
+                
+                // Clear token if logout
+                if (url.includes('/auth/logout') && data.success) {
+                    authToken = null;
+                    currentUser = null;
+                    localStorage.removeItem('api_token');
+                    updateAuthStatus();
+                }
+                
+                showResponse(`Status: ${response.status}\n\n` + JSON.stringify(data, null, 2), data.success);
+            } catch (error) {
+                showResponse(`Network Error: ${error.message}`, false);
+            }
+        }
+
+        // Show response
+        function showResponse(text, isSuccess) {
+            const responseEl = document.getElementById('response');
+            responseEl.textContent = text;
+            responseEl.className = `response ${isSuccess ? 'success' : 'error'}`;
+            responseEl.style.display = 'block';
+        }
+
+        // Quick actions
+        function quickLogin() {
+            document.getElementById('method').value = 'POST';
+            document.getElementById('url').value = '/api/v1/auth/login';
+            document.getElementById('body').value = JSON.stringify({
+                email: "admin@11klassniki.ru",
+                password: "admin123"
+            }, null, 2);
+        }
+
+        function quickRegister() {
+            const testEmail = `testuser${Date.now()}@example.com`;
+            document.getElementById('method').value = 'POST';
+            document.getElementById('url').value = '/api/v1/auth/register';
+            document.getElementById('body').value = JSON.stringify({
+                name: "Test User",
+                email: testEmail,
+                password: "password123"
+            }, null, 2);
+        }
+
+        function getProfile() {
+            document.getElementById('method').value = 'GET';
+            document.getElementById('url').value = '/api/v1/user/profile';
+            document.getElementById('body').value = '';
+            sendRequest();
+        }
+
+        function getNews() {
+            document.getElementById('method').value = 'GET';
+            document.getElementById('url').value = '/api/v1/news?limit=5';
+            document.getElementById('body').value = '';
+            sendRequest();
+        }
+
+        function getEvents() {
+            document.getElementById('method').value = 'GET';
+            document.getElementById('url').value = '/api/v1/events?limit=5';
+            document.getElementById('body').value = '';
+            sendRequest();
+        }
+
+        function getStats() {
+            document.getElementById('method').value = 'GET';
+            document.getElementById('url').value = '/api/v1/info/stats';
+            document.getElementById('body').value = '';
+            sendRequest();
+        }
+
+        function logout() {
+            document.getElementById('method').value = 'POST';
+            document.getElementById('url').value = '/api/v1/auth/logout';
+            document.getElementById('body').value = '';
+            sendRequest();
+        }
+
+        function clearResponse() {
+            const responseEl = document.getElementById('response');
+            responseEl.style.display = 'none';
+        }
+
+        function copyRequest() {
+            const method = document.getElementById('method').value;
+            const url = document.getElementById('url').value;
+            const body = document.getElementById('body').value;
+            
+            let curl = `curl -X ${method} 'http://localhost:8000${url}' \\
+  -H 'Content-Type: application/json'`;
+            
+            if (authToken) {
+                curl += ` \\
+  -H 'Authorization: Bearer ${authToken}'`;
+            }
+            
+            if (body && method !== 'GET') {
+                curl += ` \\
+  -d '${body}'`;
+            }
+            
+            navigator.clipboard.writeText(curl).then(() => {
+                alert('cURL command copied to clipboard!');
+            });
+        }
+
+        // Initialize
+        updateAuthStatus();
+    </script>
+</body>
+</html>

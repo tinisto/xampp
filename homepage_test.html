@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="ru" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>11-классники - Образовательный портал</title>
+    
+    <!-- Bootstrap 5.3.2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9InVybCgjZ3JhZGllbnQwXzEpIi8+CjxnIG9wYWNpdHk9IjAuOSI+CjxwYXRoIGQ9Ik0xMC41IDEyLjVIMTMuNVYyNy41SDEwLjVWMTIuNVoiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik0xOC41IDEyLjVIMjEuNVYyNy41SDE4LjVWMTIuNVoiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik04IDguNUgxMC41VjExLjVIOFY4LjVaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMjEuNSA4LjVIMjRWMTEuNUgyMS41VjguNVoiIGZpbGw9IndoaXRlIi8+CjwvZz4KPGRlZnM+CjxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZGllbnQwXzEiIHgxPSIwIiB5MT0iMCIgeDI9IjMyIiB5Mj0iMzIiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iIzAwN2JmZiIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMwMDUzZDQiLz4KPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8L3N2Zz4K" type="image/svg+xml">
+    
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --border-color: #dee2e6;
+            --shadow: rgba(0,0,0,0.08);
+            --link-color: #007bff;
+            --link-hover: #0056b3;
+        }
+        
+        [data-bs-theme="dark"] {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --text-primary: #f8f9fa;
+            --text-secondary: #adb5bd;
+            --border-color: #495057;
+            --shadow: rgba(255,255,255,0.1);
+            --link-color: #66b3ff;
+            --link-hover: #4da3ff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; 
+            line-height: 1.6; 
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .header { 
+            background: var(--bg-primary); 
+            box-shadow: 0 2px 10px var(--shadow); 
+            position: sticky; 
+            top: 0; 
+            z-index: 1050;
+            transition: background-color 0.3s;
+        }
+        
+        .header-nav { 
+            display: flex; 
+            align-items: center; 
+            gap: 30px; 
+            padding: 15px 0;
+            flex-wrap: wrap;
+        }
+        
+        .nav-link { 
+            color: var(--text-primary); 
+            text-decoration: none; 
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-link:hover { 
+            color: var(--link-color); 
+        }
+        
+        .footer { 
+            background: var(--bg-secondary); 
+            padding: 30px 0; 
+            margin-top: 40px;
+            color: var(--text-primary);
+            transition: background-color 0.3s;
+        }
+        
+        .content-section {
+            padding: 20px 0;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .header-nav {
+                gap: 10px;
+                position: relative;
+            }
+            
+            .header-nav nav {
+                order: 3;
+                width: 100%;
+                display: flex;
+                gap: 10px;
+                overflow-x: auto;
+                padding: 10px 0;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+            
+            .header-nav nav::-webkit-scrollbar {
+                display: none;
+            }
+            
+            .nav-link {
+                white-space: nowrap;
+                padding: 5px 12px;
+                background: var(--bg-secondary);
+                border-radius: 20px;
+                font-size: 14px;
+            }
+            
+            .container {
+                padding: 0 15px;
+            }
+            
+            /* Hide search on mobile, show search icon */
+            form[action="/search"] input {
+                display: none;
+            }
+            
+            form[action="/search"] {
+                width: auto;
+            }
+            
+            /* Adjust user menu */
+            #userMenu {
+                position: fixed !important;
+                left: 10px !important;
+                right: 10px !important;
+                width: auto !important;
+                top: auto !important;
+                bottom: 20px !important;
+            }
+            
+            /* Stack content sections on mobile */
+            [style*="grid-template-columns"] {
+                grid-template-columns: 1fr !important;
+            }
+            
+            /* Adjust font sizes */
+            h1 {
+                font-size: 28px !important;
+            }
+            
+            h2 {
+                font-size: 24px !important;
+            }
+            
+            h3 {
+                font-size: 20px !important;
+            }
+            
+            /* Adjust padding on mobile */
+            [style*="padding: 50px 20px"],
+            [style*="padding: 60px 20px"],
+            [style*="padding: 40px 20px"] {
+                padding: 30px 15px !important;
+            }
+            
+            /* Mobile-friendly buttons */
+            button, a[style*="padding"] {
+                min-height: 44px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            /* Even smaller screens */
+            .header-nav {
+                padding: 10px 0;
+            }
+            
+            /* Hide theme toggle on very small screens */
+            .theme-toggle {
+                display: none;
+            }
+            
+            /* Full width forms */
+            input[type="text"],
+            input[type="email"],
+            input[type="password"] {
+                font-size: 16px !important; /* Prevent zoom on iOS */
+            }
+        }
+        
+        /* Dark mode specific styles */
+        [data-bs-theme="dark"] a {
+            color: var(--link-color);
+        }
+        
+        [data-bs-theme="dark"] a:hover {
+            color: var(--link-hover);
+        }
+        
+        /* Smooth transitions */
+        * {
+            transition-property: background-color, color, border-color;
+            transition-duration: 0.3s;
+            transition-timing-function: ease;
+        }
+        
+        /* Theme toggle button */
+        .theme-toggle {
+            background: transparent;
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .theme-toggle:hover {
+            background: var(--bg-secondary);
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-nav">
+                <a href="/" style="font-size: 24px; font-weight: 700; color: #007bff; text-decoration: none;">11</a>
+                <nav style="display: flex; gap: 20px;">
+                    <a href="/vpo" class="nav-link">ВУЗы</a>
+                    <a href="/spo" class="nav-link">ССУЗы</a>
+                    <a href="/schools" class="nav-link">Школы</a>
+                    <a href="/news" class="nav-link">Новости</a>
+                    <a href="/posts" class="nav-link">Статьи</a>
+                    <a href="/events" class="nav-link">События</a>
+                </nav>
+                <div style="margin-left: auto; display: flex; align-items: center; gap: 20px;">
+                    <form action="/search" method="get" style="display: flex; gap: 5px;">
+                        <input type="text" name="q" placeholder="Поиск..." 
+                               style="padding: 6px 12px; border: 1px solid var(--border-color); border-radius: 20px; width: 150px; font-size: 14px;">
+                        <button type="submit" style="background: transparent; border: none; cursor: pointer; color: var(--text-primary);">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                    
+                                        
+                                        <a href="/login" 
+                       style="display: flex; align-items: center; gap: 6px; padding: 6px 16px; 
+                              background: #007bff; color: white; border-radius: 20px; 
+                              text-decoration: none; font-size: 14px; font-weight: 500;">
+                        <i class="fas fa-sign-in-alt"></i> Войти
+                    </a>
+                                        
+                    <button onclick="toggleTheme()" class="theme-toggle" aria-label="Toggle dark mode">
+                        <i class="fas fa-moon" id="theme-icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="container">
+            <!-- Content Section 1 -->
+            <div class="content-section">
+                <div style="text-align: center; padding: 60px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+    <h1 style="font-size: 48px; font-weight: 700; margin-bottom: 20px;">11-классники</h1>
+    <p style="font-size: 20px; opacity: 0.9; max-width: 600px; margin: 0 auto;">
+        Образовательный портал для школьников, абитуриентов и студентов
+    </p>
+</div>
+            </div>
+            
+            <!-- Content Section 2 -->
+                        <div class="content-section">
+                <div style="padding: 50px 20px; background: #f8f9fa;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+        <h2 style="text-align: center; font-size: 32px; font-weight: 700; margin-bottom: 40px;">Наша база данных</h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;">
+            <div style="text-align: center; background: white; padding: 40px 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <div style="font-size: 48px; font-weight: 700; color: #007bff; margin-bottom: 10px;">
+                    100                </div>
+                <div style="font-size: 18px; color: #666;">Школ</div>
+                <a href="/schools" style="display: inline-block; margin-top: 15px; color: #007bff; text-decoration: none;">
+                    Посмотреть все →
+                </a>
+            </div>
+            
+            <div style="text-align: center; background: white; padding: 40px 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <div style="font-size: 48px; font-weight: 700; color: #28a745; margin-bottom: 10px;">
+                    100                </div>
+                <div style="font-size: 18px; color: #666;">ВУЗов</div>
+                <a href="/vpo" style="display: inline-block; margin-top: 15px; color: #28a745; text-decoration: none;">
+                    Посмотреть все →
+                </a>
+            </div>
+            
+            <div style="text-align: center; background: white; padding: 40px 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <div style="font-size: 48px; font-weight: 700; color: #ffc107; margin-bottom: 10px;">
+                    100                </div>
+                <div style="font-size: 18px; color: #666;">ССУЗов</div>
+                <a href="/spo" style="display: inline-block; margin-top: 15px; color: #ffc107; text-decoration: none;">
+                    Посмотреть все →
+                </a>
+            </div>
+            
+            <div style="text-align: center; background: white; padding: 40px 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <div style="font-size: 48px; font-weight: 700; color: #dc3545; margin-bottom: 10px;">
+                    506                </div>
+                <div style="font-size: 18px; color: #666;">Новостей</div>
+                <a href="/news" style="display: inline-block; margin-top: 15px; color: #dc3545; text-decoration: none;">
+                    Читать все →
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+            </div>
+                        
+            <!-- Content Section 3 -->
+                        <div class="content-section">
+                <div style="padding: 60px 20px; background: white;">
+    <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+        <h2 style="font-size: 28px; font-weight: 700; margin-bottom: 30px;">Поиск по сайту</h2>
+        
+        <form action="/search" method="get" style="display: flex; gap: 10px; max-width: 600px; margin: 0 auto;">
+            <input type="text" 
+                   name="q" 
+                   placeholder="Введите название школы, ВУЗа или колледжа..." 
+                   style="flex: 1; padding: 15px 20px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 16px;">
+            <button type="submit" 
+                    style="padding: 15px 30px; background: #007bff; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer;">
+                Найти
+            </button>
+        </form>
+    </div>
+</div>
+            </div>
+                        
+            <!-- Content Section 4 -->
+                        <div class="content-section">
+                <div style="padding: 60px 20px; background: #f8f9fa;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+        <h2 style="text-align: center; font-size: 32px; font-weight: 700; margin-bottom: 40px;">Полезные статьи</h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px;">
+                        <article style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.3s;">
+                <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-book-open" style="font-size: 64px; color: white; opacity: 0.8;"></i>
+                </div>
+                
+                <div style="padding: 25px;">
+                                        <a href="/category/ege" 
+                       style="display: inline-block; background: #e9ecef; color: #495057; padding: 6px 12px; border-radius: 20px; font-size: 12px; text-decoration: none; margin-bottom: 15px;">
+                        ЕГЭ                    </a>
+                                        
+                    <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 10px; line-height: 1.4;">
+                        <a href="/post/statya-1" 
+                           style="color: #333; text-decoration: none;">
+                            Как выбрать университет: полное руководство                        </a>
+                    </h3>
+                    
+                    <div style="color: #666; font-size: 14px; display: flex; align-items: center; gap: 15px;">
+                        <span><i class="far fa-calendar"></i> 10.08.2025</span>
+                        <span><i class="far fa-eye"></i> 4,051</span>
+                    </div>
+                </div>
+            </article>
+                        <article style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.3s;">
+                <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-book-open" style="font-size: 64px; color: white; opacity: 0.8;"></i>
+                </div>
+                
+                <div style="padding: 25px;">
+                                        <a href="/category/vpo" 
+                       style="display: inline-block; background: #e9ecef; color: #495057; padding: 6px 12px; border-radius: 20px; font-size: 12px; text-decoration: none; margin-bottom: 15px;">
+                        ВПО                    </a>
+                                        
+                    <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 10px; line-height: 1.4;">
+                        <a href="/post/statya-2" 
+                           style="color: #333; text-decoration: none;">
+                            Подготовка к ЕГЭ по математике: советы экспертов                        </a>
+                    </h3>
+                    
+                    <div style="color: #666; font-size: 14px; display: flex; align-items: center; gap: 15px;">
+                        <span><i class="far fa-calendar"></i> 10.08.2025</span>
+                        <span><i class="far fa-eye"></i> 4,932</span>
+                    </div>
+                </div>
+            </article>
+                        <article style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.3s;">
+                <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-book-open" style="font-size: 64px; color: white; opacity: 0.8;"></i>
+                </div>
+                
+                <div style="padding: 25px;">
+                                        <a href="/category/spo" 
+                       style="display: inline-block; background: #e9ecef; color: #495057; padding: 6px 12px; border-radius: 20px; font-size: 12px; text-decoration: none; margin-bottom: 15px;">
+                        СПО                    </a>
+                                        
+                    <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 10px; line-height: 1.4;">
+                        <a href="/post/statya-3" 
+                           style="color: #333; text-decoration: none;">
+                            Топ-10 востребованных профессий 2025 года                        </a>
+                    </h3>
+                    
+                    <div style="color: #666; font-size: 14px; display: flex; align-items: center; gap: 15px;">
+                        <span><i class="far fa-calendar"></i> 10.08.2025</span>
+                        <span><i class="far fa-eye"></i> 4,074</span>
+                    </div>
+                </div>
+            </article>
+                        <article style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.3s;">
+                <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-book-open" style="font-size: 64px; color: white; opacity: 0.8;"></i>
+                </div>
+                
+                <div style="padding: 25px;">
+                                        <a href="/category/schools" 
+                       style="display: inline-block; background: #e9ecef; color: #495057; padding: 6px 12px; border-radius: 20px; font-size: 12px; text-decoration: none; margin-bottom: 15px;">
+                        Школы                    </a>
+                                        
+                    <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 10px; line-height: 1.4;">
+                        <a href="/post/statya-4" 
+                           style="color: #333; text-decoration: none;">
+                            Гайд по поступлению в медицинский вуз                        </a>
+                    </h3>
+                    
+                    <div style="color: #666; font-size: 14px; display: flex; align-items: center; gap: 15px;">
+                        <span><i class="far fa-calendar"></i> 10.08.2025</span>
+                        <span><i class="far fa-eye"></i> 2,293</span>
+                    </div>
+                </div>
+            </article>
+                        <article style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.3s;">
+                <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-book-open" style="font-size: 64px; color: white; opacity: 0.8;"></i>
+                </div>
+                
+                <div style="padding: 25px;">
+                                        <a href="/category/education" 
+                       style="display: inline-block; background: #e9ecef; color: #495057; padding: 6px 12px; border-radius: 20px; font-size: 12px; text-decoration: none; margin-bottom: 15px;">
+                        Образование                    </a>
+                                        
+                    <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 10px; line-height: 1.4;">
+                        <a href="/post/statya-5" 
+                           style="color: #333; text-decoration: none;">
+                            Все о целевом обучении: плюсы и минусы                        </a>
+                    </h3>
+                    
+                    <div style="color: #666; font-size: 14px; display: flex; align-items: center; gap: 15px;">
+                        <span><i class="far fa-calendar"></i> 10.08.2025</span>
+                        <span><i class="far fa-eye"></i> 3,208</span>
+                    </div>
+                </div>
+            </article>
+                        <article style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.3s;">
+                <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-book-open" style="font-size: 64px; color: white; opacity: 0.8;"></i>
+                </div>
+                
+                <div style="padding: 25px;">
+                                        <a href="/category/ege" 
+                       style="display: inline-block; background: #e9ecef; color: #495057; padding: 6px 12px; border-radius: 20px; font-size: 12px; text-decoration: none; margin-bottom: 15px;">
+                        ЕГЭ                    </a>
+                                        
+                    <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 10px; line-height: 1.4;">
+                        <a href="/post/statya-6" 
+                           style="color: #333; text-decoration: none;">
+                            Как получить красный диплом: пошаговая инструкция                        </a>
+                    </h3>
+                    
+                    <div style="color: #666; font-size: 14px; display: flex; align-items: center; gap: 15px;">
+                        <span><i class="far fa-calendar"></i> 10.08.2025</span>
+                        <span><i class="far fa-eye"></i> 2,981</span>
+                    </div>
+                </div>
+            </article>
+                        <article style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.3s;">
+                <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-book-open" style="font-size: 64px; color: white; opacity: 0.8;"></i>
+                </div>
+                
+                <div style="padding: 25px;">
+                                        <a href="/category/vpo" 
+                       style="display: inline-block; background: #e9ecef; color: #495057; padding: 6px 12px; border-radius: 20px; font-size: 12px; text-decoration: none; margin-bottom: 15px;">
+                        ВПО                    </a>
+                                        
+                    <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 10px; line-height: 1.4;">
+                        <a href="/post/statya-7" 
+                           style="color: #333; text-decoration: none;">
+                            Лучшие онлайн-курсы для школьников                        </a>
+                    </h3>
+                    
+                    <div style="color: #666; font-size: 14px; display: flex; align-items: center; gap: 15px;">
+                        <span><i class="far fa-calendar"></i> 10.08.2025</span>
+                        <span><i class="far fa-eye"></i> 2,428</span>
+                    </div>
+                </div>
+            </article>
+                        <article style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.3s;">
+                <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-book-open" style="font-size: 64px; color: white; opacity: 0.8;"></i>
+                </div>
+                
+                <div style="padding: 25px;">
+                                        <a href="/category/spo" 
+                       style="display: inline-block; background: #e9ecef; color: #495057; padding: 6px 12px; border-radius: 20px; font-size: 12px; text-decoration: none; margin-bottom: 15px;">
+                        СПО                    </a>
+                                        
+                    <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 10px; line-height: 1.4;">
+                        <a href="/post/statya-8" 
+                           style="color: #333; text-decoration: none;">
+                            Стипендии и гранты: как получить финансирование                        </a>
+                    </h3>
+                    
+                    <div style="color: #666; font-size: 14px; display: flex; align-items: center; gap: 15px;">
+                        <span><i class="far fa-calendar"></i> 10.08.2025</span>
+                        <span><i class="far fa-eye"></i> 2,973</span>
+                    </div>
+                </div>
+            </article>
+                    </div>
+        
+        <div style="text-align: center; margin-top: 40px;">
+            <a href="/posts" 
+               style="display: inline-block; background: #007bff; color: white; padding: 15px 40px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px;">
+                Все статьи →
+            </a>
+        </div>
+    </div>
+</div>
+            </div>
+                        
+            <!-- Content Section 5 -->
+                        <div class="content-section">
+                <div style="padding: 60px 20px; background: white;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+        <h2 style="text-align: center; font-size: 32px; font-weight: 700; margin-bottom: 40px;">Почему выбирают нас</h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px;">
+            <div style="text-align: center;">
+                <div style="width: 80px; height: 80px; background: #e3f2fd; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                    <i class="fas fa-database" style="font-size: 36px; color: #2196f3;"></i>
+                </div>
+                <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 15px;">Обширная база данных</h3>
+                <p style="color: #666; line-height: 1.6;">
+                    Более 7000 учебных заведений России с подробной информацией
+                </p>
+            </div>
+            
+            <div style="text-align: center;">
+                <div style="width: 80px; height: 80px; background: #e8f5e9; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                    <i class="fas fa-sync-alt" style="font-size: 36px; color: #4caf50;"></i>
+                </div>
+                <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 15px;">Актуальная информация</h3>
+                <p style="color: #666; line-height: 1.6;">
+                    Регулярное обновление данных и свежие новости образования
+                </p>
+            </div>
+            
+            <div style="text-align: center;">
+                <div style="width: 80px; height: 80px; background: #fff3e0; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                    <i class="fas fa-search" style="font-size: 36px; color: #ff9800;"></i>
+                </div>
+                <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 15px;">Удобный поиск</h3>
+                <p style="color: #666; line-height: 1.6;">
+                    Быстрый поиск по регионам, городам и типам учебных заведений
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+            </div>
+                        
+            <!-- Content Section 6 -->
+                    </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>11klassniki.ru</h5>
+                    <p>Портал образования России</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <a href="/privacy" class="text-muted">Политика конфиденциальности</a> |
+                    <a href="/news" class="text-muted">Новости</a> |
+                    <a href="/events" class="text-muted">События</a> |
+                    <a href="/schools-all-regions" class="text-muted">Школы</a> |
+                    <a href="/vpo-all-regions" class="text-muted">ВУЗы</a>
+                    <p class="mt-2">&copy; 2025 11klassniki.ru</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5.3.2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Theme toggle functionality
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-bs-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            html.setAttribute('data-bs-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            const themeIcon = document.getElementById('theme-icon');
+            if (themeIcon) {
+                themeIcon.className = newTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+            }
+        }
+        
+        // User menu toggle
+        function toggleUserMenu() {
+            const menu = document.getElementById('userMenu');
+            if (menu) {
+                menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+            }
+        }
+        
+        // Close user menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('userMenu');
+            if (menu && !event.target.closest('[onclick="toggleUserMenu()"]') && !menu.contains(event.target)) {
+                menu.style.display = 'none';
+            }
+        });
+        
+        // Initialize theme
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            const html = document.documentElement;
+            const themeIcon = document.getElementById('theme-icon');
+            
+            html.setAttribute('data-bs-theme', savedTheme);
+            
+            if (themeIcon) {
+                themeIcon.className = savedTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+            }
+        });
+    </script>
+</body>
+</html>

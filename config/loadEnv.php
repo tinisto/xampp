@@ -22,12 +22,23 @@ function parseEnvFile($filePath) {
     return true;
 }
 
+// Determine the root directory
+$rootDir = isset($_SERVER['DOCUMENT_ROOT']) && $_SERVER['DOCUMENT_ROOT'] 
+    ? $_SERVER['DOCUMENT_ROOT'] 
+    : dirname(__DIR__);
+
+// Check for local config first
+if (file_exists(__DIR__ . '/local-config.php')) {
+    require_once __DIR__ . '/local-config.php';
+    return;
+}
+
 // Check for production environment file first
 $envLoaded = false;
-if (file_exists($_SERVER['DOCUMENT_ROOT'] . '/.env.production')) {
-    $envLoaded = parseEnvFile($_SERVER['DOCUMENT_ROOT'] . '/.env.production');
-} elseif (file_exists($_SERVER['DOCUMENT_ROOT'] . '/.env')) {
-    $envLoaded = parseEnvFile($_SERVER['DOCUMENT_ROOT'] . '/.env');
+if (file_exists($rootDir . '/.env.production')) {
+    $envLoaded = parseEnvFile($rootDir . '/.env.production');
+} elseif (file_exists($rootDir . '/.env')) {
+    $envLoaded = parseEnvFile($rootDir . '/.env');
 }
 
 if (!$envLoaded) {
