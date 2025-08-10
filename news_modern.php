@@ -99,24 +99,88 @@ $greyContent1 = ob_get_clean();
 // Section 2: Category filter
 ob_start();
 ?>
-<div style="padding: 30px 20px; background: white; border-bottom: 1px solid #e9ecef;">
+<style>
+.news-category-link {
+    padding: 12px 18px;
+    border-radius: 25px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.news-category-link:not(.active) {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+.news-category-link.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(118, 75, 162, 0.3);
+    transform: translateY(-1px);
+}
+
+.news-category-link:not(.active):hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(118, 75, 162, 0.2);
+    border-color: #667eea;
+}
+
+.news-category-link .count {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.news-category-link:not(.active) .count {
+    background: var(--text-secondary);
+    color: var(--bg-primary);
+    opacity: 0.7;
+}
+
+.news-category-link:not(.active):hover .count {
+    background: rgba(255, 255, 255, 0.3);
+    color: white;
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .news-category-link {
+        padding: 10px 14px;
+        font-size: 13px;
+    }
+}
+</style>
+
+<div style="padding: 30px 20px; background: var(--bg-primary); border-bottom: 1px solid var(--border-color);">
     <div style="max-width: 1200px; margin: 0 auto;">
-        <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
-            <a href="/news" 
-               class="category-link <?= !$categorySlug ? 'active' : '' ?>"
-               style="padding: 8px 16px; border-radius: 20px; text-decoration: none; transition: all 0.3s;
-                      <?= !$categorySlug ? 'background: #007bff; color: white;' : 'background: #f8f9fa; color: #495057;' ?>">
+        <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+            <a href="/news" class="news-category-link <?= !$categorySlug ? 'active' : '' ?>">
                 Все категории
+                <span class="count"><?= array_sum(array_column($categories, 'news_count')) ?></span>
             </a>
             
             <?php foreach ($categories as $cat): ?>
+            <?php if ($cat['news_count'] > 0): ?>
             <a href="/news?category=<?= htmlspecialchars($cat['url_slug']) ?>" 
-               class="category-link <?= $categorySlug === $cat['url_slug'] ? 'active' : '' ?>"
-               style="padding: 8px 16px; border-radius: 20px; text-decoration: none; transition: all 0.3s;
-                      <?= $categorySlug === $cat['url_slug'] ? 'background: #007bff; color: white;' : 'background: #f8f9fa; color: #495057;' ?>">
-                <?= htmlspecialchars($cat['category_name']) ?> 
-                <span style="opacity: 0.7;">(<?= $cat['news_count'] ?>)</span>
+               class="news-category-link <?= $categorySlug === $cat['url_slug'] ? 'active' : '' ?>">
+                <?= htmlspecialchars($cat['category_name']) ?>
+                <span class="count"><?= $cat['news_count'] ?></span>
             </a>
+            <?php endif; ?>
             <?php endforeach; ?>
         </div>
     </div>
