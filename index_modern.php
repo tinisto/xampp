@@ -1,5 +1,6 @@
 <?php
 // Modern index.php with routing
+require_once __DIR__ . '/includes/security-headers.php';
 require_once __DIR__ . '/database/db_modern.php';
 
 // Get request URI

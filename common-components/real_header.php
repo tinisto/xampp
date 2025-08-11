@@ -4,6 +4,9 @@
  * Replaces all other header files
  */
 
+// Include security headers first
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/security-headers.php';
+
 // Favicon will be handled directly in template head section
 
 // Load session manager if not already loaded

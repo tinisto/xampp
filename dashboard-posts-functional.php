@@ -21,42 +21,75 @@ $page = max(1, (int)($_GET['page'] ?? 1));
 $limit = 20;
 $offset = ($page - 1) * $limit;
 
-// Filter by category
+// Filter by category and search parameters
 $categoryFilter = $_GET['category'] ?? '';
-$categoryCondition = '';
-if (!empty($categoryFilter) && is_numeric($categoryFilter)) {
-    $categoryCondition = "WHERE p.category = " . (int)$categoryFilter;
-}
-
-// Search
 $search = $_GET['search'] ?? '';
-$searchCondition = '';
-if (!empty($search)) {
-    $searchLike = '%' . $connection->real_escape_string($search) . '%';
-    $searchCondition = ($categoryCondition ? ' AND ' : 'WHERE ') . "(p.title_post LIKE '$searchLike' OR p.text_post LIKE '$searchLike' OR p.author_post LIKE '$searchLike')";
+$queryParams = [];
+$whereClauses = [];
+
+// Build WHERE clauses
+if (!empty($categoryFilter) && is_numeric($categoryFilter)) {
+    $whereClauses[] = "p.category = ?";
+    $queryParams[] = (int)$categoryFilter;
 }
 
-// Get total posts count
-$countQuery = "SELECT COUNT(*) as total FROM posts p $categoryCondition $searchCondition";
-$countResult = $connection->query($countQuery);
-$totalPosts = $countResult->fetch_assoc()['total'];
+if (!empty($search)) {
+    $whereClauses[] = "(p.title_post LIKE ? OR p.text_post LIKE ? OR p.author_post LIKE ?)";
+    $searchParam = '%' . $search . '%';
+    $queryParams[] = $searchParam;
+    $queryParams[] = $searchParam;
+    $queryParams[] = $searchParam;
+}
+
+$whereClause = !empty($whereClauses) ? 'WHERE ' . implode(' AND ', $whereClauses) : '';
+
+// Get total posts count with prepared statement
+$countQuery = "SELECT COUNT(*) as total FROM posts p $whereClause";
+if (!empty($queryParams)) {
+    $stmt = $connection->prepare($countQuery);
+    $types = '';
+    foreach ($queryParams as $param) {
+        $types .= is_int($param) ? 'i' : 's';
+    }
+    $stmt->bind_param($types, ...$queryParams);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $totalPosts = $result->fetch_assoc()['total'];
+    $stmt->close();
+} else {
+    $result = $connection->query($countQuery);
+    $totalPosts = $result ? $result->fetch_assoc()['total'] : 0;
+}
 $totalPages = ceil($totalPosts / $limit);
 
-// Get posts with category info
+// Get posts with category info using prepared statement
 $query = "SELECT p.id_post, p.title_post, p.author_post, p.date_post, p.url_slug, p.view_post, p.category,
                  c.name_category
           FROM posts p
           LEFT JOIN categories c ON p.category = c.id
-          $categoryCondition $searchCondition
+          $whereClause
           ORDER BY p.date_post DESC 
-          LIMIT $limit OFFSET $offset";
-$result = $connection->query($query);
-$posts = [];
-if ($result) {
-    while ($row = $result->fetch_assoc()) {
-        $posts[] = $row;
+          LIMIT ? OFFSET ?";
+
+$stmt = $connection->prepare($query);
+if (!empty($queryParams)) {
+    $allParams = array_merge($queryParams, [$limit, $offset]);
+    $types = '';
+    foreach ($queryParams as $param) {
+        $types .= is_int($param) ? 'i' : 's';
     }
+    $types .= 'ii';
+    $stmt->bind_param($types, ...$allParams);
+} else {
+    $stmt->bind_param("ii", $limit, $offset);
 }
+$stmt->execute();
+$result = $stmt->get_result();
+$posts = [];
+while ($row = $result->fetch_assoc()) {
+    $posts[] = $row;
+}
+$stmt->close();
 
 // Get statistics
 $stats = [];

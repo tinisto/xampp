@@ -2,6 +2,7 @@
 // Unified Content Creation Dashboard - Uses same design as main dashboard
 require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/check_under_construction.php';
 include $_SERVER["DOCUMENT_ROOT"] . "/includes/functions/check_admin.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/csrf-protection.php';
 
 // Include database connection
 require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
@@ -887,6 +888,7 @@ if ($posts_result) {
                 
                 <div class="form-card-body">
                     <form action="/create-process.php" method="POST" enctype="multipart/form-data" id="contentForm">
+                        <?= csrfField() ?>
                         <input type="hidden" name="content_type" value="<?= htmlspecialchars($contentType) ?>">
                         
                         <div class="form-group">

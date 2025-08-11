@@ -2,6 +2,7 @@
 // Process content creation (news/posts)
 session_start();
 require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/functions/check_admin.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/csrf-protection.php';
 
 // Include database connection
 require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
@@ -14,6 +15,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: /dashboard');
     exit;
 }
+
+// Verify CSRF token
+verifyCSRFToken();
 
 // Get form data
 $content_type = $_POST['content_type'] ?? 'news';

@@ -142,12 +142,17 @@ echo "<tr><th>Category</th><th>Keyword</th><th>Count</th></tr>";
 
 foreach (['1', '2', '3', '4'] as $cat) {
     foreach ($keywords as $keyword => $description) {
-        $keywordQuery = "SELECT COUNT(*) as count 
-                        FROM news 
-                        WHERE category_news = '$cat' 
-                        AND (title_news LIKE '%$keyword%' OR text_news LIKE '%$keyword%')";
-        $keywordResult = mysqli_query($connection, $keywordQuery);
-        $count = mysqli_fetch_assoc($keywordResult)['count'];
+        // Fixed SQL injection vulnerability - using prepared statement
+        $stmt = $connection->prepare("SELECT COUNT(*) as count 
+                                     FROM news 
+                                     WHERE category_news = ? 
+                                     AND (title_news LIKE ? OR text_news LIKE ?)");
+        $searchTerm = '%' . $keyword . '%';
+        $stmt->bind_param("sss", $cat, $searchTerm, $searchTerm);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $count = $result->fetch_assoc()['count'];
+        $stmt->close();
         
         if ($count > 0) {
             echo "<tr class='category-$cat'>";

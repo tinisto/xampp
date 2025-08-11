@@ -24,24 +24,48 @@ $offset = ($page - 1) * $limit;
 // Search
 $search = $_GET['search'] ?? '';
 $searchCondition = '';
+$searchParams = [];
+
+// Build WHERE clause for search
 if (!empty($search)) {
-    $searchLike = '%' . $connection->real_escape_string($search) . '%';
-    $searchCondition = "WHERE name LIKE '$searchLike' OR city LIKE '$searchLike' OR region LIKE '$searchLike'";
+    $searchCondition = "WHERE name LIKE ? OR city LIKE ? OR region LIKE ?";
+    $searchParam = '%' . $search . '%';
+    $searchParams = [$searchParam, $searchParam, $searchParam];
 }
 
-// Get total universities count
+// Get total universities count with prepared statement
 $countQuery = "SELECT COUNT(*) as total FROM universities $searchCondition";
-$countResult = $connection->query($countQuery);
-$totalUniversities = $countResult ? $countResult->fetch_assoc()['total'] : 0;
+if (!empty($searchParams)) {
+    $stmt = $connection->prepare($countQuery);
+    $stmt->bind_param("sss", ...$searchParams);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $totalUniversities = $result->fetch_assoc()['total'];
+    $stmt->close();
+} else {
+    $result = $connection->query($countQuery);
+    $totalUniversities = $result ? $result->fetch_assoc()['total'] : 0;
+}
 $totalPages = ceil($totalUniversities / $limit);
 
-// Get universities
+// Get universities with prepared statement
 $query = "SELECT id, name, city, region, created_at 
           FROM universities 
           $searchCondition
           ORDER BY name ASC 
-          LIMIT $limit OFFSET $offset";
-$result = $connection->query($query);
+          LIMIT ? OFFSET ?";
+
+if (!empty($searchParams)) {
+    $stmt = $connection->prepare($query);
+    $allParams = array_merge($searchParams, [$limit, $offset]);
+    $types = str_repeat('s', count($searchParams)) . 'ii';
+    $stmt->bind_param($types, ...$allParams);
+} else {
+    $stmt = $connection->prepare($query);
+    $stmt->bind_param("ii", $limit, $offset);
+}
+$stmt->execute();
+$result = $stmt->get_result();
 $universities = [];
 if ($result) {
     while ($row = $result->fetch_assoc()) {

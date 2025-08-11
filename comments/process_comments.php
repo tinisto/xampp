@@ -7,6 +7,7 @@ if (session_status() == PHP_SESSION_NONE) {
 // Include required files
 require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/functions/redirectToErrorPage.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/csrf-protection.php';
 
 // Check if comment filter functions exist, if not create basic functions
 if (!function_exists('sanitizeComment')) {
@@ -32,6 +33,9 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . '/includes/functions/email_functions
 
 // Process form data
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["comment"]) && isset($_POST["parent_id"]) && isset($_POST["entity_type"]) && isset($_POST["id_entity"])) {
+
+    // Verify CSRF token
+    verifyCSRFToken();
 
     // Check if user is logged in
     if (!isset($_SESSION['email'])) {

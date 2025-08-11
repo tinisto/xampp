@@ -3,6 +3,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/functions/get_avatar.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/functions/getEntityIdFromURL.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/csrf-protection.php';
 
 // Get the current URL
 $currentUrl = $_SERVER['REQUEST_URI'];
@@ -88,6 +89,7 @@ if (!isset($id_entity) || !isset($entity_type)) {
                 style="background-color: var(--surface-variant, #f5f5f5); color: var(--text-primary, black);"></textarea>
             </div>
 
+            <?php echo csrfField(); ?>
             <input type="hidden" name="id_school" value="<?php echo htmlspecialchars($id_school ?? ''); ?>">
             <input type="hidden" name="vpo_name_en" value="<?php echo htmlspecialchars($vpo_name_en ?? ''); ?>">
             <input type="hidden" name="spo_name_en" value="<?php echo htmlspecialchars($spo_name_en ?? ''); ?>">

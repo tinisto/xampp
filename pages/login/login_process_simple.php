@@ -24,6 +24,8 @@ if (!$email || empty($password)) {
 
 // Database connection
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config/loadEnv.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/rate-limiter.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/security-logger.php';
 
 if (!defined('DB_HOST') || !defined('DB_USER') || !defined('DB_PASS') || !defined('DB_NAME')) {
     $_SESSION['error'] = 'Ошибка конфигурации базы данных.';
@@ -41,6 +43,20 @@ if ($connection->connect_error) {
 
 $connection->set_charset("utf8mb4");
 
+// Check rate limit
+$rateLimitCheck = checkRateLimit($connection, $email);
+if ($rateLimitCheck['limited']) {
+    // Log blocked login attempt
+    logSecurityEvent($connection, SecurityLogger::EVENT_LOGIN_BLOCKED, [
+        'email' => $email,
+        'details' => ['remaining_minutes' => $rateLimitCheck['remaining_minutes']]
+    ]);
+    $_SESSION['error'] = 'Слишком много неудачных попыток входа. Попробуйте через ' . $rateLimitCheck['remaining_minutes'] . ' минут.';
+    $redirectParam = $redirect ? '?redirect=' . urlencode($redirect) : '';
+    header('Location: /login' . $redirectParam);
+    exit();
+}
+
 // Check user credentials - only select columns that exist
 $stmt = $connection->prepare("SELECT id, password, email, role, occupation, is_active FROM users WHERE email = ?");
 if (!$stmt) {
@@ -53,6 +69,12 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 if ($result->num_rows === 0) {
+    // Record failed attempt and log
+    recordFailedLogin($connection, $email);
+    logSecurityEvent($connection, SecurityLogger::EVENT_LOGIN_FAILED, [
+        'email' => $email,
+        'details' => ['reason' => 'user_not_found']
+    ]);
     $_SESSION['error'] = 'Неверный email или пароль.';
     $redirectParam = $redirect ? '?redirect=' . urlencode($redirect) : '';
     header('Location: /login' . $redirectParam);
@@ -63,6 +85,13 @@ $user = $result->fetch_assoc();
 
 // Verify password
 if (!password_verify($password, $user['password'])) {
+    // Record failed attempt and log
+    recordFailedLogin($connection, $email);
+    logSecurityEvent($connection, SecurityLogger::EVENT_LOGIN_FAILED, [
+        'email' => $email,
+        'user_id' => $user['id'],
+        'details' => ['reason' => 'invalid_password']
+    ]);
     $_SESSION['error'] = 'Неверный email или пароль.';
     $redirectParam = $redirect ? '?redirect=' . urlencode($redirect) : '';
     header('Location: /login' . $redirectParam);
@@ -78,6 +107,15 @@ if (isset($user['is_active']) && $user['is_active'] == 0) {
 }
 
 // Account is valid, proceed with login
+
+// Clear login attempts after successful login
+clearLoginAttempts($connection, $email);
+
+// Log successful login
+logSecurityEvent($connection, SecurityLogger::EVENT_LOGIN_SUCCESS, [
+    'email' => $email,
+    'user_id' => $user['id']
+]);
 
 // Get username from email (part before @)
 $username = explode('@', $email)[0];

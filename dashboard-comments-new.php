@@ -35,20 +35,38 @@ switch ($filter) {
 
 // Search
 $search = $_GET['search'] ?? '';
+$searchParams = [];
 $searchCondition = '';
-if (!empty($search)) {
-    $searchLike = '%' . $connection->real_escape_string($search) . '%';
-    $searchCondition = $filterCondition ? ' AND ' : 'WHERE ';
-    $searchCondition .= "c.text_comment LIKE '$searchLike'";
+
+// Build WHERE clause parts
+$whereParts = [];
+if ($filterCondition) {
+    $whereParts[] = str_replace('WHERE ', '', $filterCondition);
 }
 
-// Get total count
-$countQuery = "SELECT COUNT(*) as total FROM comments c $filterCondition $searchCondition";
-$countResult = $connection->query($countQuery);
-$totalComments = $countResult->fetch_assoc()['total'];
+if (!empty($search)) {
+    $whereParts[] = "c.text_comment LIKE ?";
+    $searchParams[] = '%' . $search . '%';
+}
+
+$whereClause = !empty($whereParts) ? 'WHERE ' . implode(' AND ', $whereParts) : '';
+
+// Get total count with prepared statement
+$countQuery = "SELECT COUNT(*) as total FROM comments c $whereClause";
+if (!empty($searchParams)) {
+    $stmt = $connection->prepare($countQuery);
+    $stmt->bind_param(str_repeat('s', count($searchParams)), ...$searchParams);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $totalComments = $result->fetch_assoc()['total'];
+    $stmt->close();
+} else {
+    $result = $connection->query($countQuery);
+    $totalComments = $result->fetch_assoc()['total'];
+}
 $totalPages = ceil($totalComments / $limit);
 
-// Get comments with related info
+// Get comments with related info using prepared statement
 $query = "SELECT c.*, 
           u.first_name, u.last_name, u.email,
           n.title_news, n.url_slug as news_url,
@@ -57,14 +75,24 @@ $query = "SELECT c.*,
           LEFT JOIN users u ON c.user_id = u.id
           LEFT JOIN news n ON c.news_id = n.id
           LEFT JOIN posts p ON c.post_id = p.id_post
-          $filterCondition $searchCondition
+          $whereClause
           ORDER BY c.date DESC 
-          LIMIT $limit OFFSET $offset";
-$result = $connection->query($query);
+          LIMIT ? OFFSET ?";
+
+$allParams = array_merge($searchParams, [$limit, $offset]);
+$types = str_repeat('s', count($searchParams)) . 'ii';
+
+$stmt = $connection->prepare($query);
+if (!empty($allParams)) {
+    $stmt->bind_param($types, ...$allParams);
+}
+$stmt->execute();
+$result = $stmt->get_result();
 $comments = [];
 while ($row = $result->fetch_assoc()) {
     $comments[] = $row;
 }
+$stmt->close();
 
 // Get statistics
 $stats = [];

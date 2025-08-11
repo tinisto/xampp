@@ -24,31 +24,56 @@ $offset = ($page - 1) * $limit;
 
 // Search
 $search = $_GET['search'] ?? '';
-$searchCondition = '';
+$searchParams = [];
+$whereClause = '';
+
+// Build WHERE clause for search
 if (!empty($search)) {
-    $searchLike = '%' . $connection->real_escape_string($search) . '%';
-    $searchCondition = "WHERE (name_school LIKE '$searchLike' OR address_school LIKE '$searchLike')";
+    $whereClause = "WHERE (name_school LIKE ? OR address_school LIKE ?)";
+    $searchParam = '%' . $search . '%';
+    $searchParams = [$searchParam, $searchParam];
 }
 
-// Get total count
-$countQuery = "SELECT COUNT(*) as total FROM schools $searchCondition";
-$countResult = $connection->query($countQuery);
-$totalSchools = $countResult->fetch_assoc()['total'];
+// Get total count with prepared statement
+$countQuery = "SELECT COUNT(*) as total FROM schools $whereClause";
+if (!empty($searchParams)) {
+    $stmt = $connection->prepare($countQuery);
+    $stmt->bind_param("ss", ...$searchParams);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $totalSchools = $result->fetch_assoc()['total'];
+    $stmt->close();
+} else {
+    $result = $connection->query($countQuery);
+    $totalSchools = $result ? $result->fetch_assoc()['total'] : 0;
+}
 $totalPages = ceil($totalSchools / $limit);
 
-// Get schools
+// Get schools with prepared statement
 $query = "SELECT s.*, t.name_town, r.name_region 
           FROM schools s
           LEFT JOIN towns t ON s.id_town = t.id_town
           LEFT JOIN regions r ON s.id_region = r.id_region
-          $searchCondition
+          $whereClause
           ORDER BY s.id_school DESC 
-          LIMIT $limit OFFSET $offset";
-$result = $connection->query($query);
+          LIMIT ? OFFSET ?";
+
+if (!empty($searchParams)) {
+    $stmt = $connection->prepare($query);
+    $allParams = array_merge($searchParams, [$limit, $offset]);
+    $types = str_repeat('s', count($searchParams)) . 'ii';
+    $stmt->bind_param($types, ...$allParams);
+} else {
+    $stmt = $connection->prepare($query);
+    $stmt->bind_param("ii", $limit, $offset);
+}
+$stmt->execute();
+$result = $stmt->get_result();
 $schools = [];
 while ($row = $result->fetch_assoc()) {
     $schools[] = $row;
 }
+$stmt->close();
 
 // Section 1: Title
 ob_start();
