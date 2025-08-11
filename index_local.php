@@ -106,5 +106,5 @@ $greyContent5 = ob_get_clean();
 $greyContent6 = '';
 
 // Include the local template (no database dependencies)
-include $_SERVER['DOCUMENT_ROOT'] . '/real_template_local.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/template.php';
 ?>

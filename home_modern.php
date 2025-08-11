@@ -227,5 +227,5 @@ if (isset($_SESSION['user_id'])) {
 
 // Include template
 $commentsContent = '';
-include $_SERVER['DOCUMENT_ROOT'] . '/real_template_local.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/template.php';
 ?>

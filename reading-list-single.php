@@ -411,5 +411,5 @@ function hideNotesForm(itemId) {
 $greyContent2 = ob_get_clean();
 
 // Include template
-include 'real_template_local.php';
+include 'template.php';
 ?>

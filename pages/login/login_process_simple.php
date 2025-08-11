@@ -9,14 +9,24 @@ if (!isset($_POST['csrf_token']) || !isset($_SESSION['csrf_token']) ||
     exit();
 }
 
-// Get form data
-$email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+// Include input validator
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/input-validator.php';
+
+// Get and validate form data
+$email = InputValidator::validateEmail($_POST['email'] ?? '');
 $password = $_POST['password'] ?? '';
 $remember = isset($_POST['remember']) ? true : false;
-$redirect = $_POST['redirect'] ?? null;
+$redirect = InputValidator::validateText($_POST['redirect'] ?? '', 0, 200);
 
-if (!$email || empty($password)) {
-    $_SESSION['error'] = 'Пожалуйста, введите email и пароль.';
+if (!$email) {
+    $_SESSION['error'] = 'Пожалуйста, введите корректный email адрес.';
+    $redirectParam = $redirect ? '?redirect=' . urlencode($redirect) : '';
+    header('Location: /login' . $redirectParam);
+    exit();
+}
+
+if (empty($password)) {
+    $_SESSION['error'] = 'Пожалуйста, введите пароль.';
     $redirectParam = $redirect ? '?redirect=' . urlencode($redirect) : '';
     header('Location: /login' . $redirectParam);
     exit();

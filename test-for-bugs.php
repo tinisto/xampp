@@ -46,8 +46,8 @@ foreach ($pages as $page) {
 // Test 3: Check includes
 echo "<h2>3. Include Files Check</h2>";
 $includes = [
-    'includes/header_modern.php',
-    'includes/footer_modern.php',
+    'includes/header.php',
+    'includes/footer.php',
     'includes/email.php',
     'includes/logo.php'
 ];

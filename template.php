@@ -6,7 +6,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // Use the new header instead of template-generated one
 $page_title = $page_title ?? $pageTitle ?? '11klassniki.ru - Российское образование';
-require_once __DIR__ . '/includes/header_modern.php';
+require_once __DIR__ . '/includes/header.php';
 
 // Template content variables - can be set by including pages
 $headerContent = $headerContent ?? '<div style="text-align: center; padding: 20px; margin: 0;"><p>Title/Header</p></div>';
@@ -37,7 +37,7 @@ if (!empty($commentsContent)) {
     echo $commentsContent;
 }
 
-require_once __DIR__ . '/includes/footer_modern.php';
+require_once __DIR__ . '/includes/footer.php';
 return;
 ?>
 <!DOCTYPE html>

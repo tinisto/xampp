@@ -43,12 +43,12 @@ $page_title = 'Test Homepage Toggle - 11klassniki.ru';
     <div class="test-box">
         <h3>2. Include the header directly:</h3>
         <?php
-        echo "Including header_modern.php...<br>";
-        if (file_exists(__DIR__ . '/includes/header_modern.php')) {
+        echo "Including header.php...<br>";
+        if (file_exists(__DIR__ . '/includes/header.php')) {
             echo "✅ Header file exists<br>";
             // Let's see what gets rendered
             ob_start();
-            include __DIR__ . '/includes/header_modern.php';
+            include __DIR__ . '/includes/header.php';
             $header_content = ob_get_clean();
             
             // Check if toggle is in the content

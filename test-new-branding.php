@@ -1,7 +1,7 @@
 <?php
 session_start();
 $page_title = 'Test New Branding - 11klassniki.ru';
-require_once __DIR__ . '/includes/header_modern.php';
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <div style="padding: 40px; text-align: center;">
@@ -20,4 +20,4 @@ require_once __DIR__ . '/includes/header_modern.php';
     </div>
 </div>
 
-<?php require_once __DIR__ . '/includes/footer_modern.php'; ?>
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

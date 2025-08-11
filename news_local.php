@@ -105,5 +105,5 @@ $greyContent6 = '<div style="display: flex; justify-content: center; align-items
 </div>';
 
 // Include the local template (no database dependencies)
-include $_SERVER['DOCUMENT_ROOT'] . '/real_template_local.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/template.php';
 ?>

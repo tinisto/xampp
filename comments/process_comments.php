@@ -8,6 +8,7 @@ if (session_status() == PHP_SESSION_NONE) {
 require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/functions/redirectToErrorPage.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/csrf-protection.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/input-validator.php';
 
 // Check if comment filter functions exist, if not create basic functions
 if (!function_exists('sanitizeComment')) {
@@ -43,20 +44,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["comment"]) && isset($_
         exit();
     }
 
-    $comment_text = trim($_POST['comment']);
-    $commentText = substr($comment_text, 0, 2000); // Truncate to 2000 characters
-    $commentText = sanitizeComment($commentText);
-    $commentText = filterBadWords($commentText);
-
-    // Validate comment is not empty
-    if (empty($commentText)) {
-        header('Location: ' . ($_SERVER['HTTP_REFERER'] ?? '/') . '?error=empty_comment');
+    // Validate comment text
+    $commentText = InputValidator::validateText($_POST['comment'] ?? '', 1, 2000);
+    if (!$commentText) {
+        header('Location: ' . ($_SERVER['HTTP_REFERER'] ?? '/') . '?error=invalid_comment');
         exit();
     }
+    
+    // Additional filtering
+    $commentText = filterBadWords($commentText);
 
-    $entityType = isset($_POST['entity_type']) ? $_POST['entity_type'] : '';
-    $id_entity = isset($_POST['id_entity']) ? intval($_POST['id_entity']) : 0;
-    $parent_id = isset($_POST['parent_id']) ? intval($_POST['parent_id']) : 0;
+    // Validate entity type
+    $entityType = InputValidator::validateText($_POST['entity_type'] ?? '', 1, 20);
+    
+    // Validate IDs
+    $id_entity = InputValidator::validateInt($_POST['id_entity'] ?? 0, 1, PHP_INT_MAX);
+    $parent_id = InputValidator::validateInt($_POST['parent_id'] ?? 0, 0, PHP_INT_MAX);
+    
+    if (!$id_entity) {
+        header('Location: ' . ($_SERVER['HTTP_REFERER'] ?? '/') . '?error=invalid_id');
+        exit();
+    }
 
     // Validate entity type
     $validEntityTypes = ['school', 'vpo', 'spo', 'post'];

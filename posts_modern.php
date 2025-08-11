@@ -389,5 +389,5 @@ function plural_form($n, $form1, $form2, $form3) {
     return $form3;
 }
 
-include $_SERVER['DOCUMENT_ROOT'] . '/real_template_local.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/template.php';
 ?>

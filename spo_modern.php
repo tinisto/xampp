@@ -277,5 +277,5 @@ $greyContent6 = '';
 
 // Include template
 $blueContent = '';
-include $_SERVER['DOCUMENT_ROOT'] . '/real_template_local.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/template.php';
 ?>

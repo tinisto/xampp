@@ -352,5 +352,5 @@ $greyContent3 = ob_get_clean();
 endif;
 
 // Include template
-include 'real_template_local.php';
+include 'template.php';
 ?>

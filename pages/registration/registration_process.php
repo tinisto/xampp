@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../includes/init.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/input-validator.php';
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/check_under_construction.php';
 include $_SERVER['DOCUMENT_ROOT'] . '/includes/functions/email_functions.php';
@@ -35,24 +36,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['g-recaptcha-response
 
     // Verify the response
     if ($arrResponse["success"] == '1' && $arrResponse["action"] == $action && $arrResponse["score"] >= 0.5) {
-        // Retrieve form data
-        $password = $_POST["password"];
-        $email = trim($_POST["email"]);
-        $timezone = $_POST['timezone'];
-        $occupation = $_POST['occupation'];
+        // Retrieve and validate form data
+        $password = $_POST["password"] ?? '';
+        $email = InputValidator::validateEmail($_POST["email"] ?? '');
+        $timezone = InputValidator::validateText($_POST['timezone'] ?? '', 1, 100);
+        $occupation = InputValidator::validateText($_POST['occupation'] ?? '', 1, 50);
 
-        // Validate form fields
-        if (empty($password)) {
-            $errors[] = "Введите пароль.";
+        // Validate password
+        $passwordValidation = InputValidator::validatePassword($password);
+        if (!$passwordValidation['valid']) {
+            $errors[] = $passwordValidation['message'];
         }
 
-        if (empty($occupation)) {
+        if (!$email) {
+            $errors[] = "Введите действительный адрес электронной почты.";
+        }
+
+        if (!$occupation) {
             $errors[] = "Выберите род деятельности.";
         }
 
-        // Check if email is in a valid format
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $errors[] = "Введите действительный адрес электронной почты.";
+        if (!$timezone) {
+            $errors[] = "Укажите часовой пояс.";
         }
 
         // Check if email already exists

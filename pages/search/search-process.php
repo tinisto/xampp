@@ -1,7 +1,9 @@
 <?php
-// Get search query for page title
-$searchQuery = $_GET['query'] ?? '';
-$searchQuery = trim($searchQuery);
+// Include input validator
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/input-validator.php';
+
+// Get and validate search query
+$searchQuery = InputValidator::validateSearchQuery($_GET['query'] ?? '');
 
 $pageTitle = !empty($searchQuery) ? "Поиск: " . htmlspecialchars($searchQuery) : "Результаты поиска";
 $mainContent = 'pages/search/search-process-content.php';

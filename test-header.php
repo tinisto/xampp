@@ -2,7 +2,7 @@
 // Test page to preview the new header
 session_start();
 $page_title = "Test Header - 11klassniki.ru";
-require_once 'includes/header_modern.php';
+require_once 'includes/header.php';
 ?>
 
 <div style="padding: 40px; text-align: center;">
@@ -26,4 +26,4 @@ require_once 'includes/header_modern.php';
     </div>
 </div>
 
-<?php require_once 'includes/footer_modern.php'; ?>
+<?php require_once 'includes/footer.php'; ?>

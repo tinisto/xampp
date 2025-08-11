@@ -358,7 +358,7 @@ $greyContent1 = $greyContent1 ?? '<div style="text-align: center; padding: 20px;
 <body>
     <!-- Website Header -->
     <header class="main-header">
-        <?php include $_SERVER['DOCUMENT_ROOT'] . '/common-components/real_header.php'; ?>
+        <?php include $_SERVER['DOCUMENT_ROOT'] . '/includes/header.php'; ?>
     </header>
     
     <!-- Yellow background wrapper for middle sections -->
@@ -677,7 +677,7 @@ $greyContent1 = $greyContent1 ?? '<div style="text-align: center; padding: 20px;
     
     <!-- Website Footer -->
     <footer class="main-footer">
-        <?php include $_SERVER['DOCUMENT_ROOT'] . '/common-components/real_footer.php'; ?>
+        <?php include $_SERVER['DOCUMENT_ROOT'] . '/includes/footer.php'; ?>
     </footer>
     
     <!-- Bootstrap JS Bundle (includes Popper) -->
