@@ -1,0 +1,48 @@
+<svg width="400" height="100" viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Final recommended logo with Russian flag elements -->
+  <defs>
+    <!-- Clean gradient -->
+    <linearGradient id="cleanGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0039A6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#003580;stop-opacity:1" />
+    </linearGradient>
+    
+    <filter id="clean-shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+  
+  <!-- Main logo -->
+  <g transform="translate(15, 15)">
+    <!-- Background circle with subtle flag reference -->
+    <circle cx="35" cy="35" r="32" fill="#FFFFFF" filter="url(#clean-shadow)"/>
+    <circle cx="35" cy="35" r="32" fill="none" stroke="#E0E0E0" stroke-width="1"/>
+    
+    <!-- Russian flag subtle accent -->
+    <path d="M 3 35 A 32 32 0 0 1 35 3 L 35 35 Z" fill="#0039A6" opacity="0.1"/>
+    <path d="M 35 67 A 32 32 0 0 1 3 35 L 35 35 Z" fill="#D52B1E" opacity="0.1"/>
+    
+    <!-- "11" -->
+    <text x="35" y="47" font-family="Arial, sans-serif" font-size="32" font-weight="bold" 
+          fill="#0039A6" text-anchor="middle">11</text>
+    
+    <!-- Main text -->
+    <g transform="translate(80, 20)">
+      <text x="0" y="20" font-family="Arial, sans-serif" font-size="34" font-weight="400" fill="#333">
+        klassniki<tspan fill="#D52B1E" font-weight="500">.ru</tspan>
+      </text>
+      
+      <!-- Slogan with flag colors -->
+      <text x="0" y="40" font-family="Arial, sans-serif" font-size="13" fill="#666">
+        Российское образование • Твой путь к успеху
+      </text>
+    </g>
+    
+    <!-- Small flag accent line -->
+    <g transform="translate(80, 55)">
+      <rect x="0" y="0" width="40" height="2" fill="#0039A6"/>
+      <rect x="40" y="0" width="40" height="2" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="0.5"/>
+      <rect x="80" y="0" width="40" height="2" fill="#D52B1E"/>
+    </g>
+  </g>
+</svg>

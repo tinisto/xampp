@@ -1,0 +1,48 @@
+<svg width="200" height="80" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Gradient definition -->
+  <defs>
+    <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0066CC;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#003D7A;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Main logo group -->
+  <g transform="translate(10, 10)">
+    <!-- Book/Education symbol forming "11" -->
+    <g>
+      <!-- First "1" - stylized as an open book -->
+      <path d="M 20 10 L 20 50 Q 20 55 25 55 L 30 55 Q 35 55 35 50 L 35 10 Q 35 5 30 5 L 25 5 Q 20 5 20 10 Z" 
+            fill="url(#blueGradient)" />
+      <!-- Book pages effect -->
+      <line x1="25" y1="10" x2="25" y2="50" stroke="white" stroke-width="0.5" opacity="0.5"/>
+      <line x1="30" y1="10" x2="30" y2="50" stroke="white" stroke-width="0.5" opacity="0.5"/>
+      
+      <!-- Second "1" - stylized as a pencil -->
+      <path d="M 45 10 L 45 50 Q 45 55 50 55 L 55 55 Q 60 55 60 50 L 60 10 Q 60 5 55 5 L 50 5 Q 45 5 45 10 Z" 
+            fill="url(#blueGradient)" />
+      <!-- Pencil tip -->
+      <path d="M 45 10 L 52.5 0 L 60 10 Z" fill="url(#accentGradient)" />
+    </g>
+    
+    <!-- Text "klassniki" -->
+    <text x="70" y="35" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#003D7A">
+      klassniki
+    </text>
+    
+    <!-- Tagline -->
+    <text x="20" y="70" font-family="Arial, sans-serif" font-size="10" fill="#666">
+      Твой путь к успеху начинается здесь
+    </text>
+    
+    <!-- Small graduation cap accent -->
+    <g transform="translate(65, 5)">
+      <path d="M 0 5 L 15 5 L 12 8 L 7.5 10 L 3 8 Z" fill="url(#accentGradient)" opacity="0.8"/>
+      <rect x="6" y="5" width="3" height="8" fill="#333" opacity="0.6"/>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,41 @@
+<svg width="350" height="140" viewBox="0 0 350 140" xmlns="http://www.w3.org/2000/svg">
+  <!-- Modern Russian-themed logo -->
+  <defs>
+    <linearGradient id="blueRed" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0039A6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#D52B1E;stop-opacity:1" />
+    </linearGradient>
+    
+    <filter id="softShadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+  
+  <!-- Design 2: Book pages with flag colors -->
+  <g transform="translate(20, 30)">
+    <!-- First "1" as white page with blue shadow -->
+    <rect x="10" y="10" width="25" height="60" rx="2" fill="white" filter="url(#softShadow)"/>
+    <rect x="10" y="10" width="25" height="20" rx="2" fill="#0039A6" opacity="0.1"/>
+    
+    <!-- Second "1" as blue page with red accent -->
+    <rect x="40" y="10" width="25" height="60" rx="2" fill="#0039A6" filter="url(#softShadow)"/>
+    <rect x="40" y="50" width="25" height="20" rx="2" fill="#D52B1E"/>
+    
+    <!-- Text with gradient -->
+    <text x="80" y="45" font-family="Arial, sans-serif" font-size="36" font-weight="300" fill="#333">
+      klassniki<tspan fill="#D52B1E" font-weight="500">.ru</tspan>
+    </text>
+    
+    <!-- Patriotic slogan -->
+    <text x="80" y="65" font-family="Arial, sans-serif" font-size="13" fill="#666">
+      Российское образование • Мировые стандарты
+    </text>
+    
+    <!-- Small flag accent -->
+    <g transform="translate(10, 80)">
+      <rect x="0" y="0" width="310" height="3" fill="white"/>
+      <rect x="0" y="3" width="310" height="3" fill="#0039A6"/>
+      <rect x="0" y="6" width="310" height="3" fill="#D52B1E"/>
+    </g>
+  </g>
+</svg>
