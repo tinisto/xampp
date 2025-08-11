@@ -52,11 +52,11 @@ $pageTitle = $post['title_post'];
 // Section 1: Title and metadata
 ob_start();
 ?>
-<div style="padding: 40px 20px; margin: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+<div style="padding: 40px 20px; margin: 0; background: white; color: #333;">
     <div style="max-width: 800px; margin: 0 auto;">
         <?php if ($post['category_name']): ?>
         <a href="/posts?category=<?= htmlspecialchars($post['category_slug']) ?>" 
-           style="color: white; text-decoration: none; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9;">
+           style="color: #667eea; text-decoration: none; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9;">
             <?= htmlspecialchars($post['category_name']) ?>
         </a>
         <?php endif; ?>
@@ -65,7 +65,7 @@ ob_start();
             <?= htmlspecialchars($post['title_post']) ?>
         </h1>
         
-        <div style="display: flex; align-items: center; gap: 20px; font-size: 14px; margin-top: 20px; opacity: 0.9;">
+        <div style="display: flex; align-items: center; gap: 20px; font-size: 14px; margin-top: 20px; opacity: 0.7; color: #666;">
             <span><i class="far fa-calendar"></i> <?= date('d.m.Y', strtotime($post['date_post'])) ?></span>
             <span><i class="far fa-eye"></i> <?= number_format($post['view_post'] ?: 0) ?> просмотров</span>
             <span><i class="far fa-clock"></i> <?= ceil(str_word_count($post['text_post']) / 200) ?> мин чтения</span>
@@ -94,31 +94,9 @@ ob_start();
 <?php
 $greyContent2 = ob_get_clean();
 
-// Section 3: Table of contents (if article is long)
+// Section 3: Empty (Table of contents removed)
 ob_start();
-$wordCount = str_word_count($post['text_post']);
-if ($wordCount > 500):
-?>
-<div style="padding: 30px 20px; margin: 0;">
-    <div style="max-width: 800px; margin: 0 auto;">
-        <div style="background: var(--bg-secondary); border-radius: 12px; padding: 25px; border: 1px solid var(--border-color);">
-            <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 15px; color: var(--link-color);">
-                <i class="fas fa-list"></i> Содержание
-            </h3>
-            <div style="color: var(--text-primary);">
-                <p>В этой статье вы узнаете:</p>
-                <ul style="margin: 10px 0 0 20px;">
-                    <li>Основные понятия и определения</li>
-                    <li>Пошаговое руководство</li>
-                    <li>Полезные советы и рекомендации</li>
-                    <li>Часто задаваемые вопросы</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
-<?php
-endif;
+// Table of contents section removed
 $greyContent3 = ob_get_clean();
 
 // Section 4: Article content
@@ -212,7 +190,29 @@ if (!empty($relatedPosts)):
     <div style="max-width: 1200px; margin: 0 auto;">
         <h2 style="font-size: 28px; font-weight: 700; margin-bottom: 40px; text-align: center;">Похожие статьи</h2>
         
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px;">
+        <style>
+            .related-posts-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 20px;
+            }
+            @media (max-width: 1200px) {
+                .related-posts-grid {
+                    grid-template-columns: repeat(3, 1fr);
+                }
+            }
+            @media (max-width: 900px) {
+                .related-posts-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+            @media (max-width: 600px) {
+                .related-posts-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+        </style>
+        <div class="related-posts-grid">
             <?php foreach ($relatedPosts as $related): ?>
             <article style="background: var(--bg-primary); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px var(--shadow); transition: transform 0.3s;">
                 <div style="height: 8px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>

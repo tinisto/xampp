@@ -1,11 +1,83 @@
 <?php
+// Forgot password page - standalone without header/footer
 session_start();
-require_once "config/loadEnv.php";
-require_once "database/db_connections.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_modern.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/logo.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/email.php';
 
-// Generate CSRF token
-if (!isset($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+$success = false;
+$error = '';
+$message = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = trim($_POST['email'] ?? '');
+    
+    if (empty($email)) {
+        $error = 'Введите email адрес';
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = 'Неверный формат email адреса';
+    } else {
+        $db = Database::getInstance();
+        $user = $db->fetchOne("SELECT * FROM users WHERE email = ? AND is_active = 1", [$email]);
+        
+        if ($user) {
+            // Generate password reset token
+            $resetToken = bin2hex(random_bytes(32));
+            $resetExpiry = date('Y-m-d H:i:s', strtotime('+24 hours'));
+            
+            // Save reset token to database
+            try {
+                // First check if reset_token column exists
+                $columnExists = $db->fetchOne("SHOW COLUMNS FROM users LIKE 'reset_token'");
+                if (!$columnExists) {
+                    // Add columns if they don't exist
+                    $pdo = $db->getConnection();
+                    $pdo->exec("ALTER TABLE users ADD COLUMN reset_token VARCHAR(255) NULL");
+                    $pdo->exec("ALTER TABLE users ADD COLUMN reset_expires DATETIME NULL");
+                }
+                
+                // Update user with reset token
+                $db->update('users', 
+                    ['reset_token' => $resetToken, 'reset_expires' => $resetExpiry],
+                    'id = ?',
+                    [$user['id']]
+                );
+                
+                // Generate reset link
+                $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+                $host = $_SERVER['HTTP_HOST'];
+                $resetLink = "{$protocol}://{$host}/reset-password.php?token={$resetToken}";
+                
+                // Send password reset email
+                $userName = trim($user['first_name'] . ' ' . $user['last_name']);
+                if (empty($userName)) {
+                    $userName = explode('@', $user['email'])[0]; // Use email username as fallback
+                }
+                EmailNotification::sendPasswordResetEmail(
+                    $user['email'],
+                    $userName,
+                    $resetLink
+                );
+                
+                $success = true;
+                $message = "Если аккаунт с email {$email} существует, на него будет отправлена ссылка для сброса пароля.";
+                
+                // For development - show the reset link directly
+                if ($_SERVER['SERVER_NAME'] === 'localhost') {
+                    $message .= "<br><br><div style='background: #f0f0f0; padding: 20px; border-radius: 8px; margin-top: 20px;'>";
+                    $message .= "<h3 style='margin: 0 0 10px 0;'>🔗 Reset Password Link:</h3>";
+                    $message .= "<a href='{$resetLink}' style='color: #007bff; word-break: break-all;'>{$resetLink}</a>";
+                    $message .= "</div>";
+                }
+            } catch (Exception $e) {
+                $error = 'Произошла ошибка. Попробуйте позже.';
+            }
+        } else {
+            // Don't reveal if email exists or not for security
+            $success = true;
+            $message = "Если аккаунт с email {$email} существует, на него будет отправлена ссылка для сброса пароля.";
+        }
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -13,11 +85,9 @@ if (!isset($_SESSION['csrf_token'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Восстановление пароля - 11-классники</title>
-    
-    <!-- Favicon -->
-    <?php include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/favicon.php'; ?>
-    <link rel="stylesheet" href="/css/site-logo.css">
+    <title>Восстановление пароля - 11klassniki.ru</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -40,15 +110,13 @@ if (!isset($_SESSION['csrf_token'])) {
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-primary);
-            line-height: 1.5;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            color: #333;
         }
         
         .reset-container {
@@ -208,81 +276,131 @@ if (!isset($_SESSION['csrf_token'])) {
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
+        
+        /* Dark mode styles */
+        body.dark-mode {
+            background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+        }
+        
+        body.dark-mode .reset-container {
+            background: #2d2d2d;
+        }
+        
+        body.dark-mode .logo-section {
+            border-color: #555;
+        }
+        
+        body.dark-mode .logo-section h1,
+        body.dark-mode .logo-section p {
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .reset-header {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+        }
+        
+        body.dark-mode .info-text {
+            color: #b0b0b0;
+        }
+        
+        body.dark-mode .form-label {
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .form-input {
+            background: #3a3a3a;
+            border-color: #555;
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .form-input:focus {
+            border-color: #4299e1;
+        }
+        
+        body.dark-mode .submit-btn {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+        }
+        
+        body.dark-mode .form-footer {
+            border-color: #555;
+        }
+        
+        body.dark-mode .form-footer p {
+            color: #b0b0b0;
+        }
+        
+        body.dark-mode .form-footer a {
+            color: #4299e1;
+        }
     </style>
 </head>
 <body>
     <div class="reset-container">
-        <div class="logo-section">
-            <?php 
-            include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/site-icon.php';
-            renderSiteIcon('medium', '/', 'login-logo');
-            ?>
+        <div class="logo-section" style="text-align: center; padding: 20px; border-bottom: 1px solid #e1e5e9;">
+            <?php logo('small'); ?>
         </div>
         <div class="reset-header">
             <h1>Восстановление пароля</h1>
         </div>
         
         <div class="reset-body">
-            <?php if (isset($_SESSION['reset_success'])): ?>
+            <?php if ($success): ?>
                 <div class="alert alert-success">
-                    <?= htmlspecialchars($_SESSION['reset_success']) ?>
-                    <?php 
-                    // Show reset link when email is not configured or fails
-                    if (isset($_SESSION['reset_link'])): ?>
-                        <div style="margin-top: 10px; padding: 10px; background: #f0f0f0; border-radius: 5px; word-break: break-all;">
-                            <strong>Ссылка для сброса пароля:</strong><br>
-                            <a href="<?= htmlspecialchars($_SESSION['reset_link']) ?>" style="color: #28a745;">
-                                <?= htmlspecialchars($_SESSION['reset_link']) ?>
-                            </a>
-                        </div>
-                        <?php unset($_SESSION['reset_link']); ?>
-                    <?php endif; ?>
-                    
-                    <?php // Show info about email configuration
-                    if (isset($_SESSION['reset_info'])): ?>
-                        <div style="margin-top: 10px; padding: 10px; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px; color: #856404;">
-                            <small><?= htmlspecialchars($_SESSION['reset_info']) ?></small>
-                        </div>
-                        <?php unset($_SESSION['reset_info']); ?>
-                    <?php endif; ?>
-                    
-                    <?php unset($_SESSION['reset_success']); ?>
-                </div>
-            <?php endif; ?>
-            
-            <?php if (isset($_SESSION['reset_error'])): ?>
-                <div class="alert alert-danger">
-                    <?= htmlspecialchars($_SESSION['reset_error']) ?>
-                    <?php unset($_SESSION['reset_error']); ?>
-                </div>
-            <?php endif; ?>
-            
-            <p class="info-text">
-                Введите email адрес, указанный при регистрации. Мы отправим вам инструкции по восстановлению пароля.
-            </p>
-            
-            <form method="post" action="/forgot-password-process.php">
-                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                
-                <div class="form-group">
-                    <label for="email" class="form-label">Email адрес</label>
-                    <input type="email" 
-                           id="email" 
-                           name="email" 
-                           class="form-input" 
-                           required
-                           placeholder="your@email.com">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>Готово!</strong> <?= $message ?>
                 </div>
                 
-                <button type="submit" class="submit-btn">
-                    Отправить инструкции
-                </button>
-            </form>
-            
-            <div class="form-footer">
-                <p>Вспомнили пароль? <a href="/login">Войти</a></p>
-            </div>
+                <div class="form-footer">
+                    <p><a href="/login_modern.php"><i class="fas fa-sign-in-alt"></i> Вернуться к входу</a></p>
+                </div>
+                
+            <?php else: ?>
+                
+                <?php if ($error): ?>
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Ошибка:</strong> <?= htmlspecialchars($error) ?>
+                    </div>
+                <?php endif; ?>
+                
+                <p class="info-text">
+                    Введите ваш email адрес и мы отправим ссылку для восстановления пароля
+                </p>
+                
+                <form method="post">
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email адрес</label>
+                        <input type="email" 
+                               id="email" 
+                               name="email" 
+                               class="form-input" 
+                               required
+                               value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
+                               placeholder="your@email.com"
+                               autocomplete="email">
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-paper-plane"></i> Отправить ссылку
+                    </button>
+                </form>
+                
+                <div class="form-footer">
+                    <p><a href="/login_modern.php"><i class="fas fa-arrow-left"></i> Вернуться к входу</a>
+                    <span style="color: #ddd;">•</span>
+                    <a href="/register_modern.php"><i class="fas fa-user-plus"></i> Создать аккаунт</a></p>
+                </div>
+                
+            <?php endif; ?>
         </div>
     </div>
+
+    <script>
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+    </script>
 </body>
 </html>

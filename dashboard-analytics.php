@@ -3,14 +3,14 @@
 session_start();
 
 // Check admin access
-if ((!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') && 
-    (!isset($_SESSION['occupation']) || $_SESSION['occupation'] !== 'admin')) {
-    header('Location: /unauthorized');
-    exit();
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
+    header('HTTP/1.1 401 Unauthorized');
+    header('Location: /unauthorized.php');
+    exit;
 }
 
 // Database connection
-require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_modern.php';
 
 // Get date range
 $start_date = $_GET['start'] ?? date('Y-m-d', strtotime('-30 days'));
@@ -21,72 +21,53 @@ $statsQuery = "SELECT
     COUNT(*) as total_comments,
     COUNT(DISTINCT user_id) as unique_users,
     COUNT(DISTINCT author_ip) as unique_ips,
-    AVG(CHAR_LENGTH(comment_text)) as avg_comment_length,
+    AVG(LENGTH(comment_text)) as avg_comment_length,
     SUM(likes) as total_likes,
     SUM(dislikes) as total_dislikes,
     COUNT(CASE WHEN parent_id IS NOT NULL THEN 1 END) as total_replies,
     COUNT(CASE WHEN edited_at IS NOT NULL THEN 1 END) as edited_comments
     FROM comments 
-    WHERE date BETWEEN ? AND ?";
+    WHERE created_at BETWEEN ? AND ?";
 
-$stmt = $connection->prepare($statsQuery);
-$stmt->bind_param("ss", $start_date, $end_date);
-$stmt->execute();
-$stats = $stmt->get_result()->fetch_assoc();
+$stats = db_fetch_row($statsQuery, [$start_date . ' 00:00:00', $end_date . ' 23:59:59']);
 
 // Comments per day
-$dailyQuery = "SELECT DATE(date) as day, COUNT(*) as count 
+$dailyQuery = "SELECT DATE(created_at) as day, COUNT(*) as count 
                FROM comments 
-               WHERE date BETWEEN ? AND ?
-               GROUP BY DATE(date)
+               WHERE created_at BETWEEN ? AND ?
+               GROUP BY DATE(created_at)
                ORDER BY day";
-$stmt = $connection->prepare($dailyQuery);
-$stmt->bind_param("ss", $start_date, $end_date);
-$stmt->execute();
-$dailyResult = $stmt->get_result();
-$dailyData = [];
-while ($row = $dailyResult->fetch_assoc()) {
-    $dailyData[] = $row;
-}
+$dailyData = db_fetch_all($dailyQuery, [$start_date . ' 00:00:00', $end_date . ' 23:59:59']);
 
 // Top commenters
 $topUsersQuery = "SELECT author_of_comment, COUNT(*) as comment_count, 
                   SUM(likes) as total_likes, user_id
                   FROM comments 
-                  WHERE date BETWEEN ? AND ?
+                  WHERE created_at BETWEEN ? AND ?
                   GROUP BY author_of_comment, user_id
                   ORDER BY comment_count DESC
                   LIMIT 10";
-$stmt = $connection->prepare($topUsersQuery);
-$stmt->bind_param("ss", $start_date, $end_date);
-$stmt->execute();
-$topUsers = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+$topUsers = db_fetch_all($topUsersQuery, [$start_date . ' 00:00:00', $end_date . ' 23:59:59']);
 
 // Most discussed entities
 $hotEntitiesQuery = "SELECT entity_type, entity_id, COUNT(*) as comment_count
                      FROM comments 
-                     WHERE date BETWEEN ? AND ?
+                     WHERE created_at BETWEEN ? AND ?
                      GROUP BY entity_type, entity_id
                      ORDER BY comment_count DESC
                      LIMIT 10";
-$stmt = $connection->prepare($hotEntitiesQuery);
-$stmt->bind_param("ss", $start_date, $end_date);
-$stmt->execute();
-$hotEntities = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+$hotEntities = db_fetch_all($hotEntitiesQuery, [$start_date . ' 00:00:00', $end_date . ' 23:59:59']);
 
 // Engagement by hour
-$hourlyQuery = "SELECT HOUR(date) as hour, COUNT(*) as count
+$hourlyQuery = "SELECT strftime('%H', created_at) as hour, COUNT(*) as count
                 FROM comments 
-                WHERE date BETWEEN ? AND ?
-                GROUP BY HOUR(date)
+                WHERE created_at BETWEEN ? AND ?
+                GROUP BY strftime('%H', created_at)
                 ORDER BY hour";
-$stmt = $connection->prepare($hourlyQuery);
-$stmt->bind_param("ss", $start_date, $end_date);
-$stmt->execute();
-$hourlyResult = $stmt->get_result();
+$hourlyResults = db_fetch_all($hourlyQuery, [$start_date . ' 00:00:00', $end_date . ' 23:59:59']);
 $hourlyData = array_fill(0, 24, 0);
-while ($row = $hourlyResult->fetch_assoc()) {
-    $hourlyData[$row['hour']] = $row['count'];
+foreach ($hourlyResults as $row) {
+    $hourlyData[(int)$row['hour']] = $row['count'];
 }
 
 // Get user info

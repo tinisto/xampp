@@ -1,10 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+    <!-- Favicon with theme support -->
     <defs>
-        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#28a745" />
-            <stop offset="100%" style="stop-color:#20c997" />
-        </linearGradient>
+        <style>
+            @media (prefers-color-scheme: dark) {
+                .favicon-bg { fill: #2d2d2d; }
+                .favicon-text { fill: #4299e1; }
+            }
+            @media (prefers-color-scheme: light) {
+                .favicon-bg { fill: #0039A6; }
+                .favicon-text { fill: white; }
+            }
+        </style>
     </defs>
-    <rect width="32" height="32" rx="6" fill="url(#gradient)"/>
-    <text x="16" y="22" text-anchor="middle" fill="white" font-size="16" font-weight="bold" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif">11</text>
+    <rect width="32" height="32" rx="6" class="favicon-bg" fill="#0039A6"/>
+    <text x="16" y="23" text-anchor="middle" class="favicon-text" fill="white"
+          font-family="Arial, sans-serif" font-size="18" font-weight="700">11</text>
 </svg>

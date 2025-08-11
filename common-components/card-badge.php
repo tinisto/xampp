@@ -44,7 +44,7 @@ function renderCardBadge($text, $url = '', $position = 'overlay', $color = 'gree
                 text-decoration: none;
             }
             .card-badge-bottom {
-                background: #28a745;
+                background: #6c757d;
                 color: white;
                 padding: 2px 8px;
                 border-radius: 10px;
@@ -61,7 +61,7 @@ function renderCardBadge($text, $url = '', $position = 'overlay', $color = 'gree
                 text-overflow: ellipsis;
             }
             .card-badge-bottom:hover {
-                background: #218838;
+                background: #5a6268;
                 color: white;
                 text-decoration: none;
             }
@@ -70,7 +70,7 @@ function renderCardBadge($text, $url = '', $position = 'overlay', $color = 'gree
     }
     
     $colors = [
-        'green' => '#28a745',
+        'green' => '#6c757d',
         'blue' => '#007bff',
         'red' => '#dc3545',
         'orange' => '#fd7e14',

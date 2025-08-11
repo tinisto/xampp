@@ -88,14 +88,16 @@ $pageTitle = $category ? 'Статьи: ' . $category['category_name'] : 'Пол
 // Section 1: Title
 ob_start();
 ?>
-<div style="padding: 40px 20px; background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%); color: white;">
-    <div style="max-width: 1200px; margin: 0 auto; text-align: center;">
-        <h1 style="font-size: 36px; font-weight: 700; margin-bottom: 15px;"><?= htmlspecialchars($pageTitle) ?></h1>
-        <p style="font-size: 18px; opacity: 0.9;">
+<div style="padding: 20px 20px 20px; background: white; box-shadow: 0 1px 0 rgba(0,0,0,0.08);">
+    <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+        <h1 style="font-size: 44px; font-weight: 800; margin-bottom: 16px; color: #222222; letter-spacing: -0.02em;">
+            <?= htmlspecialchars($pageTitle) ?>
+        </h1>
+        <p style="font-size: 18px; color: #717171; line-height: 1.5;">
             Гайды, советы и руководства для школьников и студентов
         </p>
         <?php if ($totalPosts > 0): ?>
-        <p style="font-size: 16px; margin-top: 10px; opacity: 0.8;">
+        <p style="font-size: 16px; margin-top: 10px; color: #717171;">
             Найдено <?= number_format($totalPosts) ?> <?= plural_form($totalPosts, 'статья', 'статьи', 'статей') ?>
         </p>
         <?php endif; ?>
@@ -109,12 +111,12 @@ ob_start();
 ?>
 <style>
 .category-link {
-    padding: 12px 18px;
-    border-radius: 25px;
+    padding: 4px 10px;
+    border-radius: 12px;
     text-decoration: none;
     transition: all 0.3s ease;
     font-weight: 500;
-    font-size: 14px;
+    font-size: 13px;
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -175,7 +177,7 @@ ob_start();
 
 <div style="padding: 30px 20px; background: var(--bg-primary); border-bottom: 1px solid var(--border-color);">
     <div style="max-width: 1200px; margin: 0 auto;">
-        <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
             <a href="/posts" class="category-link <?= !$categorySlug ? 'active' : '' ?>">
                 Все статьи
                 <span class="count"><?= array_sum(array_column($categories, 'posts_count')) ?></span>
@@ -244,21 +246,28 @@ $greyContent3 = ob_get_clean();
 // Section 4: Posts grid
 ob_start();
 ?>
-<div style="padding: 40px 20px; background: white;">
+<div style="padding: 30px 20px; background: white;">
     <div style="max-width: 1200px; margin: 0 auto;">
         <?php 
         // Debug: Show posts count
         // echo "<p>Debug: Found " . count($posts) . " posts</p>";
         ?>
         <?php if (!empty($posts)): ?>
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; max-width: 1400px; margin: 0 auto;">
+        <style>
+            @media (min-width: 1200px) {
+                .posts-grid {
+                    grid-template-columns: repeat(4, 1fr) !important;
+                }
+            }
+        </style>
+        <div class="posts-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; max-width: 1400px; margin: 0 auto;">
             <?php foreach ($posts as $post): ?>
             <article style="background: #f8f9fa; border-radius: 12px; overflow: hidden; transition: all 0.3s; display: flex; flex-direction: column; position: relative; cursor: pointer;"
                      onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 20px rgba(0,0,0,0.1)';"
                      onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';"
                      onclick="window.location.href='/post/<?= htmlspecialchars($post['url_slug']) ?>'">
                 
-                <div style="padding: 30px;">
+                <div style="padding: 15px;">
                     <?php if ($post['category_name']): ?>
                     <a href="/posts?category=<?= htmlspecialchars($post['category_slug']) ?>" 
                        onclick="event.stopPropagation()"
@@ -284,7 +293,7 @@ ob_start();
             <?php endforeach; ?>
         </div>
         <?php else: ?>
-        <div style="text-align: center; padding: 60px 20px;">
+        <div style="text-align: center; padding: 30px 20px;">
             <i class="fas fa-book-open" style="font-size: 64px; color: #dee2e6; margin-bottom: 20px;"></i>
             <h3 style="color: #6c757d; margin-bottom: 10px;">Статьи не найдены</h3>
             <p style="color: #adb5bd;">Попробуйте изменить параметры поиска или выбрать другую категорию</p>
@@ -302,7 +311,7 @@ $greyContent4 = ob_get_clean();
 ob_start();
 if ($totalPages > 1):
 ?>
-<div style="padding: 40px 20px; background: #f8f9fa;">
+<div style="padding: 30px 20px; background: #f8f9fa;">
     <div style="max-width: 1200px; margin: 0 auto;">
         <nav style="display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap;">
             <!-- Previous -->

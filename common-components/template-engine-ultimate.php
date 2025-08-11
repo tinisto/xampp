@@ -164,7 +164,6 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
             min-height: 100vh;
             margin: 0;
             padding: 0;
-            overflow: hidden; /* Prevent all scrolling */
             position: relative;
             <?php endif; ?>
         }
@@ -513,7 +512,7 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
         </main>
         
         <!-- Comments Section (BLUE background) -->
-        <div class="comments-section">
+        <div class="comments-section" style="display: none;">
             <h3>Comments Section (Blue Area)</h3>
             <p>This blue area is for comments - not shown on all pages</p>
         </div>

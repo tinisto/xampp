@@ -1,8 +1,9 @@
 <?php
 // Modern homepage
+session_start();
 require_once __DIR__ . '/database/db_modern.php';
 
-$pageTitle = '11-классники - Образовательный портал';
+$page_title = '11klassniki.ru - Российское образование';
 
 // Get statistics
 $stats = [
@@ -24,10 +25,10 @@ $latestPosts = db_fetch_all("
 // Section 1: Hero
 ob_start();
 ?>
-<div style="text-align: center; padding: 60px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-    <h1 style="font-size: 48px; font-weight: 700; margin-bottom: 20px;">11-классники</h1>
-    <p style="font-size: 20px; opacity: 0.9; max-width: 600px; margin: 0 auto;">
-        Образовательный портал для школьников, абитуриентов и студентов
+<div style="text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+    <h1 style="font-size: 40px; font-weight: 700; margin-bottom: 15px;">11klassniki.ru</h1>
+    <p style="font-size: 18px; opacity: 0.9; max-width: 600px; margin: 0 auto;">
+        Одиннадцать шагов к большому будущему
     </p>
 </div>
 <?php
@@ -36,47 +37,47 @@ $greyContent1 = ob_get_clean();
 // Section 2: Statistics
 ob_start();
 ?>
-<div style="padding: 50px 20px; background: #f8f9fa;">
+<div style="padding: 30px 20px; background: #f8f9fa;">
     <div style="max-width: 1200px; margin: 0 auto;">
-        <h2 style="text-align: center; font-size: 32px; font-weight: 700; margin-bottom: 40px;">Наша база данных</h2>
+        <h2 style="text-align: center; font-size: 28px; font-weight: 700; margin-bottom: 25px;">Наша база данных</h2>
         
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;">
-            <div style="text-align: center; background: white; padding: 40px 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                <div style="font-size: 48px; font-weight: 700; color: #007bff; margin-bottom: 10px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+            <div style="text-align: center; background: white; padding: 25px 15px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <div style="font-size: 40px; font-weight: 700; color: #007bff; margin-bottom: 5px;">
                     <?= number_format($stats['schools']) ?>
                 </div>
                 <div style="font-size: 18px; color: #666;">Школ</div>
-                <a href="/schools" style="display: inline-block; margin-top: 15px; color: #007bff; text-decoration: none;">
+                <a href="/schools" style="display: inline-block; margin-top: 10px; color: #007bff; text-decoration: none;">
                     Посмотреть все →
                 </a>
             </div>
             
-            <div style="text-align: center; background: white; padding: 40px 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                <div style="font-size: 48px; font-weight: 700; color: #28a745; margin-bottom: 10px;">
+            <div style="text-align: center; background: white; padding: 25px 15px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <div style="font-size: 40px; font-weight: 700; color: #28a745; margin-bottom: 5px;">
                     <?= number_format($stats['vpo']) ?>
                 </div>
                 <div style="font-size: 18px; color: #666;">ВУЗов</div>
-                <a href="/vpo" style="display: inline-block; margin-top: 15px; color: #28a745; text-decoration: none;">
+                <a href="/vpo" style="display: inline-block; margin-top: 10px; color: #28a745; text-decoration: none;">
                     Посмотреть все →
                 </a>
             </div>
             
-            <div style="text-align: center; background: white; padding: 40px 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                <div style="font-size: 48px; font-weight: 700; color: #ffc107; margin-bottom: 10px;">
+            <div style="text-align: center; background: white; padding: 25px 15px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <div style="font-size: 40px; font-weight: 700; color: #ffc107; margin-bottom: 5px;">
                     <?= number_format($stats['spo']) ?>
                 </div>
                 <div style="font-size: 18px; color: #666;">ССУЗов</div>
-                <a href="/spo" style="display: inline-block; margin-top: 15px; color: #ffc107; text-decoration: none;">
+                <a href="/spo" style="display: inline-block; margin-top: 10px; color: #ffc107; text-decoration: none;">
                     Посмотреть все →
                 </a>
             </div>
             
-            <div style="text-align: center; background: white; padding: 40px 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                <div style="font-size: 48px; font-weight: 700; color: #dc3545; margin-bottom: 10px;">
+            <div style="text-align: center; background: white; padding: 25px 15px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <div style="font-size: 40px; font-weight: 700; color: #dc3545; margin-bottom: 5px;">
                     <?= number_format($stats['news']) ?>
                 </div>
                 <div style="font-size: 18px; color: #666;">Новостей</div>
-                <a href="/news" style="display: inline-block; margin-top: 15px; color: #dc3545; text-decoration: none;">
+                <a href="/news" style="display: inline-block; margin-top: 10px; color: #dc3545; text-decoration: none;">
                     Читать все →
                 </a>
             </div>
@@ -89,9 +90,9 @@ $greyContent2 = ob_get_clean();
 // Section 3: Search
 ob_start();
 ?>
-<div style="padding: 60px 20px; background: white;">
+<div style="padding: 40px 20px; background: white;">
     <div style="max-width: 800px; margin: 0 auto; text-align: center;">
-        <h2 style="font-size: 28px; font-weight: 700; margin-bottom: 30px;">Поиск по сайту</h2>
+        <h2 style="font-size: 26px; font-weight: 700; margin-bottom: 20px;">Поиск по сайту</h2>
         
         <form action="/search" method="get" style="display: flex; gap: 10px; max-width: 600px; margin: 0 auto;">
             <input type="text" 
@@ -111,19 +112,26 @@ $greyContent3 = ob_get_clean();
 // Section 4: Latest Articles
 ob_start();
 ?>
-<div style="padding: 60px 20px; background: #f8f9fa;">
+<div style="padding: 40px 20px; background: #f8f9fa;">
     <div style="max-width: 1400px; margin: 0 auto;">
-        <h2 style="text-align: center; font-size: 32px; font-weight: 700; margin-bottom: 40px;">Полезные статьи</h2>
+        <h2 style="text-align: center; font-size: 28px; font-weight: 700; margin-bottom: 25px;">Полезные статьи</h2>
         
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px;">
+        <style>
+            @media (min-width: 1200px) {
+                .articles-grid {
+                    grid-template-columns: repeat(4, 1fr) !important;
+                }
+            }
+        </style>
+        <div class="articles-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; max-width: 1400px; margin: 0 auto;">
             <?php foreach ($latestPosts as $post): ?>
-            <article style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.3s; cursor: pointer;"
+            <article style="background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: transform 0.3s; cursor: pointer;"
                      onclick="window.location.href='/post/<?= htmlspecialchars($post['url_slug']) ?>'">
                 <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
                     <i class="fas fa-book-open" style="font-size: 64px; color: white; opacity: 0.8;"></i>
                 </div>
                 
-                <div style="padding: 25px;">
+                <div style="padding: 20px;">
                     <?php if ($post['category_name']): ?>
                     <a href="/posts?category=<?= htmlspecialchars($post['category_slug']) ?>" 
                        onclick="event.stopPropagation()"
@@ -145,7 +153,7 @@ ob_start();
             <?php endforeach; ?>
         </div>
         
-        <div style="text-align: center; margin-top: 40px;">
+        <div style="text-align: center; margin-top: 30px;">
             <a href="/posts" 
                style="display: inline-block; background: #007bff; color: white; padding: 15px 40px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px;">
                 Все статьи →
@@ -159,11 +167,11 @@ $greyContent4 = ob_get_clean();
 // Section 5: Features
 ob_start();
 ?>
-<div style="padding: 60px 20px; background: white;">
+<div style="padding: 40px 20px; background: white;">
     <div style="max-width: 1200px; margin: 0 auto;">
-        <h2 style="text-align: center; font-size: 32px; font-weight: 700; margin-bottom: 40px;">Почему выбирают нас</h2>
+        <h2 style="text-align: center; font-size: 28px; font-weight: 700; margin-bottom: 25px;">Почему выбирают нас</h2>
         
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
             <div style="text-align: center;">
                 <div style="width: 80px; height: 80px; background: #e3f2fd; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
                     <i class="fas fa-database" style="font-size: 36px; color: #2196f3;"></i>

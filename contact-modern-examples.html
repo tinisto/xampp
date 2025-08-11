@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Contact Page Header Examples</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+        }
+        
+        .example {
+            margin-bottom: 50px;
+            background: white;
+        }
+        
+        .example-title {
+            padding: 20px;
+            background: #333;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        /* Example 1: Apple Style - Minimal with large typography */
+        .apple-style {
+            padding: 80px 20px 40px;
+            background: #fff;
+            border-bottom: 1px solid #d2d2d7;
+        }
+        
+        .apple-style h1 {
+            font-size: 56px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: #1d1d1f;
+            margin-bottom: 20px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+        }
+        
+        .apple-style p {
+            font-size: 21px;
+            color: #86868b;
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.4;
+        }
+        
+        /* Example 2: Stripe Style - Clean with accent line */
+        .stripe-style {
+            padding: 60px 20px 40px;
+            background: #fff;
+            position: relative;
+        }
+        
+        .stripe-style::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #635bff 0%, #0073e6 100%);
+        }
+        
+        .stripe-style h1 {
+            font-size: 48px;
+            font-weight: 600;
+            color: #0a2540;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        
+        .stripe-style p {
+            font-size: 18px;
+            color: #425466;
+            text-align: center;
+            max-width: 540px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        /* Example 3: Notion Style - Minimal with emoji */
+        .notion-style {
+            padding: 60px 20px 30px;
+            background: #fff;
+        }
+        
+        .notion-style .emoji {
+            font-size: 48px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .notion-style h1 {
+            font-size: 40px;
+            font-weight: 700;
+            color: #37352f;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        
+        .notion-style p {
+            font-size: 16px;
+            color: #787774;
+            text-align: center;
+            max-width: 480px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+        
+        /* Example 4: Linear Style - Subtle gradient text */
+        .linear-style {
+            padding: 80px 20px 50px;
+            background: #fff;
+        }
+        
+        .linear-style h1 {
+            font-size: 52px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #5e6ad2 0%, #7c3aed 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .linear-style p {
+            font-size: 20px;
+            color: #6b7280;
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+        
+        /* Example 5: GitHub Style - Simple with breadcrumb */
+        .github-style {
+            padding: 40px 20px 30px;
+            background: #fff;
+            border-bottom: 1px solid #d0d7de;
+        }
+        
+        .github-style .breadcrumb {
+            font-size: 14px;
+            color: #57606a;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        
+        .github-style .breadcrumb a {
+            color: #0969da;
+            text-decoration: none;
+        }
+        
+        .github-style h1 {
+            font-size: 32px;
+            font-weight: 600;
+            color: #24292f;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        
+        .github-style p {
+            font-size: 16px;
+            color: #57606a;
+            text-align: center;
+            max-width: 540px;
+            margin: 0 auto;
+        }
+        
+        /* Example 6: Airbnb Style - Bold with subtle shadow */
+        .airbnb-style {
+            padding: 60px 20px 40px;
+            background: #fff;
+            box-shadow: 0 1px 0 rgba(0,0,0,0.08);
+        }
+        
+        .airbnb-style h1 {
+            font-size: 44px;
+            font-weight: 800;
+            color: #222222;
+            margin-bottom: 16px;
+            text-align: center;
+            letter-spacing: -0.02em;
+        }
+        
+        .airbnb-style p {
+            font-size: 18px;
+            color: #717171;
+            text-align: center;
+            max-width: 520px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="example">
+        <div class="example-title">Example 1: Apple Style - Clean & Minimal</div>
+        <div class="apple-style">
+            <h1>Get in touch</h1>
+            <p>Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+        </div>
+    </div>
+    
+    <div class="example">
+        <div class="example-title">Example 2: Stripe Style - Accent Line</div>
+        <div class="stripe-style">
+            <h1>Contact our team</h1>
+            <p>Our team is here to help. Get answers to your questions about our products, pricing, or implementation.</p>
+        </div>
+    </div>
+    
+    <div class="example">
+        <div class="example-title">Example 3: Notion Style - With Emoji</div>
+        <div class="notion-style">
+            <div class="emoji">💬</div>
+            <h1>Let's talk</h1>
+            <p>Questions, feedback, or just want to say hi? We're all ears.</p>
+        </div>
+    </div>
+    
+    <div class="example">
+        <div class="example-title">Example 4: Linear Style - Gradient Text</div>
+        <div class="linear-style">
+            <h1>Contact us</h1>
+            <p>We're here to help and answer any question you might have. We look forward to hearing from you.</p>
+        </div>
+    </div>
+    
+    <div class="example">
+        <div class="example-title">Example 5: GitHub Style - With Breadcrumb</div>
+        <div class="github-style">
+            <div class="breadcrumb">
+                <a href="/">Home</a> / Contact
+            </div>
+            <h1>Contact support</h1>
+            <p>Get help from our support team</p>
+        </div>
+    </div>
+    
+    <div class="example">
+        <div class="example-title">Example 6: Airbnb Style - Bold Typography</div>
+        <div class="airbnb-style">
+            <h1>How can we help?</h1>
+            <p>Our team is happy to answer your questions. Fill out the form and we'll be in touch as soon as possible.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+    <!-- Final Logo: 11klassniki.ru -->
+    <!-- Icon Circle -->
+    <circle cx="30" cy="30" r="25" fill="#0039A6"/>
+    
+    <!-- Subtle Russian flag accent -->
+    <defs>
+        <clipPath id="bottomClip">
+            <rect x="0" y="40" width="60" height="20"/>
+        </clipPath>
+    </defs>
+    <circle cx="30" cy="30" r="25" fill="#D52B1E" opacity="0.2" clip-path="url(#bottomClip)"/>
+    
+    <!-- Number 11 -->
+    <text x="30" y="38" text-anchor="middle" fill="white" 
+          font-family="Arial, sans-serif" font-size="22" font-weight="600">11</text>
+    
+    <!-- Text: klassniki.ru -->
+    <text x="65" y="36" font-family="Arial, sans-serif" font-size="24" fill="#333">
+        klassniki<tspan fill="#D52B1E" font-weight="500">.ru</tspan>
+    </text>
+</svg>

@@ -614,6 +614,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
             <a href="/vpo-all-regions" class="nav-link">ВУЗы</a>
             <a href="/spo-all-regions" class="nav-link">ССУЗы</a>
             <a href="/schools-all-regions" class="nav-link">Школы</a>
+            <a href="/posts" class="nav-link">Статьи</a>
             <a href="/news" class="nav-link">Новости</a>
             <a href="/tests" class="nav-link">Тесты</a>
             

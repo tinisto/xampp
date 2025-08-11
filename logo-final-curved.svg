@@ -1,0 +1,16 @@
+<svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+    <!-- Final Text Logo with Curve: 11klassniki.ru -->
+    
+    <!-- Main text -->
+    <text x="20" y="35" font-family="Arial, sans-serif" font-size="36" fill="#333">
+        <tspan font-weight="700" fill="#0039A6">11</tspan>klassniki<tspan fill="#D52B1E" font-weight="500">.ru</tspan>
+    </text>
+    
+    <!-- Curved accent under "11" -->
+    <path d="M 15 43 Q 40 38 60 41" 
+          stroke="#0039A6" 
+          stroke-width="2.5" 
+          fill="none" 
+          stroke-linecap="round" 
+          opacity="0.8"/>
+</svg>

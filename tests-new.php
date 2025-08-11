@@ -12,22 +12,28 @@ if (!empty($testUrl)) {
         include $pageFile;
     }
 } else {
-    // Tests listing - use NEW real template version
-    $pageFile = $_SERVER['DOCUMENT_ROOT'] . '/pages/tests/tests-main-real.php';
+    // Tests listing - use existing tests main page
+    $pageFile = $_SERVER['DOCUMENT_ROOT'] . '/pages/tests/tests-main.php';
     if (file_exists($pageFile)) {
         include $pageFile;
     } else {
-        // Fallback
-        $greyContent1 = '<div style="padding: 30px;"><h1>Тесты</h1></div>';
-        $greyContent2 = '';
-        $greyContent3 = '';
-        $greyContent4 = '';
-        $greyContent5 = '<div style="padding: 20px;"><p>Страница временно недоступна</p></div>';
-        $greyContent6 = '';
-        $blueContent = '';
-        $pageTitle = 'Тесты - 11-классники';
+        // Fallback - load content and use template engine
+        require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine-ultimate.php';
         
-        include $_SERVER['DOCUMENT_ROOT'] . '/real_template.php';
+        $pageTitle = 'Онлайн тесты';
+        $metaD = 'Пройдите бесплатные онлайн тесты по различным предметам: IQ тест, математика, русский язык, профориентация и многое другое';
+        
+        // Page configuration
+        $pageConfig = [
+            'metaD' => $metaD,
+            'pageHeader' => [
+                'title' => 'Онлайн тесты',
+                'showSearch' => false
+            ]
+        ];
+        
+        // Render the page using the unified template
+        renderTemplate($pageTitle, 'pages/tests/tests-main-content.php', $pageConfig);
     }
 }
 ?>

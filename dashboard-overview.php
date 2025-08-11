@@ -4,6 +4,15 @@
  * Central hub showing all system components and their status
  */
 
+session_start();
+
+// Check if user is logged in and is admin
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
+    header('HTTP/1.1 401 Unauthorized');
+    header('Location: /unauthorized.php');
+    exit;
+}
+
 require_once __DIR__ . '/database/db_modern.php';
 
 // Get system statistics

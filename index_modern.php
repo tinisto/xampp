@@ -26,6 +26,7 @@ $routes = [
     '/spo/([a-zA-Z0-9_-]+)' => 'spo-single',
     '/schools' => 'schools-list',
     '/school/([a-zA-Z0-9_-]+)' => 'school-single',
+    '/tests' => 'tests-list',
     '/search' => 'search',
     '/login' => 'login',
     '/register' => 'register',
@@ -140,6 +141,10 @@ switch ($page) {
         
     case 'schools-list':
         include 'schools_modern.php';
+        break;
+        
+    case 'tests-list':
+        include 'tests-new.php';
         break;
         
     case 'school-single':

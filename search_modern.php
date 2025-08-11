@@ -92,9 +92,9 @@ $pageTitle = $query ? 'Результаты поиска: ' . htmlspecialchars($
 // Section 1: Search form and title
 ob_start();
 ?>
-<div style="padding: 50px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+<div style="padding: 20px 20px 20px; background: white; box-shadow: 0 1px 0 rgba(0,0,0,0.08);">
     <div style="max-width: 800px; margin: 0 auto;">
-        <h1 style="font-size: 36px; font-weight: 700; margin-bottom: 30px; text-align: center;">Поиск по сайту</h1>
+        <h1 style="font-size: 44px; font-weight: 800; margin-bottom: 30px; text-align: center; color: #222222; letter-spacing: -0.02em;">Поиск по сайту</h1>
         
         <form action="/search" method="get" style="display: flex; gap: 10px;">
             <input type="text" 
@@ -172,7 +172,7 @@ ob_start();
 if ($query):
     if ($totalResults > 0):
 ?>
-<div style="padding: 40px 20px; background: #f8f9fa;">
+<div style="padding: 30px 20px; background: #f8f9fa;">
     <div style="max-width: 1200px; margin: 0 auto;">
         <?php
         // Merge all results if showing all
@@ -284,7 +284,7 @@ if ($query):
 <?php
     else:
 ?>
-<div style="padding: 80px 20px; background: white; text-align: center;">
+<div style="padding: 30px 20px; background: white; text-align: center;">
     <i class="fas fa-search" style="font-size: 64px; color: #dee2e6; margin-bottom: 20px;"></i>
     <h2 style="color: #6c757d; margin-bottom: 10px;">Ничего не найдено</h2>
     <p style="color: #adb5bd; font-size: 18px; max-width: 500px; margin: 0 auto;">
@@ -308,7 +308,7 @@ if ($query):
     endif;
 else:
 ?>
-<div style="padding: 60px 20px; background: white;">
+<div style="padding: 30px 20px; background: white;">
     <div style="max-width: 600px; margin: 0 auto; text-align: center;">
         <h2 style="font-size: 24px; font-weight: 600; margin-bottom: 20px;">Популярные запросы</h2>
         <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">

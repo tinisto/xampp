@@ -74,14 +74,16 @@ $pageTitle = $category ? 'События: ' . $category['category_name'] : 'Со
 // Section 1: Title
 ob_start();
 ?>
-<div style="padding: 40px 20px; background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%); color: white;">
-    <div style="max-width: 1200px; margin: 0 auto; text-align: center;">
-        <h1 style="font-size: 36px; font-weight: 700; margin-bottom: 15px;"><?= htmlspecialchars($pageTitle) ?></h1>
-        <p style="font-size: 18px; opacity: 0.9;">
+<div style="padding: 20px 20px 20px; background: white; box-shadow: 0 1px 0 rgba(0,0,0,0.08);">
+    <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+        <h1 style="font-size: 44px; font-weight: 800; margin-bottom: 16px; color: #222222; letter-spacing: -0.02em;">
+            <?= htmlspecialchars($pageTitle) ?>
+        </h1>
+        <p style="font-size: 18px; color: #717171; line-height: 1.5;">
             Образовательные мероприятия, конференции и олимпиады
         </p>
         <?php if ($totalEvents > 0): ?>
-        <p style="font-size: 16px; margin-top: 10px; opacity: 0.8;">
+        <p style="font-size: 16px; margin-top: 10px; color: #717171;">
             Найдено <?= number_format($totalEvents) ?> <?= plural_form($totalEvents, 'событие', 'события', 'событий') ?>
         </p>
         <?php endif; ?>
@@ -234,10 +236,17 @@ $greyContent3 = ob_get_clean();
 // Section 4: Events grid
 ob_start();
 ?>
-<div style="padding: 40px 20px; background: white;">
+<div style="padding: 30px 20px; background: white;">
     <div style="max-width: 1400px; margin: 0 auto;">
         <?php if (!empty($events)): ?>
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px;">
+        <style>
+            @media (min-width: 1200px) {
+                .events-grid {
+                    grid-template-columns: repeat(4, 1fr) !important;
+                }
+            }
+        </style>
+        <div class="events-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; max-width: 1400px; margin: 0 auto;">
             <?php foreach ($events as $event): ?>
             <article style="background: #f8f9fa; border-radius: 12px; overflow: hidden; transition: all 0.3s; cursor: pointer; border-left: 4px solid #ff6b6b;"
                      onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 20px rgba(0,0,0,0.1)';"
@@ -296,7 +305,7 @@ ob_start();
             <?php endforeach; ?>
         </div>
         <?php else: ?>
-        <div style="text-align: center; padding: 60px 20px;">
+        <div style="text-align: center; padding: 30px 20px;">
             <i class="far fa-calendar-alt" style="font-size: 64px; color: #dee2e6; margin-bottom: 20px;"></i>
             <h3 style="color: #6c757d; margin-bottom: 10px;">События не найдены</h3>
             <p style="color: #adb5bd;">Попробуйте изменить параметры поиска или выбрать другую категорию</p>
@@ -314,7 +323,7 @@ $greyContent4 = ob_get_clean();
 ob_start();
 if ($totalPages > 1):
 ?>
-<div style="padding: 40px 20px; background: #f8f9fa;">
+<div style="padding: 30px 20px; background: #f8f9fa;">
     <div style="max-width: 1200px; margin: 0 auto;">
         <nav style="display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap;">
             <!-- Previous -->

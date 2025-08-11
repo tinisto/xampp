@@ -425,10 +425,10 @@ $testNavItems = [
 ];
 ?>
 
-<div class="test-navigation" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 30px; padding: 0 20px;">
+<div class="test-navigation" style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 20px; padding: 0 20px;">
     <?php
-    $activeStyle = "padding: 8px 16px; border-radius: 20px; text-decoration: none; font-weight: 500; transition: all 0.3s ease; background: #28a745; color: white; cursor: pointer;";
-    $inactiveStyle = "padding: 8px 16px; border-radius: 20px; text-decoration: none; font-weight: 400; transition: all 0.3s ease; background: var(--surface, #ffffff); color: var(--text-primary, #333); border: 1px solid var(--border-color, #e2e8f0); cursor: pointer;";
+    $activeStyle = "padding: 4px 10px; border-radius: 12px; text-decoration: none; font-weight: 500; font-size: 13px; transition: all 0.3s ease; background: #e9ecef; color: #333; cursor: pointer; border: 2px solid #6c757d;";
+    $inactiveStyle = "padding: 4px 10px; border-radius: 12px; text-decoration: none; font-weight: 400; font-size: 13px; transition: all 0.3s ease; background: var(--surface, #ffffff); color: var(--text-primary, #333); border: 1px solid var(--border-color, #e2e8f0); cursor: pointer;";
     
     foreach ($testNavItems as $item) {
         $isActive = ($categoryFilter === $item['data-category']);
@@ -487,17 +487,17 @@ body {
 }
 
 .category-btn:not(.active):hover {
-    color: #28a745 !important;
-    border-color: #28a745 !important;
+    color: #333 !important;
+    border-color: #dee2e6 !important;
     background: #f8f9fa !important;
     transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .category-btn.active:hover {
-    background: #218838 !important;
+    background: #dee2e6 !important;
     transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Dark mode support for navigation */
@@ -509,17 +509,18 @@ body {
 
 [data-theme="dark"] .category-btn:not(.active):hover {
     background: var(--surface-hover-dark, #374151) !important;
-    border-color: #28a745 !important;
-    color: #28a745 !important;
+    border-color: #6c757d !important;
+    color: #e4e6eb !important;
 }
 
 [data-theme="dark"] .category-btn.active {
-    background: #28a745 !important;
-    color: white !important;
+    background: #4a5568 !important;
+    color: #e4e6eb !important;
+    border: 2px solid #6c757d !important;
 }
 
 [data-theme="dark"] .category-btn.active:hover {
-    background: #218838 !important;
+    background: #374151 !important;
 }
 
 /* Prevent flash of unstyled content */
@@ -543,8 +544,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const testItems = document.querySelectorAll('.test-item');
     
     // Active button styles
-    const activeStyle = "padding: 8px 16px; border-radius: 20px; text-decoration: none; font-weight: 500; transition: all 0.3s ease; background: #28a745; color: white; cursor: pointer;";
-    const inactiveStyle = "padding: 8px 16px; border-radius: 20px; text-decoration: none; font-weight: 400; transition: all 0.3s ease; background: var(--surface, #ffffff); color: var(--text-primary, #333); border: 1px solid var(--border-color, #e2e8f0); cursor: pointer;";
+    const activeStyle = "padding: 4px 10px; border-radius: 12px; text-decoration: none; font-weight: 500; font-size: 13px; transition: all 0.3s ease; background: #e9ecef; color: #333; cursor: pointer; border: 2px solid #6c757d;";
+    const inactiveStyle = "padding: 4px 10px; border-radius: 12px; text-decoration: none; font-weight: 400; font-size: 13px; transition: all 0.3s ease; background: var(--surface, #ffffff); color: var(--text-primary, #333); border: 1px solid var(--border-color, #e2e8f0); cursor: pointer;";
     
     categoryButtons.forEach(button => {
         button.addEventListener('click', function(e) {

@@ -7,14 +7,14 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // Check admin access
-if ((!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') && 
-    (!isset($_SESSION['occupation']) || $_SESSION['occupation'] !== 'admin')) {
-    header('Location: /unauthorized');
-    exit();
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
+    header('HTTP/1.1 401 Unauthorized');
+    header('Location: /unauthorized.php');
+    exit;
 }
 
 // Database connection
-require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_modern.php';
 
 // Pagination
 $page = max(1, (int)($_GET['page'] ?? 1));
@@ -33,15 +33,19 @@ if ($statusFilter === 'approved') {
 // Search
 $search = $_GET['search'] ?? '';
 $searchCondition = '';
+$searchParams = [];
 if (!empty($search)) {
-    $searchLike = '%' . $connection->real_escape_string($search) . '%';
-    $searchCondition = ($statusCondition ? ' AND ' : 'WHERE ') . "(title_news LIKE '$searchLike' OR text_news LIKE '$searchLike' OR author_news LIKE '$searchLike')";
+    $searchCondition = ($statusCondition ? ' AND ' : 'WHERE ') . "(title_news LIKE ? OR text_news LIKE ? OR author_news LIKE ?)";
+    $searchParams = ["%$search%", "%$search%", "%$search%"];
 }
 
 // Get total news count
-$countQuery = "SELECT COUNT(*) as total FROM news $statusCondition $searchCondition";
-$countResult = $connection->query($countQuery);
-$totalNews = $countResult ? $countResult->fetch_assoc()['total'] : 0;
+$countQuery = "SELECT COUNT(*) FROM news $statusCondition $searchCondition";
+if (!empty($searchParams)) {
+    $totalNews = db_fetch_column($countQuery, $searchParams);
+} else {
+    $totalNews = db_fetch_column($countQuery);
+}
 $totalPages = ceil($totalNews / $limit);
 
 // Get news
@@ -49,13 +53,12 @@ $query = "SELECT id, title_news, author_news, date_news, approved, url_slug
           FROM news 
           $statusCondition $searchCondition
           ORDER BY date_news DESC 
-          LIMIT $limit OFFSET $offset";
-$result = $connection->query($query);
-$news = [];
-if ($result) {
-    while ($row = $result->fetch_assoc()) {
-        $news[] = $row;
-    }
+          LIMIT ? OFFSET ?";
+$params = array_merge($searchParams, [$limit, $offset]);
+if (!empty($searchParams)) {
+    $news = db_fetch_all($query, $params);
+} else {
+    $news = db_fetch_all($query, [$limit, $offset]);
 }
 
 // Get statistics
@@ -64,23 +67,20 @@ $stats['total'] = $totalNews;
 
 // Count by approval status
 $approvalQuery = "SELECT approved, COUNT(*) as count FROM news GROUP BY approved";
-$approvalResult = $connection->query($approvalQuery);
+$approvalStats = db_fetch_all($approvalQuery);
 $stats['approved'] = 0;
 $stats['pending'] = 0;
-if ($approvalResult) {
-    while ($row = $approvalResult->fetch_assoc()) {
-        if ($row['approved'] == 1) {
-            $stats['approved'] = $row['count'];
-        } else {
-            $stats['pending'] = $row['count'];
-        }
+foreach ($approvalStats as $row) {
+    if ($row['approved'] == 1) {
+        $stats['approved'] = $row['count'];
+    } else {
+        $stats['pending'] = $row['count'];
     }
 }
 
 // Recent news (last 30 days)
-$recentQuery = "SELECT COUNT(*) as count FROM news WHERE date_news >= DATE_SUB(NOW(), INTERVAL 30 DAY)";
-$recentResult = $connection->query($recentQuery);
-$stats['recent'] = $recentResult ? $recentResult->fetch_assoc()['count'] : 0;
+$recentQuery = "SELECT COUNT(*) FROM news WHERE date_news >= datetime('now', '-30 days')";
+$stats['recent'] = db_fetch_column($recentQuery) ?: 0;
 
 // Get user info
 $username = $_SESSION['first_name'] ?? $_SESSION['email'] ?? 'Admin';

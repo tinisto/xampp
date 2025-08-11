@@ -65,17 +65,19 @@ $pageTitle = 'Школы России';
 // Section 1: Title
 ob_start();
 ?>
-<div style="padding: 50px 20px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
-    <div style="max-width: 1200px; margin: 0 auto; text-align: center;">
-        <h1 style="font-size: 42px; font-weight: 700; margin-bottom: 20px;">Школы России</h1>
-        <p style="font-size: 20px; opacity: 0.9; max-width: 700px; margin: 0 auto;">
+<div style="padding: 20px 20px 20px; background: white; box-shadow: 0 1px 0 rgba(0,0,0,0.08);">
+    <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+        <h1 style="font-size: 44px; font-weight: 800; margin-bottom: 16px; color: #222222; letter-spacing: -0.02em;">
+            Школы России
+        </h1>
+        <p style="font-size: 18px; color: #717171; line-height: 1.5;">
             Общеобразовательные учреждения: школы, гимназии и лицеи
         </p>
         <?php if ($totalSchools > 0): ?>
         <div style="margin-top: 30px; display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;">
             <div>
-                <div style="font-size: 36px; font-weight: 700;"><?= number_format($totalSchools) ?></div>
-                <div style="font-size: 16px; opacity: 0.8;">учебных заведений</div>
+                <div style="font-size: 36px; font-weight: 700; color: #222222;"><?= number_format($totalSchools) ?></div>
+                <div style="font-size: 16px; color: #717171;">учебных заведений</div>
             </div>
         </div>
         <?php endif; ?>
@@ -129,7 +131,7 @@ $greyContent2 = ob_get_clean();
 // Section 3: School types info
 ob_start();
 ?>
-<div style="padding: 40px 20px; background: white;">
+<div style="padding: 30px 20px; background: white;">
     <div style="max-width: 1200px; margin: 0 auto;">
         <h2 style="text-align: center; font-size: 28px; font-weight: 700; margin-bottom: 30px;">Типы школ</h2>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
@@ -160,7 +162,14 @@ ob_start();
 <div style="padding: 0 20px 40px 20px; background: white;">
     <div style="max-width: 1200px; margin: 0 auto;">
         <?php if (!empty($schoolsList)): ?>
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; max-width: 1400px; margin: 0 auto;">
+        <style>
+            @media (min-width: 1200px) {
+                .schools-grid {
+                    grid-template-columns: repeat(4, 1fr) !important;
+                }
+            }
+        </style>
+        <div class="schools-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; max-width: 1400px; margin: 0 auto;">
             <?php foreach ($schoolsList as $school): ?>
             <article style="background: #f8f9fa; border-radius: 12px; overflow: hidden; transition: all 0.3s; border: 1px solid #e9ecef; cursor: pointer;"
                      onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.15)';"
@@ -169,14 +178,10 @@ ob_start();
                 
                 <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); height: 8px;"></div>
                 
-                <div style="padding: 25px;">
-                    <div style="display: flex; align-items: start; gap: 20px;">
-                        <div style="width: 60px; height: 60px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                            <i class="fas fa-school" style="font-size: 24px; color: #f5576c;"></i>
-                        </div>
-                        
-                        <div style="flex: 1;">
-                            <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 10px; line-height: 1.3; color: #333;">
+                <div style="padding: 15px;">
+                    <div>
+                        <div>
+                            <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 8px; line-height: 1.3; color: #333;">
                                 <?= htmlspecialchars($school['name']) ?>
                             </h3>
                             
@@ -214,7 +219,7 @@ ob_start();
             <?php endforeach; ?>
         </div>
         <?php else: ?>
-        <div style="text-align: center; padding: 60px 20px;">
+        <div style="text-align: center; padding: 30px 20px;">
             <i class="fas fa-school" style="font-size: 64px; color: #dee2e6; margin-bottom: 20px;"></i>
             <h3 style="color: #6c757d; margin-bottom: 10px;">Школы не найдены</h3>
             <p style="color: #adb5bd;">Попробуйте изменить параметры поиска или выбрать другой регион</p>
@@ -232,7 +237,7 @@ $greyContent4 = ob_get_clean();
 ob_start();
 if ($totalPages > 1):
 ?>
-<div style="padding: 40px 20px; background: #f8f9fa;">
+<div style="padding: 30px 20px; background: #f8f9fa;">
     <div style="max-width: 1200px; margin: 0 auto;">
         <nav style="display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap;">
             <!-- Previous -->

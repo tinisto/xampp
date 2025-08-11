@@ -21,10 +21,20 @@ DirectoryIndex index_modern.php
     # Security - Block access to sensitive directories
     RewriteRule ^(database|config)/ - [F,L]
     
-    # Allow direct access to specific files
+    # Allow direct access to dashboard files first (explicit)
+    RewriteRule ^dashboard-moderation\.php$ - [L]
+    RewriteRule ^dashboard-analytics\.php$ - [L]
+    RewriteRule ^dashboard-posts-new\.php$ - [L]
+    RewriteRule ^dashboard-news-new\.php$ - [L]
+    RewriteRule ^dashboard-users-new\.php$ - [L]
+    RewriteRule ^dashboard-overview\.php$ - [L]
+    RewriteRule ^unauthorized\.php$ - [L]
+    RewriteRule ^test-dashboard\.php$ - [L]
+    
+    # Allow direct access to other specific files
     RewriteRule ^(migrate_real_data\.php|api|analytics\.php)$ - [L]
     
-    # Route everything else to index_modern.php
+    # Route everything else to index_modern.php only if file doesn't exist
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule . /index_modern.php [L]

@@ -73,10 +73,12 @@ $pageTitle = $category ? $category['category_name'] : 'Новости образ
 // Section 1: Title with breadcrumbs
 ob_start();
 ?>
-<div style="padding: 40px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-    <div style="max-width: 1200px; margin: 0 auto; text-align: center;">
-        <h1 style="font-size: 36px; font-weight: 700; margin-bottom: 15px;"><?= htmlspecialchars($pageTitle) ?></h1>
-        <p style="font-size: 18px; opacity: 0.9;">
+<div style="padding: 20px 20px 20px; background: white; box-shadow: 0 1px 0 rgba(0,0,0,0.08);">
+    <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+        <h1 style="font-size: 44px; font-weight: 800; margin-bottom: 16px; color: #222222; letter-spacing: -0.02em;">
+            <?= htmlspecialchars($pageTitle) ?>
+        </h1>
+        <p style="font-size: 18px; color: #717171; line-height: 1.5;">
             <?php if ($totalNews > 0): ?>
                 Найдено <?= number_format($totalNews) ?> <?= plural_form($totalNews, 'новость', 'новости', 'новостей') ?>
             <?php else: ?>
@@ -85,7 +87,7 @@ ob_start();
         </p>
     </div>
 </div>
-<div style="background: var(--bg-secondary); padding: 15px 20px;">
+<div style="background: var(--bg-secondary); padding: 10px 20px;">
     <div style="max-width: 1200px; margin: 0 auto;">
         <?php 
         require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/breadcrumbs.php';
@@ -101,12 +103,12 @@ ob_start();
 ?>
 <style>
 .news-category-link {
-    padding: 12px 18px;
-    border-radius: 25px;
+    padding: 4px 10px;
+    border-radius: 12px;
     text-decoration: none;
     transition: all 0.3s ease;
     font-weight: 500;
-    font-size: 14px;
+    font-size: 13px;
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -165,9 +167,9 @@ ob_start();
 }
 </style>
 
-<div style="padding: 30px 20px; background: var(--bg-primary); border-bottom: 1px solid var(--border-color);">
+<div style="padding: 20px; background: var(--bg-primary); border-bottom: 1px solid var(--border-color);">
     <div style="max-width: 1200px; margin: 0 auto;">
-        <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
             <a href="/news" class="news-category-link <?= !$categorySlug ? 'active' : '' ?>">
                 Все категории
                 <span class="count"><?= array_sum(array_column($categories, 'news_count')) ?></span>
@@ -191,7 +193,7 @@ $greyContent2 = ob_get_clean();
 // Section 3: Search and sort
 ob_start();
 ?>
-<div style="padding: 30px 20px; background: #f8f9fa;">
+<div style="padding: 20px; background: #f8f9fa;">
     <div style="max-width: 1200px; margin: 0 auto;">
         <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap;">
             <!-- Search -->
@@ -204,9 +206,9 @@ ob_start();
                            name="search" 
                            placeholder="Поиск новостей..." 
                            value="<?= htmlspecialchars($_GET['search'] ?? '') ?>"
-                           style="flex: 1; padding: 10px 15px; border: 1px solid #ddd; border-radius: 8px;">
+                           style="flex: 1; padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px;">
                     <button type="submit" 
-                            style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                            style="padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 8px; cursor: pointer;">
                         <i class="fas fa-search"></i>
                     </button>
                 </div>
@@ -214,7 +216,7 @@ ob_start();
             
             <!-- Sort -->
             <select onchange="window.location.href=this.value" 
-                    style="padding: 10px 15px; border: 1px solid #ddd; border-radius: 8px; background: white;">
+                    style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; background: white;">
                 <option value="/news<?= $categorySlug ? '?category=' . $categorySlug : '' ?>">
                     Сортировка: По дате (новые)
                 </option>
@@ -236,10 +238,17 @@ $greyContent3 = ob_get_clean();
 // Section 4: News grid
 ob_start();
 ?>
-<div style="padding: 40px 20px; background: white;">
+<div style="padding: 25px 20px; background: white;">
     <div style="max-width: 1400px; margin: 0 auto;">
         <?php if (!empty($news)): ?>
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px;">
+        <style>
+            @media (min-width: 1200px) {
+                .news-grid {
+                    grid-template-columns: repeat(4, 1fr) !important;
+                }
+            }
+        </style>
+        <div class="news-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; max-width: 1400px; margin: 0 auto;">
             <?php foreach ($news as $item): ?>
             <article style="background: #f8f9fa; border-radius: 12px; overflow: hidden; transition: transform 0.3s, box-shadow 0.3s; cursor: pointer;"
                      onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 20px rgba(0,0,0,0.1)';"
@@ -256,7 +265,7 @@ ob_start();
                 </div>
                 <?php endif; ?>
                 
-                <div style="padding: 20px;">
+                <div style="padding: 15px;">
                     <?php if ($item['category_name']): ?>
                     <a href="/news?category=<?= htmlspecialchars($item['category_slug']) ?>" 
                        onclick="event.stopPropagation()"
@@ -278,7 +287,7 @@ ob_start();
             <?php endforeach; ?>
         </div>
         <?php else: ?>
-        <div style="text-align: center; padding: 60px 20px;">
+        <div style="text-align: center; padding: 30px 20px;">
             <i class="far fa-newspaper" style="font-size: 64px; color: #dee2e6; margin-bottom: 20px;"></i>
             <h3 style="color: #6c757d; margin-bottom: 10px;">Новости не найдены</h3>
             <p style="color: #adb5bd;">Попробуйте изменить параметры поиска или выбрать другую категорию</p>
@@ -296,13 +305,13 @@ $greyContent4 = ob_get_clean();
 ob_start();
 if ($totalPages > 1):
 ?>
-<div style="padding: 40px 20px; background: #f8f9fa;">
+<div style="padding: 25px 20px; background: #f8f9fa;">
     <div style="max-width: 1200px; margin: 0 auto;">
         <nav style="display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap;">
             <!-- Previous -->
             <?php if ($page > 1): ?>
             <a href="/news?p=<?= $page - 1 ?><?= $categorySlug ? '&category=' . $categorySlug : '' ?>" 
-               style="padding: 10px 15px; background: white; border: 1px solid #dee2e6; border-radius: 8px; text-decoration: none; color: #495057;">
+               style="padding: 8px 12px; background: white; border: 1px solid #dee2e6; border-radius: 8px; text-decoration: none; color: #495057;">
                 ← Предыдущая
             </a>
             <?php endif; ?>
@@ -314,7 +323,7 @@ if ($totalPages > 1):
             
             if ($start > 1): ?>
                 <a href="/news?p=1<?= $categorySlug ? '&category=' . $categorySlug : '' ?>" 
-                   style="padding: 10px 15px; background: white; border: 1px solid #dee2e6; border-radius: 8px; text-decoration: none; color: #495057;">
+                   style="padding: 8px 12px; background: white; border: 1px solid #dee2e6; border-radius: 8px; text-decoration: none; color: #495057;">
                     1
                 </a>
                 <?php if ($start > 2): ?>
@@ -324,7 +333,7 @@ if ($totalPages > 1):
             
             <?php for ($i = $start; $i <= $end; $i++): ?>
             <a href="/news?p=<?= $i ?><?= $categorySlug ? '&category=' . $categorySlug : '' ?>" 
-               style="padding: 10px 15px; border-radius: 8px; text-decoration: none;
+               style="padding: 8px 12px; border-radius: 8px; text-decoration: none;
                       <?= $i === $page ? 'background: #007bff; color: white;' : 'background: white; border: 1px solid #dee2e6; color: #495057;' ?>">
                 <?= $i ?>
             </a>
@@ -335,7 +344,7 @@ if ($totalPages > 1):
                 <span style="color: #6c757d;">...</span>
                 <?php endif; ?>
                 <a href="/news?p=<?= $totalPages ?><?= $categorySlug ? '&category=' . $categorySlug : '' ?>" 
-                   style="padding: 10px 15px; background: white; border: 1px solid #dee2e6; border-radius: 8px; text-decoration: none; color: #495057;">
+                   style="padding: 8px 12px; background: white; border: 1px solid #dee2e6; border-radius: 8px; text-decoration: none; color: #495057;">
                     <?= $totalPages ?>
                 </a>
             <?php endif; ?>
@@ -343,7 +352,7 @@ if ($totalPages > 1):
             <!-- Next -->
             <?php if ($page < $totalPages): ?>
             <a href="/news?p=<?= $page + 1 ?><?= $categorySlug ? '&category=' . $categorySlug : '' ?>" 
-               style="padding: 10px 15px; background: white; border: 1px solid #dee2e6; border-radius: 8px; text-decoration: none; color: #495057;">
+               style="padding: 8px 12px; background: white; border: 1px solid #dee2e6; border-radius: 8px; text-decoration: none; color: #495057;">
                 Следующая →
             </a>
             <?php endif; ?>

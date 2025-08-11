@@ -7,14 +7,14 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // Check admin access
-if ((!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') && 
-    (!isset($_SESSION['occupation']) || $_SESSION['occupation'] !== 'admin')) {
-    header('Location: /unauthorized');
-    exit();
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
+    header('HTTP/1.1 401 Unauthorized');
+    header('Location: /unauthorized.php');
+    exit;
 }
 
 // Database connection
-require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_modern.php';
 
 // Get pagination
 $page = max(1, (int)($_GET['page'] ?? 1));
@@ -25,28 +25,30 @@ $offset = ($page - 1) * $limit;
 $search = $_GET['search'] ?? '';
 $searchCondition = '';
 if (!empty($search)) {
-    $searchLike = '%' . $connection->real_escape_string($search) . '%';
-    $searchCondition = "WHERE title_post LIKE '$searchLike' OR text_post LIKE '$searchLike'";
+    $searchCondition = "WHERE title_post LIKE ? OR text_post LIKE ?";
 }
 
 // Get total count
-$countQuery = "SELECT COUNT(*) as total FROM posts $searchCondition";
-$countResult = $connection->query($countQuery);
-$totalPosts = $countResult->fetch_assoc()['total'];
+if (!empty($search)) {
+    $totalPosts = db_fetch_column("SELECT COUNT(*) FROM posts $searchCondition", ["%$search%", "%$search%"]);
+} else {
+    $totalPosts = db_fetch_column("SELECT COUNT(*) FROM posts");
+}
 $totalPages = ceil($totalPosts / $limit);
 
 // Get posts
-$query = "SELECT p.*, c.title_category, u.first_name, u.last_name 
+$query = "SELECT p.*, c.name as category_name, u.first_name, u.last_name 
           FROM posts p
-          LEFT JOIN categories c ON p.id_category = c.id_category
-          LEFT JOIN users u ON p.user_id = u.id
+          LEFT JOIN categories c ON p.category = c.id
+          LEFT JOIN users u ON p.author_id = u.id
           $searchCondition
           ORDER BY p.date_post DESC 
-          LIMIT $limit OFFSET $offset";
-$result = $connection->query($query);
-$posts = [];
-while ($row = $result->fetch_assoc()) {
-    $posts[] = $row;
+          LIMIT ? OFFSET ?";
+
+if (!empty($search)) {
+    $posts = db_fetch_all($query, ["%$search%", "%$search%", $limit, $offset]);
+} else {
+    $posts = db_fetch_all($query, [$limit, $offset]);
 }
 
 // Section 1: Title

@@ -291,6 +291,23 @@ class Database {
                 FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
             )
         ");
+        
+        // Contact messages table
+        $this->connection->exec("
+            CREATE TABLE IF NOT EXISTS contact_messages (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                email TEXT NOT NULL,
+                subject TEXT NOT NULL,
+                message TEXT NOT NULL,
+                status TEXT DEFAULT 'new', -- 'new', 'read', 'replied'
+                ip_address TEXT,
+                user_agent TEXT,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                read_at DATETIME,
+                replied_at DATETIME
+            )
+        ");
     }
     
     private function seedLocalData() {

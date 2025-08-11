@@ -1,0 +1,16 @@
+<svg width="220" height="70" viewBox="0 0 220 70" xmlns="http://www.w3.org/2000/svg">
+    <!-- Final Logo: Clean Swoosh Design -->
+    
+    <!-- Main text -->
+    <text x="20" y="40" font-family="Arial, sans-serif" font-size="42" fill="#333">
+        <tspan font-weight="700" fill="#0039A6">11</tspan>klassniki<tspan fill="#D52B1E" font-weight="500">.ru</tspan>
+    </text>
+    
+    <!-- Clean swoosh under "11" -->
+    <path d="M 15 48 Q 40 42 65 46" 
+          stroke="#0039A6" 
+          stroke-width="2.5" 
+          fill="none" 
+          stroke-linecap="round" 
+          opacity="0.8"/>
+</svg>

@@ -1,0 +1,21 @@
+<svg width="250" height="80" viewBox="0 0 250 80" xmlns="http://www.w3.org/2000/svg">
+    <!-- Final Logo with Partial Circle: 11klassniki.ru -->
+    
+    <!-- Partial circles -->
+    <circle cx="125" cy="40" r="35" 
+            stroke="#0039A6" stroke-width="2" fill="none"
+            stroke-dasharray="175 110"
+            transform="rotate(-30 125 40)"
+            opacity="0.6"/>
+    
+    <circle cx="125" cy="40" r="35" 
+            stroke="#D52B1E" stroke-width="2" fill="none"
+            stroke-dasharray="50 235"
+            transform="rotate(150 125 40)"
+            opacity="0.5"/>
+    
+    <!-- Main text -->
+    <text x="125" y="48" text-anchor="middle" font-family="Arial, sans-serif" font-size="36" fill="#333">
+        <tspan font-weight="700" fill="#0039A6">11</tspan>klassniki<tspan fill="#D52B1E" font-weight="500">.ru</tspan>
+    </text>
+</svg>

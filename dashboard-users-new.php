@@ -7,14 +7,14 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // Check admin access
-if ((!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') && 
-    (!isset($_SESSION['occupation']) || $_SESSION['occupation'] !== 'admin')) {
-    header('Location: /unauthorized');
-    exit();
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
+    header('HTTP/1.1 401 Unauthorized');
+    header('Location: /unauthorized.php');
+    exit;
 }
 
 // Database connection
-require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_modern.php';
 
 // Pagination
 $page = max(1, (int)($_GET['page'] ?? 1));
@@ -25,34 +25,35 @@ $offset = ($page - 1) * $limit;
 $search = $_GET['search'] ?? '';
 $searchCondition = '';
 if (!empty($search)) {
-    $searchLike = '%' . $connection->real_escape_string($search) . '%';
-    $searchCondition = "WHERE email LIKE '$searchLike' OR first_name LIKE '$searchLike' OR last_name LIKE '$searchLike'";
+    $searchCondition = "WHERE email LIKE ? OR username LIKE ?";
 }
 
 // Get total users count
-$countQuery = "SELECT COUNT(*) as total FROM users $searchCondition";
-$countResult = $connection->query($countQuery);
-$totalUsers = $countResult->fetch_assoc()['total'];
+if (!empty($search)) {
+    $totalUsers = db_fetch_column("SELECT COUNT(*) FROM users $searchCondition", ["%$search%", "%$search%"]);
+} else {
+    $totalUsers = db_fetch_column("SELECT COUNT(*) FROM users");
+}
 $totalPages = ceil($totalUsers / $limit);
 
 // Get users
-$query = "SELECT id, email, first_name, last_name, city, occupation, created_at 
+$query = "SELECT id, username, email, role, created_at 
           FROM users 
           $searchCondition
           ORDER BY created_at DESC 
-          LIMIT $limit OFFSET $offset";
-$result = $connection->query($query);
-$users = [];
-while ($row = $result->fetch_assoc()) {
-    $users[] = $row;
+          LIMIT ? OFFSET ?";
+
+if (!empty($search)) {
+    $users = db_fetch_all($query, ["%$search%", "%$search%", $limit, $offset]);
+} else {
+    $users = db_fetch_all($query, [$limit, $offset]);
 }
 
-// Get statistics
-$stats = [];
-$query = "SELECT occupation, COUNT(*) as count FROM users GROUP BY occupation";
-$result = $connection->query($query);
-while ($row = $result->fetch_assoc()) {
-    $stats[$row['occupation']] = $row['count'];
+// Get statistics (role-based since occupation doesn't exist)
+$stats = db_fetch_all("SELECT role, COUNT(*) as count FROM users GROUP BY role");
+$roleStats = [];
+foreach ($stats as $stat) {
+    $roleStats[$stat['role']] = $stat['count'];
 }
 
 // Section 1: Title
@@ -122,13 +123,13 @@ ob_start();
         
         <div class="stat-card">
             <i class="fas fa-user-shield" style="color: #dc3545;"></i>
-            <h4><?= $stats['admin'] ?? 0 ?></h4>
+            <h4><?= $roleStats['admin'] ?? 0 ?></h4>
             <p>Администраторов</p>
         </div>
         
         <div class="stat-card">
             <i class="fas fa-user" style="color: #007bff;"></i>
-            <h4><?= $stats['user'] ?? 0 ?></h4>
+            <h4><?= $roleStats['user'] ?? 0 ?></h4>
             <p>Обычных пользователей</p>
         </div>
         
@@ -202,13 +203,13 @@ ob_start();
                         </a>
                     </td>
                     <td style="padding: 15px;">
-                        <?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?>
+                        <?= htmlspecialchars($user['username'] ?: explode('@', $user['email'])[0]) ?>
                     </td>
                     <td style="padding: 15px; color: #666;">
-                        <?= htmlspecialchars($user['city'] ?: '-') ?>
+                        -
                     </td>
                     <td style="padding: 15px;">
-                        <?php if ($user['occupation'] === 'admin'): ?>
+                        <?php if ($user['role'] === 'admin'): ?>
                             <span style="color: #dc3545; font-weight: 500;">Админ</span>
                         <?php else: ?>
                             <span style="color: #28a745;">Пользователь</span>
@@ -292,5 +293,5 @@ $blueContent = '';
 $pageTitle = 'Управление пользователями - 11-классники';
 
 // Include the template
-include $_SERVER['DOCUMENT_ROOT'] . '/real_template.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/real_template_local.php';
 ?>

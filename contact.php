@@ -18,10 +18,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = 'Неверный формат email адреса';
     } else {
-        // Save to database or send email
+        // Save to database
         try {
-            // For now, just simulate success - you can implement actual email sending later
-            $success = true;
+            $db = Database::getInstance();
+            
+            // Get client information
+            $ipAddress = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+            $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
+            
+            // Save message to database
+            $messageId = $db->insert('contact_messages', [
+                'name' => $name,
+                'email' => $email,
+                'subject' => $subject,
+                'message' => $message,
+                'ip_address' => $ipAddress,
+                'user_agent' => $userAgent
+            ]);
+            
+            if ($messageId) {
+                $success = true;
+            } else {
+                $error = 'Не удалось сохранить сообщение. Попробуйте позже.';
+            }
         } catch (Exception $e) {
             $error = 'Произошла ошибка при отправке сообщения. Попробуйте позже.';
         }
@@ -31,14 +50,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Page title
 $pageTitle = 'Связь с нами';
 
-// Section 1: Header
+// Section 1: Header - Airbnb style with bold typography
 ob_start();
 ?>
-<div style="padding: 40px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-    <div style="max-width: 800px; margin: 0 auto; text-align: center;">
-        <h1 style="font-size: 36px; font-weight: 700; margin-bottom: 15px;">Связь с нами</h1>
-        <p style="font-size: 18px; opacity: 0.9;">
-            Есть вопросы или предложения? Мы всегда готовы помочь
+<div style="padding: 20px 20px 20px; background: white; box-shadow: 0 1px 0 rgba(0,0,0,0.08);">
+    <div style="max-width: 520px; margin: 0 auto; text-align: center;">
+        <h1 style="font-size: 44px; font-weight: 800; margin-bottom: 16px; color: #222222; letter-spacing: -0.02em;">
+            Как мы можем помочь?
+        </h1>
+        <p style="font-size: 18px; color: #717171; line-height: 1.5;">
+            Наша команда готова ответить на ваши вопросы. Заполните форму, и мы свяжемся с вами как можно скорее.
         </p>
     </div>
 </div>
@@ -48,7 +69,7 @@ $greyContent1 = ob_get_clean();
 // Section 2: Contact form
 ob_start();
 ?>
-<div style="padding: 40px 20px; background: white;">
+<div style="padding: 30px 20px; background: white;">
     <div style="max-width: 600px; margin: 0 auto;">
         
         <?php if ($success): ?>
@@ -65,7 +86,7 @@ ob_start();
         
         <form method="post" style="display: flex; flex-direction: column; gap: 20px;">
             <div>
-                <label for="name" style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">
+                <label for="name" style="display: block; font-weight: 600; margin-bottom: 8px; color: #333;">
                     Имя *
                 </label>
                 <input type="text" 
@@ -73,12 +94,12 @@ ob_start();
                        name="name" 
                        required
                        value="<?= htmlspecialchars($_POST['name'] ?? '') ?>"
-                       style="width: 100%; padding: 12px 16px; border: 2px solid var(--border-color); border-radius: 8px; font-size: 16px; background: var(--bg-primary); color: var(--text-primary);"
+                       style="width: 100%; padding: 12px 16px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; background: white; color: #333;"
                        placeholder="Введите ваше имя">
             </div>
             
             <div>
-                <label for="email" style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">
+                <label for="email" style="display: block; font-weight: 600; margin-bottom: 8px; color: #333;">
                     Email *
                 </label>
                 <input type="email" 
@@ -86,18 +107,18 @@ ob_start();
                        name="email" 
                        required
                        value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
-                       style="width: 100%; padding: 12px 16px; border: 2px solid var(--border-color); border-radius: 8px; font-size: 16px; background: var(--bg-primary); color: var(--text-primary);"
+                       style="width: 100%; padding: 12px 16px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; background: white; color: #333;"
                        placeholder="your@email.com">
             </div>
             
             <div>
-                <label for="subject" style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">
+                <label for="subject" style="display: block; font-weight: 600; margin-bottom: 8px; color: #333;">
                     Тема *
                 </label>
                 <select id="subject" 
                         name="subject" 
                         required
-                        style="width: 100%; padding: 12px 16px; border: 2px solid var(--border-color); border-radius: 8px; font-size: 16px; background: var(--bg-primary); color: var(--text-primary);">
+                        style="width: 100%; padding: 12px 16px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; background: white; color: #333;">
                     <option value="">Выберите тему</option>
                     <option value="general" <?= ($_POST['subject'] ?? '') === 'general' ? 'selected' : '' ?>>Общий вопрос</option>
                     <option value="technical" <?= ($_POST['subject'] ?? '') === 'technical' ? 'selected' : '' ?>>Техническая поддержка</option>
@@ -109,14 +130,14 @@ ob_start();
             </div>
             
             <div>
-                <label for="message" style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">
+                <label for="message" style="display: block; font-weight: 600; margin-bottom: 8px; color: #333;">
                     Сообщение *
                 </label>
                 <textarea id="message" 
                           name="message" 
                           required
                           rows="6"
-                          style="width: 100%; padding: 12px 16px; border: 2px solid var(--border-color); border-radius: 8px; font-size: 16px; font-family: inherit; resize: vertical; background: var(--bg-primary); color: var(--text-primary);"
+                          style="width: 100%; padding: 12px 16px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; font-family: inherit; resize: vertical; background: white; color: #333;"
                           placeholder="Расскажите подробнее о вашем вопросе или предложении..."><?= htmlspecialchars($_POST['message'] ?? '') ?></textarea>
             </div>
             
@@ -136,7 +157,7 @@ $greyContent2 = ob_get_clean();
 // Section 3: Additional info
 ob_start();
 ?>
-<div style="padding: 40px 20px; background: #f8f9fa;">
+<div style="padding: 30px 20px; background: #f8f9fa;">
     <div style="max-width: 800px; margin: 0 auto;">
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;">
             
@@ -144,8 +165,8 @@ ob_start();
                 <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
                     <i class="fas fa-clock" style="color: white; font-size: 24px;"></i>
                 </div>
-                <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 10px; color: var(--text-primary);">Время ответа</h3>
-                <p style="color: var(--text-secondary); margin: 0;">
+                <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 10px; color: #333;">Время ответа</h3>
+                <p style="color: #666; margin: 0;">
                     Мы отвечаем на сообщения в течение 1-2 рабочих дней
                 </p>
             </div>
@@ -154,8 +175,8 @@ ob_start();
                 <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
                     <i class="fas fa-shield-alt" style="color: white; font-size: 24px;"></i>
                 </div>
-                <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 10px; color: var(--text-primary);">Конфиденциальность</h3>
-                <p style="color: var(--text-secondary); margin: 0;">
+                <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 10px; color: #333;">Конфиденциальность</h3>
+                <p style="color: #666; margin: 0;">
                     Ваши данные защищены и не передаются третьим лицам
                 </p>
             </div>
@@ -164,8 +185,8 @@ ob_start();
                 <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
                     <i class="fas fa-users" style="color: white; font-size: 24px;"></i>
                 </div>
-                <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 10px; color: var(--text-primary);">Поддержка</h3>
-                <p style="color: var(--text-secondary); margin: 0;">
+                <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 10px; color: #333;">Поддержка</h3>
+                <p style="color: #666; margin: 0;">
                     Наша команда готова помочь вам с любыми вопросами
                 </p>
             </div>

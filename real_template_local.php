@@ -1,17 +1,31 @@
 <?php
-// Local template version - no database connections needed
+// Local template version - using new modern header
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Use the new header instead of template-generated one
+$page_title = $page_title ?? $pageTitle ?? '11klassniki.ru - Российское образование';
+require_once __DIR__ . '/includes/header_modern.php';
+
 // Template content variables - can be set by including pages
-$pageTitle = $pageTitle ?? 'Template';
 $greyContent1 = $greyContent1 ?? '<div style="text-align: center; padding: 20px; margin: 0;"><p>Title/Header</p></div>';
 $greyContent2 = $greyContent2 ?? '<div style="text-align: center; padding: 20px; margin: 0;"><p>Navigation/Categories</p></div>';
 $greyContent3 = $greyContent3 ?? '<div style="text-align: center; padding: 20px; margin: 0;"><p>Metadata</p></div>';
 $greyContent4 = $greyContent4 ?? '<div style="text-align: center; padding: 20px; margin: 0;"><p>Recent Content</p></div>';
 $greyContent5 = $greyContent5 ?? '<div style="text-align: center; padding: 20px; margin: 0;"><p>Main Content</p></div>';
 $greyContent6 = $greyContent6 ?? '<div style="text-align: center; padding: 20px; margin: 0;"><p>Footer Content</p></div>';
+
+// Skip the rest of the HTML - header is already included above
+echo $greyContent1;
+echo $greyContent2;
+echo $greyContent3; 
+echo $greyContent4;
+echo $greyContent5;
+echo $greyContent6;
+
+require_once __DIR__ . '/includes/footer_modern.php';
+return;
 ?>
 <!DOCTYPE html>
 <html lang="ru" data-bs-theme="light">

@@ -49,7 +49,16 @@ ob_start();
             
             <div style="flex: 1;">
                 <h1 style="font-size: 36px; font-weight: 700; margin-bottom: 10px;">
-                    <?= htmlspecialchars($user['name']) ?>
+                    <?php 
+                        $displayName = '';
+                        if (!empty($user['first_name']) || !empty($user['last_name'])) {
+                            $displayName = trim($user['first_name'] . ' ' . $user['last_name']);
+                        }
+                        if (empty($displayName)) {
+                            $displayName = explode('@', $user['email'])[0];
+                        }
+                        echo htmlspecialchars($displayName);
+                    ?>
                 </h1>
                 <p style="font-size: 18px; opacity: 0.9; margin-bottom: 20px;">
                     <?= htmlspecialchars($user['email']) ?>
@@ -170,7 +179,10 @@ ob_start();
                         <div>
                             <div style="color: #999;">Последний вход</div>
                             <div style="color: #333; font-weight: 600;">
-                                <?= $user['last_login'] ? date('d.m.Y H:i', strtotime($user['last_login'])) : 'Сейчас' ?>
+                                <?php 
+                                    $lastLogin = $user['last_login_at'] ?? $user['last_login'] ?? null;
+                                    echo $lastLogin ? date('d.m.Y H:i', strtotime($lastLogin)) : 'Сейчас';
+                                ?>
                             </div>
                         </div>
                         <div>

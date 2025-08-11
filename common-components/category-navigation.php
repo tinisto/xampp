@@ -6,10 +6,10 @@
 
 function renderCategoryNavigation($items, $currentPath = '', $activeClass = 'active') {
     ?>
-    <div class="category-navigation" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 30px;">
+    <div class="category-navigation" style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 20px;">
         <?php
-        $activeStyle = "padding: 8px 16px; border-radius: 20px; text-decoration: none; font-weight: 500; transition: all 0.3s ease; background: #28a745; color: white; cursor: pointer;";
-        $inactiveStyle = "padding: 8px 16px; border-radius: 20px; text-decoration: none; font-weight: 400; transition: all 0.3s ease; background: var(--surface, #ffffff); color: var(--text-primary, #333); border: 1px solid var(--border-color, #e2e8f0); cursor: pointer;";
+        $activeStyle = "padding: 4px 10px; border-radius: 12px; text-decoration: none; font-weight: 500; font-size: 13px; transition: all 0.3s ease; background: #28a745; color: white; cursor: pointer;";
+        $inactiveStyle = "padding: 4px 10px; border-radius: 12px; text-decoration: none; font-weight: 400; font-size: 13px; transition: all 0.3s ease; background: var(--surface, #ffffff); color: var(--text-primary, #333); border: 1px solid var(--border-color, #e2e8f0); cursor: pointer;";
         
         // Clean the current path - remove query parameters for better matching
         $cleanPath = parse_url($currentPath, PHP_URL_PATH);
@@ -109,12 +109,12 @@ function renderCategoryNavigation($items, $currentPath = '', $activeClass = 'act
         /* Responsive design */
         @media (max-width: 768px) {
             .category-navigation {
-                gap: 8px;
+                gap: 4px;
             }
             
             .category-btn {
-                font-size: 13px;
-                padding: 6px 12px;
+                font-size: 12px;
+                padding: 3px 8px;
             }
         }
     </style>

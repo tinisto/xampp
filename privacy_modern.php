@@ -8,10 +8,12 @@ $pageTitle = 'Политика конфиденциальности';
 // Section 1: Header
 ob_start();
 ?>
-<div style="padding: 40px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+<div style="padding: 20px 20px 20px; background: white; box-shadow: 0 1px 0 rgba(0,0,0,0.08);">
     <div style="max-width: 800px; margin: 0 auto; text-align: center;">
-        <h1 style="font-size: 36px; font-weight: 700; margin-bottom: 15px;">Политика конфиденциальности</h1>
-        <p style="font-size: 18px; opacity: 0.9;">
+        <h1 style="font-size: 44px; font-weight: 800; margin-bottom: 16px; color: #222222; letter-spacing: -0.02em;">
+            Политика конфиденциальности
+        </h1>
+        <p style="font-size: 18px; color: #717171; line-height: 1.5;">
             Обработка персональных данных в соответствии с законодательством РФ
         </p>
     </div>
@@ -22,7 +24,7 @@ $greyContent1 = ob_get_clean();
 // Section 2: Main content
 ob_start();
 ?>
-<div style="padding: 40px 20px; background: white;">
+<div style="padding: 30px 20px; background: white;">
     <div style="max-width: 800px; margin: 0 auto;">
         <div style="font-size: 16px; line-height: 1.7; color: var(--text-primary);">
             

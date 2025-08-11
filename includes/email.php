@@ -62,9 +62,8 @@ class EmailNotification {
     }
     
     // Send password reset email
-    public static function sendPasswordResetEmail($userEmail, $userName, $resetToken) {
+    public static function sendPasswordResetEmail($userEmail, $userName, $resetLink) {
         $subject = 'Восстановление пароля на 11klassniki.ru';
-        $resetLink = "https://11klassniki.ru/reset-password?token={$resetToken}";
         
         $htmlBody = "
         <html>
@@ -378,8 +377,96 @@ class EmailNotification {
     
     // Core email sending function
     private static function sendEmail($to, $subject, $htmlBody, $textBody) {
-        // For local development, just log emails
+        // For local development - just log emails
         if (isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME'] === 'localhost') {
+            // Log emails for debugging
+            $logDir = $_SERVER['DOCUMENT_ROOT'] . '/logs';
+            if (!is_dir($logDir)) {
+                mkdir($logDir, 0777, true);
+            }
+            
+            $logFile = $logDir . '/emails.log';
+            $logEntry = date('Y-m-d H:i:s') . " | To: {$to} | Subject: {$subject}\n";
+            $logEntry .= "HTML Body:\n{$htmlBody}\n";
+            $logEntry .= "Text Body:\n{$textBody}\n";
+            $logEntry .= str_repeat('-', 80) . "\n\n";
+            
+            file_put_contents($logFile, $logEntry, FILE_APPEND);
+            
+            // Also save a nice HTML file you can open
+            $emailFile = $logDir . '/last-email.html';
+            $emailContent = "
+            <html>
+            <head>
+                <title>{$subject}</title>
+                <style>
+                    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; }
+                    .header { background: #f0f0f0; padding: 20px; margin-bottom: 20px; }
+                    .content { padding: 20px; }
+                </style>
+            </head>
+            <body>
+                <div class='header'>
+                    <h2>Email Preview</h2>
+                    <p><strong>To:</strong> {$to}</p>
+                    <p><strong>Subject:</strong> {$subject}</p>
+                    <p><strong>Sent:</strong> " . date('Y-m-d H:i:s') . "</p>
+                </div>
+                <div class='content'>
+                    {$htmlBody}
+                </div>
+            </body>
+            </html>";
+            
+            file_put_contents($emailFile, $emailContent);
+            
+            return true;
+        }
+        
+        // Original localhost logging code (kept as fallback)
+        if (false && isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME'] === 'localhost') {
+            // Still log emails for debugging
+            $logDir = $_SERVER['DOCUMENT_ROOT'] . '/logs';
+            if (!is_dir($logDir)) {
+                mkdir($logDir, 0777, true);
+            }
+            
+            $logFile = $logDir . '/emails.log';
+            $logEntry = date('Y-m-d H:i:s') . " | To: {$to} | Subject: {$subject}\n";
+            $logEntry .= "HTML Body:\n{$htmlBody}\n";
+            $logEntry .= "Text Body:\n{$textBody}\n";
+            $logEntry .= str_repeat('-', 80) . "\n\n";
+            
+            file_put_contents($logFile, $logEntry, FILE_APPEND);
+            
+            // Also try to send via mail() which will go to MailHog if configured
+            $headers = [
+                'MIME-Version: 1.0',
+                'Content-Type: multipart/alternative; boundary="boundary-' . uniqid() . '"',
+                'From: ' . self::$fromName . ' <' . self::$fromEmail . '>',
+                'Reply-To: ' . self::$fromEmail,
+                'X-Mailer: PHP/' . phpversion()
+            ];
+            
+            $boundary = 'boundary-' . uniqid();
+            
+            $message = "--{$boundary}\r\n";
+            $message .= "Content-Type: text/plain; charset=UTF-8\r\n";
+            $message .= "Content-Transfer-Encoding: 7bit\r\n\r\n";
+            $message .= $textBody . "\r\n\r\n";
+            
+            $message .= "--{$boundary}\r\n";
+            $message .= "Content-Type: text/html; charset=UTF-8\r\n";
+            $message .= "Content-Transfer-Encoding: 7bit\r\n\r\n";
+            $message .= $htmlBody . "\r\n\r\n";
+            
+            $message .= "--{$boundary}--";
+            
+            return mail($to, $subject, $message, implode("\r\n", $headers));
+        }
+        
+        // For production (this part remains unchanged)
+        if (false) {
             $logDir = $_SERVER['DOCUMENT_ROOT'] . '/logs';
             if (!is_dir($logDir)) {
                 mkdir($logDir, 0777, true);

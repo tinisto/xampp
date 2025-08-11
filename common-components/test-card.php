@@ -44,7 +44,7 @@ function renderTestCard($test, $showBadge = true) {
                         ]);
                     else: ?>
                         <div class="test-image-placeholder">
-                            <div class="test-icon" style="color: <?= htmlspecialchars($test['color']) ?>;">
+                            <div class="test-icon" style="color: #6c757d;">
                                 <i class="<?= htmlspecialchars($test['icon']) ?>"></i>
                             </div>
                         </div>
@@ -198,7 +198,7 @@ if (!defined('TEST_CARD_CSS_INCLUDED')) {
             overflow: hidden;
         }
         .test-card:hover .test-title {
-            color: #28a745;
+            color: #495057;
         }
         .test-excerpt {
             color: #666;
@@ -239,21 +239,21 @@ if (!defined('TEST_CARD_CSS_INCLUDED')) {
         }
         .btn-teaching {
             background: transparent;
-            color: #28a745;
-            border: 1px solid #28a745;
+            color: #6c757d;
+            border: 1px solid #6c757d;
         }
         .btn-teaching:hover {
-            background: #28a745;
+            background: #6c757d;
             color: white;
             transform: translateY(-1px);
         }
         .btn-full {
             background: transparent;
-            color: #28a745;
-            border: 1px solid #28a745;
+            color: #6c757d;
+            border: 1px solid #6c757d;
         }
         .btn-full:hover {
-            background: #28a745;
+            background: #6c757d;
             color: white;
             transform: translateY(-1px);
         }
