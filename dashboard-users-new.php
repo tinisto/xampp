@@ -135,7 +135,7 @@ ob_start();
         
         <div class="stat-card">
             <i class="fas fa-user-clock" style="color: #ffc107;"></i>
-            <h4><?= count(array_filter($users, fn($u) => strtotime($u['created_at']) > strtotime('-7 days'))) ?></h4>
+            <h4><?= db_fetch_column("SELECT COUNT(*) FROM users WHERE created_at >= datetime('now', '-7 days')") ?: 0 ?></h4>
             <p>Новых за неделю</p>
         </div>
     </div>
@@ -186,8 +186,7 @@ ob_start();
                 <tr style="background: #f8f9fa;">
                     <th style="padding: 15px; text-align: left; color: #666;">ID</th>
                     <th style="padding: 15px; text-align: left; color: #666;">Email</th>
-                    <th style="padding: 15px; text-align: left; color: #666;">Имя</th>
-                    <th style="padding: 15px; text-align: left; color: #666;">Город</th>
+                    <th style="padding: 15px; text-align: left; color: #666;">Имя пользователя</th>
                     <th style="padding: 15px; text-align: left; color: #666;">Роль</th>
                     <th style="padding: 15px; text-align: left; color: #666;">Дата регистрации</th>
                     <th style="padding: 15px; text-align: left; color: #666;">Действия</th>
@@ -204,9 +203,6 @@ ob_start();
                     </td>
                     <td style="padding: 15px;">
                         <?= htmlspecialchars($user['username'] ?: explode('@', $user['email'])[0]) ?>
-                    </td>
-                    <td style="padding: 15px; color: #666;">
-                        -
                     </td>
                     <td style="padding: 15px;">
                         <?php if ($user['role'] === 'admin'): ?>

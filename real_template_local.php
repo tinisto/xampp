@@ -9,20 +9,33 @@ $page_title = $page_title ?? $pageTitle ?? '11klassniki.ru - Российско�
 require_once __DIR__ . '/includes/header_modern.php';
 
 // Template content variables - can be set by including pages
-$greyContent1 = $greyContent1 ?? '<div style="text-align: center; padding: 20px; margin: 0;"><p>Title/Header</p></div>';
-$greyContent2 = $greyContent2 ?? '<div style="text-align: center; padding: 20px; margin: 0;"><p>Navigation/Categories</p></div>';
-$greyContent3 = $greyContent3 ?? '<div style="text-align: center; padding: 20px; margin: 0;"><p>Metadata</p></div>';
-$greyContent4 = $greyContent4 ?? '<div style="text-align: center; padding: 20px; margin: 0;"><p>Recent Content</p></div>';
-$greyContent5 = $greyContent5 ?? '<div style="text-align: center; padding: 20px; margin: 0;"><p>Main Content</p></div>';
-$greyContent6 = $greyContent6 ?? '<div style="text-align: center; padding: 20px; margin: 0;"><p>Footer Content</p></div>';
+$headerContent = $headerContent ?? '<div style="text-align: center; padding: 20px; margin: 0;"><p>Title/Header</p></div>';
+$navigationContent = $navigationContent ?? '<div style="text-align: center; padding: 20px; margin: 0;"><p>Navigation/Categories</p></div>';
+$metadataContent = $metadataContent ?? '<div style="text-align: center; padding: 20px; margin: 0;"><p>Metadata</p></div>';
+$filtersContent = $filtersContent ?? '<div style="text-align: center; padding: 20px; margin: 0;"><p>Recent Content</p></div>';
+$mainContent = $mainContent ?? '<div style="text-align: center; padding: 20px; margin: 0;"><p>Main Content</p></div>';
+$paginationContent = $paginationContent ?? '<div style="text-align: center; padding: 20px; margin: 0;"><p>Footer Content</p></div>';
+$commentsContent = $commentsContent ?? '';
+
+// Support old variable names for backward compatibility
+$headerContent = $greyContent1 ?? $headerContent;
+$navigationContent = $greyContent2 ?? $navigationContent;
+$metadataContent = $greyContent3 ?? $metadataContent;
+$filtersContent = $greyContent4 ?? $filtersContent;
+$mainContent = $greyContent5 ?? $mainContent;
+$paginationContent = $greyContent6 ?? $paginationContent;
+$commentsContent = $blueContent ?? $commentsContent;
 
 // Skip the rest of the HTML - header is already included above
-echo $greyContent1;
-echo $greyContent2;
-echo $greyContent3; 
-echo $greyContent4;
-echo $greyContent5;
-echo $greyContent6;
+echo $headerContent;
+echo $navigationContent;
+echo $metadataContent; 
+echo $filtersContent;
+echo $mainContent;
+echo $paginationContent;
+if (!empty($commentsContent)) {
+    echo $commentsContent;
+}
 
 require_once __DIR__ . '/includes/footer_modern.php';
 return;

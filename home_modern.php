@@ -25,19 +25,19 @@ $latestPosts = db_fetch_all("
 // Section 1: Hero
 ob_start();
 ?>
-<div style="text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+<div style="text-align: center; padding: 40px 20px;">
     <h1 style="font-size: 40px; font-weight: 700; margin-bottom: 15px;">11klassniki.ru</h1>
     <p style="font-size: 18px; opacity: 0.9; max-width: 600px; margin: 0 auto;">
         Одиннадцать шагов к большому будущему
     </p>
 </div>
 <?php
-$greyContent1 = ob_get_clean();
+$headerContent = ob_get_clean();
 
 // Section 2: Statistics
 ob_start();
 ?>
-<div style="padding: 30px 20px; background: #f8f9fa;">
+<div style="padding: 30px 20px;">
     <div style="max-width: 1200px; margin: 0 auto;">
         <h2 style="text-align: center; font-size: 28px; font-weight: 700; margin-bottom: 25px;">Наша база данных</h2>
         
@@ -85,12 +85,12 @@ ob_start();
     </div>
 </div>
 <?php
-$greyContent2 = ob_get_clean();
+$navigationContent = ob_get_clean();
 
 // Section 3: Search
 ob_start();
 ?>
-<div style="padding: 40px 20px; background: white;">
+<div style="padding: 40px 20px;">
     <div style="max-width: 800px; margin: 0 auto; text-align: center;">
         <h2 style="font-size: 26px; font-weight: 700; margin-bottom: 20px;">Поиск по сайту</h2>
         
@@ -107,12 +107,12 @@ ob_start();
     </div>
 </div>
 <?php
-$greyContent3 = ob_get_clean();
+$metadataContent = ob_get_clean();
 
 // Section 4: Latest Articles
 ob_start();
 ?>
-<div style="padding: 40px 20px; background: #f8f9fa;">
+<div style="padding: 40px 20px;">
     <div style="max-width: 1400px; margin: 0 auto;">
         <h2 style="text-align: center; font-size: 28px; font-weight: 700; margin-bottom: 25px;">Полезные статьи</h2>
         
@@ -127,7 +127,7 @@ ob_start();
             <?php foreach ($latestPosts as $post): ?>
             <article style="background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: transform 0.3s; cursor: pointer;"
                      onclick="window.location.href='/post/<?= htmlspecialchars($post['url_slug']) ?>'">
-                <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
+                <div style="width: 100%; height: 200px; background: #f8f9fa; display: flex; align-items: center; justify-content: center;">
                     <i class="fas fa-book-open" style="font-size: 64px; color: white; opacity: 0.8;"></i>
                 </div>
                 
@@ -162,12 +162,12 @@ ob_start();
     </div>
 </div>
 <?php
-$greyContent4 = ob_get_clean();
+$filtersContent = ob_get_clean();
 
 // Section 5: Features
 ob_start();
 ?>
-<div style="padding: 40px 20px; background: white;">
+<div style="padding: 40px 20px;">
     <div style="max-width: 1200px; margin: 0 auto;">
         <h2 style="text-align: center; font-size: 28px; font-weight: 700; margin-bottom: 25px;">Почему выбирают нас</h2>
         
@@ -205,13 +205,13 @@ ob_start();
     </div>
 </div>
 <?php
-$greyContent5 = ob_get_clean();
+$mainContent = ob_get_clean();
 
 // Section 6: Personalized recommendations for logged-in users
 if (isset($_SESSION['user_id'])) {
     ob_start();
     ?>
-    <div style="padding: 60px 20px; background: var(--bg-secondary);">
+    <div style="padding: 60px 20px;">
         <div style="max-width: 1200px; margin: 0 auto;">
             <?php 
             require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/recommendations.php';
@@ -220,12 +220,12 @@ if (isset($_SESSION['user_id'])) {
         </div>
     </div>
     <?php
-    $greyContent6 = ob_get_clean();
+    $paginationContent = ob_get_clean();
 } else {
-    $greyContent6 = '';
+    $paginationContent = '';
 }
 
 // Include template
-$blueContent = '';
+$commentsContent = '';
 include $_SERVER['DOCUMENT_ROOT'] . '/real_template_local.php';
 ?>

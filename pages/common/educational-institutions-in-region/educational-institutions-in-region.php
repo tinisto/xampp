@@ -211,11 +211,11 @@ $institutions_result = $stmt->get_result();
                     // Note: Need to handle different column names for different institution types
                     $town_id_column = ($institution_type === 'vpo') ? 'town_id' : 'id_town';
                     $region_id_column = ($institution_type === 'vpo') ? 'region_id' : 'id_region';
-                    $towns_query = "SELECT DISTINCT t.id_town as town_database_id, t.town_name as town_display_name, t.town_name_en as town_url_slug, COUNT(*) as institution_count 
+                    $towns_query = "SELECT DISTINCT t.town_id as town_database_id, t.town_name as town_display_name, t.town_name_en as town_url_slug, COUNT(*) as institution_count 
                                    FROM towns t 
-                                   JOIN $institution_type inst ON t.id_town = inst.$town_id_column 
-                                   WHERE t.$region_id_column = ? 
-                                   GROUP BY t.id_town, t.town_name, t.town_name_en 
+                                   JOIN $institution_type inst ON t.town_id = inst.$town_id_column 
+                                   WHERE t.region_id = ? 
+                                   GROUP BY t.town_id, t.town_name, t.town_name_en 
                                    ORDER BY t.town_name";
                     $stmt_towns = $connection->prepare($towns_query);
                     $stmt_towns->bind_param("i", $region_database_id);

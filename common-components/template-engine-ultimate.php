@@ -229,7 +229,7 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
             }
             
             .comments-section {
-                padding: 40px; /* 40px padding on BLUE div */
+                padding: 40px;
                 margin: 0 40px; /* Larger margins on desktop */
             }
         }
@@ -506,15 +506,14 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
             ?>
         </div>
         
-        <!-- Main Content (RED background) -->
+        <!-- Main Content -->
         <main class="content">
             <?php echo $content; ?>
         </main>
         
-        <!-- Comments Section (BLUE background) -->
+        <!-- Comments Section -->
         <div class="comments-section" style="display: none;">
-            <h3>Comments Section (Blue Area)</h3>
-            <p>This blue area is for comments - not shown on all pages</p>
+            <!-- Comments content would go here when needed -->
         </div>
     </div>
     
