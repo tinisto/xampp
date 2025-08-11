@@ -184,11 +184,6 @@ ob_start();
                    style="background: #0088cc; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; display: flex; align-items: center; gap: 8px;">
                     <i class="fab fa-telegram"></i> Telegram
                 </a>
-                <a href="https://wa.me/?text=<?= urlencode($post['title_post'] . ' https://11klassniki.ru/post/' . $post['url_slug']) ?>" 
-                   target="_blank"
-                   style="background: #25D366; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; display: flex; align-items: center; gap: 8px;">
-                    <i class="fab fa-whatsapp"></i> WhatsApp
-                </a>
             </div>
         </div>
         
