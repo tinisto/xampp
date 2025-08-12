@@ -1,0 +1,16 @@
+Contact: security@11klassniki.ru
+Expires: 2026-12-31T23:59:59.000Z
+Encryption: https://11klassniki.ru/pgp-key.txt
+Preferred-Languages: ru, en
+Canonical: https://11klassniki.ru/.well-known/security.txt
+
+# Security Policy
+We take security seriously. If you discover a security vulnerability,
+please report it to us privately at security@11klassniki.ru
+
+# Bug Bounty
+We currently do not have a bug bounty program.
+
+# Vulnerability Disclosure
+We will acknowledge receipt within 48 hours and provide updates
+on the resolution progress.

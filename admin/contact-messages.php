@@ -334,7 +334,7 @@ $stats = [
         <div class="container">
             <h1><i class="fas fa-envelope"></i> Сообщения обратной связи</h1>
             <div class="breadcrumb">
-                <a href="/">Главная</a> / <a href="/admin/">Админ панель</a> / Сообщения
+                <a href="/">Главная</a> / <a href="/admin/index.php">Админ панель</a> / Сообщения
                 <span style="float: right; font-size: 14px;">
                     <i class="fas fa-user"></i> <?= htmlspecialchars($_SESSION['user_name'] ?? 'Администратор') ?>
                     | <a href="/admin/logout.php" style="color: #e74c3c;">Выйти</a>

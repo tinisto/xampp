@@ -1,0 +1,43 @@
+# Admin Panel Protection
+DirectoryIndex index.php
+
+# Force login for all admin pages
+<FilesMatch "\.php$">
+    # PHP will handle authentication
+    # No direct restrictions here as login.php needs to be accessible
+</FilesMatch>
+
+# Security Headers for Admin
+<IfModule mod_headers.c>
+    Header always set X-Frame-Options "DENY"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Deny access to sensitive files
+<Files ~ "\.sql$|\.log$|\.md$">
+    Require all denied
+</Files>
+
+# Enable URL rewriting
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Remove .php extension for cleaner URLs
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME}.php -f
+    RewriteRule ^([^.]+)$ $1.php [L]
+    
+    # Redirect index to dashboard
+    RewriteRule ^$ /admin/dashboard.php [L]
+</IfModule>
+
+# Disable directory browsing
+Options -Indexes
+
+# Cache static assets
+<FilesMatch "\.(css|js|png|jpg|jpeg|gif|ico|svg)$">
+    Header set Cache-Control "public, max-age=604800"
+</FilesMatch>

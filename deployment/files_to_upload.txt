@@ -1,0 +1,31 @@
+# Files that must be uploaded to production server
+
+## New Security Files
+/includes/csrf-protection.php
+/includes/rate-limiter.php
+/includes/security-headers.php
+/includes/security-logger.php
+/includes/input-validator.php
+
+## Template Files (renamed)
+/includes/header.php (renamed from header_modern.php)
+/includes/footer.php (renamed from footer_modern.php)
+/template.php (renamed from real_template_local.php)
+
+## Updated PHP Files (43 files total)
+/home_modern.php
+/tests-main-real.php
+/dashboard-users-new.php
+/dashboard-vpo-new.php
+/dashboard-spo-new.php
+/dashboard-posts-functional.php
+/analyze-news-categories.php
+/pages/login/login_process_simple.php
+/pages/registration/registration_process.php
+/pages/search/search-process.php
+/comments/process_comments.php
+/real_template.php (now redirects to template.php)
+/common-components/template-engine-ultimate.php (compatibility wrapper)
+
+## All other files that reference templates
+- Check git log for complete list of 43 modified files

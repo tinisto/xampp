@@ -2,7 +2,7 @@
 // Configuration for the form
 $formConfig = [
     'title' => 'Вход',
-    'action' => '/pages/login/login_process_simple.php',
+    'action' => '/pages/login/login_process.php',
     'submitText' => 'Войти',
     'bottomLink' => [
         'text' => 'Нет аккаунта?',

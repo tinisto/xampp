@@ -429,12 +429,12 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/logo.php';
                         <div class="admin-dropdown" style="position: relative; display: inline-block;">
                             <a href="#" onclick="toggleAdminMenu(event)" style="cursor: pointer;">Админ ▼</a>
                             <div id="adminMenu" class="admin-menu" style="display: none; position: absolute; right: 0; top: 100%; background: white; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-width: 200px; z-index: 1000;">
-                                <a href="/dashboard-overview.php" style="display: block; padding: 10px 15px; color: #333; text-decoration: none; border-bottom: 1px solid #eee;">📊 Обзор</a>
-                                <a href="/dashboard-posts-new.php" style="display: block; padding: 10px 15px; color: #333; text-decoration: none; border-bottom: 1px solid #eee;">📝 Посты</a>
-                                <a href="/dashboard-news-new.php" style="display: block; padding: 10px 15px; color: #333; text-decoration: none; border-bottom: 1px solid #eee;">📰 Новости</a>
-                                <a href="/dashboard-users-new.php" style="display: block; padding: 10px 15px; color: #333; text-decoration: none; border-bottom: 1px solid #eee;">👥 Пользователи</a>
-                                <a href="/dashboard-moderation.php" style="display: block; padding: 10px 15px; color: #333; text-decoration: none; border-bottom: 1px solid #eee;">🔒 Модерация</a>
-                                <a href="/dashboard-analytics.php" style="display: block; padding: 10px 15px; color: #333; text-decoration: none;">📈 Аналитика</a>
+                                <a href="/admin/dashboard.php" style="display: block; padding: 10px 15px; color: #333; text-decoration: none; border-bottom: 1px solid #eee;">📊 Обзор</a>
+                                <a href="/admin/content/posts.php" style="display: block; padding: 10px 15px; color: #333; text-decoration: none; border-bottom: 1px solid #eee;">📝 Посты</a>
+                                <a href="/admin/content/news.php" style="display: block; padding: 10px 15px; color: #333; text-decoration: none; border-bottom: 1px solid #eee;">📰 Новости</a>
+                                <a href="/admin/users/" style="display: block; padding: 10px 15px; color: #333; text-decoration: none; border-bottom: 1px solid #eee;">👥 Пользователи</a>
+                                <a href="/admin/content/moderation.php" style="display: block; padding: 10px 15px; color: #333; text-decoration: none; border-bottom: 1px solid #eee;">🔒 Модерация</a>
+                                <a href="/admin/analytics/" style="display: block; padding: 10px 15px; color: #333; text-decoration: none;">📈 Аналитика</a>
                             </div>
                         </div>
                     <?php endif; ?>
@@ -470,12 +470,12 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/logo.php';
                     <div class="admin-dropdown" style="position: relative; display: inline-block;">
                         <a href="#" onclick="toggleAdminMenu(event)" style="cursor: pointer;">Админ ▼</a>
                         <div id="adminMenu" class="admin-menu" style="display: none; position: absolute; right: 0; top: 100%; background: white; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-width: 200px; z-index: 1000;">
-                            <a href="/dashboard-overview.php" style="display: block; padding: 10px 15px; color: #333; text-decoration: none; border-bottom: 1px solid #eee;">📊 Обзор</a>
-                            <a href="/dashboard-posts-new.php" style="display: block; padding: 10px 15px; color: #333; text-decoration: none; border-bottom: 1px solid #eee;">📝 Посты</a>
-                            <a href="/dashboard-news-new.php" style="display: block; padding: 10px 15px; color: #333; text-decoration: none; border-bottom: 1px solid #eee;">📰 Новости</a>
-                            <a href="/dashboard-users-new.php" style="display: block; padding: 10px 15px; color: #333; text-decoration: none; border-bottom: 1px solid #eee;">👥 Пользователи</a>
-                            <a href="/dashboard-moderation.php" style="display: block; padding: 10px 15px; color: #333; text-decoration: none; border-bottom: 1px solid #eee;">🔒 Модерация</a>
-                            <a href="/dashboard-analytics.php" style="display: block; padding: 10px 15px; color: #333; text-decoration: none;">📈 Аналитика</a>
+                            <a href="/admin/dashboard.php" style="display: block; padding: 10px 15px; color: #333; text-decoration: none; border-bottom: 1px solid #eee;">📊 Обзор</a>
+                            <a href="/admin/content/posts.php" style="display: block; padding: 10px 15px; color: #333; text-decoration: none; border-bottom: 1px solid #eee;">📝 Посты</a>
+                            <a href="/admin/content/news.php" style="display: block; padding: 10px 15px; color: #333; text-decoration: none; border-bottom: 1px solid #eee;">📰 Новости</a>
+                            <a href="/admin/users/" style="display: block; padding: 10px 15px; color: #333; text-decoration: none; border-bottom: 1px solid #eee;">👥 Пользователи</a>
+                            <a href="/admin/content/moderation.php" style="display: block; padding: 10px 15px; color: #333; text-decoration: none; border-bottom: 1px solid #eee;">🔒 Модерация</a>
+                            <a href="/admin/analytics/" style="display: block; padding: 10px 15px; color: #333; text-decoration: none;">📈 Аналитика</a>
                         </div>
                     </div>
                 <?php endif; ?>

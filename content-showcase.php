@@ -292,7 +292,7 @@ $stats = [
                 <a href="/events" class="btn btn-info">
                     <i class="fas fa-calendar me-2"></i>All Events
                 </a>
-                <a href="/dashboard-overview.php" class="btn btn-secondary">
+                <a href="/admin/dashboard.php" class="btn btn-secondary">
                     <i class="fas fa-tachometer-alt me-2"></i>System Overview
                 </a>
             </div>

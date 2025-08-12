@@ -1,0 +1,17 @@
+# Files to DELETE from production server
+
+## Old Template Files
+/includes/header_modern.php
+/includes/footer_modern.php
+/real_template_local.php
+
+## Unused Header/Footer Files
+/common-components/header-diagnostic.php
+/common-components/real_header.php
+/common-components/real_footer.php
+/pages/common/educational-institutions-in-region/header-links.php
+
+## Old Template Files (if they exist)
+/real_template_broken.php
+/real_template_current.php
+/real_template_fixed.php

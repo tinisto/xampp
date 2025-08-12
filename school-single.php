@@ -1,320 +1,305 @@
 <?php
-// Modern School single page
-require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_modern.php';
+// Single school page - migrated to use real_template.php
+require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
 
-// Get school slug from URL
-$schoolSlug = isset($_GET['slug']) ? $_GET['slug'] : '';
-
-if (!$schoolSlug) {
-    header('Location: /schools');
-    exit;
+// Get school URL from parameter
+$schoolUrl = $_GET['url_slug'] ?? '';
+if (empty($schoolUrl)) {
+    header("Location: /schools-all-regions");
+    exit();
 }
 
-// Fetch school data
-$school = db_fetch_one("
-    SELECT s.*
-    FROM schools s
-    WHERE s.url_slug = ?
-", [$schoolSlug]);
+// Get school data
+$query = "SELECT s.*, r.title_region, r.url_region, t.title_town,
+                 (SELECT COUNT(*) FROM comments WHERE entity_type = 'school' AND entity_id = s.id_school) as comment_count
+          FROM schools s
+          LEFT JOIN regions r ON s.region_id = r.id_region
+          LEFT JOIN towns t ON s.town_id = t.id_town
+          WHERE s.url_school = ?";
+$stmt = $connection->prepare($query);
+$stmt->bind_param("s", $schoolUrl);
+$stmt->execute();
+$result = $stmt->get_result();
+$school = $result->fetch_assoc();
 
 if (!$school) {
-    header('HTTP/1.0 404 Not Found');
-    include $_SERVER['DOCUMENT_ROOT'] . '/404_modern.php';
-    exit;
+    header("Location: /404");
+    exit();
 }
 
-// Get similar schools (same region)
-$similarSchools = db_fetch_all("
-    SELECT id, name, url_slug, full_name
-    FROM schools 
-    WHERE region_id = ? AND id != ?
-    ORDER BY RAND()
-    LIMIT 4
-", [$school['region_id'], $school['id']]);
+// Update view count
+$updateQuery = "UPDATE schools SET view_school = view_school + 1 WHERE id_school = ?";
+$updateStmt = $connection->prepare($updateQuery);
+$updateStmt->bind_param("i", $school['id_school']);
+$updateStmt->execute();
 
-// Prepare content for template
-$pageTitle = $school['name'];
-
-// Section 1: Title and main info
+// Section 1: Title
 ob_start();
-?>
-<div style="padding: 50px 20px; margin: 0; background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%); color: white;">
-    <div style="max-width: 1000px; margin: 0 auto;">
-        <div style="display: flex; align-items: start; gap: 40px; flex-wrap: wrap;">
-            <div style="width: 120px; height: 120px; background: white; border-radius: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
-                <?php if ($school['logo']): ?>
-                <img src="<?= htmlspecialchars($school['image_1']) ?>" alt="<?= htmlspecialchars($school['name']) ?>" 
-                     style="max-width: 100px; max-height: 100px;">
-                <?php else: ?>
-                <i class="fas fa-graduation-cap" style="font-size: 48px; color: #f5576c;"></i>
-                <?php endif; ?>
-            </div>
-            
-            <div style="flex: 1;">
-                <h1 style="font-size: 36px; font-weight: 700; margin-bottom: 20px; line-height: 1.2;">
-                    <?= htmlspecialchars($school['name']) ?>
-                </h1>
-                
-                <div style="display: flex; gap: 30px; flex-wrap: wrap; font-size: 16px; opacity: 0.9;">
-                    <?php if ($school['site']): ?>
-                    <a href="<?= htmlspecialchars($school['site']) ?>" target="_blank" 
-                       style="color: white; text-decoration: none; display: flex; align-items: center; gap: 8px;">
-                        <i class="fas fa-globe"></i> Официальный сайт
-                    </a>
-                    <?php endif; ?>
-                    
-                    <?php if ($school['tel']): ?>
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <i class="fas fa-phone"></i> <?= htmlspecialchars($school['tel']) ?>
-                    </div>
-                    <?php endif; ?>
-                    
-                    <?php if ($school['email']): ?>
-                    <a href="mailto:<?= htmlspecialchars($school['email']) ?>" 
-                       style="color: white; text-decoration: none; display: flex; align-items: center; gap: 8px;">
-                        <i class="fas fa-envelope"></i> <?= htmlspecialchars($school['email']) ?>
-                    </a>
-                    <?php endif; ?>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<?php
+include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/real_title.php';
+renderRealTitle($school['title_school'], [
+    'fontSize' => '32px',
+    'margin' => '30px 0'
+]);
 $greyContent1 = ob_get_clean();
 
-// Section 2: Breadcrumbs
+// Section 2: Breadcrumb navigation
 ob_start();
-?>
-<div style="padding: 15px 20px; background: #f8f9fa; margin: 0;">
-    <div style="max-width: 1000px; margin: 0 auto;">
-        <nav style="font-size: 14px;">
-            <a href="/" style="color: #666; text-decoration: none;">Главная</a>
-            <span style="color: #999; margin: 0 10px;">›</span>
-            <a href="/schools" style="color: #666; text-decoration: none;">Школы</a>
-            <span style="color: #999; margin: 0 10px;">›</span>
-            <span style="color: #333;"><?= htmlspecialchars($school['name']) ?></span>
-        </nav>
-    </div>
-</div>
-<?php
+include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/breadcrumb.php';
+$breadcrumbItems = [
+    ['text' => 'Главная', 'url' => '/'],
+    ['text' => 'Школы по регионам', 'url' => '/schools-all-regions']
+];
+if ($school['title_region']) {
+    $breadcrumbItems[] = ['text' => $school['title_region'], 'url' => '/schools-in-region/' . $school['url_region']];
+}
+$breadcrumbItems[] = ['text' => $school['title_school']];
+renderBreadcrumb($breadcrumbItems);
 $greyContent2 = ob_get_clean();
 
-// Section 3: Main information
+// Section 3: Metadata
 ob_start();
 ?>
-<div style="padding: 40px 20px; margin: 0; background: white;">
-    <div style="max-width: 1000px; margin: 0 auto;">
-        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 40px;">
-            <!-- Left column -->
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 20px; border-top: 1px solid #eee; border-bottom: 1px solid #eee;">
+    <div style="display: flex; gap: 30px; align-items: center; flex-wrap: wrap;">
+        <?php if ($school['city_school'] || $school['title_town']): ?>
             <div>
-                <?php if ($school['full_name'] && $school['full_name'] != $school['name']): ?>
-                <section style="margin-bottom: 40px;">
-                    <h2 style="font-size: 24px; font-weight: 600; margin-bottom: 20px; color: #333;">О школе</h2>
-                    <div style="font-size: 16px; line-height: 1.8; color: #666;">
-                        <?= nl2br(htmlspecialchars($school['full_name'])) ?>
-                    </div>
-                </section>
-                <?php endif; ?>
-                
-                <!-- Educational programs section -->
-                <section style="margin-bottom: 40px;">
-                    <h2 style="font-size: 24px; font-weight: 600; margin-bottom: 20px; color: #333;">Образовательные программы</h2>
-                    <div style="display: grid; gap: 20px;">
-                        <div style="background: #fff3e0; padding: 25px; border-radius: 12px;">
-                            <h4 style="margin: 0 0 15px 0; color: #e65100;"><i class="fas fa-book"></i> Начальное образование (1-4 классы)</h4>
-                            <p style="margin: 0; color: #666;">Основы грамотности, математики, окружающего мира. Развитие творческих способностей и социальных навыков.</p>
-                        </div>
-                        
-                        <div style="background: #e8f5e9; padding: 25px; border-radius: 12px;">
-                            <h4 style="margin: 0 0 15px 0; color: #2e7d32;"><i class="fas fa-microscope"></i> Основное общее образование (5-9 классы)</h4>
-                            <p style="margin: 0; color: #666;">Углубленное изучение предметов, подготовка к ОГЭ, профориентация, проектная деятельность.</p>
-                        </div>
-                        
-                        <div style="background: #e3f2fd; padding: 25px; border-radius: 12px;">
-                            <h4 style="margin: 0 0 15px 0; color: #1976d2;"><i class="fas fa-user-graduate"></i> Среднее общее образование (10-11 классы)</h4>
-                            <p style="margin: 0; color: #666;">Профильное обучение, подготовка к ЕГЭ, индивидуальные образовательные траектории.</p>
-                        </div>
-                    </div>
-                </section>
-                
-                <!-- Special features -->
-                <section style="margin-bottom: 40px;">
-                    <h2 style="font-size: 24px; font-weight: 600; margin-bottom: 20px; color: #333;">Особенности школы</h2>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-                        <?php
-                        $features = [
-                            ['icon' => 'language', 'title' => 'Углубленное изучение языков', 'color' => '#4caf50'],
-                            ['icon' => 'laptop', 'title' => 'IT-классы', 'color' => '#2196f3'],
-                            ['icon' => 'flask', 'title' => 'Научные лаборатории', 'color' => '#9c27b0'],
-                            ['icon' => 'dumbbell', 'title' => 'Спортивные секции', 'color' => '#ff5722'],
-                            ['icon' => 'palette', 'title' => 'Творческие студии', 'color' => '#ff9800'],
-                            ['icon' => 'users', 'title' => 'Малые классы', 'color' => '#00bcd4'],
-                        ];
-                        foreach ($features as $feature):
-                        ?>
-                        <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; text-align: center;">
-                            <i class="fas fa-<?= $feature['icon'] ?>" style="font-size: 32px; color: <?= $feature['color'] ?>; margin-bottom: 10px;"></i>
-                            <p style="margin: 0; font-weight: 600; color: #333;"><?= $feature['title'] ?></p>
-                        </div>
-                        <?php endforeach; ?>
-                    </div>
-                </section>
-                
-                <!-- Admission info -->
-                <section style="margin-bottom: 40px;">
-                    <h2 style="font-size: 24px; font-weight: 600; margin-bottom: 20px; color: #333;">Прием в школу</h2>
-                    <div style="background: #fce4ec; padding: 25px; border-radius: 12px;">
-                        <h4 style="margin: 0 0 15px 0; color: #c2185b;">Документы для поступления в 1 класс:</h4>
-                        <ul style="margin: 0; padding-left: 20px; color: #666;">
-                            <li>Заявление родителей (законных представителей)</li>
-                            <li>Свидетельство о рождении ребенка</li>
-                            <li>Документ о регистрации ребенка по месту жительства</li>
-                            <li>Медицинская карта (форма 026/у)</li>
-                            <li>СНИЛС ребенка</li>
-                            <li>Паспорт родителя (законного представителя)</li>
-                        </ul>
-                        <p style="margin: 20px 0 0 0; color: #666; font-style: italic;">
-                            Прием заявлений в 1 класс начинается с 1 апреля для детей, проживающих на закрепленной территории.
-                        </p>
-                    </div>
-                </section>
+                <i class="fas fa-map-marker-alt" style="color: #666; margin-right: 8px;"></i>
+                <span style="color: #666;"><?= htmlspecialchars($school['city_school'] ?: $school['title_town']) ?></span>
             </div>
-            
-            <!-- Right column - contact info -->
+        <?php endif; ?>
+        <?php if ($school['title_region']): ?>
             <div>
-                <div style="background: #f8f9fa; padding: 30px; border-radius: 12px; position: sticky; top: 20px;">
-                    <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 20px; color: #333;">Контактная информация</h3>
-                    
-                    <?php if ($school['street']): ?>
-                    <div style="margin-bottom: 20px;">
-                        <h4 style="font-size: 16px; font-weight: 600; color: #666; margin-bottom: 8px;">
-                            <i class="fas fa-map-marker-alt" style="color: #f5576c;"></i> Адрес
-                        </h4>
-                        <p style="margin: 0; color: #666;"><?= htmlspecialchars($school['street']) ?></p>
-                    </div>
-                    <?php endif; ?>
-                    
-                    <?php if ($school['tel']): ?>
-                    <div style="margin-bottom: 20px;">
-                        <h4 style="font-size: 16px; font-weight: 600; color: #666; margin-bottom: 8px;">
-                            <i class="fas fa-phone" style="color: #f5576c;"></i> Телефон
-                        </h4>
-                        <p style="margin: 0;"><a href="tel:<?= htmlspecialchars($school['tel']) ?>" style="color: #f5576c; text-decoration: none;">
-                            <?= htmlspecialchars($school['tel']) ?>
-                        </a></p>
-                    </div>
-                    <?php endif; ?>
-                    
-                    <?php if ($school['email']): ?>
-                    <div style="margin-bottom: 20px;">
-                        <h4 style="font-size: 16px; font-weight: 600; color: #666; margin-bottom: 8px;">
-                            <i class="fas fa-envelope" style="color: #f5576c;"></i> Email
-                        </h4>
-                        <p style="margin: 0;"><a href="mailto:<?= htmlspecialchars($school['email']) ?>" style="color: #f5576c; text-decoration: none;">
-                            <?= htmlspecialchars($school['email']) ?>
-                        </a></p>
-                    </div>
-                    <?php endif; ?>
-                    
-                    <?php if ($school['site']): ?>
-                    <a href="<?= htmlspecialchars($school['site']) ?>" target="_blank"
-                       style="display: block; background: #f5576c; color: white; text-align: center; padding: 12px 20px; border-radius: 8px; text-decoration: none; font-weight: 500; margin-top: 20px;">
-                        <i class="fas fa-external-link-alt"></i> Перейти на сайт
-                    </a>
-                    <?php endif; ?>
-                    
-                    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #dee2e6;">
-                        <h4 style="font-size: 16px; font-weight: 600; color: #666; margin-bottom: 15px;">
-                            <i class="fas fa-clock" style="color: #f5576c;"></i> Режим работы
-                        </h4>
-                        <p style="margin: 0; color: #666; font-size: 14px;">
-                            Пн-Пт: 8:00 - 19:00<br>
-                            Сб: 8:00 - 15:00<br>
-                            Вс: выходной
-                        </p>
-                    </div>
-                    
-                    <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #dee2e6;">
-                        <h4 style="font-size: 16px; font-weight: 600; color: #666; margin-bottom: 15px;">
-                            <i class="fas fa-info-circle" style="color: #f5576c;"></i> Дополнительно
-                        </h4>
-                        <div style="display: grid; gap: 10px; font-size: 14px; color: #666;">
-                            <div><i class="fas fa-check" style="color: #4caf50;"></i> Группа продленного дня</div>
-                            <div><i class="fas fa-check" style="color: #4caf50;"></i> Школьная столовая</div>
-                            <div><i class="fas fa-check" style="color: #4caf50;"></i> Медицинский кабинет</div>
-                            <div><i class="fas fa-check" style="color: #4caf50;"></i> Охрана и видеонаблюдение</div>
-                        </div>
-                    </div>
-                </div>
+                <i class="fas fa-globe" style="color: #666; margin-right: 8px;"></i>
+                <span style="color: #666;"><?= htmlspecialchars($school['title_region']) ?></span>
             </div>
+        <?php endif; ?>
+        <div>
+            <i class="fas fa-eye" style="color: #666; margin-right: 8px;"></i>
+            <span style="color: #666;"><?= number_format($school['view_school'] ?? 0) ?> просмотров</span>
+        </div>
+        <div>
+            <i class="fas fa-comments" style="color: #666; margin-right: 8px;"></i>
+            <span style="color: #666;"><?= $school['comment_count'] ?> комментариев</span>
         </div>
     </div>
 </div>
 <?php
 $greyContent3 = ob_get_clean();
 
-// Section 4: Similar schools
+// Section 4: Contact info tabs
 ob_start();
-if (!empty($similarSchools)):
 ?>
-<div style="background: #f8f9fa; padding: 60px 20px; margin: 0;">
-    <div style="max-width: 1200px; margin: 0 auto;">
-        <h2 style="font-size: 28px; font-weight: 700; margin-bottom: 40px; text-align: center;">Другие школы района</h2>
-        
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px;">
-            <?php foreach ($similarSchools as $similar): ?>
-            <article style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.3s;">
-                <div style="height: 8px; background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);"></div>
-                
-                <div style="padding: 25px;">
-                    <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 15px; line-height: 1.4;">
-                        <a href="/school/<?= htmlspecialchars($similar['url_slug']) ?>" 
-                           style="color: #333; text-decoration: none;">
-                            <?= htmlspecialchars($similar['name']) ?>
-                        </a>
-                    </h3>
-                    
-                    <?php if ($similar['full_name'] && $similar['full_name'] != $similar['name']): ?>
-                    <p style="color: #666; font-size: 14px; line-height: 1.6;">
-                        <?= htmlspecialchars(mb_substr($similar['full_name'], 0, 100)) ?>...
-                    </p>
-                    <?php endif; ?>
-                    
-                    <a href="/school/<?= htmlspecialchars($similar['url_slug']) ?>" 
-                       style="display: inline-flex; align-items: center; gap: 5px; margin-top: 15px; color: #f5576c; text-decoration: none; font-weight: 500;">
-                        Подробнее <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-            </article>
-            <?php endforeach; ?>
-        </div>
+<div style="padding: 20px;">
+    <div style="display: flex; gap: 20px; border-bottom: 2px solid #eee; margin-bottom: 20px;">
+        <button onclick="showTab('info')" id="tab-info" style="padding: 10px 20px; background: none; border: none; border-bottom: 3px solid #28a745; font-weight: 600; color: #28a745; cursor: pointer;">
+            Общая информация
+        </button>
+        <button onclick="showTab('contacts')" id="tab-contacts" style="padding: 10px 20px; background: none; border: none; border-bottom: 3px solid transparent; font-weight: 600; color: #666; cursor: pointer;">
+            Контакты
+        </button>
+        <button onclick="showTab('administration')" id="tab-administration" style="padding: 10px 20px; background: none; border: none; border-bottom: 3px solid transparent; font-weight: 600; color: #666; cursor: pointer;">
+            Администрация
+        </button>
     </div>
 </div>
+<script>
+function showTab(tab) {
+    // Hide all tabs
+    document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+    document.querySelectorAll('[id^="tab-"]').forEach(b => {
+        b.style.borderBottomColor = 'transparent';
+        b.style.color = '#666';
+    });
+    
+    // Show selected tab
+    document.getElementById('content-' + tab).style.display = 'block';
+    document.getElementById('tab-' + tab).style.borderBottomColor = '#28a745';
+    document.getElementById('tab-' + tab).style.color = '#28a745';
+}
+</script>
 <?php
-endif;
 $greyContent4 = ob_get_clean();
 
-// Section 5: Navigation
+// Section 5: Main content
 ob_start();
 ?>
-<div style="padding: 40px 20px; margin: 0; background: white;">
-    <div style="max-width: 1000px; margin: 0 auto; text-align: center;">
-        <a href="/schools" 
-           style="display: inline-block; background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%); color: white; padding: 15px 40px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px; transition: transform 0.3s;"
-           onmouseover="this.style.transform='translateY(-2px)'"
-           onmouseout="this.style.transform='translateY(0)'">
-            <i class="fas fa-arrow-left"></i> Все школы
-        </a>
+<div style="padding: 0 20px 30px 20px;">
+    <!-- Info Tab -->
+    <div id="content-info" class="tab-content" style="display: block;">
+        <?php if ($school['description_school']): ?>
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: #333; margin-bottom: 15px;">Описание</h3>
+                <div style="color: #666; line-height: 1.8;">
+                    <?= nl2br(htmlspecialchars($school['description_school'])) ?>
+                </div>
+            </div>
+        <?php endif; ?>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+            <?php if ($school['type_school']): ?>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                    <h4 style="color: #333; margin: 0 0 10px 0;">Тип учреждения</h4>
+                    <p style="color: #666; margin: 0;"><?= htmlspecialchars($school['type_school']) ?></p>
+                </div>
+            <?php endif; ?>
+            
+            <?php if ($school['founded_year']): ?>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                    <h4 style="color: #333; margin: 0 0 10px 0;">Год основания</h4>
+                    <p style="color: #666; margin: 0;"><?= htmlspecialchars($school['founded_year']) ?></p>
+                </div>
+            <?php endif; ?>
+            
+            <?php if ($school['students_count']): ?>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                    <h4 style="color: #333; margin: 0 0 10px 0;">Количество учеников</h4>
+                    <p style="color: #666; margin: 0;"><?= number_format($school['students_count']) ?></p>
+                </div>
+            <?php endif; ?>
+            
+            <?php if ($school['teachers_count']): ?>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                    <h4 style="color: #333; margin: 0 0 10px 0;">Количество учителей</h4>
+                    <p style="color: #666; margin: 0;"><?= number_format($school['teachers_count']) ?></p>
+                </div>
+            <?php endif; ?>
+        </div>
+        
+        <?php if ($school['full_name_school'] && $school['full_name_school'] !== $school['title_school']): ?>
+            <div style="margin-top: 30px;">
+                <h3 style="color: #333; margin-bottom: 15px;">Полное наименование</h3>
+                <p style="color: #666; line-height: 1.6;"><?= htmlspecialchars($school['full_name_school']) ?></p>
+            </div>
+        <?php endif; ?>
+    </div>
+    
+    <!-- Contacts Tab -->
+    <div id="content-contacts" class="tab-content" style="display: none;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+            <?php if ($school['address_school']): ?>
+                <div>
+                    <h4 style="color: #333; margin: 0 0 10px 0;"><i class="fas fa-map-marker-alt" style="margin-right: 8px;"></i>Адрес</h4>
+                    <p style="color: #666; margin: 0;"><?= htmlspecialchars($school['address_school']) ?></p>
+                    <?php if ($school['zip_code']): ?>
+                        <p style="color: #666; margin: 5px 0 0 0;">Индекс: <?= htmlspecialchars($school['zip_code']) ?></p>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
+            
+            <?php if ($school['tel']): ?>
+                <div>
+                    <h4 style="color: #333; margin: 0 0 10px 0;"><i class="fas fa-phone" style="margin-right: 8px;"></i>Телефон</h4>
+                    <p style="color: #666; margin: 0;"><?= htmlspecialchars($school['tel']) ?></p>
+                </div>
+            <?php endif; ?>
+            
+            <?php if ($school['email']): ?>
+                <div>
+                    <h4 style="color: #333; margin: 0 0 10px 0;"><i class="fas fa-envelope" style="margin-right: 8px;"></i>Email</h4>
+                    <p style="color: #666; margin: 0;"><a href="mailto:<?= htmlspecialchars($school['email']) ?>" style="color: #28a745;"><?= htmlspecialchars($school['email']) ?></a></p>
+                </div>
+            <?php endif; ?>
+            
+            <?php if ($school['site']): ?>
+                <div>
+                    <h4 style="color: #333; margin: 0 0 10px 0;"><i class="fas fa-globe" style="margin-right: 8px;"></i>Сайт</h4>
+                    <p style="color: #666; margin: 0;"><a href="<?= htmlspecialchars($school['site']) ?>" target="_blank" style="color: #28a745;"><?= htmlspecialchars($school['site']) ?></a></p>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+    
+    <!-- Administration Tab -->
+    <div id="content-administration" class="tab-content" style="display: none;">
+        <?php if ($school['director_name']): ?>
+            <div style="margin-bottom: 30px;">
+                <h4 style="color: #333; margin: 0 0 15px 0;">Директор</h4>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                    <p style="color: #333; margin: 0 0 10px 0; font-size: 18px; font-weight: 500;">
+                        <?= htmlspecialchars($school['director_name']) ?>
+                    </p>
+                    <?php if ($school['director_phone']): ?>
+                        <p style="color: #666; margin: 5px 0;">
+                            <i class="fas fa-phone" style="width: 20px;"></i>
+                            <?= htmlspecialchars($school['director_phone']) ?>
+                        </p>
+                    <?php endif; ?>
+                    <?php if ($school['director_email']): ?>
+                        <p style="color: #666; margin: 5px 0;">
+                            <i class="fas fa-envelope" style="width: 20px;"></i>
+                            <a href="mailto:<?= htmlspecialchars($school['director_email']) ?>" style="color: #28a745;">
+                                <?= htmlspecialchars($school['director_email']) ?>
+                            </a>
+                        </p>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
 <?php
 $greyContent5 = ob_get_clean();
 
-// Section 6: Empty
-$greyContent6 = '';
+// Section 6: Related schools
+ob_start();
+// Get related schools from same region
+if ($school['region_id']) {
+    $relatedQuery = "SELECT id_school, title_school, url_school, city_school
+                     FROM schools 
+                     WHERE region_id = ? AND id_school != ? 
+                     ORDER BY RAND() 
+                     LIMIT 4";
+    $stmt = $connection->prepare($relatedQuery);
+    $stmt->bind_param("ii", $school['region_id'], $school['id_school']);
+    $stmt->execute();
+    $relatedResult = $stmt->get_result();
+    $relatedSchools = [];
+    while ($row = $relatedResult->fetch_assoc()) {
+        $relatedSchools[] = [
+            'id_news' => $row['id_school'],
+            'title_news' => $row['title_school'],
+            'url_news' => $row['url_school'],
+            'image_news' => '/images/default-school.jpg',
+            'created_at' => date('Y-m-d'),
+            'category_title' => $row['city_school'] ?: 'Город не указан',
+            'category_url' => '#'
+        ];
+    }
 
-// Include template
-$blueContent = '';
-include $_SERVER['DOCUMENT_ROOT'] . '/template.php';
+    if (count($relatedSchools) > 0) {
+        echo '<div style="padding: 20px;">';
+        include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/real_title.php';
+        renderRealTitle('Другие школы региона', ['fontSize' => '24px', 'margin' => '0 0 20px 0']);
+        
+        include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/cards-grid.php';
+        renderCardsGrid($relatedSchools, 'school', [
+            'columns' => 4,
+            'gap' => 20,
+            'showBadge' => true
+        ]);
+        echo '</div>';
+    }
+}
+$greyContent6 = ob_get_clean();
+
+// Section 7: Beautiful Threaded Comments
+ob_start();
+// Include the new threaded comments component
+include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/threaded-comments.php';
+renderThreadedComments('school', $school['id_school'], [
+    'title' => 'Отзывы о школе',
+    'loadLimit' => 10,
+    'allowNewComments' => true,
+    'allowReplies' => true,
+    'maxDepth' => 5
+]);
+$blueContent = ob_get_clean();
+
+// Set page title and metadata
+$pageTitle = $school['title_school'];
+$metaD = $school['description_school'] ? substr($school['description_school'], 0, 160) : 'Информация о школе ' . $school['title_school'];
+$metaK = $school['title_school'] . ', школа, ' . $school['city_school'] . ', ' . $school['title_region'];
+
+// Include the template
+include $_SERVER['DOCUMENT_ROOT'] . '/real_template.php';
 ?>

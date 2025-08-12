@@ -1,199 +1,133 @@
 <?php
-// Terms of use page
-session_start();
-$page_title = 'Условия использования - 11klassniki.ru';
+// Terms page - migrated to use real_template.php
 
-// Section 1: Hero
+// Section 1: Title
 ob_start();
-?>
-<div style="padding: 20px 20px 20px; background: white; box-shadow: 0 1px 0 rgba(0,0,0,0.08);">
-    <div style="max-width: 800px; margin: 0 auto; text-align: center;">
-        <h1 style="font-size: 44px; font-weight: 800; margin-bottom: 16px; color: #222222; letter-spacing: -0.02em;">
-            Условия использования
-        </h1>
-        <p style="font-size: 18px; color: #717171; line-height: 1.5;">
-            Правила пользования платформой 11klassniki.ru
-        </p>
-        <div style="font-size: 14px; color: #717171; margin-top: 15px;">
-            Дата последнего обновления: <?php echo date('d.m.Y'); ?>
-        </div>
-    </div>
-</div>
-<?php
+include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/real_title.php';
+renderRealTitle('Условия использования', [
+    'fontSize' => '32px',
+    'margin' => '30px 0',
+    'subtitle' => 'Последнее обновление: ' . date('d.m.Y')
+]);
 $greyContent1 = ob_get_clean();
 
-// Section 2: General terms
+// Section 2: Empty navigation
+$greyContent2 = '';
+
+// Section 3: Empty
+$greyContent3 = '';
+
+// Section 4: Empty
+$greyContent4 = '';
+
+// Section 5: Terms Content
 ob_start();
 ?>
-<div style="padding: 30px 20px; background: white;">
-    <div style="max-width: 800px; margin: 0 auto;">
-        <h2 style="font-size: 28px; font-weight: 600; margin-bottom: 30px; color: #333;">1. Общие положения</h2>
+<div style="max-width: 800px; margin: 0 auto; padding: 20px;">
+    <div style="background: var(--surface, #ffffff); padding: 40px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
         
-        <div style="margin-bottom: 30px;">
-            <p style="color: #555; line-height: 1.7; margin-bottom: 15px;">
-                Данные Условия использования регулируют порядок пользования веб-сайтом 11klassniki.ru (далее — «Сайт») 
-                и предоставляемыми на нем услугами (далее — «Услуги»).
-            </p>
-            <p style="color: #555; line-height: 1.7; margin-bottom: 15px;">
-                Используя Сайт, вы подтверждаете, что:
-            </p>
-            <ul style="color: #555; line-height: 1.7; margin-left: 20px;">
-                <li style="margin-bottom: 8px;">Ознакомились с настоящими Условиями и согласны с ними</li>
-                <li style="margin-bottom: 8px;">Достигли возраста 14 лет или используете Сайт с разрешения родителей/опекунов</li>
-                <li style="margin-bottom: 8px;">Обладаете правоспособностью заключать соглашения</li>
-            </ul>
-        </div>
+        <h2 style="color: var(--text-primary, #333); margin-bottom: 20px;">1. Общие условия</h2>
+        <p style="color: var(--text-secondary, #666); line-height: 1.8; margin-bottom: 20px;">
+            Используя сайт 11klassniki.ru, вы соглашаетесь с настоящими условиями использования. 
+            Если вы не согласны с какими-либо условиями, пожалуйста, не используйте наш сайт.
+        </p>
+        
+        <h2 style="color: var(--text-primary, #333); margin-bottom: 20px; margin-top: 30px;">2. Регистрация и аккаунт</h2>
+        <p style="color: var(--text-secondary, #666); line-height: 1.8; margin-bottom: 15px;">
+            При регистрации вы обязуетесь:
+        </p>
+        <ul style="color: var(--text-secondary, #666); line-height: 1.8; margin-left: 20px; margin-bottom: 20px;">
+            <li>Предоставлять достоверную информацию</li>
+            <li>Поддерживать актуальность своих данных</li>
+            <li>Сохранять конфиденциальность пароля</li>
+            <li>Нести ответственность за все действия под своим аккаунтом</li>
+        </ul>
+        
+        <h2 style="color: var(--text-primary, #333); margin-bottom: 20px; margin-top: 30px;">3. Правила поведения</h2>
+        <p style="color: var(--text-secondary, #666); line-height: 1.8; margin-bottom: 15px;">
+            Пользователям запрещается:
+        </p>
+        <ul style="color: var(--text-secondary, #666); line-height: 1.8; margin-left: 20px; margin-bottom: 20px;">
+            <li>Размещать недостоверную информацию</li>
+            <li>Нарушать права других пользователей</li>
+            <li>Использовать нецензурную лексику</li>
+            <li>Размещать спам и рекламу без согласования</li>
+            <li>Пытаться получить несанкционированный доступ</li>
+        </ul>
+        
+        <h2 style="color: var(--text-primary, #333); margin-bottom: 20px; margin-top: 30px;">4. Контент пользователей</h2>
+        <p style="color: var(--text-secondary, #666); line-height: 1.8; margin-bottom: 20px;">
+            Размещая контент на сайте, вы:
+        </p>
+        <ul style="color: var(--text-secondary, #666); line-height: 1.8; margin-left: 20px; margin-bottom: 20px;">
+            <li>Гарантируете, что обладаете правами на размещаемый контент</li>
+            <li>Предоставляете нам право использовать этот контент</li>
+            <li>Несете ответственность за размещенную информацию</li>
+        </ul>
+        
+        <h2 style="color: var(--text-primary, #333); margin-bottom: 20px; margin-top: 30px;">5. Интеллектуальная собственность</h2>
+        <p style="color: var(--text-secondary, #666); line-height: 1.8; margin-bottom: 20px;">
+            Все материалы сайта, включая тексты, изображения, дизайн, являются объектами 
+            интеллектуальной собственности и защищены законодательством РФ.
+        </p>
+        
+        <h2 style="color: var(--text-primary, #333); margin-bottom: 20px; margin-top: 30px;">6. Ограничение ответственности</h2>
+        <p style="color: var(--text-secondary, #666); line-height: 1.8; margin-bottom: 20px;">
+            Администрация сайта не несет ответственности за:
+        </p>
+        <ul style="color: var(--text-secondary, #666); line-height: 1.8; margin-left: 20px; margin-bottom: 20px;">
+            <li>Действия пользователей на сайте</li>
+            <li>Качество и достоверность размещенной информации</li>
+            <li>Прямые или косвенные убытки от использования сайта</li>
+        </ul>
+        
+        <h2 style="color: var(--text-primary, #333); margin-bottom: 20px; margin-top: 30px;">7. Изменение условий</h2>
+        <p style="color: var(--text-secondary, #666); line-height: 1.8; margin-bottom: 20px;">
+            Мы оставляем за собой право изменять данные условия. Продолжая использовать сайт после 
+            внесения изменений, вы соглашаетесь с новыми условиями.
+        </p>
+        
+        <h2 style="color: var(--text-primary, #333); margin-bottom: 20px; margin-top: 30px;">8. Применимое право</h2>
+        <p style="color: var(--text-secondary, #666); line-height: 1.8; margin-bottom: 20px;">
+            Настоящие условия регулируются законодательством Российской Федерации. Все споры 
+            решаются в соответствии с действующим законодательством РФ.
+        </p>
+        
+        <h2 style="color: var(--text-primary, #333); margin-bottom: 20px; margin-top: 30px;">9. Контакты</h2>
+        <p style="color: var(--text-secondary, #666); line-height: 1.8; margin-bottom: 20px;">
+            По всем вопросам вы можете обратиться к нам через 
+            <a href="/write" style="color: #28a745;">форму обратной связи</a>.
+        </p>
+        
     </div>
 </div>
-<?php
-$greyContent2 = ob_get_clean();
 
-// Section 3: Services
-ob_start();
-?>
-<div style="padding: 30px 20px; background: #f8f9fa;">
-    <div style="max-width: 800px; margin: 0 auto;">
-        <h2 style="font-size: 28px; font-weight: 600; margin-bottom: 30px; color: #333;">2. Описание услуг</h2>
-        
-        <div style="margin-bottom: 25px;">
-            <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 15px; color: #333;">2.1 Образовательная платформа</h3>
-            <p style="color: #555; line-height: 1.7; margin-bottom: 15px;">
-                11klassniki.ru предоставляет информационные услуги в сфере образования, включающие:
-            </p>
-            <ul style="color: #555; line-height: 1.7; margin-left: 20px;">
-                <li style="margin-bottom: 8px;">Справочную информацию об образовательных учреждениях России</li>
-                <li style="margin-bottom: 8px;">Календарь образовательных событий и мероприятий</li>
-                <li style="margin-bottom: 8px;">Персональные рекомендации по выбору образовательного пути</li>
-                <li style="margin-bottom: 8px;">Возможность оставлять отзывы и оценки учебных заведений</li>
-            </ul>
-        </div>
+<style>
+[data-theme="dark"] h2 {
+    color: var(--text-primary, #e4e6eb) !important;
+}
 
-        <div style="margin-bottom: 25px;">
-            <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 15px; color: #333;">2.2 Ограничения</h3>
-            <p style="color: #555; line-height: 1.7; margin-bottom: 15px;">
-                Мы оставляем за собой право изменять, приостанавливать или прекращать предоставление 
-                любых услуг без предварительного уведомления.
-            </p>
-        </div>
-    </div>
-</div>
-<?php
-$greyContent3 = ob_get_clean();
+[data-theme="dark"] p,
+[data-theme="dark"] li {
+    color: var(--text-secondary, #b0b3b8) !important;
+}
 
-// Section 4: User obligations
-ob_start();
-?>
-<div style="padding: 30px 20px; background: white;">
-    <div style="max-width: 800px; margin: 0 auto;">
-        <h2 style="font-size: 28px; font-weight: 600; margin-bottom: 30px; color: #333;">3. Обязательства пользователя</h2>
-        
-        <div style="margin-bottom: 25px;">
-            <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 15px; color: #333;">3.1 Запрещенные действия</h3>
-            <p style="color: #555; line-height: 1.7; margin-bottom: 15px;">
-                При использовании Сайта запрещается:
-            </p>
-            <ul style="color: #555; line-height: 1.7; margin-left: 20px;">
-                <li style="margin-bottom: 8px;">Размещать недостоверную, клеветническую или оскорбительную информацию</li>
-                <li style="margin-bottom: 8px;">Нарушать права интеллектуальной собственности третьих лиц</li>
-                <li style="margin-bottom: 8px;">Использовать автоматизированные средства для сбора информации</li>
-                <li style="margin-bottom: 8px;">Пытаться получить несанкционированный доступ к системам Сайта</li>
-                <li style="margin-bottom: 8px;">Распространять вредоносное программное обеспечение</li>
-            </ul>
-        </div>
-
-        <div style="margin-bottom: 25px;">
-            <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 15px; color: #333;">3.2 Ответственность за контент</h3>
-            <p style="color: #555; line-height: 1.7; margin-bottom: 15px;">
-                Пользователь несет полную ответственность за размещаемый им контент и гарантирует, 
-                что обладает всеми необходимыми правами для его публикации.
-            </p>
-        </div>
-    </div>
-</div>
-<?php
-$greyContent4 = ob_get_clean();
-
-// Section 5: Privacy and data
-ob_start();
-?>
-<div style="padding: 30px 20px; background: #f8f9fa;">
-    <div style="max-width: 800px; margin: 0 auto;">
-        <h2 style="font-size: 28px; font-weight: 600; margin-bottom: 30px; color: #333;">4. Конфиденциальность и защита данных</h2>
-        
-        <div style="margin-bottom: 25px;">
-            <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 15px; color: #333;">4.1 Сбор данных</h3>
-            <p style="color: #555; line-height: 1.7; margin-bottom: 15px;">
-                Мы собираем и обрабатываем персональные данные в соответствии с Федеральным законом 
-                «О персональных данных» № 152-ФЗ и нашей Политикой конфиденциальности.
-            </p>
-        </div>
-
-        <div style="margin-bottom: 25px;">
-            <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 15px; color: #333;">4.2 Использование cookies</h3>
-            <p style="color: #555; line-height: 1.7; margin-bottom: 15px;">
-                Сайт использует файлы cookies для улучшения пользовательского опыта. 
-                Продолжая использование Сайта, вы соглашаетесь с использованием cookies.
-            </p>
-        </div>
-
-        <div style="margin-bottom: 25px;">
-            <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 15px; color: #333;">4.3 Безопасность</h3>
-            <p style="color: #555; line-height: 1.7; margin-bottom: 15px;">
-                Мы принимаем технические и организационные меры для защиты ваших персональных данных 
-                от несанкционированного доступа, изменения, раскрытия или уничтожения.
-            </p>
-        </div>
-    </div>
-</div>
+[data-theme="dark"] div[style*="background: var(--surface, #ffffff)"] {
+    background: var(--surface-dark, #2d3748) !important;
+}
+</style>
 <?php
 $greyContent5 = ob_get_clean();
 
-// Section 6: Liability and changes
-ob_start();
-?>
-<div style="padding: 30px 20px; background: white;">
-    <div style="max-width: 800px; margin: 0 auto;">
-        <h2 style="font-size: 28px; font-weight: 600; margin-bottom: 30px; color: #333;">5. Ответственность и изменения</h2>
-        
-        <div style="margin-bottom: 25px;">
-            <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 15px; color: #333;">5.1 Ограничение ответственности</h3>
-            <p style="color: #555; line-height: 1.7; margin-bottom: 15px;">
-                Сайт предоставляется «как есть». Мы не гарантируем бесперебойную работу Сайта 
-                и не несем ответственности за любые убытки, возникшие в результате его использования.
-            </p>
-        </div>
+// Section 6: Empty pagination
+$greyContent6 = '';
 
-        <div style="margin-bottom: 25px;">
-            <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 15px; color: #333;">5.2 Изменения условий</h3>
-            <p style="color: #555; line-height: 1.7; margin-bottom: 15px;">
-                Мы можем изменять данные Условия в любое время. Актуальная версия всегда доступна 
-                по адресу 11klassniki.ru/terms.php. Существенные изменения вступают в силу через 
-                30 дней после публикации.
-            </p>
-        </div>
-
-        <div style="margin-bottom: 25px;">
-            <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 15px; color: #333;">5.3 Контактная информация</h3>
-            <p style="color: #555; line-height: 1.7; margin-bottom: 15px;">
-                По всем вопросам, связанным с данными Условиями, обращайтесь к нам через 
-                <a href="/contact.php" style="color: #667eea; text-decoration: none;">страницу обратной связи</a>.
-            </p>
-        </div>
-
-        <div style="background: #f0f4ff; padding: 20px; border-radius: 8px; border-left: 4px solid #667eea; margin-top: 30px;">
-            <p style="color: #333; margin: 0; font-weight: 500;">
-                <i class="fas fa-info-circle" style="color: #667eea; margin-right: 8px;"></i>
-                Используя наш Сайт, вы подтверждаете, что ознакомились с данными Условиями 
-                и согласны соблюдать их.
-            </p>
-        </div>
-    </div>
-</div>
-<?php
-$greyContent6 = ob_get_clean();
-
+// Blue section: Empty
 $blueContent = '';
 
-// Include template
-include $_SERVER['DOCUMENT_ROOT'] . '/template.php';
+// Page title
+$pageTitle = 'Условия использования - 11-классники';
+
+// Include the template
+include $_SERVER['DOCUMENT_ROOT'] . '/real_template.php';
 ?>

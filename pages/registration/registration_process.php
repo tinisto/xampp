@@ -1,146 +1,142 @@
 <?php
-require_once __DIR__ . '/../../includes/init.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config/environment.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/input-validator.php';
+session_start();
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/check_under_construction.php';
-include $_SERVER['DOCUMENT_ROOT'] . '/includes/functions/email_functions.php';
+// Include rate limiter
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/rate-limiter.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/security-logger.php';
 
-$errors = [];
-$oldData = $_POST;
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['g-recaptcha-response'])) {
-    // Build POST request:
-    $captcha = $_POST['g-recaptcha-response'];
-    
-    try {
-        $recaptchaConfig = Environment::getRecaptchaConfig();
-        $secret = $recaptchaConfig['secret_key'];
-    } catch (Exception $e) {
-        // Fallback for backward compatibility - remove this after .env is set up
-        $secret = '6LcBTE4pAAAAALqF7QTwR_2cr1sAP7EuVRF3h3jq';
-        error_log('reCAPTCHA secret key not found in environment variables. Using fallback.');
-    }
-    
-    $action = "submit";
-
-    // Call curl to POST request
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, "https://www.google.com/recaptcha/api/siteverify");
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(array('secret' => $secret, 'response' => $captcha)));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    $response = curl_exec($ch);
-    curl_close($ch);
-    $arrResponse = json_decode($response, true);
-
-    // Verify the response
-    if ($arrResponse["success"] == '1' && $arrResponse["action"] == $action && $arrResponse["score"] >= 0.5) {
-        // Retrieve and validate form data
-        $password = $_POST["password"] ?? '';
-        $email = InputValidator::validateEmail($_POST["email"] ?? '');
-        $timezone = InputValidator::validateText($_POST['timezone'] ?? '', 1, 100);
-        $occupation = InputValidator::validateText($_POST['occupation'] ?? '', 1, 50);
-
-        // Validate password
-        $passwordValidation = InputValidator::validatePassword($password);
-        if (!$passwordValidation['valid']) {
-            $errors[] = $passwordValidation['message'];
-        }
-
-        if (!$email) {
-            $errors[] = "Введите действительный адрес электронной почты.";
-        }
-
-        if (!$occupation) {
-            $errors[] = "Выберите род деятельности.";
-        }
-
-        if (!$timezone) {
-            $errors[] = "Укажите часовой пояс.";
-        }
-
-        // Check if email already exists
-        $checkEmailQuery = "SELECT * FROM users WHERE email = ?";
-        if (isset($connection)) {
-            $stmt = $connection->prepare($checkEmailQuery);
-            $stmt->bind_param("s", $email);
-            $stmt->execute();
-            $result = $stmt->get_result();
-
-            if ($result->num_rows > 0) {
-                $errors[] = "Адрес электронной почты $email уже зарегистрирован.";
-            }
-            $stmt->close();
-        }
-
-        if (empty($errors)) {
-            // Hash the password securely
-            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-            // Set default role
-            $defaultRole = "user";
-
-            // Generate activation token
-            $activationToken = bin2hex(random_bytes(32));
-
-            // Insert user data into the database
-            $insertQuery = "INSERT INTO users (password, email, role, activation_token, timezone, occupation) VALUES (?, ?, ?, ?, ?, ?)";
-            $stmt = $connection->prepare($insertQuery);
-
-            if (!$stmt) {
-                $errors[] = "Ошибка подготовки запроса: " . $connection->error;
-            } else {
-                $stmt->bind_param("ssssss", $hashedPassword, $email, $defaultRole, $activationToken, $timezone, $occupation);
-
-                if (!$stmt->execute()) {
-                    $errors[] = "Ошибка выполнения запроса: " . $stmt->error;
-                }
-
-                $stmt->close();
-            }
-
-            // Generate activation link
-            $activationLink = "https://$_SERVER[HTTP_HOST]/pages/registration/activate_account/activate_account.php?token=$activationToken";
-
-            // Store activation link and token in the database
-            $updateLinkQuery = "UPDATE users SET activation_link = ?, activation_token = ? WHERE email = ?";
-            $stmt = $connection->prepare($updateLinkQuery);
-
-            if (!$stmt) {
-                $errors[] = "Ошибка подготовки запроса: " . $connection->error;
-            } else {
-                $stmt->bind_param("sss", $activationLink, $activationToken, $email);
-
-                if (!$stmt->execute()) {
-                    $errors[] = "Ошибка выполнения запроса: " . $stmt->error;
-                }
-
-                $stmt->close();
-            }
-
-            include $_SERVER["DOCUMENT_ROOT"] . "/includes/email-templates/email-template-register-initial.php";
-
-            $subjectAdmin = "We have a new user: $email";
-            $bodyAdmin = "We have a new user:$email";
-
-            sendToUser($email, $subject, $body);
-            sendToAdmin($subjectAdmin, $bodyAdmin);
-
-            $successMessage = "Регистрация успешна! Пожалуйста, проверьте свою электронную почту для активации аккаунта.";
-            header("Location: /login?registration_success=true&message=" . urlencode($successMessage));
-            exit();
-        }
-    } else {
-        $errors[] = "Проверка reCAPTCHA не удалась.";
-    }
+// Simple CSRF validation
+if (!isset($_POST['csrf_token']) || !isset($_SESSION['csrf_token']) || 
+    $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+    $_SESSION['error'] = 'Ошибка безопасности. Попробуйте снова.';
+    header('Location: /registration');
+    exit();
 }
 
-$connection->close();
+// Get form data
+$firstname = trim($_POST['firstname'] ?? '');
+$lastname = trim($_POST['lastname'] ?? '');
+$occupation = $_POST['occupation'] ?? '';
+$email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+$password = $_POST['newPassword'] ?? '';
+$confirmPassword = $_POST['confirmPassword'] ?? '';
+
+// Validate inputs
+$errors = [];
+
+if (empty($firstname)) {
+    $errors[] = 'Введите имя';
+}
+
+if (empty($lastname)) {
+    $errors[] = 'Введите фамилию';
+}
+
+if (empty($occupation)) {
+    $errors[] = 'Выберите род деятельности';
+}
+
+if (!$email) {
+    $errors[] = 'Введите корректный email';
+}
+
+if (strlen($password) < 8) {
+    $errors[] = 'Пароль должен содержать минимум 8 символов';
+}
+
+if ($password !== $confirmPassword) {
+    $errors[] = 'Пароли не совпадают';
+}
 
 if (!empty($errors)) {
     $_SESSION['errors'] = $errors;
-    $_SESSION['oldData'] = $oldData;
-    header("Location: /registration");
+    $_SESSION['oldData'] = [
+        'firstname' => $firstname,
+        'lastname' => $lastname,
+        'occupation' => $occupation,
+        'email' => $email
+    ];
+    header('Location: /registration');
     exit();
 }
+
+// Database connection
+require_once $_SERVER['DOCUMENT_ROOT'] . '/config/loadEnv.php';
+
+if (!defined('DB_HOST') || !defined('DB_USER') || !defined('DB_PASS') || !defined('DB_NAME')) {
+    $_SESSION['error'] = 'Ошибка конфигурации базы данных.';
+    header('Location: /registration');
+    exit();
+}
+
+$connection = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+
+if ($connection->connect_error) {
+    $_SESSION['error'] = 'Ошибка подключения к базе данных.';
+    header('Location: /registration');
+    exit();
+}
+
+$connection->set_charset("utf8mb4");
+
+// Check rate limit for registration (5 attempts per hour per IP)
+$ip = $_SERVER['REMOTE_ADDR'] ?? '';
+$rateLimitCheck = checkRateLimit($connection, $ip, 'registration', 5, 60);
+if ($rateLimitCheck['limited']) {
+    logSecurityEvent($connection, 'registration_blocked', [
+        'ip' => $ip,
+        'email' => $email,
+        'details' => ['remaining_minutes' => $rateLimitCheck['remaining_minutes']]
+    ]);
+    $_SESSION['error'] = 'Слишком много попыток регистрации. Попробуйте через ' . $rateLimitCheck['remaining_minutes'] . ' минут.';
+    header('Location: /registration');
+    exit();
+}
+
+// Check if email already exists
+$stmt = $connection->prepare("SELECT id FROM users WHERE email = ?");
+if (!$stmt) {
+    $_SESSION['error'] = 'Ошибка базы данных: ' . $connection->error;
+    header('Location: /registration');
+    exit();
+}
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows > 0) {
+    $_SESSION['error'] = 'Пользователь с таким email уже существует.';
+    header('Location: /registration');
+    exit();
+}
+
+// Avatar handling will be added later when updating profile
+
+// Hash password
+$hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+// Generate activation token
+$activationToken = bin2hex(random_bytes(32));
+$role = 'user';
+$timezone = $_POST['timezone'] ?? 'UTC';
+
+// Insert new user (based on original table structure)
+$stmt = $connection->prepare("INSERT INTO users (password, email, role, activation_token, timezone, occupation) VALUES (?, ?, ?, ?, ?, ?)");
+if (!$stmt) {
+    $_SESSION['error'] = 'Ошибка базы данных: ' . $connection->error;
+    header('Location: /registration');
+    exit();
+}
+$stmt->bind_param("ssssss", $hashedPassword, $email, $role, $activationToken, $timezone, $occupation);
+
+if ($stmt->execute()) {
+    $_SESSION['success'] = 'Регистрация успешна! Теперь вы можете войти.';
+    header('Location: /login');
+} else {
+    $_SESSION['error'] = 'Ошибка при регистрации. Попробуйте снова.';
+    header('Location: /registration');
+}
+
+$stmt->close();
+$connection->close();
+exit();

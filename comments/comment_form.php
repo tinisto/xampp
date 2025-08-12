@@ -67,6 +67,7 @@ if (!isset($id_entity) || !isset($entity_type)) {
 ?>
 
 <form method="post" action="/comments/process_comments.php" enctype="multipart/form-data">
+  <?php echo generateCSRFTokenField(); ?>
   <div class="container mt-4">
     <div class="row justify-content-center">
       <div class="col-md-8">

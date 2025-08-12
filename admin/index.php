@@ -1,13 +1,16 @@
 <?php
-// Admin dashboard
+// Admin dashboard - redirect to comprehensive dashboard
 session_start();
-require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_modern.php';
 
 // Check if user is logged in and is admin
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
     header('Location: /login');
     exit;
 }
+
+// Redirect to comprehensive dashboard
+header('Location: /admin/dashboard.php');
+exit;
 
 // Get statistics
 $stats = [
@@ -129,7 +132,7 @@ ob_start();
         <h2 style="font-size: 24px; font-weight: 600; margin-bottom: 30px;">Быстрые действия</h2>
         
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
-            <a href="/admin/users" 
+            <a href="/admin/users/index.php" 
                style="background: white; padding: 25px; border-radius: 12px; text-decoration: none; 
                       color: #333; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: all 0.3s;"
                onmouseover="this.style.transform='translateY(-5px)'"
@@ -139,7 +142,7 @@ ob_start();
                 <p style="color: #666; font-size: 14px;">Просмотр и редактирование пользователей</p>
             </a>
             
-            <a href="/admin/content" 
+            <a href="/admin/content/posts.php" 
                style="background: white; padding: 25px; border-radius: 12px; text-decoration: none; 
                       color: #333; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: all 0.3s;"
                onmouseover="this.style.transform='translateY(-5px)'"
@@ -149,7 +152,7 @@ ob_start();
                 <p style="color: #666; font-size: 14px;">Новости, статьи и страницы</p>
             </a>
             
-            <a href="/admin/institutions" 
+            <a href="/admin/institutions/schools.php" 
                style="background: white; padding: 25px; border-radius: 12px; text-decoration: none; 
                       color: #333; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: all 0.3s;"
                onmouseover="this.style.transform='translateY(-5px)'"
@@ -159,7 +162,7 @@ ob_start();
                 <p style="color: #666; font-size: 14px;">ВУЗы, колледжи и школы</p>
             </a>
             
-            <a href="/admin/comments" 
+            <a href="/admin/content/comments.php" 
                style="background: white; padding: 25px; border-radius: 12px; text-decoration: none; 
                       color: #333; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: all 0.3s;"
                onmouseover="this.style.transform='translateY(-5px)'"

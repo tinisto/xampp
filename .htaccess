@@ -1,5 +1,33 @@
-# Modern .htaccess for index_modern.php routing
-DirectoryIndex index_modern.php
+# Modern .htaccess with security headers
+DirectoryIndex index.php
+
+# Security Headers
+<IfModule mod_headers.c>
+    # Prevent clickjacking
+    Header always set X-Frame-Options "SAMEORIGIN"
+    
+    # Prevent MIME type sniffing
+    Header always set X-Content-Type-Options "nosniff"
+    
+    # Enable XSS filter
+    Header always set X-XSS-Protection "1; mode=block"
+    
+    # Referrer Policy
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # Remove PHP version
+    Header always unset X-Powered-By
+    
+    # Strict Transport Security (enable only if using HTTPS)
+    # Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>
+
+# Force HTTPS (uncomment when SSL is installed)
+# <IfModule mod_rewrite.c>
+#     RewriteEngine On
+#     RewriteCond %{HTTPS} off
+#     RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+# </IfModule>
 
 # Security
 <Files .env>

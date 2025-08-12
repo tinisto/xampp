@@ -1,4 +1,7 @@
 <?php
+// Include security headers first
+require_once __DIR__ . '/includes/security-headers.php';
+
 // Local template version - using new modern header
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
