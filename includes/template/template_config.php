@@ -41,8 +41,8 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
     // Include original template engine
     require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine.php';
     
-    // Call original function
-    renderTemplateOriginal($pageTitle, $mainContent, $additionalData, $metaD, $metaK);
+    // Call unified template function with default layout
+    renderUnifiedTemplate($pageTitle, $mainContent, $additionalData, $metaD, $metaK, '', '', '', 'default');
 }
 
 /**

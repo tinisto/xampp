@@ -130,11 +130,28 @@ textarea::placeholder {
 }
 
 .full-height-flex {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 100vh !important;
 }
 
 .full-height-flex main {
-  flex: 1 0 auto;
+  flex: 1 0 auto !important;
+}
+
+.full-height-flex footer {
+  flex-shrink: 0 !important;
+  margin-top: auto !important;
+}
+
+/* Ensure proper flex layout for all main elements */
+body.full-height-flex {
+  margin: 0;
+  padding: 0;
+}
+
+/* Fix for Bootstrap conflicts */
+.full-height-flex .container,
+.full-height-flex .container-fluid {
+  flex: none;
 }
