@@ -1,0 +1,502 @@
+/* TEMPORARY DEBUG STYLES FOR REUSABLE COMPONENTS */
+/* This file adds visual indicators to identify reusable components */
+/* TO BE REMOVED AFTER DEVELOPMENT */
+
+/* Cards Grid Component */
+[id^="cards-grid-"] {
+    margin: 20px !important;
+    background: rgba(255, 255, 0, 0.1) !important;
+    border: 3px solid yellow !important;
+    position: relative !important;
+}
+
+[id^="cards-grid-"]:before {
+    content: "CARDS GRID COMPONENT" !important;
+    position: absolute !important;
+    top: -20px !important;
+    left: 10px !important;
+    background: yellow !important;
+    color: black !important;
+    padding: 2px 10px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    z-index: 9999 !important;
+}
+
+/* Breadcrumb Component */
+.breadcrumb-nav {
+    margin: 20px !important;
+    background: rgba(255, 255, 0, 0.1) !important;
+    border: 3px solid yellow !important;
+    position: relative !important;
+}
+
+.breadcrumb-nav:before {
+    content: "BREADCRUMB COMPONENT" !important;
+    position: absolute !important;
+    top: -20px !important;
+    left: 10px !important;
+    background: yellow !important;
+    color: black !important;
+    padding: 2px 10px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+}
+
+/* Page Header Component */
+.page-hero-section {
+    margin: 20px !important;
+    background: rgba(255, 255, 0, 0.1) !important;
+    border: 3px solid yellow !important;
+    position: relative !important;
+}
+
+.page-hero-section:before {
+    content: "PAGE HEADER COMPONENT" !important;
+    position: absolute !important;
+    top: -20px !important;
+    left: 10px !important;
+    background: yellow !important;
+    color: black !important;
+    padding: 2px 10px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    z-index: 9999 !important;
+}
+
+/* Search Component */
+.unified-search-container,
+.unified-search-component {
+    margin: 20px !important;
+    background: rgba(255, 255, 0, 0.1) !important;
+    border: 3px solid yellow !important;
+    position: relative !important;
+}
+
+.unified-search-container:before,
+.unified-search-component:before {
+    content: "SEARCH COMPONENT" !important;
+    position: absolute !important;
+    top: -20px !important;
+    left: 10px !important;
+    background: yellow !important;
+    color: black !important;
+    padding: 2px 10px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    z-index: 9999 !important;
+}
+
+/* Category Navigation Component */
+.category-navigation {
+    margin: 20px !important;
+    background: rgba(255, 255, 0, 0.1) !important;
+    border: 3px solid yellow !important;
+    position: relative !important;
+}
+
+.category-navigation:before {
+    content: "CATEGORY NAV COMPONENT" !important;
+    position: absolute !important;
+    top: -20px !important;
+    left: 10px !important;
+    background: yellow !important;
+    color: black !important;
+    padding: 2px 10px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+}
+
+/* Real Title Component */
+.real-title-component {
+    margin: 20px !important;
+    background: rgba(255, 255, 0, 0.1) !important;
+    border: 3px solid yellow !important;
+    position: relative !important;
+}
+
+.real-title-component:before {
+    content: "REAL TITLE COMPONENT" !important;
+    position: absolute !important;
+    top: -20px !important;
+    left: 10px !important;
+    background: yellow !important;
+    color: black !important;
+    padding: 2px 10px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+}
+
+/* Pagination Component */
+.pagination-wrapper {
+    margin: 20px !important;
+    background: rgba(255, 255, 0, 0.1) !important;
+    border: 3px solid yellow !important;
+    position: relative !important;
+}
+
+.pagination-wrapper:before {
+    content: "PAGINATION COMPONENT" !important;
+    position: absolute !important;
+    top: -20px !important;
+    left: 10px !important;
+    background: yellow !important;
+    color: black !important;
+    padding: 2px 10px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+}
+
+/* Modal Component */
+.modal-modern {
+    border: 3px solid yellow !important;
+}
+
+.modal-modern .modal-content:before {
+    content: "MODAL COMPONENT" !important;
+    position: absolute !important;
+    top: -20px !important;
+    left: 10px !important;
+    background: yellow !important;
+    color: black !important;
+    padding: 2px 10px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    z-index: 9999 !important;
+}
+
+/* Content Wrapper Component */
+.yellow-bg-wrapper {
+    margin: 20px !important;
+    border: 3px solid yellow !important;
+    position: relative !important;
+}
+
+.yellow-bg-wrapper:before {
+    content: "CONTENT WRAPPER COMPONENT" !important;
+    position: absolute !important;
+    top: -20px !important;
+    left: 10px !important;
+    background: yellow !important;
+    color: black !important;
+    padding: 2px 10px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    z-index: 9999 !important;
+}
+
+/* Loading Placeholders */
+.loading-placeholder {
+    margin: 20px !important;
+    border: 3px solid yellow !important;
+    position: relative !important;
+}
+
+.loading-placeholder:before {
+    content: "LOADING PLACEHOLDER" !important;
+    position: absolute !important;
+    top: -20px !important;
+    left: 10px !important;
+    background: yellow !important;
+    color: black !important;
+    padding: 2px 10px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+}
+
+/* Site Icon Component */
+.site-icon {
+    margin: 10px !important;
+    border: 3px solid yellow !important;
+    position: relative !important;
+}
+
+/* News Category Navigation */
+.news-category-nav {
+    margin: 20px !important;
+    background: rgba(255, 255, 0, 0.1) !important;
+    border: 3px solid yellow !important;
+    position: relative !important;
+}
+
+.news-category-nav:before {
+    content: "NEWS CATEGORY NAV" !important;
+    position: absolute !important;
+    top: -20px !important;
+    left: 10px !important;
+    background: yellow !important;
+    color: black !important;
+    padding: 2px 10px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+}
+
+/* Favicon Component */
+.favicon-component {
+    border: 3px solid yellow !important;
+}
+
+/* Typography Components */
+.typography-heading,
+.typography-paragraph,
+.typography-quote,
+.typography-list {
+    margin: 20px !important;
+    background: rgba(255, 255, 0, 0.1) !important;
+    border: 3px solid yellow !important;
+    position: relative !important;
+}
+
+/* Institution Cards/Results Components */
+.institution-card,
+.institution-result,
+.school-card,
+.college-card,
+.university-card {
+    margin: 20px !important;
+    border: 3px solid yellow !important;
+    position: relative !important;
+}
+
+.institution-card:before,
+.institution-result:before,
+.school-card:before,
+.college-card:before,
+.university-card:before {
+    content: "INSTITUTION CARD COMPONENT" !important;
+    position: absolute !important;
+    top: -20px !important;
+    left: 10px !important;
+    background: yellow !important;
+    color: black !important;
+    padding: 2px 10px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    z-index: 9999 !important;
+}
+
+/* Comments Component */
+.comments-section,
+.comment-item,
+.comment-form {
+    margin: 20px !important;
+    border: 3px solid yellow !important;
+    position: relative !important;
+}
+
+.comments-section:before,
+.comment-item:before,
+.comment-form:before {
+    content: "COMMENTS COMPONENT" !important;
+    position: absolute !important;
+    top: -20px !important;
+    left: 10px !important;
+    background: yellow !important;
+    color: black !important;
+    padding: 2px 10px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    z-index: 9999 !important;
+}
+
+/* Article/Post Components */
+.article-card,
+.post-card,
+.news-card,
+.event-card {
+    border: 3px solid yellow !important;
+    position: relative !important;
+}
+
+.article-card:before,
+.post-card:before,
+.news-card:before,
+.event-card:before {
+    content: "ARTICLE/POST CARD" !important;
+    position: absolute !important;
+    top: -20px !important;
+    left: 10px !important;
+    background: yellow !important;
+    color: black !important;
+    padding: 2px 10px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    z-index: 9999 !important;
+}
+
+/* Form Components */
+.form-component,
+.login-form,
+.registration-form,
+.contact-form,
+.search-form {
+    margin: 20px !important;
+    border: 3px solid yellow !important;
+    position: relative !important;
+}
+
+.form-component:before,
+.login-form:before,
+.registration-form:before,
+.contact-form:before,
+.search-form:before {
+    content: "FORM COMPONENT" !important;
+    position: absolute !important;
+    top: -20px !important;
+    left: 10px !important;
+    background: yellow !important;
+    color: black !important;
+    padding: 2px 10px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    z-index: 9999 !important;
+}
+
+/* Generic components by class name patterns */
+[class*="component"],
+[class*="-component"],
+[class*="widget"],
+[class*="-widget"] {
+    position: relative !important;
+}
+
+/* Catch-all for any potentially missed reusable components */
+div[class*="reusable"],
+div[class*="shared"],
+section[class*="component"],
+section[class*="widget"],
+article[class*="component"] {
+    margin: 20px !important;
+    border: 3px solid yellow !important;
+    position: relative !important;
+}
+
+div[class*="reusable"]:before,
+div[class*="shared"]:before,
+section[class*="component"]:before,
+section[class*="widget"]:before,
+article[class*="component"]:before {
+    content: "REUSABLE COMPONENT" !important;
+    position: absolute !important;
+    top: -20px !important;
+    left: 10px !important;
+    background: yellow !important;
+    color: black !important;
+    padding: 2px 10px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    z-index: 9999 !important;
+}
+
+/* Ensure labels are visible */
+body {
+    padding-top: 30px !important; /* Make room for component labels */
+}
+
+/* Button Component */
+.reusable-button {
+    margin: 10px !important;
+    border: 3px solid yellow !important;
+    position: relative !important;
+}
+
+.reusable-button:before {
+    content: "BUTTON COMPONENT" !important;
+    position: absolute !important;
+    top: -20px !important;
+    left: 10px !important;
+    background: yellow !important;
+    color: black !important;
+    padding: 2px 10px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    z-index: 9999 !important;
+}
+
+/* Badge Component */
+.reusable-badge {
+    border: 2px solid lime !important;
+    position: relative !important;
+}
+
+.reusable-badge:after {
+    content: "BADGE" !important;
+    position: absolute !important;
+    top: -15px !important;
+    right: -10px !important;
+    background: lime !important;
+    color: black !important;
+    padding: 1px 4px !important;
+    font-size: 8px !important;
+    font-weight: bold !important;
+    z-index: 10000 !important;
+    border-radius: 2px !important;
+}
+
+/* Page Layout Components */
+.page-layout-component,
+.unified-page-layout {
+    margin: 20px !important;
+    border: 3px solid yellow !important;
+    position: relative !important;
+}
+
+.page-layout-component:before,
+.unified-page-layout:before {
+    content: "PAGE LAYOUT COMPONENT" !important;
+    position: absolute !important;
+    top: -20px !important;
+    left: 10px !important;
+    background: yellow !important;
+    color: black !important;
+    padding: 2px 10px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    z-index: 9999 !important;
+}
+
+/* Compact Comments Component */
+.compact-comments-component {
+    margin: 20px !important;
+    border: 3px solid yellow !important;
+    position: relative !important;
+}
+
+.compact-comments-component:before {
+    content: "COMPACT COMMENTS COMPONENT" !important;
+    position: absolute !important;
+    top: -20px !important;
+    left: 10px !important;
+    background: yellow !important;
+    color: black !important;
+    padding: 2px 10px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    z-index: 9999 !important;
+}
+
+/* Page Sections */
+.page-section {
+    border: 2px dashed orange !important;
+    position: relative !important;
+}
+
+.page-section:before {
+    content: "PAGE SECTION" !important;
+    position: absolute !important;
+    top: -18px !important;
+    right: 10px !important;
+    background: orange !important;
+    color: black !important;
+    padding: 1px 8px !important;
+    font-size: 10px !important;
+    font-weight: bold !important;
+    z-index: 9998 !important;
+}
+
+/* Special handling for components that might be inside other containers */
+.container [class*="component"],
+.main-content [class*="component"],
+.wrapper [class*="component"] {
+    position: relative !important;
+}

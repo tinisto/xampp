@@ -1,0 +1,132 @@
+/* Dark Mode Fix CSS - Comprehensive solution for adaptive colors */
+
+:root {
+    /* Light mode colors */
+    --text-primary-adaptive: #000000;
+    --text-secondary-adaptive: #555555;
+    --text-muted-adaptive: #666666;
+    --text-heading-adaptive: #000000;
+    --bg-primary-adaptive: #ffffff;
+    --bg-secondary-adaptive: #f8f9fa;
+    --bg-tertiary-adaptive: #e9ecef;
+    --border-adaptive: #dee2e6;
+    --link-adaptive: #007bff;
+    --link-hover-adaptive: #0056b3;
+}
+
+[data-theme="dark"],
+[data-bs-theme="dark"] {
+    /* Dark mode colors */
+    --text-primary-adaptive: #f8f9fa;
+    --text-secondary-adaptive: #adb5bd;
+    --text-muted-adaptive: #868e96;
+    --text-heading-adaptive: #ffffff;
+    --bg-primary-adaptive: #1a1a1a;
+    --bg-secondary-adaptive: #2d2d2d;
+    --bg-tertiary-adaptive: #343a40;
+    --border-adaptive: #495057;
+    --link-adaptive: #66b3ff;
+    --link-hover-adaptive: #4da3ff;
+}
+
+/* Text color classes */
+.text-primary-adaptive {
+    color: var(--text-primary-adaptive) !important;
+}
+
+.text-secondary-adaptive {
+    color: var(--text-secondary-adaptive) !important;
+}
+
+.text-muted-adaptive {
+    color: var(--text-muted-adaptive) !important;
+}
+
+.text-heading-adaptive {
+    color: var(--text-heading-adaptive) !important;
+}
+
+/* Background classes */
+.bg-primary-adaptive {
+    background-color: var(--bg-primary-adaptive) !important;
+}
+
+.bg-secondary-adaptive {
+    background-color: var(--bg-secondary-adaptive) !important;
+}
+
+.bg-tertiary-adaptive {
+    background-color: var(--bg-tertiary-adaptive) !important;
+}
+
+/* Border classes */
+.border-adaptive {
+    border-color: var(--border-adaptive) !important;
+}
+
+/* Link classes */
+.link-adaptive {
+    color: var(--link-adaptive) !important;
+    text-decoration: none;
+}
+
+.link-adaptive:hover {
+    color: var(--link-hover-adaptive) !important;
+    text-decoration: underline;
+}
+
+/* Article content specific */
+.article-content-adaptive {
+    color: var(--text-primary-adaptive) !important;
+}
+
+.article-content-adaptive * {
+    color: inherit !important;
+}
+
+.article-content-adaptive h1,
+.article-content-adaptive h2,
+.article-content-adaptive h3,
+.article-content-adaptive h4,
+.article-content-adaptive h5,
+.article-content-adaptive h6 {
+    color: var(--text-heading-adaptive) !important;
+}
+
+.article-content-adaptive a {
+    color: var(--link-adaptive) !important;
+}
+
+.article-content-adaptive a:hover {
+    color: var(--link-hover-adaptive) !important;
+}
+
+/* Metadata styles */
+.meta-info-adaptive {
+    color: var(--text-secondary-adaptive) !important;
+}
+
+/* Button styles that work in both modes */
+.btn-social-vk {
+    background: #4267B2 !important;
+    color: white !important;
+}
+
+.btn-social-telegram {
+    background: #0088cc !important;
+    color: white !important;
+}
+
+.btn-primary-adaptive {
+    background: var(--link-adaptive) !important;
+    color: white !important;
+}
+
+.btn-primary-adaptive:hover {
+    background: var(--link-hover-adaptive) !important;
+}
+
+/* Transitions for smooth theme switching */
+* {
+    transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+}

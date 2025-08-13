@@ -1,11 +1,22 @@
 <?php
+// Include security configuration first
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/security/security_config.php';
+// Include SEO configuration
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/seo/seo_config.php';
+// Include performance configuration
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/performance/performance_config.php';
+// Include dark mode configuration
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/ui/dark_mode_config.php';
+// Include dark mode helpers
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/dark-mode-helpers.php';
+
 include $_SERVER["DOCUMENT_ROOT"] . "/includes/functions/session_util.php";
 include_once $_SERVER["DOCUMENT_ROOT"] . "/includes/functions/auth.php";
 include $_SERVER["DOCUMENT_ROOT"] . "/includes/functions/redirectToErrorPage.php";
 
 $baseUrl = '/';
 
-function renderTemplate(
+function renderTemplateOriginal(
     $pageTitle,
     $mainContent,
     $additionalData = [],
@@ -16,15 +27,28 @@ function renderTemplate(
     $linkPrefix = ''
 ) {
     global $connection, $baseUrl;
-    $metaDescription = is_array($metaD) ? implode(", ", $metaD) : $metaD;
-    $metaDescription = $metaDescription
-        ? "<meta name='description' content='$metaDescription'>"
-        : "";
-
-    $metaKeywords = is_array($metaK) ? implode(", ", $metaK) : $metaK;
-    $metaKeywords = $metaKeywords
-        ? "<meta name='keywords' content='$metaKeywords'>"
-        : "";
+    
+    // Set security headers at the beginning
+    setSecurityHeaders();
+    
+    // Prepare SEO meta tags
+    $seoOptions = [];
+    if ($metaD) {
+        $seoOptions['description'] = is_array($metaD) ? implode(", ", $metaD) : $metaD;
+    }
+    if ($metaK) {
+        $seoOptions['keywords'] = is_array($metaK) ? implode(", ", $metaK) : $metaK;
+    }
+    
+    // Optimize page title for SEO
+    $optimizedTitle = optimizeTitle($pageTitle);
+    $seoOptions['title'] = $optimizedTitle;
+    
+    // Generate meta tags
+    $metaTags = generateMetaTags($seoOptions);
+    
+    // Generate structured data
+    $structuredData = generateStructuredData();
 
     echo <<<HTML
         <!DOCTYPE html>
@@ -34,16 +58,19 @@ function renderTemplate(
             <meta name="google-adsense-account" content="ca-pub-2363662533799826">
             <meta charset='UTF-8'>
             <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-            $metaDescription
-            $metaKeywords
+            $metaTags
+            <link rel='canonical' href='" . getCurrentUrl() . "'>
             <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
             <link rel='stylesheet' type='text/css' href='{$baseUrl}css/styles.css'>
             <link rel='stylesheet' type='text/css' href='{$baseUrl}css/post-styles.css'>
             <link rel='stylesheet' type='text/css' href='{$baseUrl}css/buttons-styles.css'>
             <link rel='stylesheet' type='text/css' href='{$baseUrl}css/test.css'>
+            <link rel='stylesheet' type='text/css' href='{$baseUrl}css/dark-mode-fix.css'>
             <link rel='icon' href='/favicon.ico' type='image/x-icon'>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-            <title>$pageTitle</title>
+            <title>" . htmlspecialchars($optimizedTitle, ENT_QUOTES, 'UTF-8') . "</title>
+            $structuredData" . 
+            DarkModeManager::getDarkModeCSS()
             <!-- AdSense code snippet -->
             <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2363662533799826" crossorigin="anonymous"></script>
             <!-- Clarity -->
@@ -87,6 +114,16 @@ HTML;
 
     echo <<<HTML
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+        <script src="/js/lazy-load.js" defer></script>
+HTML;
+
+    // Add performance debug info if enabled
+    echo PerformanceMonitor::renderDebugInfo();
+    
+    // Add dark mode script
+    echo DarkModeManager::getThemeScript();
+
+    echo <<<HTML
     </body>
     </html>
 HTML;

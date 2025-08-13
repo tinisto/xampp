@@ -1,0 +1,205 @@
+# Enhanced .htaccess - Simplified and Optimized
+# Security and environment protection
+<Files .env>
+    Order allow,deny
+    Deny from all
+</Files>
+
+<Files "*.log">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<Files "*.sql">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Security - Block access to sensitive files
+    RewriteRule ^(includes|database|config)/ - [F,L]
+    
+    # Redirect index.php to clean URL
+    RewriteRule ^index\.php$ / [L,R=301]
+    
+    # SEO - Handle sitemap and robots.txt
+    RewriteRule ^sitemap\.xml$ sitemap.xml.php [L]
+    RewriteRule ^robots\.txt$ robots.txt.php [L]
+
+    # ============================================================================
+    # LEGACY REDIRECTS - Old URLs to new structure
+    # ============================================================================
+    
+    # Old catalog and section redirects
+    RewriteRule ^(catalog|ege_section|school_regions)\.php$ /index.php [L,R=301]
+    RewriteRule ^write-to-editorial\.php$ /write [L,R=301]
+    
+    # Legacy post redirects
+    RewriteRule ^(post_regions_ccuz|post_regions_vuz|post_ccuz)\.php$ /index.php [L,R=301]
+    
+    # Legacy entity redirects (old system)
+    RewriteRule ^(rono|pu|mo|profil_vpo|profil_spo|ege|town_school|region_spo|region_vpo|region_school|ccuzprofilename|vuzprofilename)/(\d+)$ /index.php [L]
+    
+    # Legacy PHP file redirects
+    RewriteRule ^(rono|ege|post_pu|post_regions_vuz|post_vuz|post_university|post_college|profil_spo|profil_vpo|view_post|ccuzproname|vuzproname|town_schools|town_spo|town_vpo|region_schools|region_spo|region_vpo)\.php$ /index.php [R=301,L]
+
+    # ============================================================================
+    # MODERN ROUTING - Current site structure
+    # ============================================================================
+
+    # Educational Institutions - All Regions
+    RewriteRule ^(schools|spo|vpo)-all-regions/?$ pages/common/educational-institutions-all-regions/educational-institutions-all-regions.php?type=$1 [QSA,NC,L]
+    RewriteRule ^educational-institutions-all-regions/?$ pages/common/educational-institutions-all-regions/educational-institutions-all-regions.php [QSA,NC,L]
+    
+    # Educational Institutions - By Region
+    RewriteRule ^(schools|spo|vpo)-in-region/([a-zA-Z0-9-]+)/?$ pages/common/educational-institutions-in-region/educational-institutions-in-region.php?region_name_en=$2&type=$1 [QSA,NC,L]
+    
+    # Educational Institutions - By Town  
+    RewriteRule ^(schools|spo|vpo)/([^/]+)/([^/]+)/?$ pages/common/educational-institutions-in-town/educational-institutions-in-town.php?type=$1&region_name_en=$2&url_slug_town=$3 [L,QSA]
+
+    # School Pages
+    RewriteRule ^school/(\d+)/?$ pages/school/school-single.php?id_school=$1 [QSA,NC,L]
+    
+    # VPO (Universities) - URL-based routing
+    RewriteRule ^vpo/([^/]+)/?$ pages/common/vpo-spo/single.php?vpo_url=$1 [QSA,NC,L]
+    RewriteRule ^vpo/(\d+)/?$ pages/common/vpo-spo/redirect.php?id_university=$1 [L,QSA]
+    RewriteRule ^high-edu/(.*)$ /vpo/$1 [R=301,L]
+    
+    # SPO (Colleges) - URL-based routing  
+    RewriteRule ^spo/([^/]+)/?$ pages/common/vpo-spo/single.php?spo_url=$1 [QSA,NC,L]
+    RewriteRule ^spo/(\d+)/?$ pages/common/vpo-spo/redirect.php?id_college=$1 [L,QSA]
+    RewriteRule ^middle-edu/(.*)$ /spo/$1 [R=301,L]
+
+    # News System - slug-based
+    RewriteRule ^news/?$ pages/common/news/news.php [QSA,NC,L]
+    RewriteRule ^news/novosti-vuzov/?$ pages/common/news/news.php?news_type=vpo [QSA,NC,L]
+    RewriteRule ^news/novosti-spo/?$ pages/common/news/news.php?news_type=spo [QSA,NC,L]
+    RewriteRule ^news/novosti-shkol/?$ pages/common/news/news.php?news_type=school [QSA,NC,L]
+    RewriteRule ^news/novosti-obrazovaniya/?$ pages/common/news/news.php?news_type=education [QSA,NC,L]
+    RewriteRule ^news/category/([^/]+)/?$ pages/category-news/category-news.php?category_en=$1 [QSA,NC,L]
+    RewriteRule ^news/([^/]+)/?$ pages/common/news/news.php?url_news=$1 [QSA,NC,L]
+    RewriteRule ^post/([^/]+)/?$ pages/post/post.php?url_post=$1 [QSA,NC,L]
+    
+    # Edit routes
+    RewriteRule ^edit/news/(\d+)/?$ dashboard-edit-content.php?type=news&id=$1 [QSA,NC,L]
+    RewriteRule ^edit/post/(\d+)/?$ dashboard-edit-content.php?type=post&id=$1 [QSA,NC,L]
+    
+    # Redirect /posts to homepage (posts are shown there)
+    RewriteRule ^posts/?$ / [R=301,L]
+    
+    # Categories
+    RewriteRule ^category/([^/]+)/?$ pages/category/category.php?category_en=$1 [QSA,NC,L]
+
+    # Tests System
+    RewriteRule ^tests/?$ pages/tests/tests-main.php [QSA,NC,L]
+    RewriteRule ^test/([^/]+)/?$ pages/tests/test-improved.php?test=$1 [QSA,NC,L]
+    RewriteRule ^test-result/([^/]+)/?$ pages/tests/test-result.php?test=$1 [QSA,NC,L]
+
+    # User System
+    RewriteRule ^login/?$ login-modern.php [QSA,NC,L]
+    RewriteRule ^registration/?$ registration-modern.php [QSA,NC,L]
+    RewriteRule ^forgot-password/?$ forgot-password.php [QSA,NC,L]
+    RewriteRule ^forgot-password-process/?$ forgot-password-process.php [QSA,NC,L]
+    RewriteRule ^reset-password/?$ pages/account/reset-password/reset-password-confirm-standalone.php [QSA,NC,L]
+    RewriteRule ^reset-password-confirm-process/?$ pages/account/reset-password/reset-password-confirm-process.php [QSA,NC,L]
+    RewriteRule ^account/?$ pages/account/account.php [QSA,NC,L]
+    RewriteRule ^dashboard/?$ dashboard-professional.php [QSA,NC,L]
+    RewriteRule ^dashboard/users/?$ dashboard-users-professional.php [QSA,NC,L]
+    RewriteRule ^dashboard/news/?$ dashboard-news-management.php [QSA,NC,L]
+    RewriteRule ^dashboard/posts/?$ dashboard-posts-management.php [QSA,NC,L]
+    RewriteRule ^dashboard/comments/?$ pages/dashboard/comments-dashboard/comments-view/comments-view.php [QSA,NC,L]
+    RewriteRule ^create/(news|post)/?$ dashboard-create-content-unified.php?type=$1 [QSA,NC,L]
+    RewriteRule ^create/?$ dashboard-create-content-unified.php [QSA,NC,L]
+    RewriteRule ^create/process/?$ create-process.php [QSA,NC,L]
+    RewriteRule ^edit/process/?$ edit-process.php [QSA,NC,L]
+    RewriteRule ^logout/?$ simple_logout.php [QSA,NC,L]
+
+    # Search
+    RewriteRule ^search/?$ pages/search/search.php [QSA,NC,L]
+    RewriteRule ^search-process/?$ pages/search/search-process.php [QSA,NC,L]
+
+    # Static Pages
+    RewriteRule ^about/?$ pages/about/about.php [QSA,NC,L]
+    RewriteRule ^write/?$ pages/write/write-simple.php [QSA,NC,L]
+    RewriteRule ^thank-you/?$ pages/thank-you/thank-you.php [QSA,NC,L]
+    RewriteRule ^privacy/?$ pages/privacy/privacy.php [QSA,NC,L]
+    RewriteRule ^terms/?$ pages/terms/terms.php [QSA,NC,L]
+    RewriteRule ^cookie-consent/?$ cookie-consent-process.php [QSA,NC,L]
+
+    # API Routes (if needed)
+    RewriteRule ^api/([^/]+)/?$ api/$1.php [QSA,NC,L]
+
+    # ============================================================================
+    # LEGACY QUERY STRING REDIRECTS
+    # ============================================================================
+    
+    # School redirects with query strings
+    RewriteCond %{QUERY_STRING} (^|&)id_school=(\d+)(&|$)
+    RewriteRule ^school\.php$ /school/%2? [R=301,L]
+    
+    # Post redirects with query strings
+    RewriteCond %{QUERY_STRING} (^|&)id=(\d+)(&|$)
+    RewriteRule ^view_post\.php$ /post/%2? [R=301,L]
+    
+    # VPO redirects with query strings
+    RewriteCond %{QUERY_STRING} (^|&)id=(\d+)(&|$)
+    RewriteRule ^vuzproname\.php$ /vpo/%2? [R=301,L]
+    
+    # SPO redirects with query strings
+    RewriteCond %{QUERY_STRING} (^|&)id=(\d+)(&|$)
+    RewriteRule ^ccuzproname\.php$ /spo/%2? [R=301,L]
+
+    # ============================================================================
+    # ERROR HANDLING
+    # ============================================================================
+    
+    # Custom error pages
+    ErrorDocument 404 /pages/404/404.php
+    ErrorDocument 500 /pages/error/error.php
+    
+    # Direct error page route
+    RewriteRule ^error/?$ /pages/error/error.php [L]
+
+    # ============================================================================
+    # FALLBACK - Must be last
+    # ============================================================================
+    
+    # If nothing else matches and file doesn't exist, go to 404
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule . /pages/404/404.php [L]
+
+</IfModule>
+
+# ============================================================================
+# PERFORMANCE AND SECURITY HEADERS
+# ============================================================================
+
+<IfModule mod_headers.c>
+    # Security headers
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # Cache control for static assets
+    <FilesMatch "\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$">
+        Header set Cache-Control "public, max-age=2592000"
+    </FilesMatch>
+</IfModule>
+
+# Compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+</IfModule>

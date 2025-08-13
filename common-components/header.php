@@ -6,6 +6,11 @@ $linkBootstrapHover = "text-white link-offset-2 link-offset-3-hover link-underli
 // Function to fetch categories from the database
 function fetchCategories($connection, $selectedCategories)
 {
+  // Check if connection is valid
+  if (!$connection || $connection->connect_error) {
+    return [];
+  }
+  
   $whereClause = implode(',', $selectedCategories);
   $query = "SELECT id_category, url_category, title_category FROM categories WHERE id_category IN ($whereClause) ORDER BY title_category ASC";
 
@@ -50,6 +55,11 @@ $categoriesDropdown = fetchCategories($connection, $selectedCategoriesDropdown);
 // Function to fetch categories from the database
 function fetchCategoriesNews($connection)
 {
+  // Check if connection is valid
+  if (!$connection || $connection->connect_error) {
+    return [];
+  }
+  
   $queryNews = "SELECT id_category_news, url_category_news, title_category_news FROM news_categories ORDER BY title_category_news ASC";
   $resultNews = mysqli_query($connection, $queryNews);
 

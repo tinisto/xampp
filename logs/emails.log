@@ -1,0 +1,459 @@
+2025-08-11 12:47:57 | To: tinisto@gmail.com | Subject: Восстановление пароля на 11klassniki.ru
+HTML Body:
+
+        <html>
+        <head>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background: #dc3545; color: white; padding: 20px; text-align: center; }
+                .content { padding: 20px; background: #f8f9fa; }
+                .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+                .button { display: inline-block; padding: 10px 20px; background: #dc3545; color: white; text-decoration: none; border-radius: 5px; }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <h1>Восстановление пароля</h1>
+                </div>
+                <div class='content'>
+                    <p>Здравствуйте, !</p>
+                    <p>Мы получили запрос на восстановление пароля для вашего аккаунта.</p>
+                    <p>Для создания нового пароля перейдите по ссылке:</p>
+                    <p style='text-align: center; margin: 30px 0;'>
+                        <a href='http://localhost:8000/reset-password.php?token=24cc6164f23992757b68f38a6ec19c53b1a6e245090a489b4267249cb6f170cf' class='button'>Восстановить пароль</a>
+                    </p>
+                    <p><small>Ссылка действительна в течение 24 часов.</small></p>
+                    <p><small>Если вы не запрашивали восстановление пароля, просто проигнорируйте это письмо.</small></p>
+                </div>
+                <div class='footer'>
+                    <p>© 2025 11klassniki.ru - Портал образования России</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        
+Text Body:
+Здравствуйте, !
+
+Мы получили запрос на восстановление пароля для вашего аккаунта.
+
+Для создания нового пароля перейдите по ссылке:
+http://localhost:8000/reset-password.php?token=24cc6164f23992757b68f38a6ec19c53b1a6e245090a489b4267249cb6f170cf
+
+Ссылка действительна в течение 24 часов.
+
+Если вы не запрашивали восстановление пароля, просто проигнорируйте это письмо.
+
+© 2025 11klassniki.ru
+--------------------------------------------------------------------------------
+
+2025-08-11 12:49:42 | To: tinisto@gmail.com | Subject: Восстановление пароля на 11klassniki.ru
+HTML Body:
+
+        <html>
+        <head>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background: #dc3545; color: white; padding: 20px; text-align: center; }
+                .content { padding: 20px; background: #f8f9fa; }
+                .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+                .button { display: inline-block; padding: 10px 20px; background: #dc3545; color: white; text-decoration: none; border-radius: 5px; }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <h1>Восстановление пароля</h1>
+                </div>
+                <div class='content'>
+                    <p>Здравствуйте, tinistofds tinistofd!</p>
+                    <p>Мы получили запрос на восстановление пароля для вашего аккаунта.</p>
+                    <p>Для создания нового пароля перейдите по ссылке:</p>
+                    <p style='text-align: center; margin: 30px 0;'>
+                        <a href='http://localhost:8000/reset-password.php?token=dc8f4ea3d5d0be71da5b88a436750113e077fb139e82fc95f44bf74cd3ae036e' class='button'>Восстановить пароль</a>
+                    </p>
+                    <p><small>Ссылка действительна в течение 24 часов.</small></p>
+                    <p><small>Если вы не запрашивали восстановление пароля, просто проигнорируйте это письмо.</small></p>
+                </div>
+                <div class='footer'>
+                    <p>© 2025 11klassniki.ru - Портал образования России</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        
+Text Body:
+Здравствуйте, tinistofds tinistofd!
+
+Мы получили запрос на восстановление пароля для вашего аккаунта.
+
+Для создания нового пароля перейдите по ссылке:
+http://localhost:8000/reset-password.php?token=dc8f4ea3d5d0be71da5b88a436750113e077fb139e82fc95f44bf74cd3ae036e
+
+Ссылка действительна в течение 24 часов.
+
+Если вы не запрашивали восстановление пароля, просто проигнорируйте это письмо.
+
+© 2025 11klassniki.ru
+--------------------------------------------------------------------------------
+
+2025-08-11 12:57:04 | To: tinisto@gmail.com | Subject: Восстановление пароля на 11klassniki.ru
+HTML Body:
+
+        <html>
+        <head>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background: #dc3545; color: white; padding: 20px; text-align: center; }
+                .content { padding: 20px; background: #f8f9fa; }
+                .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+                .button { display: inline-block; padding: 10px 20px; background: #dc3545; color: white; text-decoration: none; border-radius: 5px; }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <h1>Восстановление пароля</h1>
+                </div>
+                <div class='content'>
+                    <p>Здравствуйте, tinistofds tinistofd!</p>
+                    <p>Мы получили запрос на восстановление пароля для вашего аккаунта.</p>
+                    <p>Для создания нового пароля перейдите по ссылке:</p>
+                    <p style='text-align: center; margin: 30px 0;'>
+                        <a href='http://localhost:8000/reset-password.php?token=2f01887060d71c4dfebaaf728bef65c55a9c3ee2ded44ed4710df20178adf2db' class='button'>Восстановить пароль</a>
+                    </p>
+                    <p><small>Ссылка действительна в течение 24 часов.</small></p>
+                    <p><small>Если вы не запрашивали восстановление пароля, просто проигнорируйте это письмо.</small></p>
+                </div>
+                <div class='footer'>
+                    <p>© 2025 11klassniki.ru - Портал образования России</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        
+Text Body:
+Здравствуйте, tinistofds tinistofd!
+
+Мы получили запрос на восстановление пароля для вашего аккаунта.
+
+Для создания нового пароля перейдите по ссылке:
+http://localhost:8000/reset-password.php?token=2f01887060d71c4dfebaaf728bef65c55a9c3ee2ded44ed4710df20178adf2db
+
+Ссылка действительна в течение 24 часов.
+
+Если вы не запрашивали восстановление пароля, просто проигнорируйте это письмо.
+
+© 2025 11klassniki.ru
+--------------------------------------------------------------------------------
+
+2025-08-11 12:58:51 | To: tinisto@gmail.com | Subject: Восстановление пароля на 11klassniki.ru
+HTML Body:
+
+        <html>
+        <head>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background: #dc3545; color: white; padding: 20px; text-align: center; }
+                .content { padding: 20px; background: #f8f9fa; }
+                .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+                .button { display: inline-block; padding: 10px 20px; background: #dc3545; color: white; text-decoration: none; border-radius: 5px; }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <h1>Восстановление пароля</h1>
+                </div>
+                <div class='content'>
+                    <p>Здравствуйте, tinistofds tinistofd!</p>
+                    <p>Мы получили запрос на восстановление пароля для вашего аккаунта.</p>
+                    <p>Для создания нового пароля перейдите по ссылке:</p>
+                    <p style='text-align: center; margin: 30px 0;'>
+                        <a href='http://localhost:8000/reset-password.php?token=51dd0a63041dfc429090fe7a0a3dd6906c7a879ee089bc1efd22056c2ca956bc' class='button'>Восстановить пароль</a>
+                    </p>
+                    <p><small>Ссылка действительна в течение 24 часов.</small></p>
+                    <p><small>Если вы не запрашивали восстановление пароля, просто проигнорируйте это письмо.</small></p>
+                </div>
+                <div class='footer'>
+                    <p>© 2025 11klassniki.ru - Портал образования России</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        
+Text Body:
+Здравствуйте, tinistofds tinistofd!
+
+Мы получили запрос на восстановление пароля для вашего аккаунта.
+
+Для создания нового пароля перейдите по ссылке:
+http://localhost:8000/reset-password.php?token=51dd0a63041dfc429090fe7a0a3dd6906c7a879ee089bc1efd22056c2ca956bc
+
+Ссылка действительна в течение 24 часов.
+
+Если вы не запрашивали восстановление пароля, просто проигнорируйте это письмо.
+
+© 2025 11klassniki.ru
+--------------------------------------------------------------------------------
+
+2025-08-11 13:03:02 | To: tinisto@gmail.com | Subject: Восстановление пароля на 11klassniki.ru
+HTML Body:
+
+        <html>
+        <head>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background: #dc3545; color: white; padding: 20px; text-align: center; }
+                .content { padding: 20px; background: #f8f9fa; }
+                .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+                .button { display: inline-block; padding: 10px 20px; background: #dc3545; color: white; text-decoration: none; border-radius: 5px; }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <h1>Восстановление пароля</h1>
+                </div>
+                <div class='content'>
+                    <p>Здравствуйте, tinistofds tinistofd!</p>
+                    <p>Мы получили запрос на восстановление пароля для вашего аккаунта.</p>
+                    <p>Для создания нового пароля перейдите по ссылке:</p>
+                    <p style='text-align: center; margin: 30px 0;'>
+                        <a href='http://localhost:8000/reset-password.php?token=802c1aff1cb9a427b028e90b6a37b74ecfea9fdeaedb9b0b7bb9fd6365710d04' class='button'>Восстановить пароль</a>
+                    </p>
+                    <p><small>Ссылка действительна в течение 24 часов.</small></p>
+                    <p><small>Если вы не запрашивали восстановление пароля, просто проигнорируйте это письмо.</small></p>
+                </div>
+                <div class='footer'>
+                    <p>© 2025 11klassniki.ru - Портал образования России</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        
+Text Body:
+Здравствуйте, tinistofds tinistofd!
+
+Мы получили запрос на восстановление пароля для вашего аккаунта.
+
+Для создания нового пароля перейдите по ссылке:
+http://localhost:8000/reset-password.php?token=802c1aff1cb9a427b028e90b6a37b74ecfea9fdeaedb9b0b7bb9fd6365710d04
+
+Ссылка действительна в течение 24 часов.
+
+Если вы не запрашивали восстановление пароля, просто проигнорируйте это письмо.
+
+© 2025 11klassniki.ru
+--------------------------------------------------------------------------------
+
+2025-08-11 13:04:38 | To: tinisto@gmail.com | Subject: Восстановление пароля на 11klassniki.ru
+HTML Body:
+
+        <html>
+        <head>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background: #dc3545; color: white; padding: 20px; text-align: center; }
+                .content { padding: 20px; background: #f8f9fa; }
+                .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+                .button { display: inline-block; padding: 10px 20px; background: #dc3545; color: white; text-decoration: none; border-radius: 5px; }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <h1>Восстановление пароля</h1>
+                </div>
+                <div class='content'>
+                    <p>Здравствуйте, tinistofds tinistofd!</p>
+                    <p>Мы получили запрос на восстановление пароля для вашего аккаунта.</p>
+                    <p>Для создания нового пароля перейдите по ссылке:</p>
+                    <p style='text-align: center; margin: 30px 0;'>
+                        <a href='http://localhost:8000/reset-password.php?token=fd2ff5fe950568360611d13ee6d53384baef388e6fa3b4a324fb2a44965de7b7' class='button'>Восстановить пароль</a>
+                    </p>
+                    <p><small>Ссылка действительна в течение 24 часов.</small></p>
+                    <p><small>Если вы не запрашивали восстановление пароля, просто проигнорируйте это письмо.</small></p>
+                </div>
+                <div class='footer'>
+                    <p>© 2025 11klassniki.ru - Портал образования России</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        
+Text Body:
+Здравствуйте, tinistofds tinistofd!
+
+Мы получили запрос на восстановление пароля для вашего аккаунта.
+
+Для создания нового пароля перейдите по ссылке:
+http://localhost:8000/reset-password.php?token=fd2ff5fe950568360611d13ee6d53384baef388e6fa3b4a324fb2a44965de7b7
+
+Ссылка действительна в течение 24 часов.
+
+Если вы не запрашивали восстановление пароля, просто проигнорируйте это письмо.
+
+© 2025 11klassniki.ru
+--------------------------------------------------------------------------------
+
+2025-08-11 13:08:07 | To: tinisto@gmail.com | Subject: Восстановление пароля на 11klassniki.ru
+HTML Body:
+
+        <html>
+        <head>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background: #dc3545; color: white; padding: 20px; text-align: center; }
+                .content { padding: 20px; background: #f8f9fa; }
+                .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+                .button { display: inline-block; padding: 10px 20px; background: #dc3545; color: white; text-decoration: none; border-radius: 5px; }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <h1>Восстановление пароля</h1>
+                </div>
+                <div class='content'>
+                    <p>Здравствуйте, tinistofds tinistofd!</p>
+                    <p>Мы получили запрос на восстановление пароля для вашего аккаунта.</p>
+                    <p>Для создания нового пароля перейдите по ссылке:</p>
+                    <p style='text-align: center; margin: 30px 0;'>
+                        <a href='http://localhost:8000/reset-password.php?token=1f173e2a7d25fc5abe12ffc8336c4757d4b986934bc613e189db32db863285a8' class='button'>Восстановить пароль</a>
+                    </p>
+                    <p><small>Ссылка действительна в течение 24 часов.</small></p>
+                    <p><small>Если вы не запрашивали восстановление пароля, просто проигнорируйте это письмо.</small></p>
+                </div>
+                <div class='footer'>
+                    <p>© 2025 11klassniki.ru - Портал образования России</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        
+Text Body:
+Здравствуйте, tinistofds tinistofd!
+
+Мы получили запрос на восстановление пароля для вашего аккаунта.
+
+Для создания нового пароля перейдите по ссылке:
+http://localhost:8000/reset-password.php?token=1f173e2a7d25fc5abe12ffc8336c4757d4b986934bc613e189db32db863285a8
+
+Ссылка действительна в течение 24 часов.
+
+Если вы не запрашивали восстановление пароля, просто проигнорируйте это письмо.
+
+© 2025 11klassniki.ru
+--------------------------------------------------------------------------------
+
+2025-08-11 13:12:47 | To: tinisto@gmail.com | Subject: Восстановление пароля на 11klassniki.ru
+HTML Body:
+
+        <html>
+        <head>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background: #dc3545; color: white; padding: 20px; text-align: center; }
+                .content { padding: 20px; background: #f8f9fa; }
+                .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+                .button { display: inline-block; padding: 10px 20px; background: #dc3545; color: white; text-decoration: none; border-radius: 5px; }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <h1>Восстановление пароля</h1>
+                </div>
+                <div class='content'>
+                    <p>Здравствуйте, tinistofds tinistofd!</p>
+                    <p>Мы получили запрос на восстановление пароля для вашего аккаунта.</p>
+                    <p>Для создания нового пароля перейдите по ссылке:</p>
+                    <p style='text-align: center; margin: 30px 0;'>
+                        <a href='http://localhost:8000/reset-password.php?token=96632c7e3e9b055e38113ca1ee8029d2cf5d470382788609a6dee9be05b3ed3d' class='button'>Восстановить пароль</a>
+                    </p>
+                    <p><small>Ссылка действительна в течение 24 часов.</small></p>
+                    <p><small>Если вы не запрашивали восстановление пароля, просто проигнорируйте это письмо.</small></p>
+                </div>
+                <div class='footer'>
+                    <p>© 2025 11klassniki.ru - Портал образования России</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        
+Text Body:
+Здравствуйте, tinistofds tinistofd!
+
+Мы получили запрос на восстановление пароля для вашего аккаунта.
+
+Для создания нового пароля перейдите по ссылке:
+http://localhost:8000/reset-password.php?token=96632c7e3e9b055e38113ca1ee8029d2cf5d470382788609a6dee9be05b3ed3d
+
+Ссылка действительна в течение 24 часов.
+
+Если вы не запрашивали восстановление пароля, просто проигнорируйте это письмо.
+
+© 2025 11klassniki.ru
+--------------------------------------------------------------------------------
+
+2025-08-11 13:16:30 | To: tinisto@gmail.com | Subject: Восстановление пароля на 11klassniki.ru
+HTML Body:
+
+        <html>
+        <head>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background: #dc3545; color: white; padding: 20px; text-align: center; }
+                .content { padding: 20px; background: #f8f9fa; }
+                .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+                .button { display: inline-block; padding: 10px 20px; background: #dc3545; color: white; text-decoration: none; border-radius: 5px; }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <h1>Восстановление пароля</h1>
+                </div>
+                <div class='content'>
+                    <p>Здравствуйте, tinistofds tinistofd!</p>
+                    <p>Мы получили запрос на восстановление пароля для вашего аккаунта.</p>
+                    <p>Для создания нового пароля перейдите по ссылке:</p>
+                    <p style='text-align: center; margin: 30px 0;'>
+                        <a href='http://localhost:8000/reset-password.php?token=17c8d9ed9ea2d66c0fdf437320689806de43e00f448726d874e403a4a26c781b' class='button'>Восстановить пароль</a>
+                    </p>
+                    <p><small>Ссылка действительна в течение 24 часов.</small></p>
+                    <p><small>Если вы не запрашивали восстановление пароля, просто проигнорируйте это письмо.</small></p>
+                </div>
+                <div class='footer'>
+                    <p>© 2025 11klassniki.ru - Портал образования России</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        
+Text Body:
+Здравствуйте, tinistofds tinistofd!
+
+Мы получили запрос на восстановление пароля для вашего аккаунта.
+
+Для создания нового пароля перейдите по ссылке:
+http://localhost:8000/reset-password.php?token=17c8d9ed9ea2d66c0fdf437320689806de43e00f448726d874e403a4a26c781b
+
+Ссылка действительна в течение 24 часов.
+
+Если вы не запрашивали восстановление пароля, просто проигнорируйте это письмо.
+
+© 2025 11klassniki.ru
+--------------------------------------------------------------------------------
+

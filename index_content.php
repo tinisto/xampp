@@ -5,10 +5,15 @@
     <p class='lead text-center fw-semibold'>Недавние статьи</p>
     <?php
 
-    $queryPosts = "SELECT * FROM posts ORDER BY date_post DESC LIMIT 6";
-    $resultPosts = mysqli_query($connection, $queryPosts);
-
-    while ($rowPost = mysqli_fetch_assoc($resultPosts)) {
+    // Check if database connection exists
+    if ($connection && !$connection->connect_error) {
+        // Use prepared statement for security
+        $stmt = $connection->prepare("SELECT id_post, url_post, title_post FROM posts ORDER BY date_post DESC LIMIT 6");
+        $stmt->execute();
+        $resultPosts = $stmt->get_result();
+        
+        if ($resultPosts) {
+            while ($rowPost = mysqli_fetch_assoc($resultPosts)) {
       ?>
       <div class="col-lg-2 col-md-4 col-sm-6">
         <div class="card index-card mb-3">
@@ -32,7 +37,7 @@
             </div>
             <div class="card-title-overlay">
               <h6 class="card-title mb-0">
-                <?= $rowPost['title_post'] ?>
+                <?= htmlspecialchars($rowPost['title_post'], ENT_QUOTES, 'UTF-8') ?>
               </h6>
             </div>
             <!-- End of existing content -->
@@ -48,8 +53,12 @@
   <div class="row">
     <p class='lead text-center fw-semibold'>11-классники</p>
     <?php
-    $query11 = "SELECT * FROM posts WHERE category = 1 ORDER BY date_post DESC LIMIT 6;";
-    $result11 = mysqli_query($connection, $query11);
+    // Use prepared statement with parameter binding
+    $stmt11 = $connection->prepare("SELECT id_post, url_post, title_post FROM posts WHERE category = ? ORDER BY date_post DESC LIMIT 6");
+    $category_id = 1;
+    $stmt11->bind_param("i", $category_id);
+    $stmt11->execute();
+    $result11 = $stmt11->get_result();
 
     while ($row11 = mysqli_fetch_assoc($result11)) {
       ?>
@@ -74,7 +83,7 @@
             </div>
             <div class="card-title-overlay">
               <h6 class="card-title mb-0">
-                <?= $row11['title_post'] ?>
+                <?= htmlspecialchars($row11['title_post'], ENT_QUOTES, 'UTF-8') ?>
               </h6>
             </div>
             <!-- End of existing content -->
@@ -83,6 +92,10 @@
 
       </div>
       <?php
+            }
+        }
+    } else {
+        echo '<div class="col-12"><p class="text-center text-muted">База данных недоступна</p></div>';
     }
     ?>
   </div>
@@ -90,9 +103,17 @@
   <div class="row">
     <p class='lead text-center fw-semibold'>Абитуриентам</p>
     <?php
-    $queryAbiturient = "SELECT * FROM posts WHERE category = 6 LIMIT 6;";
-    $resultAbiturient = mysqli_query($connection, $queryAbiturient);
-    while ($rowAbiturient = mysqli_fetch_assoc($resultAbiturient)) {
+    // Check if database connection exists
+    if ($connection && !$connection->connect_error) {
+        // Use prepared statement with parameter binding
+        $stmtAbiturient = $connection->prepare("SELECT id_post, url_post, title_post FROM posts WHERE category = ? ORDER BY date_post DESC LIMIT 6");
+        $category_abitur = 6;
+        $stmtAbiturient->bind_param("i", $category_abitur);
+        $stmtAbiturient->execute();
+        $resultAbiturient = $stmtAbiturient->get_result();
+        
+        if ($resultAbiturient) {
+            while ($rowAbiturient = mysqli_fetch_assoc($resultAbiturient)) {
       ?>
       <div class="col-lg-2 col-md-4 col-sm-6">
         <div class="card index-card mb-3">
@@ -116,7 +137,7 @@
             </div>
             <div class="card-title-overlay">
               <h6 class="card-title mb-0">
-                <?= $rowAbiturient['title_post'] ?>
+                <?= htmlspecialchars($rowAbiturient['title_post'], ENT_QUOTES, 'UTF-8') ?>
               </h6>
             </div>
             <!-- End of existing content -->
@@ -125,6 +146,10 @@
 
       </div>
       <?php
+            }
+        }
+    } else {
+        echo '<div class="col-12"><p class="text-center text-muted">База данных недоступна</p></div>';
     }
     ?>
   </div>

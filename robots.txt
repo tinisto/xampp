@@ -1,8 +1,44 @@
+# 11klassniki.ru robots.txt
+# Allow all crawlers by default
+
 User-agent: *
+Allow: /
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /includes/
+Disallow: /database/
+Disallow: /vendor/
+Disallow: /common-components/
+Disallow: /pages/dashboard/
 Disallow: /dashboard/
-Disallow: /category/blog-redaktora
 Disallow: /error
 Disallow: /404
 Disallow: /login
-Disallow: /registration 
+Disallow: /registration
 Disallow: /account
+Disallow: /reset-password
+Disallow: /forgot-password
+
+# Allow specific resources
+Allow: /css/
+Allow: /js/
+Allow: /images/
+
+# Sitemap location
+Sitemap: https://11klassniki.ru/sitemap.xml
+
+# Crawl delay (in seconds)
+Crawl-delay: 1
+
+# Specific crawler rules
+User-agent: Googlebot
+Allow: /
+
+User-agent: Yandexbot
+Allow: /
+Crawl-delay: 2
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1

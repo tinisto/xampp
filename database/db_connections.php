@@ -1,30 +1,48 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/config/loadEnv.php';
+// Database connection with security improvements
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/security/security_config.php';
 
-// Check if the constants are defined
-if (!defined('DB_HOST') || !defined('DB_USER') || !defined('DB_PASS') || !defined('DB_NAME')) {
-    header("Location: /error");
-    exit();
+// Database configuration
+$db_config = [
+    'host' => '127.0.0.1',
+    'username' => 'root',
+    'passwords' => ['root', ''], // Try multiple passwords for local dev
+    'database' => '11klassniki_ru',
+    'charset' => 'utf8mb4'
+];
+
+// Initialize connection
+$connection = null;
+
+try {
+    // Try each password configuration
+    foreach ($db_config['passwords'] as $password) {
+        $connection = new mysqli(
+            $db_config['host'], 
+            $db_config['username'], 
+            $password, 
+            $db_config['database']
+        );
+        
+        if (!$connection->connect_error) {
+            // Set charset and options
+            $connection->set_charset($db_config['charset']);
+            
+            // Additional security settings
+            $connection->query("SET SESSION sql_mode = 'TRADITIONAL,NO_AUTO_VALUE_ON_ZERO'");
+            
+            break; // Successfully connected
+        }
+    }
+    
+    // Check if all attempts failed
+    if ($connection->connect_error) {
+        error_log("Database connection failed: " . $connection->connect_error);
+        $connection = null;
+    }
+    
+} catch (Exception $e) {
+    error_log("Database exception: " . $e->getMessage());
+    $connection = null;
 }
-
-// Establish the database connection
-$connection = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-
-// Check the connection
-if ($connection->connect_error) {
-    header("Location: /error");
-    exit();
-}
-
-// Check if the server supports utf8mb4
-$result = $connection->query("SHOW CHARACTER SET LIKE 'utf8mb4';");
-if (!$result || $result->num_rows == 0) {
-    header("Location: /error");
-    exit();
-}
-
-// Set the charset
-if (!$connection->set_charset('utf8mb4')) {
-    header("Location: /error");
-    exit();
-}
+?>

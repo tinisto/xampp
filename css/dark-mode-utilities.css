@@ -1,0 +1,393 @@
+/* Dark Mode Utility Classes - Additional helpers for common patterns */
+
+/* Import the main dark mode fix CSS */
+@import url('dark-mode-fix.css');
+
+/* Additional utility classes for common components */
+
+/* Cards and containers */
+.card-dark-adaptive {
+    background-color: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    transition: all 0.3s ease;
+}
+
+.card-dark-adaptive:hover {
+    box-shadow: 0 4px 12px var(--color-shadow);
+    transform: translateY(-2px);
+}
+
+/* Lists and grids */
+.list-dark-adaptive {
+    color: var(--color-text-primary);
+}
+
+.list-dark-adaptive li {
+    color: var(--color-text-primary);
+}
+
+.grid-dark-adaptive {
+    background-color: var(--color-bg-primary);
+}
+
+/* Tables */
+.table-dark-adaptive {
+    color: var(--color-text-primary);
+    border-color: var(--color-border);
+}
+
+.table-dark-adaptive th {
+    background-color: var(--color-bg-secondary);
+    color: var(--color-text-heading);
+    border-color: var(--color-border);
+}
+
+.table-dark-adaptive td {
+    color: var(--color-text-primary);
+    border-color: var(--color-border);
+}
+
+.table-dark-adaptive tr:hover {
+    background-color: var(--color-bg-secondary);
+}
+
+/* Badges and tags */
+.badge-adaptive {
+    background-color: var(--color-bg-secondary);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.badge-primary-adaptive {
+    background-color: var(--color-text-link);
+    color: white;
+    border: none;
+}
+
+.badge-success-adaptive {
+    background-color: #28a745;
+    color: white;
+    border: none;
+}
+
+[data-theme="dark"] .badge-success-adaptive,
+[data-bs-theme="dark"] .badge-success-adaptive {
+    background-color: #4ade80;
+}
+
+/* Icons */
+.icon-adaptive {
+    color: var(--color-text-secondary);
+}
+
+.icon-primary-adaptive {
+    color: var(--color-text-link);
+}
+
+/* Dividers */
+.divider-adaptive {
+    border-color: var(--color-border);
+}
+
+hr.divider-adaptive {
+    border-top-color: var(--color-border);
+}
+
+/* Tooltips and popovers */
+.tooltip-adaptive {
+    background-color: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+}
+
+/* Dropdown menus */
+.dropdown-adaptive {
+    background-color: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 4px 12px var(--color-shadow);
+}
+
+.dropdown-item-adaptive {
+    color: var(--color-text-primary);
+}
+
+.dropdown-item-adaptive:hover {
+    background-color: var(--color-bg-secondary);
+    color: var(--color-text-primary);
+}
+
+/* Modal dialogs */
+.modal-adaptive {
+    background-color: var(--color-bg-primary);
+    color: var(--color-text-primary);
+}
+
+.modal-header-adaptive {
+    background-color: var(--color-bg-secondary);
+    border-bottom-color: var(--color-border);
+}
+
+.modal-footer-adaptive {
+    background-color: var(--color-bg-secondary);
+    border-top-color: var(--color-border);
+}
+
+/* Pagination */
+.pagination-adaptive .page-link {
+    background-color: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    border-color: var(--color-border);
+}
+
+.pagination-adaptive .page-link:hover {
+    background-color: var(--color-bg-secondary);
+    color: var(--color-text-primary);
+    border-color: var(--color-border);
+}
+
+.pagination-adaptive .page-item.active .page-link {
+    background-color: var(--color-text-link);
+    border-color: var(--color-text-link);
+    color: white;
+}
+
+/* Progress bars */
+.progress-adaptive {
+    background-color: var(--color-bg-secondary);
+}
+
+.progress-bar-adaptive {
+    background-color: var(--color-text-link);
+}
+
+/* Alerts with icons */
+.alert-icon-adaptive {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.alert-icon-adaptive i {
+    font-size: 20px;
+    margin-top: 2px;
+}
+
+/* Code blocks */
+.code-adaptive {
+    background-color: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+}
+
+pre.code-block-adaptive {
+    background-color: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+    padding: 16px;
+    border-radius: 8px;
+    overflow-x: auto;
+}
+
+/* Quote blocks */
+.quote-adaptive {
+    background-color: var(--color-bg-secondary);
+    border-left: 4px solid var(--color-text-link);
+    padding: 16px 24px;
+    margin: 24px 0;
+    font-style: italic;
+    color: var(--color-text-primary);
+}
+
+.quote-author-adaptive {
+    font-style: normal;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    margin-top: 12px;
+}
+
+/* Feature boxes */
+.feature-box-adaptive {
+    background-color: var(--color-bg-secondary);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.feature-box-adaptive:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px var(--color-shadow);
+}
+
+.feature-icon-adaptive {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--color-text-link), var(--color-text-link-hover));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+}
+
+.feature-icon-adaptive i {
+    color: white;
+    font-size: 24px;
+}
+
+/* Stats cards */
+.stat-card-adaptive {
+    background-color: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+}
+
+.stat-number-adaptive {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--color-text-heading);
+    margin-bottom: 8px;
+}
+
+.stat-label-adaptive {
+    color: var(--color-text-secondary);
+    font-size: 14px;
+}
+
+/* Timeline */
+.timeline-adaptive {
+    position: relative;
+    padding-left: 30px;
+}
+
+.timeline-adaptive::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: var(--color-border);
+}
+
+.timeline-item-adaptive {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.timeline-item-adaptive::before {
+    content: '';
+    position: absolute;
+    left: -24px;
+    top: 5px;
+    width: 12px;
+    height: 12px;
+    background-color: var(--color-text-link);
+    border-radius: 50%;
+}
+
+.timeline-date-adaptive {
+    color: var(--color-text-secondary);
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.timeline-content-adaptive {
+    background-color: var(--color-bg-secondary);
+    padding: 16px;
+    border-radius: 8px;
+}
+
+/* Hover effects */
+.hover-shadow-adaptive {
+    transition: box-shadow 0.3s ease;
+}
+
+.hover-shadow-adaptive:hover {
+    box-shadow: 0 8px 24px var(--color-shadow);
+}
+
+.hover-lift-adaptive {
+    transition: transform 0.3s ease;
+}
+
+.hover-lift-adaptive:hover {
+    transform: translateY(-4px);
+}
+
+.hover-scale-adaptive {
+    transition: transform 0.3s ease;
+}
+
+.hover-scale-adaptive:hover {
+    transform: scale(1.05);
+}
+
+/* Utility modifiers */
+.no-border-adaptive {
+    border: none !important;
+}
+
+.rounded-adaptive {
+    border-radius: 8px;
+}
+
+.rounded-lg-adaptive {
+    border-radius: 12px;
+}
+
+.rounded-full-adaptive {
+    border-radius: 50%;
+}
+
+/* Spacing utilities */
+.spacing-adaptive {
+    padding: 20px;
+}
+
+.spacing-lg-adaptive {
+    padding: 40px;
+}
+
+.spacing-sm-adaptive {
+    padding: 10px;
+}
+
+/* Fix for specific Bootstrap components in dark mode */
+[data-theme="dark"] .form-control,
+[data-bs-theme="dark"] .form-control {
+    background-color: var(--color-bg-secondary);
+    color: var(--color-text-primary);
+    border-color: var(--color-border);
+}
+
+[data-theme="dark"] .form-control:focus,
+[data-bs-theme="dark"] .form-control:focus {
+    background-color: var(--color-bg-secondary);
+    color: var(--color-text-primary);
+    border-color: var(--color-text-link);
+    box-shadow: 0 0 0 0.25rem rgba(var(--color-text-link), 0.25);
+}
+
+[data-theme="dark"] .btn-outline-primary,
+[data-bs-theme="dark"] .btn-outline-primary {
+    color: var(--color-text-link);
+    border-color: var(--color-text-link);
+}
+
+[data-theme="dark"] .btn-outline-primary:hover,
+[data-bs-theme="dark"] .btn-outline-primary:hover {
+    background-color: var(--color-text-link);
+    border-color: var(--color-text-link);
+    color: white;
+}
