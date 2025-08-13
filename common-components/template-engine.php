@@ -89,13 +89,10 @@ HTML;
             <!-- Tinymce -->
             <script src="https://cdn.tiny.cloud/1/y4herhyxuwf9pi78y7tdxsrjpar8zqwxy7mn8vya74pjix2u/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
         </head>
+        <body class='full-height-flex'>
 HTML;
 
     include "header.php";
-
-    echo <<<HTML
-        <body class='full-height-flex'>
-HTML;
 
     echo <<<HTML
 <main class='container my-3'>

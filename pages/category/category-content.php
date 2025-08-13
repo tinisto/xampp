@@ -1,9 +1,13 @@
 <?php
 // Category content - data already fetched in category-data-fetch.php
 require_once $_SERVER["DOCUMENT_ROOT"] . "/includes/functions/pagination.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
 
-// Check if categoryId was set by the data fetch
-if (isset($categoryId) && $connection && !$connection->connect_error) {
+// Get category ID from globals
+$categoryId = $GLOBALS['categoryId'] ?? null;
+
+// Check if categoryId was set by the data fetch - also ensure database connection
+if ($categoryId && isset($connection) && $connection && !$connection->connect_error) {
 ?>
 <div class="main-content">
     <h5 class='text-center fw-bold'>

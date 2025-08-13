@@ -1,4 +1,5 @@
 <?php
+require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db_connections.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/security/security_config.php';
 
 // Initialize default values
@@ -29,6 +30,7 @@ if (isset($_GET['url_category'])) {
         $metaK = $categoryData['title_category'] . ", статьи, образование, 11 класс";
         
         // Store category ID for content fetching
+        $GLOBALS['categoryId'] = $categoryData['id_category'];
         $categoryId = $categoryData['id_category'];
         
         $stmt->close();
