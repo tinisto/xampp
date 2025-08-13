@@ -69,8 +69,13 @@ function renderTemplateOriginal(
             <link rel='icon' href='/favicon.ico' type='image/x-icon'>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
             <title>" . htmlspecialchars($optimizedTitle, ENT_QUOTES, 'UTF-8') . "</title>
-            $structuredData" . 
-            DarkModeManager::getDarkModeCSS()
+            $structuredData
+HTML;
+
+    // Add dark mode CSS
+    echo DarkModeManager::getDarkModeCSS();
+
+    echo <<<HTML
             <!-- AdSense code snippet -->
             <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2363662533799826" crossorigin="anonymous"></script>
             <!-- Clarity -->
