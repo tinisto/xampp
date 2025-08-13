@@ -64,5 +64,5 @@ if ($_SESSION['role'] === 'admin') {
   }
 }
 
-include $_SERVER["DOCUMENT_ROOT"] . "/common-components/template-engine-dashboard.php";
+include $_SERVER["DOCUMENT_ROOT"] . "/common-components/template-engine.php";
 renderTemplate($pageTitle, $mainContent, $additionalData, $metaDescription, $metaKeywords);

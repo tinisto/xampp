@@ -5,5 +5,5 @@ include $_SERVER["DOCUMENT_ROOT"] . "/includes/functions/check_admin.php";
 $mainContent = "dashboard-content-modern.php";
 $pageTitle = "Admin Dashboard";
 include $_SERVER["DOCUMENT_ROOT"] .
-    "/common-components/template-engine-dashboard.php";
+    "/common-components/template-engine.php";
 renderTemplate($pageTitle, $mainContent);

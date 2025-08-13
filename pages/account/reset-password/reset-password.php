@@ -66,7 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 $pageTitle = 'Сброс пароля';
 $mainContent = 'reset-password-content.php';
 
-include $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine-authorization.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine.php';
 
 // Function to check if email exists in the database
 function checkEmailExistsInDatabase($email, $connection)

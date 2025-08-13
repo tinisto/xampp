@@ -29,6 +29,6 @@ if (isset($_GET['query']) && !empty($_GET['query'])) {
     $mainContent = 'search-content.php';
     $pageTitle = 'Поиск - 11-классники';
     $additionalData = ['searchQuery' => $sanitizedSearchQuery];
-    include $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine-search.php';
+    include $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine.php';
     renderTemplate($pageTitle, $mainContent, $additionalData);
 }

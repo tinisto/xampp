@@ -5,7 +5,7 @@ $pageTitle = "Schools editing approval";
 
 // include 'template-engine.php';
 include $_SERVER["DOCUMENT_ROOT"] .
-    "/common-components/template-engine-dashboard.php";
+    "/common-components/template-engine.php";
 
 // Render the template with dynamic content
 renderTemplate($pageTitle, $mainContent);

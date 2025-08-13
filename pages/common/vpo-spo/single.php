@@ -22,7 +22,7 @@ if (isset($pageTitle)) {
 
     $metaD = $pageTitle . ' – образовательное учреждение, предоставляющее высококачественное образование. Узнайте больше о наших программах и возможностях обучения.';
     $metaK = $pageTitle . ', ' . strtoupper($type) . ', образование, профессиональное обучение, студенты, адрес, руководство, директор, приемная комиссия, новости, сайт, электронная почта';
-    include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine-vpo-spo.php';
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine.php';
     renderTemplate($pageTitle, $mainContent, $additionalData, $metaD, $metaK);
 } else {
     header("Location: /404");

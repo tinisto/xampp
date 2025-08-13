@@ -4,5 +4,5 @@ include $_SERVER["DOCUMENT_ROOT"] . "/includes/functions/check_admin.php";
 $mainContent = $_SERVER["DOCUMENT_ROOT"] . "/pages/dashboard/spo-dashboard/spo-edit/spo-edit-content.php";
 $pageTitle = "spo Verification";
 include $_SERVER["DOCUMENT_ROOT"] .
-    "/common-components/template-engine-dashboard.php";
+    "/common-components/template-engine.php";
 renderTemplate($pageTitle, $mainContent);

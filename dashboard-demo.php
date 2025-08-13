@@ -16,6 +16,16 @@ $stats = [
 
 $mainContent = 'dashboard-demo-content.php';
 $pageTitle = 'Dashboard Demo - 11классники.ru';
+
+// Dashboard-specific options
+$dashboardOptions = [
+    'css' => ['styles.css', 'dashboard/dashboard.css'],
+    'container' => 'dashboard-content',
+    'robotsMeta' => 'noindex,nofollow',
+    'analytics' => false,
+    'tinymce' => true
+];
+
 include $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine.php';
-renderUnifiedTemplate($pageTitle, $mainContent, [], "", "", "", "", "", 'dashboard');
+renderTemplate($pageTitle, $mainContent, [], "", "", "", "", "", $dashboardOptions);
 ?>

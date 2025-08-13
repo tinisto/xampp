@@ -16,8 +16,8 @@ include $_SERVER["DOCUMENT_ROOT"] . "/includes/functions/redirectToErrorPage.php
 
 $baseUrl = '/';
 
-// Unified template function with layout options
-function renderUnifiedTemplate(
+// Single unified template function - handles all layouts
+function renderTemplate(
     $pageTitle,
     $mainContent,
     $additionalData = [],
@@ -26,89 +26,39 @@ function renderUnifiedTemplate(
     $table = '',
     $countField = '',
     $linkPrefix = '',
-    $layoutType = 'default'
+    $options = []
 ) {
     global $connection, $baseUrl;
     
-    // Define layout configurations
-    $layouts = [
-        'default' => [
-            'header' => true,
-            'footer' => true,
-            'seo' => 'full',
-            'analytics' => true,
-            'darkMode' => true,
-            'container' => 'container my-3',
-            'bodyClass' => 'full-height-flex',
-            'css' => ['styles.css', 'post-styles.css', 'buttons-styles.css', 'test.css', 'dark-mode-fix.css']
-        ],
-        'dashboard' => [
-            'header' => true,
-            'footer' => true,
-            'seo' => 'noindex',
-            'analytics' => false,
-            'darkMode' => false,
-            'container' => 'dashboard-content',
-            'bodyClass' => 'full-height-flex',
-            'css' => ['styles.css', 'dashboard/dashboard.css']
-        ],
-        'auth' => [
-            'header' => false,
-            'footer' => false,
-            'seo' => 'noindex',
-            'analytics' => false,
-            'darkMode' => false,
-            'container' => 'd-flex justify-content-center align-items-center min-vh-100',
-            'bodyClass' => 'full-height-flex',
-            'css' => ['styles.css', 'authorization.css']
-        ],
-        'minimal' => [
-            'header' => false,
-            'footer' => true,
-            'seo' => 'noindex',
-            'analytics' => false,
-            'darkMode' => false,
-            'container' => 'container',
-            'bodyClass' => 'full-height-flex',
-            'css' => ['styles.css']
-        ],
-        'search' => [
-            'header' => true,
-            'footer' => true,
-            'seo' => 'full',
-            'analytics' => true,
-            'darkMode' => false,
-            'container' => 'container my-3',
-            'bodyClass' => 'full-height-flex',
-            'css' => ['styles.css', 'post-styles.css', 'buttons-styles.css', 'test.css', 'dark-mode-fix.css']
-        ],
-        'nofollow' => [
-            'header' => true,
-            'footer' => true,
-            'seo' => 'nofollow',
-            'analytics' => false,
-            'darkMode' => false,
-            'container' => 'container my-3',
-            'bodyClass' => 'full-height-flex',
-            'css' => ['styles.css', 'post-styles.css', 'buttons-styles.css', 'test.css', 'dark-mode-fix.css']
-        ]
+    // Default options - can be overridden
+    $defaultOptions = [
+        'header' => true,
+        'footer' => true,
+        'seo' => 'full',
+        'analytics' => true,
+        'darkMode' => true,
+        'container' => 'container my-3',
+        'bodyClass' => 'full-height-flex',
+        'css' => ['styles.css', 'post-styles.css', 'buttons-styles.css', 'test.css', 'dark-mode-fix.css'],
+        'robotsMeta' => 'index,follow'
     ];
     
-    $layout = $layouts[$layoutType] ?? $layouts['default'];
+    // Merge user options with defaults
+    $layout = array_merge($defaultOptions, $options);
     
     // Set security headers
     setSecurityHeaders();
     
-    // Prepare SEO based on layout type
+    // Prepare SEO options
     $seoOptions = [];
-    if ($layout['seo'] === 'noindex' || $layout['seo'] === 'nofollow') {
-        $seoOptions['robots'] = $layout['seo'] === 'noindex' ? 'noindex, nofollow' : 'noindex, nofollow';
+    if (isset($layout['robotsMeta'])) {
+        $seoOptions['robots'] = $layout['robotsMeta'];
     }
     
-    if ($metaD && $layout['seo'] !== 'noindex') {
+    if ($metaD && $layout['seo'] === 'full') {
         $seoOptions['description'] = is_array($metaD) ? implode(", ", $metaD) : $metaD;
     }
-    if ($metaK && $layout['seo'] !== 'noindex') {
+    if ($metaK && $layout['seo'] === 'full') {
         $seoOptions['keywords'] = is_array($metaK) ? implode(", ", $metaK) : $metaK;
     }
     
@@ -183,8 +133,8 @@ HTML;
 HTML;
     }
 
-    // Add TinyMCE for dashboard
-    if ($layoutType === 'dashboard') {
+    // Add TinyMCE for dashboard layouts
+    if (isset($layout['tinymce']) && $layout['tinymce']) {
         echo <<<HTML
             <!-- Tinymce -->
             <script src="https://cdn.tiny.cloud/1/y4herhyxuwf9pi78y7tdxsrjpar8zqwxy7mn8vya74pjix2u/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
@@ -204,8 +154,8 @@ HTML;
     // Main content container
     echo "<main class='{$layout['container']}'>";
 
-    // Include messages for non-auth layouts
-    if ($layoutType !== 'auth') {
+    // Include messages unless specifically disabled
+    if (!isset($layout['hideMessages']) || !$layout['hideMessages']) {
         require_once $_SERVER["DOCUMENT_ROOT"] . "/includes/messages/display-messages.php";
     }
 
@@ -246,7 +196,68 @@ HTML;
 HTML;
 }
 
-// Backward compatibility function - redirects to unified template
+// Backward compatibility functions
+function renderUnifiedTemplate(
+    $pageTitle,
+    $mainContent,
+    $additionalData = [],
+    $metaD = "",
+    $metaK = "",
+    $table = '',
+    $countField = '',
+    $linkPrefix = '',
+    $layoutType = 'default'
+) {
+    // Convert old layout types to new options
+    $layoutOptions = [];
+    
+    switch($layoutType) {
+        case 'dashboard':
+            $layoutOptions = [
+                'css' => ['styles.css', 'dashboard/dashboard.css'],
+                'container' => 'dashboard-content',
+                'robotsMeta' => 'noindex,nofollow',
+                'analytics' => false,
+                'tinymce' => true
+            ];
+            break;
+        case 'auth':
+            $layoutOptions = [
+                'header' => false,
+                'footer' => false,
+                'robotsMeta' => 'noindex,nofollow',
+                'analytics' => false,
+                'darkMode' => false,
+                'container' => 'd-flex justify-content-center align-items-center min-vh-100',
+                'css' => ['styles.css', 'authorization.css'],
+                'hideMessages' => true
+            ];
+            break;
+        case 'minimal':
+            $layoutOptions = [
+                'header' => false,
+                'footer' => true,
+                'robotsMeta' => 'noindex,nofollow',
+                'analytics' => false,
+                'darkMode' => false,
+                'container' => 'container',
+                'css' => ['styles.css']
+            ];
+            break;
+        case 'nofollow':
+            $layoutOptions = [
+                'robotsMeta' => 'noindex,nofollow',
+                'analytics' => false,
+                'darkMode' => false
+            ];
+            break;
+        default:
+            $layoutOptions = []; // Use defaults
+    }
+    
+    renderTemplate($pageTitle, $mainContent, $additionalData, $metaD, $metaK, $table, $countField, $linkPrefix, $layoutOptions);
+}
+
 function renderTemplateOriginal(
     $pageTitle,
     $mainContent,
@@ -257,6 +268,6 @@ function renderTemplateOriginal(
     $countField = '',
     $linkPrefix = ''
 ) {
-    renderUnifiedTemplate($pageTitle, $mainContent, $additionalData, $metaD, $metaK, $table, $countField, $linkPrefix, 'default');
+    renderTemplate($pageTitle, $mainContent, $additionalData, $metaD, $metaK, $table, $countField, $linkPrefix);
 }
 ?>

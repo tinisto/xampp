@@ -5,5 +5,5 @@ include $_SERVER["DOCUMENT_ROOT"] . "/includes/functions/email_functions.php";
 $mainContent = "admin-approve-spo-edit-form-content.php";
 $pageTitle = "Страница редактирования";
 include $_SERVER["DOCUMENT_ROOT"] .
-    "/common-components/template-engine-dashboard.php";
+    "/common-components/template-engine.php";
 renderTemplate($pageTitle, $mainContent);
