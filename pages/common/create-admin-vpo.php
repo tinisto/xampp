@@ -9,5 +9,5 @@ $mainContent = "";
 
 $pageTitle = "admin Создать страницу VPO";
 $mainContent = $_SERVER["DOCUMENT_ROOT"] . "/pages/common/vpo/vpo-create-form.php";
-include $_SERVER["DOCUMENT_ROOT"] . "/common-components/template-engine.php";
+include $_SERVER["DOCUMENT_ROOT"] . "/common-components/template.php";
 renderTemplate($pageTitle, $mainContent, $additionalData, $metaDescription, $metaKeywords);

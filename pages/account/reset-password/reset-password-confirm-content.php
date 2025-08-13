@@ -1,9 +1,26 @@
 <div class="col-md-6">
   <div class="card">
     <div class="card-body" style="font-size: 14px;">
-      <a href="/" class="link-custom">
-        <img src="../images/logo.png" alt="Avatar" class="rounded-circle mx-auto d-block" width="50" />
-      </a>
+      <div class="text-center mb-3">
+        <a href="/" class="auth-logo">
+          <div style="
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+          ">
+            11
+          </div>
+          <span>классники</span>
+        </a>
+      </div>
       <h4 class="card-title text-center fw-bold my-3">Подтверждение сброса пароля</h4>
       <?php
       $token = filter_input(INPUT_GET, 'token', FILTER_SANITIZE_FULL_SPECIAL_CHARS);

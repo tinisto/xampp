@@ -4,5 +4,5 @@ include $_SERVER["DOCUMENT_ROOT"] . "/includes/functions/check_admin.php";
 $mainContent = "admin-spo-verification-form-table.php";
 $pageTitle = "SPO Verification";
 include $_SERVER["DOCUMENT_ROOT"] .
-    "/common-components/template-engine.php";
+    "/common-components/template.php";
 renderTemplate($pageTitle, $mainContent);

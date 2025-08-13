@@ -27,7 +27,7 @@ function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD =
     ]);
     
     // Use original template engine for now
-    require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/template.php';
     
     // Call original function with parameters
     renderTemplateOriginal($pageTitle, $mainContent, $additionalData, $metaD, $metaK);

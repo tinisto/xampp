@@ -4,5 +4,5 @@ include $_SERVER["DOCUMENT_ROOT"] . "/includes/functions/check_admin.php";
 $mainContent = $_SERVER["DOCUMENT_ROOT"] . "/pages/dashboard/news-dashboard/admin-view-news/admin-view-news-content.php";
 $pageTitle = "Новости";
 include $_SERVER["DOCUMENT_ROOT"] .
-    "/common-components/template-engine.php";
+    "/common-components/template.php";
 renderTemplate($pageTitle, $mainContent);

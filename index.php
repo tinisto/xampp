@@ -10,5 +10,5 @@ $mainContent = 'index_content.php';
 $metaD = 'Образовательный портал для учеников 11 классов. Новости образования, подготовка к ЕГЭ, выбор вуза.';
 $metaK = '11 класс, ЕГЭ, образование, школа, университет, поступление';
 
-include $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/common-components/template.php';
 renderTemplate($pageTitle, $mainContent, [], $metaD, $metaK);

@@ -4,9 +4,9 @@ ensureAdminAuthenticated();
 $mainContent = "schools-approve-edit-form-table.php";
 $pageTitle = "Schools Verification";
 
-// include 'template-engine.php';
+// include 'template.php';
 include $_SERVER["DOCUMENT_ROOT"] .
-    "/common-components/template-engine.php";
+    "/common-components/template.php";
 
 // Render the template with dynamic content
 renderTemplate($pageTitle, $mainContent);

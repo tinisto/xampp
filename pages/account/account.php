@@ -3,5 +3,5 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/check_under_constru
 include $_SERVER["DOCUMENT_ROOT"] . "/includes/functions/check_user.php";
 $mainContent = 'account-content.php';
 $pageTitle = 'Аккаунт';
-include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/template.php';
 renderTemplate($pageTitle, $mainContent);

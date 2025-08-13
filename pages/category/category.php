@@ -5,5 +5,5 @@ include 'category-data-fetch.php';
 
 $mainContent = 'category-content.php';
 
-include $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/common-components/template.php';
 renderTemplate($pageTitle, $mainContent, [], $metaD, $metaK);

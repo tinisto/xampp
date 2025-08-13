@@ -13,7 +13,9 @@ if (file_exists($dotenvPath . '/.env')) {
     try {
         $dotenv->load();
     } catch (Exception $e) {
-        redirectToErrorPage($connection->error, __FILE__, __LINE__);
+        error_log("Failed to load .env file: " . $e->getMessage());
+        header("Location: /error");
+        exit();
     }
 } else {
     header("Location: /error");

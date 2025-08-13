@@ -1,7 +1,20 @@
 /* custom-styles.css */
+
+/* Layout Background Colors - Removed for transparent design */
+header, .navbar {
+  background-color: transparent !important;
+}
+
+footer {
+  background-color: transparent !important;
+}
+
+main {
+  background-color: transparent !important;
+}
 .custom-comment-author {
   display: inline-block;
-  background-color: #e6f7ff;
+  background-color: transparent;
   padding: 10px;
   margin-bottom: 5px; /* Adjust the margin-bottom value */
   border-radius: 8px;
@@ -10,7 +23,7 @@
 
 .custom-comment-reply {
   display: inline-block;
-  background-color: #f0f0f0;
+  background-color: transparent;
   padding: 10px;
   border-radius: 8px;
   font-size: 12px;
@@ -68,22 +81,22 @@ textarea::placeholder {
 /* -------------------------------------------------------------------- custom -------------------------------------------------------------------- */
 
 .custom-background {
-  background-color: #e3f2fd; /* blue background color */
+  background-color: transparent;
 }
 
 .custom-info-message {
-  background-color: #e3f2fd;
-  color: #000;
-  border: none;
+  background-color: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
   border-radius: 0.25rem;
   padding: 1rem;
   font-size: 14px;
 }
 
 .custom-alert {
-  background-color: #fff3cd;
-  color: #856404;
-  border: none;
+  background-color: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
   border-radius: 0.25rem;
   padding: 1rem;
   font-size: 14px;

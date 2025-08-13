@@ -23,6 +23,6 @@ switch ($type) {
 
 $mainContent = 'educational-institutions-in-region-content.php';
 $additionalData = ['region_id' => $region_id, 'type' => $type];
-include $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/common-components/template.php';
 renderTemplate($pageTitle, $mainContent, $additionalData);
 ?>

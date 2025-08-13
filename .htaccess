@@ -122,6 +122,11 @@ RewriteRule ^post_towns_vuz\.php$ /index.php [L,R=301]
 RewriteCond %{QUERY_STRING} (^|&)id=\d+(&|$) [NC]
 RewriteRule ^view_post_ege\.php$ /index.php [L,R=301]
 
+# Direct routes for educational institutions
+RewriteRule ^schools/?$ pages/common/educational-institutions-all-regions/educational-institutions-all-regions.php?type=schools [QSA,NC,L]
+RewriteRule ^vpo/?$ pages/common/educational-institutions-all-regions/educational-institutions-all-regions.php?type=vpo [QSA,NC,L]
+RewriteRule ^spo/?$ pages/common/educational-institutions-all-regions/educational-institutions-all-regions.php?type=spo [QSA,NC,L]
+
 RewriteRule ^(schools|spo|vpo)-all-regions$ pages/common/educational-institutions-all-regions/educational-institutions-all-regions.php?type=$1 [QSA,NC,L]
 
 #-----------------------------------SCHOOL-----------------------------------
@@ -160,6 +165,9 @@ RewriteRule ^school/(\d+)/?$ school.php?id_school=$1 [L,QSA]
 
 
 #-----------------------------------VPO-----------------------------------
+# Updated: 2025-08-13 14:15:00 - Force reload
+# Clear any cached test-rewrite.php
+RewriteRule ^vpo/test-rewrite$ /index.php [R=301,L]
 RewriteRule ^vpo/([^/]+)$ /pages/common/vpo-spo/single.php?vpo_url=$1 [QSA,NC,L]
 
 RewriteRule ^post_university\.php$ /pages/common/vpo-spo/redirect.php?id_university=%2 [L]
@@ -234,6 +242,7 @@ RewriteRule ^post/(\d+)/?$ /pages/post/redirect-post.php?id=$1 [L,QSA]
     RewriteRule ^post/([^/]+)$ pages/post/post.php?url_post=$1 [QSA,NC,L]
 
     # Handle requests for /news
+    RewriteRule ^news/?$ news.php [QSA,NC,L]
     RewriteRule ^news/([^/]+)$ pages/common/news/news.php?url_news=$1 [QSA,NC,L]
 
     # Handle requests for /category-news
@@ -245,7 +254,11 @@ RewriteRule ^post/(\d+)/?$ /pages/post/redirect-post.php?id=$1 [L,QSA]
     RewriteRule ^about\.php$ /about [R=301,L]
     # Handle requests for /about
     RewriteRule ^about$ pages/about/about.php [QSA,NC,L]
+    RewriteRule ^sitemap$ sitemap.php [QSA,NC,L]
 
+
+    # Handle requests for /tests (main tests page)
+    RewriteRule ^tests$ tests.php [QSA,NC,L]
 
     # Handle requests for /iq-test
     RewriteRule ^iq-test$ /pages/tests/test-handler.php?test=iq-test [QSA,NC,L]    
@@ -253,6 +266,11 @@ RewriteRule ^post/(\d+)/?$ /pages/post/redirect-post.php?id=$1 [L,QSA]
 
     # Rewrite rule for /aptitude-test
     RewriteRule ^aptitude-test$ /pages/tests/test-handler.php?test=aptitude-test [QSA,NC,L]
+    
+    # Handle test results page
+    RewriteRule ^test-result$ /pages/tests/result-handler.php [QSA,NC,L]
+    
+    # Modern test interface
 
 
     # --------------------------------- write_to_editorial ---------------------------------
@@ -292,6 +310,7 @@ RewriteRule ^post/(\d+)/?$ /pages/post/redirect-post.php?id=$1 [L,QSA]
 
     # --------------------------------- dashboard ---------------------------------
     RewriteRule ^dashboard$ pages/dashboard/admin-index/dashboard.php [QSA,NC,L]
+    RewriteRule ^dashboard-demo$ dashboard-demo.php [QSA,NC,L]
 
    # --------------------------------- spo ---------------------------------
     RewriteRule ^spo-edit-form\.php$ pages/spo/edit/spo-edit-form.php [QSA,NC,L]

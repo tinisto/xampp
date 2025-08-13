@@ -7,5 +7,5 @@ $metaD = 'Create or edit a news article';
 $metaK = 'news, create, edit';
 
 $mainContent = 'news-form-content.php';
-include $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/common-components/template.php';
 renderTemplate($pageTitle, $mainContent, [], $metaD, $metaK);

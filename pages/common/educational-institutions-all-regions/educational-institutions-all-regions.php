@@ -33,6 +33,6 @@ switch ($type) {
         exit();
 }
 
-include $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/common-components/template.php';
 renderTemplate($pageTitle, $mainContent, [], '', '', $table, $countField, $linkPrefix);
 ?>

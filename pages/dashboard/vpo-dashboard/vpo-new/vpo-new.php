@@ -4,5 +4,5 @@ include $_SERVER["DOCUMENT_ROOT"] . "/includes/functions/check_admin.php";
 $mainContent = $_SERVER["DOCUMENT_ROOT"] . "/pages/dashboard/vpo-dashboard/vpo-new/vpo-new-content.php";
 $pageTitle = "Admin Approve VPO";
 include $_SERVER["DOCUMENT_ROOT"] .
-    "/common-components/template-engine.php";
+    "/common-components/template.php";
 renderTemplate($pageTitle, $mainContent);

@@ -14,8 +14,9 @@ $testsConfig = [
     // Add more tests here as needed
 ];
 
-$test = $_GET['test'] ?? 'iq-test'; // Default to IQ test if no test is specified
-$testConfig = $testsConfig[$test];
+// Get test from session (set by test-handler-content.php)
+$test = $_SESSION['completed_test'] ?? $_GET['test'] ?? 'iq-test';
+$testConfig = $testsConfig[$test] ?? $testsConfig['iq-test'];
 $questions = $testConfig['questions'];
 
 include_once $_SERVER["DOCUMENT_ROOT"] . "/includes/functions/getIQRating.php";

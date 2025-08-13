@@ -39,7 +39,7 @@ class PageConfig {
  */
 function renderTemplate($pageTitle, $mainContent, $additionalData = [], $metaD = "", $metaK = "") {
     // Include original template engine
-    require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/template.php';
     
     // Call unified template function with default layout
     renderUnifiedTemplate($pageTitle, $mainContent, $additionalData, $metaD, $metaK, '', '', '', 'default');
@@ -55,7 +55,7 @@ function renderPage($config) {
     }
     
     // Include required files
-    require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . '/common-components/template.php';
     
     // Prepare additional data
     $additionalData = $config->contentData;

@@ -14,6 +14,12 @@ $testsConfig = [
 ];
 
 $test = $_GET['test'] ?? 'iq-test'; // Default to IQ test if no test is specified
+
+// Check if test config exists
+if (!isset($testsConfig[$test])) {
+    $test = 'iq-test'; // Fallback to IQ test
+}
+
 $testConfig = $testsConfig[$test];
 $questions = $testConfig['questions'];
 
@@ -53,8 +59,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     $_SESSION['question_index']++;
     if ($_SESSION['question_index'] >= count($questions)) {
-        // Redirect to the result page or handle test completion
-        header('Location: /pages/tests/result-handler.php?test=' . $test);
+        // Store test name in session for result page
+        $_SESSION['completed_test'] = $test;
+        // Redirect to the result page
+        header('Location: /test-result');
         exit;
     }
     header('Location: /' . $test); // Redirect to the next question
@@ -73,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </p>
                     <h5 class="card-title"><?php echo htmlspecialchars($currentQuestion['question']); ?></h5>
                     <!-- Display choices for the question -->
-                    <form method="POST" action="" onsubmit="validateForm(event)">
+                    <form method="POST" action="/<?php echo $test; ?>" onsubmit="validateForm(event)">
                         <?php foreach ($currentQuestion['choices'] as $choice): ?>
                             <div class="form-check d-flex align-items-center">
                                 <input class="form-check-input" type="radio" name="answer" value="<?php echo htmlspecialchars($choice); ?>" id="choice-<?php echo htmlspecialchars($choice); ?>">

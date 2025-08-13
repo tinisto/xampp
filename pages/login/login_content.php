@@ -1,102 +1,222 @@
-<div class="col-md-6">
-  <div class="card">
-    <div class="card-body" style="font-size: 14px;">
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="auth-logo">
+        <div class="logo-icon">11</div>
+      </div>
+      <h1 class="auth-title">Добро пожаловать</h1>
+      <p class="auth-subtitle">Войдите в ваш аккаунт</p>
+    </div>
 
+    <div class="auth-body">
       <?php
+      // Success messages
       if (isset($_GET['activation_success']) && $_GET['activation_success'] === 'true') {
-        // Проверяем, было ли уже показано сообщение
         if (!isset($_SESSION['activation_success_message_shown'])) {
-          echo '<div class="alert alert-success" role="alert">';
-          echo 'Аккаунт успешно активирован. Теперь вы можете войти в свой аккаунт.';
+          echo '<div class="alert alert-success">';
+          echo '<i class="fas fa-check-circle"></i>';
+          echo '<div>';
+          echo '<p>Аккаунт успешно активирован. Теперь вы можете войти в свой аккаунт.</p>';
           echo '</div>';
-
-          // Устанавливаем флаг в сессии, чтобы показать, что сообщение было показано
+          echo '</div>';
           $_SESSION['activation_success_message_shown'] = true;
         }
       }
-      ?>
 
-      <?php
       $registrationSuccess = isset($_GET['registration_success']) && $_GET['registration_success'] === 'true';
       $successMessage = isset($_GET['message']) ? urldecode($_GET['message']) : '';
 
       if ($registrationSuccess) {
-        echo '<div class="alert alert-success" role="alert">';
-        echo $successMessage;
+        echo '<div class="alert alert-success">';
+        echo '<i class="fas fa-check-circle"></i>';
+        echo '<div>';
+        echo '<p>' . htmlspecialchars($successMessage) . '</p>';
+        echo '</div>';
         echo '</div>';
       }
 
-      // Check for login errors
+      // Error messages
       if (isset($_GET['error'])) {
         $error = $_GET['error'];
+        echo '<div class="alert alert-error">';
+        echo '<i class="fas fa-exclamation-circle"></i>';
+        echo '<div>';
+        
         if ($error === '1') {
-          echo '<div class="alert alert-danger" role="alert">Неверная электронная почта или пароль. Пожалуйста, попробуйте еще раз.</div>';
+          echo '<p>Неверная электронная почта или пароль. Пожалуйста, попробуйте еще раз.</p>';
         } elseif ($error === '2') {
-          // Check if there's an activation error message in the session
           if (isset($_SESSION['activation_error'])) {
-            echo '<div class="alert alert-danger" role="alert">' . $_SESSION['activation_error'] . '</div>';
-            unset($_SESSION['activation_error']); // Clear the session variable after displaying the message
+            echo '<p>' . $_SESSION['activation_error'] . '</p>';
+            unset($_SESSION['activation_error']);
           } else {
-            echo '<div class="alert alert-danger" role="alert">Ваш аккаунт не активирован. Пожалуйста, проверьте свою электронную почту для активации.</div>';
+            echo '<p>Ваш аккаунт не активирован. Пожалуйста, проверьте свою электронную почту для активации.</p>';
           }
         }
+        
+        echo '</div>';
+        echo '</div>';
       }
       ?>
-      <a href="/" class="link-custom"><img src="../images/logo.png" alt="Avatar" class="rounded-circle mx-auto d-block"
-          width="50" /></a>
-      <h4 class="card-title text-center fw-bold my-3">Войдите в свой аккаунт</h4>
-      <p class="text-center">Если у вас нет аккаунта, <a href="/registration" class="link-custom">зарегистрируйтесь
-          здесь</a>.</p>
 
-      <form action="/pages/login/login_process.php" method="post">
-        <div class="mb-3">
-          <input type="email" id="email" name="email" class="form-control" placeholder="Введите ваш email" required>
-        </div>
-
-        <div class="mb-3">
+      <form action="/pages/login/login_process.php" method="post" class="auth-form" id="loginForm">
+        <div class="form-group">
+          <label for="email" class="form-label">Email адрес</label>
           <div class="input-group">
-            <input type="password" id="Password" name="password" class="form-control" placeholder="Введите ваш пароль"
-              required>
-            <span class="input-group-text" id="showPassword">
-              <i class="fas fa-eye"></i>
+            <span class="input-icon">
+              <i class="fas fa-envelope"></i>
             </span>
+            <input 
+              type="email" 
+              id="email" 
+              name="email" 
+              class="form-input" 
+              placeholder="Введите ваш email"
+              required
+              autocomplete="email"
+              autofocus
+            >
           </div>
-
-          <p class="mt-3 text-center"><a href="/reset-password" class="link-custom">Забыли
-              пароль?</a></p>
-
         </div>
-        <!-- Include a hidden input field to capture the redirect URL -->
+
+        <div class="form-group">
+          <label for="password" class="form-label">Пароль</label>
+          <div class="input-group">
+            <span class="input-icon">
+              <i class="fas fa-lock"></i>
+            </span>
+            <input 
+              type="password" 
+              id="password" 
+              name="password" 
+              class="form-input" 
+              placeholder="Введите ваш пароль"
+              required
+              autocomplete="current-password"
+            >
+            <button type="button" class="input-action" id="togglePassword">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-options">
+          <div class="checkbox-group">
+            <input type="checkbox" id="remember" name="remember" class="form-checkbox">
+            <label for="remember" class="checkbox-label">Запомнить меня</label>
+          </div>
+          <a href="/forgot-password" class="link">Забыли пароль?</a>
+        </div>
+
         <?php
         if (isset($_GET['redirect'])) {
           echo '<input type="hidden" name="redirect" value="' . htmlspecialchars($_GET['redirect']) . '">';
         }
         ?>
-        <div class="d-grid">
-          <button type="submit" class="btn btn-danger"><span class="fw-bold">Войти</span></button>
-        </div>
+
+        <button type="submit" class="btn btn-primary btn-full" id="submitBtn">
+          <span class="btn-text">Войти</span>
+          <span class="btn-loader" style="display: none;">
+            <i class="fas fa-spinner fa-spin"></i>
+          </span>
+        </button>
       </form>
+
+      <div class="auth-divider">
+        <span>или</span>
+      </div>
+
+      <div class="social-login">
+        <button type="button" class="btn btn-social btn-google" disabled>
+          <i class="fab fa-google"></i>
+          <span>Войти через Google</span>
+        </button>
+        <button type="button" class="btn btn-social btn-vk" disabled>
+          <i class="fab fa-vk"></i>
+          <span>Войти через VK</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="auth-footer">
+      <p>Нет аккаунта? <a href="/registration" class="link">Зарегистрироваться</a></p>
+    </div>
+  </div>
+
+  <!-- Quick Login Help -->
+  <div class="auth-help">
+    <div class="help-card">
+      <h3>Нужна помощь?</h3>
+      <ul>
+        <li><i class="fas fa-question-circle"></i> <a href="/help/login" class="link">Проблемы со входом</a></li>
+        <li><i class="fas fa-envelope"></i> <a href="/forgot-password" class="link">Восстановить пароль</a></li>
+        <li><i class="fas fa-user-plus"></i> <a href="/registration" class="link">Создать новый аккаунт</a></li>
+      </ul>
     </div>
   </div>
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    // Toggle password visibility
-    function togglePasswordVisibility(passwordId) {
-      var passwordInput = document.getElementById(passwordId);
-      var icon = document.getElementById('show' + passwordId);
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('loginForm');
+  const passwordInput = document.getElementById('password');
+  const togglePassword = document.getElementById('togglePassword');
+  const submitBtn = document.getElementById('submitBtn');
 
-      if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        icon.innerHTML = '<i class="fas fa-eye-slash"></i>';
-      } else {
-        passwordInput.type = 'password';
-        icon.innerHTML = '<i class="fas fa-eye"></i>';
-      }
+  // Password visibility toggle
+  togglePassword.addEventListener('click', function() {
+    const icon = this.querySelector('i');
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+      icon.classList.remove('fa-eye');
+      icon.classList.add('fa-eye-slash');
+    } else {
+      passwordInput.type = 'password';
+      icon.classList.remove('fa-eye-slash');
+      icon.classList.add('fa-eye');
     }
-    document.getElementById('showPassword').addEventListener('click', function () {
-      togglePasswordVisibility('Password');
+  });
+
+  // Form submission
+  form.addEventListener('submit', function(e) {
+    // Show loading state
+    submitBtn.disabled = true;
+    submitBtn.querySelector('.btn-text').style.display = 'none';
+    submitBtn.querySelector('.btn-loader').style.display = 'inline-block';
+  });
+
+  // Real-time validation for inputs
+  const inputs = form.querySelectorAll('input[required]');
+  inputs.forEach(input => {
+    input.addEventListener('blur', function() {
+      validateField(this);
+    });
+
+    input.addEventListener('input', function() {
+      if (this.classList.contains('error')) {
+        validateField(this);
+      }
     });
   });
+
+  function validateField(field) {
+    const value = field.value.trim();
+    const isValid = field.checkValidity();
+    
+    if (isValid && value !== '') {
+      field.classList.remove('error');
+      field.classList.add('success');
+    } else if (!isValid && value !== '') {
+      field.classList.remove('success');
+      field.classList.add('error');
+    } else {
+      field.classList.remove('success', 'error');
+    }
+  }
+
+  // Auto-focus on email if empty
+  const emailInput = document.getElementById('email');
+  if (emailInput.value === '') {
+    emailInput.focus();
+  }
+});
 </script>

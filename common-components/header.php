@@ -1,231 +1,330 @@
 <?php
-include $_SERVER["DOCUMENT_ROOT"] . "/includes/functions/get_avatar.php";
-
-$linkBootstrapHover = "text-white link-offset-2 link-offset-3-hover link-underline-light link-underline-opacity-0 link-underline-opacity-75-hover";
-
-// Function to fetch categories from the database
-function fetchCategories($connection, $selectedCategories)
-{
-  // Check if connection is valid
-  if (!$connection || $connection->connect_error) {
-    return [];
-  }
-  
-  $whereClause = implode(',', $selectedCategories);
-  $query = "SELECT id_category, url_category, title_category FROM categories WHERE id_category IN ($whereClause) ORDER BY title_category ASC";
-
-  $result = mysqli_query($connection, $query);
-
-  if ($result) {
-    return mysqli_fetch_all($result, MYSQLI_ASSOC);
-  } else {
-    return [];
-  }
-}
-
-// Function to generate navigation items
-function generateNavItems($categories, $isDropdown = false)
-{
-  $navItems = '';
-
-  foreach ($categories as $category) {
-    $categoryId = $category['id_category'];
-    $categoryUrl = $category['url_category'];
-    $categoryTitle = $category['title_category'];
-
-    $liClass = ($categoryId == 1) ? 'selected' : '';
-    $itemClass = $isDropdown ? 'dropdown-item' : 'text-white link-offset-2 link-offset-3-hover link-underline-light link-underline-opacity-0 link-underline-opacity-75-hover';
-
-    if ($isDropdown) {
-      $navItems .= "<li><small><a class='dropdown-item' href='/category/$categoryUrl'>$categoryTitle</a></small></li>";
-    } else {
-      $navItems .= "<li class='nav-item mx-auto py-1 px-3 $liClass'><small><a class='$itemClass' href='/category/$categoryUrl'>$categoryTitle</a></small></li>";
-    }
-  }
-
-  return $navItems;
-}
-
-$selectedCategoriesNav = [1, 6];
-$selectedCategoriesDropdown = [2, 3, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 18];
-
-$categoriesNav = fetchCategories($connection, $selectedCategoriesNav);
-$categoriesDropdown = fetchCategories($connection, $selectedCategoriesDropdown);
-
-// Function to fetch categories from the database
-function fetchCategoriesNews($connection)
-{
-  // Check if connection is valid
-  if (!$connection || $connection->connect_error) {
-    return [];
-  }
-  
-  $queryNews = "SELECT id_category_news, url_category_news, title_category_news FROM news_categories ORDER BY title_category_news ASC";
-  $resultNews = mysqli_query($connection, $queryNews);
-
-  if ($resultNews) {
-    return mysqli_fetch_all($resultNews, MYSQLI_ASSOC);
-  } else {
-    return [];
-  }
-}
-
-function generateNewsItems($categories_news)
-{
-
-  $newsItems = '';
-  foreach ($categories_news as $category_news) {
-    $categoryNewsId = $category_news['id_category_news'];
-    $categoryNewsUrl = $category_news['url_category_news'];
-    $categoryNewsTitle = $category_news['title_category_news'];
-    $newsItems .= "<li><small><a class='dropdown-item' href='/category-news/$categoryNewsUrl'>$categoryNewsTitle</a></small></li>";
-  }
-  return $newsItems;
-}
+require_once $_SERVER['DOCUMENT_ROOT'] . '/components/logo-component.php';
 ?>
-
-<nav class="navbar navbar-dark navbar-expand-lg bg-dark border-bottom border-white">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="/">
-      <img src="/images/logo.png" alt="11-классники" width="35" style="margin-left: 20px;">
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" data-bs-theme="dark">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav mx-auto align-items-center">
-        <?php echo generateNavItems($categoriesNav); ?>
-
-        <li class="nav-item mx-auto py-1 px-3">
-          <a class="<?php echo $linkBootstrapHover; ?>" href="/vpo-all-regions"><small>ВУЗы</small></a>
-        </li>
-        <li class="nav-item mx-auto py-1 px-3">
-          <a class="<?php echo $linkBootstrapHover; ?>" href="/spo-all-regions"><small>ССУЗы</small></a>
-        </li>
-        <li class="nav-item mx-auto py-1 px-3">
-          <a class="<?php echo $linkBootstrapHover; ?>" href="/schools-all-regions"><small>Школы</a></small>
-        </li>
-
-        <li class="nav-item mx-auto py-1 px-3 dropdown">
-          <?php echo '<a class="' . $linkBootstrapHover . ' dropdown-toggle" href="#" role="button" id="categoryDropdownNews" data-bs-toggle="dropdown" aria-expanded="false">'; ?>
-          <small>Новости</small>
-          </a>
-
-          <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="categoryDropdownNews">
-            <?php
-            $categories_news = fetchCategoriesNews($connection);
-            echo generateNewsItems($categories_news);
-            ?>
-          </ul>
-        </li>
-
-        <li class="nav-item mx-auto py-1 px-3 dropdown">
-          <?php echo '<a class="' . $linkBootstrapHover . ' dropdown-toggle" href="#" role="button" id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">'; ?>
-          <small>Рубрики</small>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="categoryDropdown">
-            <?php echo generateNavItems($categoriesDropdown, true); ?>
-          </ul>
-        </li>
-        <li class="nav-item mx-auto py-1 px-3">
-          <a class="<?php echo $linkBootstrapHover; ?>" href="/search">
-            <i class="fas fa-search"></i>
-          </a>
-        </li>
-
-
-        <?php
-        // Define test configurations directly in the header file
-        $testsConfig = [
-          'iq-test' => [
-            'title' => 'Тест на IQ',
-            'url' => '/iq-test',
-          ],
-          'aptitude-test' => [
-            'title' => 'Тест на профпригодность',
-            'url' => '/aptitude-test',
-          ],
-          // Add more tests here as needed
-        ];
-        ?>
-
-        <li class="nav-item mx-auto py-1 px-3 dropdown">
-          <?php echo '<a class="' . $linkBootstrapHover . ' dropdown-toggle" href="#" role="button" id="Tests" data-bs-toggle="dropdown" aria-expanded="false">'; ?>
-          <small>Тесты</small>
-          </a>
-
-          <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="Tests">
-            <?php foreach ($testsConfig as $test): ?>
-              <li class="nav-item mx-auto py-1 px-3">
-                <a class="<?php echo $linkBootstrapHover; ?>" href="<?php echo htmlspecialchars($test['url']); ?>">
-                  <small><?php echo htmlspecialchars($test['title']); ?></small>
-                </a>
-              </li>
-            <?php endforeach; ?>
-          </ul>
-        </li>
-
-      </ul>
-
-
-
-
-
-      <ul class="navbar-nav align-items-center">
-        <?php
-        if (isset($_SESSION['email'])) {
-          $email = $_SESSION['email'];
-          $checkUserQuery = "SELECT * FROM users WHERE email=?";
-          $stmtCheckUser = mysqli_prepare($connection, $checkUserQuery);
-
-          if ($stmtCheckUser) {
-            mysqli_stmt_bind_param($stmtCheckUser, "s", $email);
-            mysqli_stmt_execute($stmtCheckUser);
-            $resultCheckUser = mysqli_stmt_get_result($stmtCheckUser);
-
-
-            if ($resultCheckUser && mysqli_num_rows($resultCheckUser) > 0) {
-              if ($_SESSION['role'] == 'admin') {
-                echo '<li class="nav-item mx-auto py-1 px-3"><a href="/dashboard" class="<?php ' . $linkBootstrapHover . ' ?>"><small>Dashboard</small></a></li>';
-              }
-              $user = mysqli_fetch_assoc($resultCheckUser);
-
-              $occupation = $user['occupation'];
-              echo '<li class="nav-item dropdown mx-auto py-1 px-3">';
-              echo '<div class="btn-group dropstart">';
-              echo '<button type="button" class="btn btn-dark" data-bs-toggle="dropdown" aria-expanded="false">';
-
-
-              // Get the user's avatar URL, fetch the full avatar path, and display the image with styling
-              $avatarUrl = $user['avatar'];
-              $avatarPath = getAvatar($avatarUrl);
-              echo '<img src="' . htmlspecialchars($avatarPath) . '" alt="Avatar" style="width: 30px; height: 30px; border-radius: 50%;">';
-
-              echo '</button>';
-              echo '<ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="userDropdown">';
-              echo '<li><small><a class="dropdown-item" href="/account">Аккаунт</a></small></li>';
-              echo '<li><small><a class="dropdown-item" href="/pages/logout/logout.php"><i class="fas fa-sign-out-alt"></i> Выход</a></small></li>';
-              echo '</ul>';
-              echo '</div>';
-              echo '</li>';
-            } else {
-              session_destroy();
-              header('Location: /login');
-              exit();
-            }
-          }
-
-          mysqli_stmt_close($stmtCheckUser);
-        } else {
-          echo '<li class="nav-item mx-auto py-1 px-3">
-          <a class=" ' . $linkBootstrapHover . ' ?>" href="/login">
-          <i class="fas fa-sign-in-alt"></i><small class="ms-2">Вход</small>
-          </a>
-      </li>';
+<style>
+    .header-dark {
+        background: rgba(var(--bg-primary-rgb), 0.95);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--border-color);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .header-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 0;
+    }
+    
+    .nav-main {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+    }
+    
+    .nav-main a {
+        color: var(--text-secondary);
+        font-weight: 500;
+        transition: color 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .nav-main a:hover {
+        color: var(--text-primary);
+    }
+    
+    .nav-main a.active {
+        color: var(--accent-primary);
+    }
+    
+    .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .search-icon-link {
+        color: var(--text-secondary);
+        font-size: 1.25rem;
+        transition: color 0.2s;
+        padding: 0.5rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .search-icon-link:hover {
+        color: var(--accent-primary);
+    }
+    
+    .btn-header {
+        padding: 0.5rem 1.25rem;
+        border-radius: 24px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: all 0.2s;
+        border: none;
+        cursor: pointer;
+    }
+    
+    .btn-login {
+        background: transparent;
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
+    }
+    
+    .btn-login:hover {
+        background: var(--bg-tertiary);
+    }
+    
+    .btn-signup {
+        background: var(--gradient);
+        color: white;
+    }
+    
+    .btn-signup:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+    
+    .user-menu {
+        position: relative;
+    }
+    
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--gradient);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 2px solid transparent;
+    }
+    
+    .user-avatar:hover {
+        border-color: var(--accent-primary);
+        transform: scale(1.05);
+    }
+    
+    .user-avatar img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+    
+    .theme-toggle-header {
+        background: var(--gradient);
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.25rem;
+        transition: all 0.2s;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    }
+    
+    .theme-toggle-header:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+    
+    .dropdown-menu-dark {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        margin-top: 0.5rem;
+        background: var(--bg-primary);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        min-width: 220px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 1000;
+        overflow: hidden;
+    }
+    
+    .dark-theme .dropdown-menu-dark {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+    
+    .user-menu:hover .dropdown-menu-dark,
+    .dropdown-menu-dark:hover {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+    
+    .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 1.25rem;
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        font-weight: 500;
+    }
+    
+    .dropdown-item::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 3px;
+        height: 100%;
+        background: var(--gradient);
+        transform: scaleY(0);
+        transform-origin: center;
+        transition: transform 0.2s ease;
+    }
+    
+    .dropdown-item:hover {
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        text-decoration: none;
+        transform: translateX(4px);
+    }
+    
+    .dropdown-item:hover::before {
+        transform: scaleY(1);
+    }
+    
+    .dropdown-item i {
+        width: 20px;
+        font-size: 1rem;
+        color: var(--accent-primary);
+    }
+    
+    .dropdown-divider {
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+        margin: 0.5rem 0;
+    }
+    
+    @media (max-width: 768px) {
+        .nav-main {
+            display: none;
         }
-        ?>
-      </ul>
+        
+        .search-box {
+            display: none;
+        }
+        
+        .header-content {
+            padding: 0.75rem 0;
+        }
+    }
+</style>
+
+<header class="header-dark">
+    <div class="container">
+        <div class="header-content">
+            <div class="nav-left">
+                <?php renderLogo('normal', true); ?>
+            </div>
+            
+            <nav class="nav-main">
+                <a href="/vpo" <?php echo strpos($_SERVER['REQUEST_URI'], '/vpo') !== false ? 'class="active"' : ''; ?>>
+                    ВУЗы
+                </a>
+                <a href="/spo" <?php echo strpos($_SERVER['REQUEST_URI'], '/spo') !== false ? 'class="active"' : ''; ?>>
+                    Колледжи
+                </a>
+                <a href="/schools" <?php echo strpos($_SERVER['REQUEST_URI'], '/schools') !== false ? 'class="active"' : ''; ?>>
+                    Школы
+                </a>
+                <a href="/news" <?php echo strpos($_SERVER['REQUEST_URI'], '/news') !== false ? 'class="active"' : ''; ?>>
+                    Новости
+                </a>
+                <a href="/tests" <?php echo strpos($_SERVER['REQUEST_URI'], '/tests') !== false ? 'class="active"' : ''; ?>>
+                    Тесты
+                </a>
+            </nav>
+            
+            <div class="nav-right">
+                <a href="/search" class="search-icon-link" title="Поиск">
+                    <i class="fas fa-search"></i>
+                </a>
+                
+                <?php if (isset($_SESSION['email'])): ?>
+                    <?php
+                    // Get user info
+                    $email = $_SESSION['email'];
+                    $checkUserQuery = "SELECT * FROM users WHERE email=?";
+                    $stmtCheckUser = mysqli_prepare($connection, $checkUserQuery);
+                    
+                    if ($stmtCheckUser) {
+                        mysqli_stmt_bind_param($stmtCheckUser, "s", $email);
+                        mysqli_stmt_execute($stmtCheckUser);
+                        $resultCheckUser = mysqli_stmt_get_result($stmtCheckUser);
+                        
+                        if ($resultCheckUser && mysqli_num_rows($resultCheckUser) > 0) {
+                            $user = mysqli_fetch_assoc($resultCheckUser);
+                            ?>
+                            <div class="user-menu">
+                                <div class="user-avatar">
+                                    <?php if (!empty($user['avatar'])): ?>
+                                        <img src="<?php echo htmlspecialchars($user['avatar']); ?>" alt="Avatar">
+                                    <?php else: ?>
+                                        <?php echo strtoupper(substr($user['name'] ?? $email, 0, 1)); ?>
+                                    <?php endif; ?>
+                                </div>
+                                
+                                <div class="dropdown-menu-dark">
+                                    <a href="/account" class="dropdown-item">
+                                        <i class="fas fa-user"></i>
+                                        Профиль
+                                    </a>
+                                    <?php if ($_SESSION['role'] == 'admin'): ?>
+                                        <a href="/dashboard" class="dropdown-item">
+                                            <i class="fas fa-tachometer-alt"></i>
+                                            Панель управления
+                                        </a>
+                                    <?php endif; ?>
+                                    <div class="dropdown-divider"></div>
+                                    <a href="/pages/logout/logout.php" class="dropdown-item">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                        Выход
+                                    </a>
+                                </div>
+                            </div>
+                            <?php
+                        }
+                        mysqli_stmt_close($stmtCheckUser);
+                    }
+                    ?>
+                <?php else: ?>
+                    <a href="/login" class="btn-header btn-login">
+                        Вход
+                    </a>
+                <?php endif; ?>
+                
+                <!-- Theme Toggle Button -->
+                <button class="theme-toggle-header" id="themeToggleHeader" aria-label="Toggle theme">
+                    <i class="fas fa-moon" id="themeIconHeader"></i>
+                </button>
+            </div>
+        </div>
     </div>
-  </div>
-</nav>
+</header>

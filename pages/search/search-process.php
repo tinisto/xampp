@@ -17,6 +17,8 @@ if (isset($_GET['query']) && !empty($_GET['query'])) {
     logSearchQuery($connection, $sanitizedSearchQuery, $userEmail);
 
     // Optionally send an email notification for the search query
+    // Commented out for local development - uncomment when SMTP is configured
+    /*
     if (!empty($sanitizedSearchQuery)) {
         $topic = "Search Query";
         $body = "A user searched for: " . $sanitizedSearchQuery;
@@ -26,9 +28,10 @@ if (isset($_GET['query']) && !empty($_GET['query'])) {
             // Handle email failure (optional)
         }
     }
+    */
     $mainContent = 'search-content.php';
     $pageTitle = 'Поиск - 11-классники';
     $additionalData = ['searchQuery' => $sanitizedSearchQuery];
-    include $_SERVER['DOCUMENT_ROOT'] . '/common-components/template-engine.php';
+    include $_SERVER['DOCUMENT_ROOT'] . '/common-components/template.php';
     renderTemplate($pageTitle, $mainContent, $additionalData);
 }
